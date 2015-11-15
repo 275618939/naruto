@@ -14,21 +14,27 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.movie.R;
+import com.movie.app.SelfPartNarutoBtn;
 import com.movie.app.SexState;
 import com.movie.client.bean.Dictionary;
+import com.movie.client.bean.Miss;
 import com.movie.client.bean.User;
 import com.movie.ui.UserDetailActivity;
 import com.movie.util.ImageLoaderCache;
+import com.movie.util.StringUtil;
 
 public class PartNarutoExpandableAdapter extends BaseExpandableListAdapter {
 
 	List<Dictionary> parents;
 	List<List<User>> childs;
+	Miss miss;
+	int status;
 	private LayoutInflater inflater;
 	ImageLoaderCache imageLoaderCache;
 	Context context;
 
-	public PartNarutoExpandableAdapter(Context context,List<Dictionary> parents, List<List<User>> childs) {
+	public PartNarutoExpandableAdapter(Context context,
+			List<Dictionary> parents, List<List<User>> childs) {
 		inflater = LayoutInflater.from(context);
 		imageLoaderCache = new ImageLoaderCache(context);
 		this.parents = parents;
@@ -43,12 +49,12 @@ public class PartNarutoExpandableAdapter extends BaseExpandableListAdapter {
 
 	@Override
 	public int getChildrenCount(int groupPosition) {
-		if(childs==null)
+		if (childs == null)
 			return 0;
-		if(childs.get(groupPosition)==null||groupPosition>=childs.size()){
+		if (childs.get(groupPosition) == null || groupPosition >= childs.size()) {
 			return 0;
 		}
-		
+
 		return childs.get(groupPosition).size();
 	}
 
@@ -80,19 +86,20 @@ public class PartNarutoExpandableAdapter extends BaseExpandableListAdapter {
 	}
 
 	@Override
-	public View getGroupView(int groupPosition, boolean isExpanded,View convertView, ViewGroup parent) {
+	public View getGroupView(int groupPosition, boolean isExpanded,
+			View convertView, ViewGroup parent) {
 
-
-		TextView title=null;
-		TextView content=null;
+		TextView title = null;
+		TextView content = null;
 		if (convertView == null) {
-			convertView = inflater.inflate(R.layout.dictionary_item, parent,false);
+			convertView = inflater.inflate(R.layout.dictionary_item, parent,
+					false);
 		}
 		title = (TextView) convertView.findViewById(R.id.title);
 		content = (TextView) convertView.findViewById(R.id.part_info);
-		if(isExpanded){
+		if (isExpanded) {
 			content.setText("点击收缩");
-		}else{
+		} else {
 			content.setText("点击展开");
 		}
 		title.setText(parents.get(groupPosition).getName());
@@ -100,13 +107,14 @@ public class PartNarutoExpandableAdapter extends BaseExpandableListAdapter {
 	}
 
 	@Override
-	public View getChildView(int groupPosition, int childPosition,boolean isLastChild, View convertView, ViewGroup parent) {
+	public View getChildView(int groupPosition, int childPosition,
+			boolean isLastChild, View convertView, ViewGroup parent) {
 
 		// TODO Auto-generated method stub
 		ViewHolder mHolder;
 		View view = convertView;
 		if (view == null) {
-			view = inflater.inflate(R.layout.part_naruto_item, null);
+			view = inflater.inflate(R.layout.part_self_naruto_item, null);
 			mHolder = new ViewHolder();
 			mHolder.userItemView = (LinearLayout) view.findViewById(R.id.part_user_item_view);
 			mHolder.userIcon = (ImageView) view.findViewById(R.id.part_user_icon);
@@ -115,6 +123,8 @@ public class PartNarutoExpandableAdapter extends BaseExpandableListAdapter {
 			mHolder.userConstell = (TextView) view.findViewById(R.id.user_constell);
 			mHolder.missUserCharm = (TextView) view.findViewById(R.id.user_charm);
 			mHolder.missUserLove = (TextView) view.findViewById(R.id.user_love);
+			mHolder.partNarutoBtn = (TextView) view.findViewById(R.id.part_naruto_btn);
+			mHolder.userStatus = (TextView) view.findViewById(R.id.user_status);
 			view.setTag(mHolder);
 		} else {
 			mHolder = (ViewHolder) view.getTag();
@@ -127,8 +137,24 @@ public class PartNarutoExpandableAdapter extends BaseExpandableListAdapter {
 		mHolder.missUserCharm.setText(user.getCharm().toString());
 		mHolder.userConstell.setText(user.getConstell());
 		mHolder.missUserLove.setText(String.format(context.getResources().getString(R.string.user_love_count), user.getLove().toString()));
-		mHolder.userItemView.setOnClickListener(new UserSelectAction(groupPosition,childPosition));
-
+		mHolder.userIcon.setOnClickListener(new UserSelectAction(groupPosition,childPosition));
+		if(miss!=null){
+			int result=StringUtil.dateCompareByCurrent(miss.getRunTime());
+			if(result==-1){
+				result=SelfPartNarutoBtn.kickedOut.getState();
+			}
+			SelfPartNarutoBtn btn =SelfPartNarutoBtn.getState(result);
+			status=btn.getState();
+			if(result>=1){
+				mHolder.partNarutoBtn.setVisibility(View.VISIBLE);
+				mHolder.partNarutoBtn.setText(btn.getMessage());	
+				mHolder.partNarutoBtn.setOnClickListener(new UserSelectAction(groupPosition,childPosition));
+			}else{
+				mHolder.userStatus.setText(btn.getMessage());
+				mHolder.userStatus.setVisibility(View.VISIBLE);
+			}
+		}
+		
 		return view;
 
 	}
@@ -138,12 +164,19 @@ public class PartNarutoExpandableAdapter extends BaseExpandableListAdapter {
 		// TODO Auto-generated method stub
 		return false;
 	}
-	public void updateData(List<Dictionary> parents,List<List<User>> childs) {
+
+	public void updateData(List<Dictionary> parents, List<List<User>> childs) {
 		this.parents = parents;
 		this.childs = childs;
 		this.notifyDataSetChanged();
 
 	}
+	
+
+	public void setMiss(Miss miss) {
+		this.miss = miss;
+	}
+
 
 	protected class UserSelectAction implements OnClickListener {
 
@@ -159,10 +192,15 @@ public class PartNarutoExpandableAdapter extends BaseExpandableListAdapter {
 		public void onClick(final View v) {
 			final User user = childs.get(groupPosition).get(childPosition);
 			switch (v.getId()) {
-			case R.id.part_user_item_view:
+			case R.id.part_user_icon:
 				Intent intent = new Intent(context, UserDetailActivity.class);
 				intent.putExtra("user", user);
-				context.startActivity(intent);
+				context.startActivity(intent);			
+				break;
+			case R.id.part_naruto_btn:
+				Intent btnIntent = new Intent(context, UserDetailActivity.class);
+				btnIntent.putExtra("user", user);
+				context.startActivity(btnIntent);			
 				break;
 
 			default:
@@ -187,6 +225,10 @@ public class PartNarutoExpandableAdapter extends BaseExpandableListAdapter {
 		TextView missUserCharm;
 		// 用户心动数
 		TextView missUserLove;
+		//  用户操作
+		TextView partNarutoBtn;
+		// 用户状态
+		TextView userStatus;
 
 	}
 

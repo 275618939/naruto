@@ -68,8 +68,8 @@ public class MissSelfQueryActivity extends BaseActivity implements OnClickListen
 	private void initData() {
 		page=0;
 		missType=SelfFragment.MY_MISS;
-		//loadMissData();
-		tempData();
+		loadMissData();
+		//tempData();
 		
 	}
 

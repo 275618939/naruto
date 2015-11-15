@@ -21,6 +21,7 @@ import com.movie.app.MissStateBackColor;
 import com.movie.client.bean.Miss;
 import com.movie.ui.MissSelfDetailActivity;
 import com.movie.util.ImageLoaderCache;
+import com.movie.util.StringUtil;
 
 public class MissSelfQueryAdapter extends BaseAdapter {
 
@@ -94,7 +95,7 @@ public class MissSelfQueryAdapter extends BaseAdapter {
 		Miss miss = getItem(position);
 		imageLoaderCache.DisplayImage(miss.getIcon(),mHolder.missIcon);
 		//mHolder.missUser.setText(miss.getMemberId());
-		mHolder.missDate.setText(miss.getRunTime());
+		mHolder.missDate.setText(StringUtil.getShortStrBySym(miss.getRunTime(),":"));
 		mHolder.missName.setText(miss.getCinameName());
 		mHolder.missAddress.setText(miss.getCinameAddress());
 		int sourceId = MissStateBackColor.getState(miss.getStatus()).getSourceId();

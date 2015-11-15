@@ -7,9 +7,11 @@ import java.util.Date;
 import java.util.List;
 import java.util.Map;
 
+import android.annotation.SuppressLint;
 import android.content.Context;
 import android.telephony.TelephonyManager;
 
+@SuppressLint("SimpleDateFormat")
 public class StringUtil {
 
 	public static boolean isEmpty(Object obj) {
@@ -88,6 +90,21 @@ public class StringUtil {
 		builder.append(date.substring(6, 8)).append("日");
 		return builder.toString();
 	}
+	public static int dateCompareByCurrent(String time) {
+		
+		SimpleDateFormat format=new SimpleDateFormat();
+		int result=-1;
+		try {
+			Date date = format.parse(time);
+			Date currentDate = new Date();
+			result = date.compareTo(currentDate);
+		} catch (ParseException e) {
+			result=-2;
+		}
+	
+		return result;
+	
+	}
 
 	public static String getShortStr(String data, int len) {
 
@@ -99,6 +116,18 @@ public class StringUtil {
 
 		return data;
 	}
+	
+
+	public static String getShortStrBySym(String data, String sym) {
+
+		if (null == data)
+			return "";
+		int index = data.lastIndexOf(sym);
+		data = data.substring(0, index);
+		return data;
+	}
+	
+	
 
 	public static int[] strChangeInt(String date) {
 

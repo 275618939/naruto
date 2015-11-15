@@ -89,14 +89,12 @@ public class MissSelfDetailActivity extends BaseActivity implements OnClickListe
 		title.setText(miss.getMovieName());
 		imageLoaderCache.DisplayImage(miss.getIcon(), missIcon);
 		missCreateUser.setText(miss.getCreateUserName());
-		missDate.setText(StringUtil.getShortStr(miss.getRunTime(),16));
+		missDate.setText(StringUtil.getShortStrBySym(miss.getRunTime(),":"));
 		missMovieName.setText(miss.getMovieName());
 		cinemaName.setText(miss.getCinameName());
 		cinemaAddress.setText(miss.getCinameAddress());
 		cinemaPhone.setText(miss.getCinemaPhone());
-
-	
-		
+		partNarutoAdapter.setMiss(miss);
 		/*初始化用不信息*/
 		loadUser();
 	}
