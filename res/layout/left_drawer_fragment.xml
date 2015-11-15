@@ -1,0 +1,252 @@
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:myapp="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    xmlns:imagecontrol="http://schemas.android.com/apk/res-auto"
+    android:layout_width="fill_parent"
+    android:layout_height="fill_parent"
+    android:background="@color/left_drawer_item_bg_normal"
+    android:orientation="vertical" >
+
+    <LinearLayout
+        android:id="@+id/login_layout"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="20dp"
+        android:layout_weight="0.0"
+        android:gravity="left"
+        android:orientation="horizontal"
+        android:visibility="gone" >
+
+        <LinearLayout
+            android:id="@+id/user_logo_btn"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="16.0dip"
+            android:layout_marginLeft="20dp"
+            android:layout_marginTop="30.0dip"
+            android:orientation="vertical" >
+
+            <com.movie.view.RoundImageView
+                android:id="@+id/show_user_logo"
+                android:layout_width="100dp"
+                android:layout_height="100dp"
+                android:src="@drawable/default_portrait"
+                imagecontrol:border_inside_color="#fff7f2e9"
+                imagecontrol:border_outside_color="#ffd5d1c8"
+                imagecontrol:border_thickness="2dp" />
+
+            <TextView
+                android:id="@+id/user_name"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="13.0dip"
+                android:layout_marginLeft="10dp"
+                android:layout_marginTop="10dp"
+                android:text="@string/left_drawer_no_login_tip"
+                android:textColor="@color/left_drawer_no_login_tip_text"
+                android:textSize="11.0sp" />
+        </LinearLayout>
+
+        <LinearLayout
+            android:id="@+id/user_edit"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="40dp"
+            android:layout_marginTop="40.0dip"
+            android:gravity="center_horizontal"
+            android:orientation="vertical" >
+
+            <ImageView
+                android:id="@+id/show_user_edit"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:background="@drawable/user_edit" />
+        </LinearLayout>
+    </LinearLayout>
+
+    <LinearLayout
+        android:id="@+id/logout_layout"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:layout_weight="0.0"
+        android:gravity="center_horizontal"
+        android:orientation="vertical" >
+
+        <LinearLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="16.0dip"
+            android:layout_marginTop="34.0dip"
+            android:orientation="horizontal" >
+
+            <com.movie.view.RoundImageView
+                android:layout_width="100dp"
+                android:layout_height="100dp"
+                android:src="@drawable/default_portrait"
+                imagecontrol:border_inside_color="#fff7f2e9"
+                imagecontrol:border_outside_color="#ffd5d1c8"
+                imagecontrol:border_thickness="2dp" />
+        </LinearLayout>
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="13.0dip"
+            android:text="@string/left_drawer_no_login_tip"
+            android:textColor="@color/left_drawer_no_login_tip_text"
+            android:textSize="11.0sp" />
+    </LinearLayout>
+
+    <ImageView style="@style/left_drawer_item_line" />
+
+    <ScrollView
+        android:layout_width="fill_parent"
+        android:layout_height="0.0dip"
+        android:layout_weight="1.0" >
+
+        <LinearLayout
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical" >
+
+            <RelativeLayout
+                android:id="@+id/my_coin_btn"
+                style="@style/left_drawer_item_layout" >
+
+                <TextView
+                    android:id="@+id/my_coin"
+                    style="@style/left_drawer_item_text"
+                    android:drawableLeft="@drawable/ic_drawer_pgc"
+                    android:text="@string/left_drawer_item_my_coin" />
+            </RelativeLayout>
+
+            <ImageView style="@style/left_drawer_item_line" />
+
+            <LinearLayout
+                android:id="@+id/my_friends_layout"
+                android:layout_width="fill_parent"
+                android:layout_height="wrap_content"
+                android:minHeight="50.0dip"
+                android:orientation="vertical"
+                android:visibility="visible" >
+
+                <RelativeLayout
+                    android:id="@+id/my_friends_btn"
+                    style="@style/left_drawer_item_layout" >
+
+                    <TextView
+                        android:id="@+id/my_friends_text"
+                        style="@style/left_drawer_item_text"
+                        android:layout_centerVertical="true"
+                        android:drawableLeft="@drawable/left_drawer_activity_selector"
+                        android:text="@string/left_drawer_item_my_friends" />
+
+                    <TextView
+                        android:id="@+id/my_friends_text_count"
+                        style="@style/left_drawer_count"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_alignParentLeft="true"
+                        android:layout_alignParentTop="true"
+                        android:layout_marginLeft="25.0dip"
+                        android:layout_marginTop="6.0dip"
+                        android:layout_toRightOf="@id/my_friends_text"
+                        android:background="@drawable/left_drawer_count_bg"
+                        android:visibility="gone" />
+                </RelativeLayout>
+
+                <ImageView style="@style/left_drawer_item_line" />
+            </LinearLayout>
+
+            <LinearLayout
+                android:id="@+id/my_letters_layout"
+                android:layout_width="fill_parent"
+                android:layout_height="wrap_content"
+                android:minHeight="50.0dip"
+                android:orientation="vertical"
+                android:visibility="visible" >
+
+                <RelativeLayout
+                    android:id="@+id/my_letters_btn"
+                    style="@style/left_drawer_item_layout" >
+
+                    <TextView
+                        android:id="@+id/my_letters_text"
+                        style="@style/left_drawer_item_text"
+                        android:layout_centerVertical="true"
+                        android:drawableLeft="@drawable/left_drawer_activity_selector"
+                        android:text="@string/left_drawer_item_my_letters" />
+
+                    <TextView
+                        android:id="@+id/my_letters_count"
+                        style="@style/left_drawer_count"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_alignParentLeft="true"
+                        android:layout_alignParentTop="true"
+                        android:layout_marginLeft="25.0dip"
+                        android:layout_marginTop="6.0dip"
+                        android:layout_toRightOf="@id/my_letters_text"
+                        android:background="@drawable/left_drawer_count_bg"
+                        android:visibility="gone" />
+                </RelativeLayout>
+
+                <ImageView style="@style/left_drawer_item_line" />
+            </LinearLayout>
+
+            <RelativeLayout
+                android:id="@+id/feedback_btn"
+                style="@style/left_drawer_item_layout" >
+
+                <TextView
+                    style="@style/left_drawer_item_text"
+                    android:drawableLeft="@drawable/ic_drawer_feedback"
+                    android:text="@string/left_drawer_item_info" />
+            </RelativeLayout>
+
+            <ImageView style="@style/left_drawer_item_line" />
+
+            <RelativeLayout
+                android:id="@+id/logout_btn"
+                style="@style/left_drawer_item_layout"
+                android:visibility="gone" >
+
+                <TextView
+                    style="@style/left_drawer_item_text"
+                    android:drawableLeft="@drawable/titlebar_refresh_detail_cancel"
+                    android:text="@string/left_drawer_item_logout" />
+            </RelativeLayout>
+        </LinearLayout>
+    </ScrollView>
+
+    <!--
+    <LinearLayout
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="10.0dip"
+        android:layout_marginLeft="19.0dip"
+        android:layout_weight="0.0"
+        android:gravity="center_vertical"
+        android:orientation="horizontal" >
+
+        <com.cms.view.SwitchButton
+            android:id="@+id/night_mode_btn"
+            style="@style/Switch"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:clickable="true" />
+
+        myapp:thumb="@drawable/wiper_switch_slipper_btn"
+        myapp:track="@drawable/wiper_switch_btn"
+
+        <TextView
+            android:id="@+id/night_mode_text"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="15.0dip"
+            android:textColor="@color/left_drawer_night_mode_text"
+            android:textSize="15.0sp" />
+    </LinearLayout>
+    -->
+
+</LinearLayout>

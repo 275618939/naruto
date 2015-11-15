@@ -1,0 +1,122 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/miss_view"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content" >
+
+    <RelativeLayout
+        android:id="@+id/miss_item_view"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="@dimen/layout_item_bottom"
+        android:background="@drawable/background_with_border_radius" >
+
+        <LinearLayout
+            android:id="@+id/miss_icon_layout"
+            android:layout_width="@dimen/user_image_width"
+            android:layout_height="@dimen/user_image_height"
+            android:layout_margin="@dimen/layout_item_top_1" >
+
+            <ImageView
+                android:id="@+id/miss_icon"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:scaleType="centerCrop"
+                android:src="@drawable/empty_photo" />
+        </LinearLayout>
+
+        <LinearLayout
+            android:id="@+id/miss_layout_0"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/layout_item_top_1"
+            android:layout_toRightOf="@+id/miss_icon_layout"
+            android:orientation="horizontal" >
+
+            <TextView
+                android:id="@+id/miss_date_hint"
+                style="@style/common_content_white_hint"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/miss_date" />
+
+            <TextView
+                android:id="@+id/miss_date"
+                style="@style/common_content_white_hint"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="@dimen/layout_left" />
+        </LinearLayout>
+
+        <LinearLayout
+            android:id="@+id/miss_layout_1"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/miss_layout_0"
+            android:layout_toRightOf="@+id/miss_icon_layout"
+            android:orientation="horizontal" >
+
+            <TextView
+                android:id="@+id/miss_user_hint"
+                style="@style/common_content_white_hint"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/miss_user" />
+
+            <TextView
+                android:id="@+id/miss_user"
+                style="@style/common_content_white_hint"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="@dimen/layout_left" />
+        </LinearLayout>
+
+        <LinearLayout
+            android:id="@+id/miss_layout_2"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/miss_layout_1"
+            android:layout_toRightOf="@+id/miss_icon_layout"
+            android:orientation="horizontal" >
+
+            <TextView
+                android:id="@+id/miss_name_hint"
+                style="@style/common_content_white_hint"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/movie_name" />
+
+            <TextView
+                android:id="@+id/miss_name"
+                style="@style/common_content_white_hint"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="@dimen/layout_left" />
+        </LinearLayout>
+
+        <LinearLayout
+            android:id="@+id/miss_layout_3"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/miss_layout_2"
+            android:layout_toRightOf="@+id/miss_icon_layout"
+            android:orientation="horizontal" >
+
+            <TextView
+                android:id="@+id/miss_address_hint"
+                style="@style/common_content_white_hint"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/cinema_address" />
+
+            <TextView
+                android:id="@+id/miss_address"
+                style="@style/common_content_white_hint"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="@dimen/layout_left" />
+        </LinearLayout>
+    </RelativeLayout>
+
+</LinearLayout>

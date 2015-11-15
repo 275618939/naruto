@@ -1,0 +1,86 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="fill_parent"
+    android:background="@color/window_bg"
+    android:orientation="vertical" >
+
+    <RadioGroup
+        android:id="@+id/movie_class"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="@dimen/layout_left"
+        android:layout_marginRight="@dimen/layout_right"
+        android:layout_marginTop="@dimen/layout_item_top_1"
+        android:gravity="center_horizontal"
+        android:orientation="horizontal" >
+
+        <RadioButton
+            android:id="@+id/play_movie"
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:background="@drawable/left_common_btn"
+            android:button="@null"
+            android:checked="true"
+            android:gravity="center"
+            android:text="@string/current_movie"
+            android:textColor="@drawable/common_btn_text_color" />
+
+        <RadioButton
+            android:id="@+id/upComing_movie"
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:background="@drawable/right_common_btn"
+            android:button="@null"
+            android:gravity="center"
+            android:text="@string/next_movie"
+            android:textColor="@drawable/common_btn_text_color" />
+    </RadioGroup>
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/movie_class"
+        android:layout_marginLeft="@dimen/layout_left"
+        android:layout_marginRight="@dimen/layout_right"
+        android:layout_marginTop="@dimen/layout_item_top_1" >
+
+        <!--
+             <android.support.v4.widget.SwipeRefreshLayout
+            android:id="@+id/refresh_movies"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent" >
+        -->
+
+
+        <!--
+             <com.movie.view.RefreshableView
+            android:id="@+id/refresh_movies"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent" >
+        -->
+
+        <com.movie.view.RefreshableView
+            android:id="@+id/refresh_movies"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent" >
+
+            <GridView
+                android:id="@+id/movies"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:divider="@null"
+                android:horizontalSpacing="3dp"
+                android:numColumns="3"
+                android:stretchMode="columnWidth" >
+            </GridView>
+        </com.movie.view.RefreshableView>
+        <!-- </com.movie.view.RefreshableView> -->
+
+
+        <!-- </android.support.v4.widget.SwipeRefreshLayout> -->
+    </RelativeLayout>
+
+</RelativeLayout>

@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="utf-8"?>
+<shape android:shape="rectangle"
+  xmlns:android="http://schemas.android.com/apk/res/android">
+  	<!-- 红色 #ffcc3131 -->
+  	<!-- 中海蓝色 #32cd99 -->
+  	<!-- 石板蓝 #007FFF -->
+  	<!-- 天蓝 ##02b4fe -->
+    <solid android:color="#1aa294" />
+</shape>

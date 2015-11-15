@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layer-list xmlns:android="http://schemas.android.com/apk/res/android" >
+
+    <!-- bottom shadow -->
+    <item>
+        <shape android:shape="rectangle" >
+            <padding
+                android:bottom="0dip"
+                android:left="0dip"
+                android:right="0dip"
+                android:top="1dip" />
+
+            <solid android:color="@color/input_item_line" />
+        </shape>
+    </item>
+
+    <!-- content -->
+
+    <item>
+        <shape android:shape="rectangle" >
+            <solid android:color="@color/window_bg" />
+        </shape>
+    </item>
+
+</layer-list>

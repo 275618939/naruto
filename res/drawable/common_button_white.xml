@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<selector xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <item android:drawable="@drawable/skin_common_btn_white_unpressed" android:state_enabled="false"/>
+    <item android:state_pressed="true">
+        <!-- 圆角 -->
+		<shape>
+            <corners android:bottomLeftRadius="80dp" android:topLeftRadius="80dp" />
+        </shape>
+       
+    </item>
+    <item android:drawable="@drawable/skin_common_btn_white_unpressed"/>
+
+</selector>

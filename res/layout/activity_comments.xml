@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="fill_parent"
+    android:layout_height="fill_parent"
+    android:background="@color/window_bg"
+    android:orientation="vertical" >
+
+    <include
+        android:id="@+id/title_bar"
+        layout="@layout/common_head" />
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_below="@+id/title_bar"
+        android:layout_marginLeft="@dimen/layout_left"
+        android:layout_marginRight="@dimen/layout_right"
+        android:layout_marginTop="@dimen/layout_item_top_1"
+        android:orientation="vertical" >
+
+        <com.movie.view.CommentsGridView
+            android:id="@+id/comments"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_marginTop="@dimen/layout_item_top_1"
+            android:divider="@null"
+            android:horizontalSpacing="5dp"
+            android:numColumns="3"
+            android:stretchMode="columnWidth" >
+        </com.movie.view.CommentsGridView>
+    </LinearLayout>
+
+</RelativeLayout>

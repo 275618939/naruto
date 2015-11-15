@@ -1,0 +1,102 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="fill_parent"
+    android:layout_height="fill_parent"
+    android:background="@color/window_bg"
+    android:orientation="vertical" >
+
+    <include
+        android:id="@+id/title_bar"
+        layout="@layout/common_head" />
+
+    <LinearLayout
+        android:id="@+id/scrollAreaLayout"
+        android:layout_width="fill_parent"
+        android:layout_height="fill_parent"
+        android:layout_below="@id/title_bar"
+        android:orientation="vertical" >
+
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:paddingBottom="@dimen/item_padding_bottom"
+            android:paddingTop="@dimen/nav_padding_top" >
+
+            <EditText
+                android:id="@+id/login"
+                android:layout_width="fill_parent"
+                android:layout_height="@dimen/inputSize1"
+                android:layout_marginLeft="@dimen/input_margin_left"
+                android:layout_marginRight="@dimen/input_margin_right"
+                android:background="@null"
+                android:hint="@string/account_hint"
+                android:inputType="text"
+                android:maxLength="16"
+                android:maxLines="1"
+                android:singleLine="true" />
+
+            <ImageView
+                android:id="@+id/clear_login"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignRight="@+id/login"
+                android:layout_marginRight="@dimen/input_margin_right"
+                android:layout_marginTop="10dp"
+                android:background="@drawable/titlebar_refresh_detail_cancel"
+                android:paddingTop="10dp" />
+        </RelativeLayout>
+
+        <ImageView
+            style="@style/input_item_line"
+            android:layout_marginLeft="@dimen/layout_left"
+            android:layout_marginRight="@dimen/layout_left" />
+
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:paddingBottom="@dimen/item_padding_bottom"
+            android:paddingTop="@dimen/nav_padding_top" >
+
+            <EditText
+                android:id="@+id/captcha"
+                android:layout_width="200dp"
+                android:layout_height="@dimen/inputSize1"
+                android:layout_marginLeft="@dimen/input_margin_left"
+                android:layout_marginRight="@dimen/input_margin_right"
+                android:background="@null"
+                android:hint="@string/captcha_hint"
+                android:inputType="text"
+                android:maxLength="16"
+                android:maxLines="1"
+                android:singleLine="true" />
+
+            <ImageView
+                android:id="@+id/captcha_image"
+                android:layout_width="80dp"
+                android:layout_height="45dp"
+                android:layout_marginLeft="8dp"
+                android:layout_toRightOf="@+id/captcha"
+                android:gravity="center"
+                
+                android:paddingTop="5.0dip" />
+
+            <TextView
+                android:id="@+id/change"
+                style="@style/text_16_666666"
+                android:layout_width="fill_parent"
+                android:layout_height="wrap_content"
+                android:layout_toRightOf="@+id/captcha_image"
+                android:gravity="center"
+                android:paddingTop="12.0dip"
+                android:text="@string/captcha_change" />
+        </RelativeLayout>
+
+        <ImageView
+            style="@style/input_item_line"
+            android:layout_marginLeft="@dimen/layout_left"
+            android:layout_marginRight="@dimen/layout_left" />
+    </LinearLayout>
+
+</RelativeLayout>

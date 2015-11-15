@@ -1,0 +1,107 @@
+<?xml version="1.0" encoding="utf-8"?>
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/main_scroll_view"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:background="@color/window_bg" >
+
+    <LinearLayout
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="@dimen/btn_padding_left"
+        android:layout_marginRight="@dimen/btn_padding_right"
+        android:layout_marginTop="@dimen/layout_item_top_1"
+        android:orientation="vertical" >
+
+        <RelativeLayout
+            android:id="@+id/my_miss_layout"
+            android:layout_width="match_parent"
+            android:layout_height="@dimen/panel_item"
+            android:background="@drawable/background_with_fillet_tag1"
+            android:gravity="center"
+            android:orientation="horizontal" >
+
+            <TextView
+                android:id="@+id/my_miss"
+                style="@style/common_btn"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:singleLine="false"
+                android:text="@string/my_miss" />
+        </RelativeLayout>
+
+        <RelativeLayout
+            android:id="@+id/my_participate_layout"
+            android:layout_width="match_parent"
+            android:layout_height="@dimen/panel_item"
+            android:layout_marginTop="@dimen/layout_item_top_1"
+            android:background="@drawable/background_with_fillet_tag2"
+            android:gravity="center"
+            android:orientation="horizontal" >
+
+            <TextView
+                android:id="@+id/my_participate"
+                style="@style/common_btn"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:singleLine="false"
+                android:text="@string/my_participate" />
+        </RelativeLayout>
+
+        <RelativeLayout
+            android:id="@+id/my_invitation_layout"
+            android:layout_width="match_parent"
+            android:layout_height="@dimen/panel_item"
+            android:layout_marginTop="@dimen/layout_item_top_1"
+            android:background="@drawable/background_with_fillet_tag3"
+            android:gravity="center"
+            android:orientation="horizontal" >
+
+            <TextView
+                android:id="@+id/my_invitation"
+                style="@style/common_btn"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:singleLine="false"
+                android:text="@string/my_invitation" />
+        </RelativeLayout>
+
+        <RelativeLayout
+            android:id="@+id/see_moive_layout"
+            android:layout_width="match_parent"
+            android:layout_height="@dimen/panel_item"
+            android:layout_marginTop="@dimen/layout_item_top_1"
+            android:background="@drawable/background_with_fillet_tag4"
+            android:gravity="center"
+            android:orientation="horizontal" >
+
+            <TextView
+                android:id="@+id/see_movie"
+                style="@style/common_btn"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:singleLine="false"
+                android:text="@string/user_movies" />
+        </RelativeLayout>
+
+        <RelativeLayout
+            android:id="@+id/create_miss_layout"
+            android:layout_width="match_parent"
+            android:layout_height="@dimen/panel_item"
+            android:layout_marginBottom="@dimen/bottom_bar_height"
+            android:layout_marginTop="@dimen/layout_item_top_1"
+            android:background="@drawable/background_with_fillet_tag8"
+            android:gravity="center"
+            android:orientation="horizontal" >
+
+            <TextView
+                android:id="@+id/create_miss"
+                style="@style/common_btn"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:singleLine="false"
+                android:text="@string/miss_create" />
+        </RelativeLayout>
+    </LinearLayout>
+
+</ScrollView>

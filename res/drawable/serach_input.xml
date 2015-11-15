@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<selector xmlns:android="http://schemas.android.com/apk/res/android">
+
+  
+    <item android:state_pressed="true">
+        <!-- 圆角 -->
+		<shape>
+            <corners android:topRightRadius="20dp" android:bottomRightRadius="20dp" android:bottomLeftRadius="20dp" android:topLeftRadius="20dp" />
+            <solid android:color="@color/white" />
+        </shape>
+    </item>
+    <item android:state_focused="true" >
+        <!-- 圆角 -->
+		<shape>
+            <corners android:topRightRadius="20dp" android:bottomRightRadius="20dp" android:bottomLeftRadius="20dp" android:topLeftRadius="20dp" />
+            <solid android:color="@color/white" />
+        </shape>
+    </item>
+    <item android:state_selected="true" android:drawable="@drawable/skin_common_btn_white_pressed" />
+    <item android:drawable="@drawable/skin_common_btn_white_unpressed"/>
+
+</selector>

@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="utf-8"?>
+<com.movie.view.HobbyView xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/hobby_view"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent" >
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="10dp"
+        android:gravity="center_horizontal"
+        android:orientation="horizontal" >
+
+        <LinearLayout
+            android:id="@+id/first_column"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:orientation="vertical" >
+        </LinearLayout>
+
+        <LinearLayout
+            android:id="@+id/second_column"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="@dimen/btn_margin_bttom"
+            android:layout_weight="1"
+            android:orientation="vertical" >
+        </LinearLayout>
+
+        <LinearLayout
+            android:id="@+id/third_column"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="@dimen/btn_margin_bttom"
+            android:layout_weight="1"
+            android:orientation="vertical"
+            android:paddingBottom="@dimen/btn_margin_bttom" >
+        </LinearLayout>
+    </LinearLayout>
+
+</com.movie.view.HobbyView>

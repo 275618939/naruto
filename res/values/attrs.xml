@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <declare-styleable name="SegmentedControlView">
+        <attr name="firstButtonBackground" format="reference|color" />
+        <attr name="lastButtonBackground" format="reference|color" />
+        <attr name="middleButtonBackground" format="reference|color" />
+        <attr name="uniqueButtonBackground" format="reference|color" />
+    </declare-styleable>
+    <declare-styleable name="roundedimageview">
+        <attr name="border_thickness" format="dimension" />
+        <attr name="border_inside_color" format="color" />
+        <attr name="border_outside_color" format="color"></attr>
+    </declare-styleable>
+    <declare-styleable name="HorizontalListView">
+        <attr name="dividerWidth" format="dimension" />
+        <attr name="android:divider" />
+        <attr name="android:requiresFadingEdge" />
+        <attr name="android:fadingEdgeLength" />
+    </declare-styleable>
+    <declare-styleable name="GifView">
+        <attr name="auto_play" format="boolean"></attr>
+    </declare-styleable>
+
+</resources>

@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="utf-8"?>
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/hobby_ment"
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content"
+    android:layout_marginBottom="@dimen/nav_padding_top"
+    android:orientation="horizontal" >
+
+    <Button
+        android:id="@+id/user_select"
+        style="@style/common_button_blue"
+        android:layout_width="fill_parent"
+        android:layout_height="@dimen/btn_heigth"
+        android:layout_marginBottom="@dimen/btn_margin_bttom"
+        android:layout_marginLeft="@dimen/btn_margin_left"
+        android:background="@drawable/all_shape_button_blue"
+        android:text="@string/current_movie"
+        android:visibility="gone" />
+
+    <Button
+        android:id="@+id/user_unselect"
+        style="@style/common_button_white"
+        android:layout_width="fill_parent"
+        android:layout_height="@dimen/btn_heigth"
+        android:layout_marginBottom="@dimen/btn_margin_bttom"
+        android:layout_marginLeft="@dimen/btn_margin_left"
+        android:background="@drawable/all_shape_button_white"
+        android:text="@string/next_movie" />
+
+</FrameLayout>

@@ -1,0 +1,56 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="fill_parent"
+    android:layout_height="fill_parent"
+    android:background="@color/window_bg"
+    android:orientation="vertical" >
+
+    <include
+        android:id="@+id/title_bar"
+        layout="@layout/common_head" />
+
+    <LinearLayout
+        android:id="@+id/scrollAreaLayout"
+        android:layout_width="fill_parent"
+        android:layout_height="fill_parent"
+        android:layout_below="@id/title_bar"
+        android:orientation="vertical" >
+
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:paddingBottom="@dimen/item_padding_bottom"
+            android:paddingTop="@dimen/nav_padding_top" >
+
+            <EditText
+                android:id="@+id/email"
+                android:layout_width="fill_parent"
+                android:layout_height="@dimen/inputSize1"
+                android:layout_marginLeft="@dimen/input_margin_left"
+                android:layout_marginRight="@dimen/input_margin_right"
+                android:background="@null"
+                android:hint="@string/edit_email"
+                android:inputType="textEmailAddress"
+                android:maxLength="22"
+                android:maxLines="1"
+                android:singleLine="true" />
+
+            <ImageView
+                android:id="@+id/clear"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:paddingTop="10dp"
+                android:layout_marginTop="10dp"
+                android:layout_alignRight="@+id/email"
+                android:layout_marginRight="@dimen/input_margin_right"
+                android:background="@drawable/titlebar_refresh_detail_cancel" />
+        </RelativeLayout>
+
+        <ImageView
+            style="@style/input_item_line"
+            android:layout_marginLeft="@dimen/layout_left"
+            android:layout_marginRight="@dimen/layout_left" />
+    </LinearLayout>
+
+</RelativeLayout>
