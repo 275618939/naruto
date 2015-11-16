@@ -9,6 +9,6 @@
         style="@style/common_tag_1"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginBottom="@dimen/layout_item_bottom" />
+        android:layout_marginBottom="@dimen/layout_item_bottom_2" />
 
 </LinearLayout>

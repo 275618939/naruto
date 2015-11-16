@@ -58,6 +58,7 @@
                     style="@style/common_content_hint"
                     android:layout_width="wrap_content"
                     android:visibility="gone"
+                    android:textColor="@color/tag2"
                     android:layout_height="wrap_content"
                     android:layout_marginLeft="@dimen/text_left" />
             </LinearLayout>
