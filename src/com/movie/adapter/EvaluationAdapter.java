@@ -6,19 +6,30 @@ import java.util.Map;
 import java.util.Map.Entry;
 
 import android.content.Context;
+import android.content.DialogInterface;
+import android.content.Intent;
+import android.os.Bundle;
+import android.os.Handler;
+import android.os.Message;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.View.OnClickListener;
 import android.widget.BaseAdapter;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.movie.R;
+import com.movie.adapter.PartNarutoExpandableAdapter.UserSelectAction;
 import com.movie.app.Constant;
 import com.movie.client.bean.Dictionary;
+import com.movie.client.bean.Miss;
+import com.movie.client.bean.User;
 import com.movie.client.dao.BaseDao;
 import com.movie.client.dao.CommentDaoImple;
 import com.movie.client.db.SQLHelper;
+import com.movie.ui.MissUserQueryActivity;
+import com.movie.view.MessageDialog;
 
 public class EvaluationAdapter extends BaseAdapter {
 	
@@ -26,10 +37,12 @@ public class EvaluationAdapter extends BaseAdapter {
 	List<Map<Integer,Integer>> dictionarys;
 	Map<Integer,String> dictionarysAll;
 	int sex;
+	User user;
 	boolean showCount;
 	Context context;
 	LayoutInflater inflater;
 	BaseDao commentDao;
+	Handler handler;
 	int[] colors=new int[]{R.color.tag1,R.color.tag2,R.color.tag3,R.color.tag4,R.color.tag5,R.color.tag6,R.color.tag7,R.color.tag8};
 	
 	public EvaluationAdapter(Context context,List<Map<Integer,Integer>> dictionarys) {
@@ -38,7 +51,13 @@ public class EvaluationAdapter extends BaseAdapter {
 		inflater = LayoutInflater.from(context);
 		initData();
 	}
-	
+	public EvaluationAdapter(Context context,Handler handler,List<Map<Integer,Integer>> dictionarys) {
+		this.context = context;
+		this.dictionarys = dictionarys;
+		this.handler=handler;
+		inflater = LayoutInflater.from(context);
+		initData();
+	}
 	public EvaluationAdapter(Context context, int sex,List<Map<Integer,Integer>> dictionarys) {
 		this.context = context;
 		this.dictionarys = dictionarys;
@@ -88,13 +107,13 @@ public class EvaluationAdapter extends BaseAdapter {
 			view = inflater.inflate(R.layout.comment_item, null);
 			mHolder = new ViewHolder();
 			mHolder.linearLayout= (LinearLayout)view.findViewById(R.id.comment_view);
-			mHolder.Dictionary = (TextView)view.findViewById(R.id.comment);
+			mHolder.dictionary = (TextView)view.findViewById(R.id.comment);
 			view.setTag(mHolder);
 		} else {
 			mHolder = (ViewHolder) view.getTag();
 		}
 		int index=position%Constant.Page.COMMENTS_MAX_SHOW;
-		mHolder.Dictionary.setBackgroundResource(colors[index]);
+		mHolder.dictionary.setBackgroundResource(colors[index]);
 		//获取position对应的数据
 		Map<Integer,Integer> Dictionarys = getItem(position);
 		if(null!=Dictionarys){
@@ -105,18 +124,50 @@ public class EvaluationAdapter extends BaseAdapter {
 						text+="("+entry.getValue().toString()+")";
 					}
 				}
-			
-				mHolder.Dictionary.setText(text);
+				mHolder.dictionary.setTag(entry.getKey());
+				mHolder.dictionary.setText(text);
 			}
+		}
+		if(user!=null) {
+			mHolder.dictionary.setOnClickListener(new UserSelectAction(position));
 		}
 		return view;
 	}
+	
 	static class ViewHolder {
 		
 		LinearLayout linearLayout;
 		//用户评价
-		TextView Dictionary;
+		TextView dictionary;
 		
+	}
+	protected class UserSelectAction implements OnClickListener {
+
+		int position;
+
+		public UserSelectAction(int position) {
+			this.position = position;
+		}
+
+		@Override
+		public void onClick(final View v) {
+
+			switch (v.getId()) {
+			case R.id.comment:
+				Message message = new Message();
+				message.what = Miss.EVLATOIN_USER;
+				Bundle bundle = new Bundle();
+				bundle.putSerializable("user", user);
+				message.setData(bundle);
+				handler.sendMessage(message);
+				break;
+			
+			default:
+				break;
+			}
+			
+		}
+
 	}
 	public void updateData(boolean showCount ,int sex,List<Map<Integer,Integer>> dictionarys) {
 		this.sex=sex;
@@ -137,6 +188,11 @@ public class EvaluationAdapter extends BaseAdapter {
 		this.notifyDataSetChanged();
 		
 	}
+
+	public void setUser(User user) {
+		this.user = user;
+	}
+	
 
 	
 	

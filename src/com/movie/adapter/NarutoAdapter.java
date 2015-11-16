@@ -158,8 +158,7 @@ public class NarutoAdapter extends BaseAdapter {
 				context.startActivity(intent);
 				break;
 			case R.id.miss_btn_layout:
-				final MessageDialog.Builder builder = new MessageDialog.Builder(
-						v.getContext());
+				final MessageDialog.Builder builder = new MessageDialog.Builder(v.getContext());
 				builder.setTitle(R.string.cancel_miss);
 				builder.setMessage("您确定要同意此申请么?");
 				builder.setPositiveButton("取消",

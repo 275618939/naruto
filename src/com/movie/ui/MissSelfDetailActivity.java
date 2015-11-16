@@ -6,6 +6,7 @@ import java.util.Map;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.os.Handler;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.widget.ImageView;
@@ -75,7 +76,7 @@ public class MissSelfDetailActivity extends BaseActivity implements OnClickListe
 		cinemaPhone = (TextView) findViewById(R.id.cinema_phone);
 		layoutCinemaAddress = (LinearLayout) findViewById(R.id.miss_cinema_detail_panel);
 		missPartList = (ExpandListViewForScrollView) findViewById(R.id.miss_part_list);
-		partNarutoAdapter = new PartNarutoExpandableAdapter(this, null,null);
+		partNarutoAdapter = new PartNarutoExpandableAdapter(this,mHandler, null,null);
 		missPartList.setAdapter(partNarutoAdapter);
 		layoutCinemaAddress.setOnClickListener(this);
 	}
@@ -112,7 +113,24 @@ public class MissSelfDetailActivity extends BaseActivity implements OnClickListe
 		childs.add(new ArrayList<User>());
 		partNarutoAdapter.updateData(parents, childs);
 	}
-	
+	Handler mHandler = new Handler() {
+		public void handleMessage(android.os.Message msg) {
+			switch (msg.what) {
+			
+			case Miss.KICKED_OUT:
+				Bundle bundle = msg.getData();
+				User user = (User) bundle.getSerializable("user");
+				//踢出用户
+				break;
+			case Miss.EVLATOIN_USER:
+				//评价用户
+				break;
+			default:
+				break;
+
+			}
+		};
+	};
 
 	
 	@Override

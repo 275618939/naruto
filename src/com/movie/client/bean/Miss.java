@@ -1,7 +1,9 @@
 package com.movie.client.bean;
 
 import java.io.Serializable;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 import java.util.Random;
 
@@ -9,9 +11,12 @@ import com.movie.util.Images;
 
 public class Miss extends BaseBean implements Serializable {
 
+
+	private static final long serialVersionUID = -2476412515600400457L;
 	public static final int AGREE_MISS = 0X111; // 同意约会
 	public static final int CANCLE_MISS = 0X112; // 取消约会
-	private static final long serialVersionUID = -2476412515600400457L;
+	public static final int KICKED_OUT = 0X113; // 踢出约会
+	public static final int EVLATOIN_USER = 0X114; // 评价用户
 	private String trystId;
 	private String memberId;
 	private Integer filmId;
@@ -206,6 +211,7 @@ public class Miss extends BaseBean implements Serializable {
 	}
 
 	public static List<Miss> getTempData() {
+		SimpleDateFormat dateFormat=new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
 		List<Miss> misses = new ArrayList<Miss>();
 		Random random = new Random();
 		int stage = random.nextInt(4) + 1;
@@ -215,7 +221,7 @@ public class Miss extends BaseBean implements Serializable {
 		miss.setCoin(0);
 		miss.setTrystId("016fc7cd5300bb03");
 		miss.setMemberId("016f9266086f4fab");
-		miss.setRunTime("2015-10-30 10:21:00");
+		miss.setRunTime(dateFormat.format(new Date()));
 		miss.setFilmId(2015103001);
 		miss.setStage(stage);
 		miss.setIcon("http://101.200.176.217/test.jpg");
@@ -243,6 +249,22 @@ public class Miss extends BaseBean implements Serializable {
 		}
 		miss.setAttend(users);
 		misses.add(miss);
+		miss = new Miss();
+		miss.setCinemaId("016fc79c22d5b3fc");
+		miss.setStatus(random.nextInt(3)+1);
+		miss.setCoin(0);
+		miss.setTrystId("016fc7cd5300bb03");
+		miss.setMemberId("016f9266086f4fab");
+		miss.setRunTime("2015-11-18 12:34:00");
+		miss.setFilmId(2015103001);
+		miss.setStage(stage);
+		miss.setIcon("http://101.200.176.217/test.jpg");
+		miss.setCinameCity("北京");
+		miss.setCinameName("博纳国际影城通州店");
+		miss.setCinameAddress("北京市通州区杨庄北里天时名苑14号楼F4-01");
+		miss.setAttend(users);
+		misses.add(miss);
+		
 		return misses;
 
 	}

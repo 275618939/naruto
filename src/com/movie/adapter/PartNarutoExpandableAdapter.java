@@ -3,8 +3,12 @@ package com.movie.adapter;
 import java.util.List;
 
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.graphics.drawable.ColorDrawable;
+import android.os.Bundle;
+import android.os.Handler;
+import android.os.Message;
 import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -28,6 +32,7 @@ import com.movie.ui.UserDetailActivity;
 import com.movie.util.ImageLoaderCache;
 import com.movie.util.StringUtil;
 import com.movie.view.CommentsGridView;
+import com.movie.view.MessageDialog;
 
 public class PartNarutoExpandableAdapter extends BaseExpandableListAdapter {
 
@@ -44,8 +49,17 @@ public class PartNarutoExpandableAdapter extends BaseExpandableListAdapter {
 	ImageView btn_pop_close;
 	CommentsGridView commentsGridView;
 	EvaluationAdapter evaluationAdapter;
-
+	Handler handler;
 	public PartNarutoExpandableAdapter(Context context,List<Dictionary> parents, List<List<User>> childs) {
+		inflater = LayoutInflater.from(context);
+		imageLoaderCache = new ImageLoaderCache(context);
+		this.parents = parents;
+		this.childs = childs;
+		this.context = context;
+		initPopWindow();
+	}
+	public PartNarutoExpandableAdapter(Context context,Handler handler,List<Dictionary> parents, List<List<User>> childs) {
+		this.handler=handler;
 		inflater = LayoutInflater.from(context);
 		imageLoaderCache = new ImageLoaderCache(context);
 		this.parents = parents;
@@ -180,12 +194,13 @@ public class PartNarutoExpandableAdapter extends BaseExpandableListAdapter {
 		//设置popwindow出现和消失动画
 		popupWindow.setAnimationStyle(R.style.PopMenuAnimation);
 		commentsGridView = (CommentsGridView) popView.findViewById(R.id.comments);
-		evaluationAdapter = new EvaluationAdapter(popView.getContext(),null);
+		evaluationAdapter = new EvaluationAdapter(popView.getContext(),handler,null);
 		commentsGridView.setAdapter(evaluationAdapter);
 		btn_pop_close = (ImageView) popView.findViewById(R.id.btn_pop_close);
 	}
 	public void showPop(View parent,int x,int y,User user) {
 		
+		evaluationAdapter.setUser(user);
 		evaluationAdapter.updateData(false,user.getSex(),Dictionary.getTempComments(user.getSex()));
 	
 		//设置popwindow显示位置
@@ -203,6 +218,7 @@ public class PartNarutoExpandableAdapter extends BaseExpandableListAdapter {
 				popupWindow.dismiss();
 			}
 		});
+		
 	}
 	
 
@@ -254,6 +270,30 @@ public class PartNarutoExpandableAdapter extends BaseExpandableListAdapter {
 					int x = (arrayOfInt[0]+v.getWidth()/2)-popupWidth/2;
 					int y =  arrayOfInt[1]-popupHeight;
 					showPop(v,x,y, user);
+				}else if(status==SelfPartNarutoBtn.KickedOut.getState()){
+					final MessageDialog.Builder builder = new MessageDialog.Builder(v.getContext());
+					builder.setTitle(R.string.kicked_out);
+					builder.setMessage("您确定要踢出么?");
+					builder.setPositiveButton("取消",
+							new DialogInterface.OnClickListener() {
+								public void onClick(DialogInterface dialog,int which) {
+									dialog.dismiss();
+								}
+							});
+					builder.setNegativeButton("确定",
+							new android.content.DialogInterface.OnClickListener() {
+								public void onClick(DialogInterface dialog,int which) {
+									dialog.dismiss();
+									Message message = new Message();
+									message.what = Miss.AGREE_MISS;
+									Bundle bundle = new Bundle();
+									bundle.putSerializable("user", user);
+									message.setData(bundle);
+									handler.sendMessage(message);
+								}
+							});
+
+					builder.create().show();
 				}else{
 					Intent btnIntent = new Intent(context, UserDetailActivity.class);
 					btnIntent.putExtra("user", user);
