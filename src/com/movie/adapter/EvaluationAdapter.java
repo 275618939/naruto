@@ -1,6 +1,6 @@
 package com.movie.adapter;
 
-import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
@@ -24,15 +24,25 @@ public class EvaluationAdapter extends BaseAdapter {
 	
 
 	List<Map<Integer,Integer>> dictionarys;
-	List<Dictionary> dictionarysAll;
+	Map<Integer,String> dictionarysAll;
+	int sex;
+	boolean showCount;
 	Context context;
 	LayoutInflater inflater;
 	BaseDao commentDao;
 	int[] colors=new int[]{R.color.tag1,R.color.tag2,R.color.tag3,R.color.tag4,R.color.tag5,R.color.tag6,R.color.tag7,R.color.tag8};
 	
-	public EvaluationAdapter(Context context, List<Map<Integer,Integer>> dictionarys) {
+	public EvaluationAdapter(Context context,List<Map<Integer,Integer>> dictionarys) {
 		this.context = context;
 		this.dictionarys = dictionarys;
+		inflater = LayoutInflater.from(context);
+		initData();
+	}
+	
+	public EvaluationAdapter(Context context, int sex,List<Map<Integer,Integer>> dictionarys) {
+		this.context = context;
+		this.dictionarys = dictionarys;
+		this.sex=sex;
 		inflater = LayoutInflater.from(context);
 		initData();
 	}
@@ -40,14 +50,12 @@ public class EvaluationAdapter extends BaseAdapter {
 		commentDao =new CommentDaoImple();
 		List<Map<String, String>> DictionaryList = commentDao.listData(null, null);
 		if(null!=DictionaryList&&DictionaryList.size()>0){
-			dictionarysAll =new ArrayList<Dictionary>();
-			Dictionary Dictionary = null;
+			dictionarysAll =new HashMap<Integer, String>();
 			for (Map<String, String> map : DictionaryList) {
-				Dictionary = new Dictionary(Integer.parseInt(map.get(SQLHelper.ID)),map.get(SQLHelper.NAME));
-				dictionarysAll.add(Dictionary);
+				dictionarysAll.put(Integer.parseInt(map.get(SQLHelper.ID)),map.get(SQLHelper.NAME));
 			}
 		}else{
-			dictionarysAll=Dictionary.dictionaries;
+			dictionarysAll=Dictionary.commentsMap.get(sex);
 		}
 	
 	}
@@ -91,10 +99,11 @@ public class EvaluationAdapter extends BaseAdapter {
 		Map<Integer,Integer> Dictionarys = getItem(position);
 		if(null!=Dictionarys){
 			for(Entry<Integer, Integer> entry:Dictionarys.entrySet()){    
-				Dictionary Dictionary= dictionarysAll.get(entry.getKey());
-				String text=Dictionary.getName();
-				if(entry.getValue()!=null&&entry.getValue()>0){
-					text+="("+entry.getValue().toString()+")";
+				String text= dictionarysAll.get(entry.getKey());
+				if(showCount){
+					if(entry.getValue()!=null&&entry.getValue()>0){
+						text+="("+entry.getValue().toString()+")";
+					}
 				}
 			
 				mHolder.Dictionary.setText(text);
@@ -109,7 +118,21 @@ public class EvaluationAdapter extends BaseAdapter {
 		TextView Dictionary;
 		
 	}
+	public void updateData(boolean showCount ,int sex,List<Map<Integer,Integer>> dictionarys) {
+		this.sex=sex;
+		this.showCount=showCount;
+		this.dictionarys=dictionarys;
+		this.notifyDataSetChanged();
+		
+	}
 	public void updateData(List<Map<Integer,Integer>> dictionarys) {
+		this.dictionarys=dictionarys;
+		this.notifyDataSetChanged();
+		
+	}
+	public void updateData(int sex,List<Map<Integer,Integer>> dictionarys) {
+		this.sex=sex;
+		dictionarysAll=Dictionary.commentsMap.get(sex);
 		this.dictionarys=dictionarys;
 		this.notifyDataSetChanged();
 		

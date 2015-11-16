@@ -4,13 +4,18 @@ import java.util.List;
 
 import android.content.Context;
 import android.content.Intent;
+import android.graphics.drawable.ColorDrawable;
+import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
+import android.view.View.MeasureSpec;
 import android.view.View.OnClickListener;
 import android.view.ViewGroup;
+import android.view.ViewGroup.LayoutParams;
 import android.widget.BaseExpandableListAdapter;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
+import android.widget.PopupWindow;
 import android.widget.TextView;
 
 import com.movie.R;
@@ -22,6 +27,7 @@ import com.movie.client.bean.User;
 import com.movie.ui.UserDetailActivity;
 import com.movie.util.ImageLoaderCache;
 import com.movie.util.StringUtil;
+import com.movie.view.CommentsGridView;
 
 public class PartNarutoExpandableAdapter extends BaseExpandableListAdapter {
 
@@ -32,14 +38,20 @@ public class PartNarutoExpandableAdapter extends BaseExpandableListAdapter {
 	private LayoutInflater inflater;
 	ImageLoaderCache imageLoaderCache;
 	Context context;
+	PopupWindow popupWindow;
+	View popView;
+	/** popWindow 关闭按钮 */
+	ImageView btn_pop_close;
+	CommentsGridView commentsGridView;
+	EvaluationAdapter evaluationAdapter;
 
-	public PartNarutoExpandableAdapter(Context context,
-			List<Dictionary> parents, List<List<User>> childs) {
+	public PartNarutoExpandableAdapter(Context context,List<Dictionary> parents, List<List<User>> childs) {
 		inflater = LayoutInflater.from(context);
 		imageLoaderCache = new ImageLoaderCache(context);
 		this.parents = parents;
 		this.childs = childs;
 		this.context = context;
+		initPopWindow();
 	}
 
 	@Override
@@ -141,14 +153,16 @@ public class PartNarutoExpandableAdapter extends BaseExpandableListAdapter {
 		if(miss!=null){
 			int result=StringUtil.dateCompareByCurrent(miss.getRunTime());
 			if(result==-1){
-				result=SelfPartNarutoBtn.kickedOut.getState();
+				result=SelfPartNarutoBtn.Evaluation.getState();
+				mHolder.partNarutoBtn.setBackgroundResource(R.drawable.tag2_btn_ment);
 			}
 			SelfPartNarutoBtn btn =SelfPartNarutoBtn.getState(result);
 			status=btn.getState();
-			if(result>=1){
+			if(result>0){
 				mHolder.partNarutoBtn.setVisibility(View.VISIBLE);
 				mHolder.partNarutoBtn.setText(btn.getMessage());	
 				mHolder.partNarutoBtn.setOnClickListener(new UserSelectAction(groupPosition,childPosition));
+			  
 			}else{
 				mHolder.userStatus.setText(btn.getMessage());
 				mHolder.userStatus.setVisibility(View.VISIBLE);
@@ -158,6 +172,39 @@ public class PartNarutoExpandableAdapter extends BaseExpandableListAdapter {
 		return view;
 
 	}
+	private void initPopWindow() {
+		popView = inflater.inflate(R.layout.evluation_list_item_pop, null);
+		popView.measure(MeasureSpec.UNSPECIFIED, MeasureSpec.UNSPECIFIED);
+		popupWindow = new PopupWindow(popView,LayoutParams.WRAP_CONTENT, LayoutParams.WRAP_CONTENT, true);
+		popupWindow.setBackgroundDrawable(new ColorDrawable(0));
+		//设置popwindow出现和消失动画
+		popupWindow.setAnimationStyle(R.style.PopMenuAnimation);
+		commentsGridView = (CommentsGridView) popView.findViewById(R.id.comments);
+		evaluationAdapter = new EvaluationAdapter(popView.getContext(),null);
+		commentsGridView.setAdapter(evaluationAdapter);
+		btn_pop_close = (ImageView) popView.findViewById(R.id.btn_pop_close);
+	}
+	public void showPop(View parent,int x,int y,User user) {
+		
+		evaluationAdapter.updateData(false,user.getSex(),Dictionary.getTempComments(user.getSex()));
+	
+		//设置popwindow显示位置
+		popupWindow.showAtLocation(parent,Gravity.CENTER, 0,0);
+		//获取popwindow焦点
+		popupWindow.setFocusable(true);
+		//设置popwindow如果点击外面区域，便关闭。
+		popupWindow.setOutsideTouchable(true);
+		popupWindow.update();
+		if (popupWindow.isShowing()) {
+			
+		}
+		btn_pop_close.setOnClickListener(new OnClickListener() {
+			public void onClick(View paramView) {
+				popupWindow.dismiss();
+			}
+		});
+	}
+	
 
 	@Override
 	public boolean isChildSelectable(int groupPosition, int childPosition) {
@@ -198,9 +245,20 @@ public class PartNarutoExpandableAdapter extends BaseExpandableListAdapter {
 				context.startActivity(intent);			
 				break;
 			case R.id.part_naruto_btn:
-				Intent btnIntent = new Intent(context, UserDetailActivity.class);
-				btnIntent.putExtra("user", user);
-				context.startActivity(btnIntent);			
+				if(status==SelfPartNarutoBtn.Evaluation.getState()){
+					int[] arrayOfInt = new int[2];
+					//获取点击按钮的坐标
+					v.getLocationOnScreen(arrayOfInt);
+			    	int popupWidth = popView.getMeasuredWidth();
+					int popupHeight =  popView.getMeasuredHeight();
+					int x = (arrayOfInt[0]+v.getWidth()/2)-popupWidth/2;
+					int y =  arrayOfInt[1]-popupHeight;
+					showPop(v,x,y, user);
+				}else{
+					Intent btnIntent = new Intent(context, UserDetailActivity.class);
+					btnIntent.putExtra("user", user);
+					context.startActivity(btnIntent);	
+				}
 				break;
 
 			default:

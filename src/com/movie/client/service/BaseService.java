@@ -79,18 +79,30 @@ public abstract class BaseService  {
 		BaseDao sesssionDao = new SessionDaoImple();
 		Map<String, String> map = sesssionDao.viewData(null, null);
 		if (null != map&&map.size()>0) {
-			return map.get(SQLHelper.SID);
+			String sid= map.get(SQLHelper.SID);
+			if(sid==null||sid.isEmpty()){
+				sid =saveRequestSid(sesssionDao);
+				return sid;
+			}else{
+			  return map.get(SQLHelper.SID);
+			}
+			
 		} else {
 			//记录SID
-			String sid = requestSid();
-			Session session=new Session();
-			session.setSid(sid);
-			sesssionDao.setContentValues(session);
-			sesssionDao.addData();
-			sesssionDao.close();
+			String sid =saveRequestSid(sesssionDao);
 			return sid;
 		}
 	}
+	public String saveRequestSid(BaseDao sesssionDao) throws InvokeException{
+		String sid = requestSid();
+		Session session=new Session();
+		session.setSid(sid);
+		sesssionDao.setContentValues(session);
+		sesssionDao.addData();
+		sesssionDao.close();
+		return sid;
+	}
+	
 	/**
 	 * 重新获取回话SID
 	 * @return SID

@@ -3,7 +3,6 @@ package com.movie.client.bean;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Random;
 
 import com.movie.util.Images;
 

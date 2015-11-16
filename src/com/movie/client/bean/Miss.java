@@ -211,11 +211,11 @@ public class Miss extends BaseBean implements Serializable {
 		int stage = random.nextInt(4) + 1;
 		Miss miss = new Miss();
 		miss.setCinemaId("016fc79c22d5b3fc");
-		miss.setStatus(3);
+		miss.setStatus(random.nextInt(3)+1);
 		miss.setCoin(0);
 		miss.setTrystId("016fc7cd5300bb03");
 		miss.setMemberId("016f9266086f4fab");
-		miss.setRunTime("2015-10-30 10: 21: 00");
+		miss.setRunTime("2015-10-30 10:21:00");
 		miss.setFilmId(2015103001);
 		miss.setStage(stage);
 		miss.setIcon("http://101.200.176.217/test.jpg");

@@ -92,13 +92,14 @@ public class StringUtil {
 	}
 	public static int dateCompareByCurrent(String time) {
 		
-		SimpleDateFormat format=new SimpleDateFormat();
+		SimpleDateFormat format=new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
 		int result=-1;
 		try {
 			Date date = format.parse(time);
 			Date currentDate = new Date();
 			result = date.compareTo(currentDate);
 		} catch (ParseException e) {
+			e.printStackTrace();
 			result=-2;
 		}
 	

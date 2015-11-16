@@ -88,7 +88,8 @@ public class UserDetailActivity extends BaseActivity implements
 	}
 
 	private void initViews() {
-		evaluationAdapter = new EvaluationAdapter(this, comments);
+		
+		evaluationAdapter = new EvaluationAdapter(this,comments);
 		title = (TextView) findViewById(R.id.title);
 		headView = (ImageView) findViewById(R.id.user_poster);
 		commentsView = (GridView) findViewById(R.id.comments);
@@ -104,10 +105,9 @@ public class UserDetailActivity extends BaseActivity implements
 		hobbyMore = (RelativeLayout) findViewById(R.id.hobby_arrow);
 		commnetsMore = (TextView) findViewById(R.id.comments_more);
 		userLove = (TextView) findViewById(R.id.userLove);
-		commentsView.setSelector(new ColorDrawable(Color.TRANSPARENT));
 		commentsView.setAdapter(evaluationAdapter);
+		commentsView.setSelector(new ColorDrawable(Color.TRANSPARENT));
 		userLove.setOnClickListener(this);
-		
 		
 		
 	/*	LinearLayout.LayoutParams params=new LinearLayout.LayoutParams(0, 0);
@@ -115,6 +115,7 @@ public class UserDetailActivity extends BaseActivity implements
 
 	}
 
+	
 	private void loadData() {
 		user = (User) getIntent().getSerializableExtra("user");
 		if (user != null) {
@@ -130,7 +131,7 @@ public class UserDetailActivity extends BaseActivity implements
 		}
 		userMoviesWant.setText(String.format(getResources().getString(R.string.movie_none)));
 		userMiss.setText(String.format(getResources().getString(R.string.miss_none)));
-		initTempComments();//正式环境需去掉
+		
 		//loadUserComments();
 		loadUserFilmType();
 	}
@@ -259,6 +260,8 @@ public class UserDetailActivity extends BaseActivity implements
 					userMiss.setText(String.format(getResources().getString(R.string.miss_have),tryst));
 					userMiss.setOnClickListener(this);
 				}
+				initTempComments();
+
 			}else if(tag.endsWith(httpUserCommentService.TAG)){
 				List<Map<Integer,Integer>> values = (List<Map<Integer,Integer>>) map.get(ReturnCode.RETURN_VALUE);
 				if (null != values) {
@@ -304,7 +307,7 @@ public class UserDetailActivity extends BaseActivity implements
 			maps.put(i, random.nextInt(100));
 			comments.add(maps);
 		}
-		evaluationAdapter.updateData(comments);
+		evaluationAdapter.updateData(user.getSex(),comments);
 	}
 
 	@Override

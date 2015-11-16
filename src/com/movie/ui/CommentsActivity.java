@@ -17,6 +17,7 @@ import android.widget.TextView;
 import com.movie.R;
 import com.movie.adapter.EvaluationAdapter;
 import com.movie.app.Constant;
+import com.movie.app.SexState;
 import com.movie.client.service.BaseService;
 import com.movie.client.service.CallBackService;
 import com.movie.network.HttpSessionService;
@@ -39,7 +40,7 @@ public class CommentsActivity extends BaseActivity implements OnClickListener,Ca
 		initData();
 	}
 	private void initViews() {
-		evaluationAdapter = new EvaluationAdapter(this, comments);
+		evaluationAdapter = new EvaluationAdapter(this,SexState.WOMAN.getState(), comments);
 		title = (TextView) findViewById(R.id.title);
 		gridView = (CommentsGridView) findViewById(R.id.comments);
 		gridView.setSelector(new ColorDrawable(Color.TRANSPARENT));

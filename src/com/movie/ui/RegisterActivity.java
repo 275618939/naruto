@@ -23,6 +23,7 @@ import com.movie.client.service.CallBackService;
 import com.movie.client.service.LoginService;
 import com.movie.client.service.UserService;
 import com.movie.network.HttpMobileCaptchaService;
+import com.movie.network.HttpRegisterService;
 import com.movie.util.BytesUtils;
 import com.movie.view.VerifyCodeCountTimer;
 
@@ -49,6 +50,7 @@ public class RegisterActivity extends BaseActivity implements OnClickListener, C
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_register);
 		httpMobileCaptchaService =new HttpMobileCaptchaService(this);
+		httpRegisterService = new HttpRegisterService(this);
 		initViews();
 		initData();
 	}

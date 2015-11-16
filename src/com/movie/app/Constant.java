@@ -89,6 +89,8 @@ public interface Constant {
 	
 	// 注意，这里的端口不是tomcat的端口，CIM端口在服务端spring-cim.xml中配置的，没改动就使用默认的23456
 	public static final int CIM_SERVER_PORT = 23456;
+	
+
 
 	public static class Page {
 		// 首页

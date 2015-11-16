@@ -2,7 +2,7 @@ package com.movie.app;
 
 public enum SelfPartNarutoBtn {
 
-	kickedOut(2, "踢出"), InProcess(0, "进行中"), Evaluation(1, "评价");
+	KickedOut(1, "踢出"), InProcess(0, "进行中"), Evaluation(2, "评价");
 
 	private int state;
 	private String message;
@@ -26,9 +26,9 @@ public enum SelfPartNarutoBtn {
 		case 0:
 			return InProcess;
 		case 1:
-			return Evaluation;
+			return KickedOut;
 		case 2:
-			return kickedOut;
+			return Evaluation;
 		default:
 			return InProcess;
 		}

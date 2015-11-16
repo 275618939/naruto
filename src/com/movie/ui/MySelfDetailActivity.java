@@ -82,7 +82,7 @@ public class MySelfDetailActivity extends BaseActivity implements
 	}
 
 	private void initViews() {
-		evaluationAdapter = new EvaluationAdapter(this, comments);
+		evaluationAdapter = new EvaluationAdapter(this,comments);
 		title = (TextView) findViewById(R.id.title);
 		headView = (ImageView) findViewById(R.id.user_poster);
 		commentsView = (GridView) findViewById(R.id.comments);
@@ -97,13 +97,14 @@ public class MySelfDetailActivity extends BaseActivity implements
 		commentsLayout = (LinearLayout) findViewById(R.id.comments_layout);
 		hobbyMore = (RelativeLayout) findViewById(R.id.hobby_arrow);
 		commnetsMore = (TextView) findViewById(R.id.comments_more);
-		commentsView.setSelector(new ColorDrawable(Color.TRANSPARENT));
 		commentsView.setAdapter(evaluationAdapter);
+		commentsView.setSelector(new ColorDrawable(Color.TRANSPARENT));
 		commnetsMore.setOnClickListener(this);
 		commentsLayout.setVisibility(View.GONE);
 
 
 	}
+
 
 	private void loadData() {
 
@@ -119,7 +120,7 @@ public class MySelfDetailActivity extends BaseActivity implements
 		}else{
 			StringUtil.listToStringByMap(user.getFilmType(), filmTypeMap, "/");
 		}*/
-		initTempComments();//正式环境需去掉
+	
 	
 	}
 
@@ -240,6 +241,7 @@ public class MySelfDetailActivity extends BaseActivity implements
 					}
 				}
 				
+				initTempComments();
 				/*if(user.getFilmType()==null||user.getFilmType().size()<=0){
 					userMoviesPre.setText(getResources().getString(R.string.movie_none));
 				}else{
@@ -255,7 +257,7 @@ public class MySelfDetailActivity extends BaseActivity implements
 						for (int i = 0; i < size; i++) {
 							 comments.add(values.get(i));
 						}
-						evaluationAdapter.updateData(comments);
+						evaluationAdapter.updateData(user.getSex(),comments);
 					} 
 					if(size>0){
 					    commentsLayout.setVisibility(View.VISIBLE);
@@ -287,7 +289,9 @@ public class MySelfDetailActivity extends BaseActivity implements
 			maps.put(i, random.nextInt(100));
 			comments.add(maps);
 		}
-		evaluationAdapter.updateData(comments);
+		if(user.getSex()!=null){
+			evaluationAdapter.updateData(user.getSex(),comments);
+		}
 	}
 
 	@Override
