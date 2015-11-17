@@ -83,7 +83,7 @@ public class MissSelfQueryAdapter extends BaseAdapter {
 			//mHolder.missUser = (TextView) view.findViewById(R.id.miss_user);
 			mHolder.missDate = (TextView) view.findViewById(R.id.miss_date);
 			mHolder.missName = (TextView) view.findViewById(R.id.miss_name);
-			mHolder.missAddress = (TextView) view.findViewById(R.id.miss_address);
+			//mHolder.missAddress = (TextView) view.findViewById(R.id.miss_address);
 			mHolder.missBtn = (TextView) view.findViewById(R.id.miss_btn);
 			mHolder.missBtnLayout = (LinearLayout) view.findViewById(R.id.miss_btn_layout);
 			mHolder.missStageLayout = (LinearLayout) view.findViewById(R.id.miss_stage_layout);
@@ -97,7 +97,7 @@ public class MissSelfQueryAdapter extends BaseAdapter {
 		//mHolder.missUser.setText(miss.getMemberId());
 		mHolder.missDate.setText(StringUtil.getShortStrBySym(miss.getRunTime(),":"));
 		mHolder.missName.setText(miss.getCinameName());
-		mHolder.missAddress.setText(miss.getCinameAddress());
+		//mHolder.missAddress.setText(miss.getCinameAddress());
 		int sourceId = MissStateBackColor.getState(miss.getStatus()).getSourceId();
 		mHolder.missItemView.setBackgroundResource(sourceId);
 		mHolder.missItemView.setOnClickListener(new UserSelectAction(position));

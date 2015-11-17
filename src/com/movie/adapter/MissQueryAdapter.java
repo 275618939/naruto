@@ -86,7 +86,7 @@ public class MissQueryAdapter extends BaseAdapter {
 			mHolder.missUser = (TextView) view.findViewById(R.id.miss_user);
 			mHolder.missDate = (TextView) view.findViewById(R.id.miss_date);
 			mHolder.missName = (TextView) view.findViewById(R.id.miss_name);
-			mHolder.missAddress = (TextView) view.findViewById(R.id.miss_address);
+			//mHolder.missAddress = (TextView) view.findViewById(R.id.miss_address);
 			mHolder.missState = (TextView) view.findViewById(R.id.miss_state);
 			mHolder.missStage = (TextView) view.findViewById(R.id.miss_stage);
 			mHolder.missPart = (TextView) view.findViewById(R.id.miss_part_list);
@@ -105,7 +105,7 @@ public class MissQueryAdapter extends BaseAdapter {
 		mHolder.missUser.setText(miss.getMemberId());
 		mHolder.missDate.setText(miss.getRunTime());
 		mHolder.missName.setText(miss.getCinameName());
-		mHolder.missAddress.setText(miss.getCinameAddress());
+		//mHolder.missAddress.setText(miss.getCinameAddress());
 		mHolder.missState.setText(miss.getStatus());
 		if (null != users) {
 			mHolder.missPart.setText(String.valueOf(users.size()));

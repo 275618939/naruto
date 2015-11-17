@@ -14,8 +14,8 @@
 
         <LinearLayout
             android:id="@+id/miss_icon_layout"
-            android:layout_width="@dimen/user_image_width"
-            android:layout_height="@dimen/user_image_height"
+            android:layout_width="@dimen/user_item_image_width"
+            android:layout_height="@dimen/user_item_image_height"
             android:layout_margin="@dimen/layout_item_top_1" >
 
             <ImageView
@@ -95,7 +95,7 @@
                 android:layout_marginLeft="@dimen/layout_left" />
         </LinearLayout>
 
-        <LinearLayout
+      <!--   <LinearLayout
             android:id="@+id/miss_layout_3"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
@@ -116,7 +116,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginLeft="@dimen/layout_left" />
-        </LinearLayout>
+        </LinearLayout> -->
     </RelativeLayout>
 
 </LinearLayout>

@@ -229,7 +229,7 @@
                     android:layout_height="wrap_content"
                     android:layout_marginBottom="@dimen/layout_item_bottom_2"
                     android:cacheColorHint="@color/window_bg"
-               		android:dividerHeight="0dp"  
+                    android:dividerHeight="0dp"
                     android:groupIndicator="@null"
                     android:listSelector="@color/window_bg" >
                 </com.movie.view.ExpandListViewForScrollView>
@@ -238,8 +238,10 @@
     </ScrollView>
 
     <LinearLayout
+        android:id="@+id/miss_bottom_bar"
         style="@style/bottom_bar_style"
-        android:layout_alignParentBottom="true" >
+        android:layout_alignParentBottom="true"
+        android:visibility="gone" >
 
         <TextView
             android:id="@+id/miss_btn"
@@ -248,7 +250,6 @@
             android:background="@color/btn_add"
             android:gravity="center"
             android:text="@string/miss_enter"
-            android:visibility="gone"
             android:textColor="@color/dot_select_color"
             android:textStyle="bold" />
     </LinearLayout>

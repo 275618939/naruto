@@ -335,8 +335,7 @@
 
             <LinearLayout
                 android:id="@+id/my_letters_layout"
-                style="@style/setting_item_end"
-                android:layout_marginBottom="@dimen/layout_item_bottom_2" >
+                style="@style/setting_item_end">
 
                 <TextView
                     android:id="@+id/my_letters"

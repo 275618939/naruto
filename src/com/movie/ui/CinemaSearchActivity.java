@@ -76,8 +76,8 @@ public class CinemaSearchActivity extends NarutoMonitorActivity implements
 	MyLocationListenner myListener = new MyLocationListenner();
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
-		super.onCreate(savedInstanceState);
 		SDKInitializer.initialize(getApplicationContext());
+		super.onCreate(savedInstanceState);
 		parentView = getLayoutInflater().inflate(R.layout.activity_cinema_search, null);
 		setContentView(parentView);
 		initViews();

@@ -5,10 +5,10 @@
 
     <!-- <solid android:color="#55000000" /> b0000000  #e0000000 -->
     <padding
-        android:bottom="@dimen/nav_padding_bottom"
-        android:left="@dimen/nav_padding_bottom"
-        android:right="@dimen/nav_padding_bottom"
-        android:top="@dimen/nav_padding_bottom" />
+        android:bottom="@dimen/item_padding_bottom"
+        android:left="@dimen/item_padding_bottom"
+        android:right="@dimen/item_padding_bottom"
+        android:top="@dimen/item_padding_bottom" />
 
     <solid android:color="#b0000000" />
 
@@ -17,7 +17,7 @@
         android:color="@android:color/white" />
 
     <size
-        android:height="15dp"
-        android:width="15dp" />
+        android:height="12dp"
+        android:width="12dp" />
 
 </shape>

@@ -45,6 +45,7 @@ public class MissSelfDetailActivity extends BaseActivity implements OnClickListe
 	TextView cinemaPhone;
 	TextView missBtn;
 	LinearLayout layoutCinemaAddress;
+	LinearLayout missBottomBar;
 	ScrollView missDetailView;
 	BaseService httpUsersService;
 	ExpandListViewForScrollView missPartList;
@@ -78,6 +79,7 @@ public class MissSelfDetailActivity extends BaseActivity implements OnClickListe
 		cinemaPhone = (TextView) findViewById(R.id.cinema_phone);
 		missBtn  = (TextView) findViewById(R.id.miss_btn);
 		layoutCinemaAddress = (LinearLayout) findViewById(R.id.miss_cinema_detail_panel);
+		missBottomBar = (LinearLayout) findViewById(R.id.miss_bottom_bar);
 		missPartList = (ExpandListViewForScrollView) findViewById(R.id.miss_part_list);
 		partNarutoAdapter = new PartNarutoExpandableAdapter(this,mHandler, null,null);
 		missPartList.setAdapter(partNarutoAdapter);
@@ -108,17 +110,18 @@ public class MissSelfDetailActivity extends BaseActivity implements OnClickListe
 		//验证是否可以撤销
 		int result=StringUtil.dateCompareByCurrent(miss.getRunTime(),MissBtnStatus.MAX_MISS_CANCEL_HOUR);
 		if(result<0){
-			missBtn.setVisibility(View.VISIBLE);
+			missBottomBar.setVisibility(View.VISIBLE);
 			missBtn.setText(getResources().getString(R.string.miss_cancel));
 			missBtn.setOnClickListener(this);
 		}
 		//验证是否可以评价
 		result=StringUtil.dateCompareByCurrent(miss.getRunTime());
 		if(result>0){
-			missBtn.setVisibility(View.VISIBLE);
+			missBottomBar.setVisibility(View.VISIBLE);
 			missBtn.setText(getResources().getString(R.string.branch_coin));
 			missBtn.setOnClickListener(this);
 		}
+		
 		
 	}
 	private void loadUser() {
