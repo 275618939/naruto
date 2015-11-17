@@ -2,6 +2,8 @@ package com.movie.app;
 
 import java.nio.charset.Charset;
 
+import android.R.integer;
+
 /**
  * 
  * @version 1.0
@@ -90,7 +92,12 @@ public interface Constant {
 	// 注意，这里的端口不是tomcat的端口，CIM端口在服务端spring-cim.xml中配置的，没改动就使用默认的23456
 	public static final int CIM_SERVER_PORT = 23456;
 	
-
+    public static class MissBtnStatus{
+    	
+    	//约会时间跟当前时间的最大允许撤销时间差
+    	public final static int MAX_MISS_CANCEL_HOUR=12;
+    	
+    }
 
 	public static class Page {
 		// 首页

@@ -53,6 +53,11 @@ public class MoiveFragment extends Fragment implements CallBackService,
 
 	@Override
 	public View onCreateView(LayoutInflater inflater, ViewGroup container,Bundle savedInstanceState) {
+		
+		View titleView = getActivity().findViewById(R.id.main_head);
+		if(null!=titleView){
+			titleView.setVisibility(View.VISIBLE);
+		}
 		view = LayoutInflater.from(getActivity()).inflate(R.layout.fragment_movie, null);
 		movies.clear();
 		playMovieService = new HttpPlayMovieService(getActivity());

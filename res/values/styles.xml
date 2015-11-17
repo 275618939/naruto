@@ -413,8 +413,8 @@
     </style>
 
     <style name="setting_item_text">
-        <item name="android:textSize">17.0sp</item>
-        <item name="android:textColor">@color/setting_item_text</item>
+        <item name="android:textSize">15.0sp</item>
+        <item name="android:textColor">#999999</item>
         <item name="android:layout_gravity">center_vertical</item>
         <item name="android:layout_width">wrap_content</item>
         <item name="android:layout_height">wrap_content</item>
@@ -465,7 +465,7 @@
         <item name="android:layout_width">wrap_content</item>
         <item name="android:layout_height">wrap_content</item>
         <item name="android:layout_marginLeft">5.0dip</item>
-        <item name="android:layout_marginRight">5.0dip</item>
+        <item name="android:layout_marginRight">15.0dip</item>
         <item name="android:layout_weight">0.0</item>
     </style>
 

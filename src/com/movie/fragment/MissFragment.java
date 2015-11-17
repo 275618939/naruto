@@ -43,6 +43,10 @@ public class MissFragment extends Fragment implements OnClickListener,
 	public View onCreateView(LayoutInflater inflater, ViewGroup container,
 			Bundle savedInstanceState) {
 
+		View titleView = getActivity().findViewById(R.id.main_head);
+		if(null!=titleView){
+			titleView.setVisibility(View.VISIBLE);
+		}
 		View view = LayoutInflater.from(getActivity()).inflate(R.layout.fragment_miss_query, null);
 		missQueryService = new HttpMissQueryService(getActivity());
 		misses.clear();

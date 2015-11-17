@@ -3,6 +3,7 @@ package com.movie.util;
 import java.text.DecimalFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
+import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
 import java.util.Map;
@@ -98,6 +99,25 @@ public class StringUtil {
 			Date date = format.parse(time);
 			Date currentDate = new Date();
 			result = date.compareTo(currentDate);
+		} catch (ParseException e) {
+			e.printStackTrace();
+			result=-2;
+		}
+	
+		return result;
+	
+	}
+    public static int dateCompareByCurrent(String time,int hour) {
+		
+		SimpleDateFormat format=new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+		int result=-1;
+		try {
+			Date date = format.parse(time);
+			Calendar calendar=Calendar.getInstance();
+			calendar.setTime(date);
+			calendar.add(Calendar.HOUR_OF_DAY, hour);
+			Date currentDate = new Date();
+			result = calendar.getTime().compareTo(currentDate);
 		} catch (ParseException e) {
 			e.printStackTrace();
 			result=-2;

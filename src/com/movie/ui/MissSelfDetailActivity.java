@@ -17,6 +17,7 @@ import android.widget.TextView;
 import com.movie.R;
 import com.movie.adapter.PartNarutoExpandableAdapter;
 import com.movie.app.Constant;
+import com.movie.app.Constant.MissBtnStatus;
 import com.movie.app.Constant.ReturnCode;
 import com.movie.client.bean.Dictionary;
 import com.movie.client.bean.Miss;
@@ -42,6 +43,7 @@ public class MissSelfDetailActivity extends BaseActivity implements OnClickListe
 	TextView cinemaName;
 	TextView cinemaAddress;
 	TextView cinemaPhone;
+	TextView missBtn;
 	LinearLayout layoutCinemaAddress;
 	ScrollView missDetailView;
 	BaseService httpUsersService;
@@ -74,6 +76,7 @@ public class MissSelfDetailActivity extends BaseActivity implements OnClickListe
 		cinemaName = (TextView) findViewById(R.id.cinema_name);
 		cinemaAddress = (TextView) findViewById(R.id.cinema_address);
 		cinemaPhone = (TextView) findViewById(R.id.cinema_phone);
+		missBtn  = (TextView) findViewById(R.id.miss_btn);
 		layoutCinemaAddress = (LinearLayout) findViewById(R.id.miss_cinema_detail_panel);
 		missPartList = (ExpandListViewForScrollView) findViewById(R.id.miss_part_list);
 		partNarutoAdapter = new PartNarutoExpandableAdapter(this,mHandler, null,null);
@@ -96,8 +99,27 @@ public class MissSelfDetailActivity extends BaseActivity implements OnClickListe
 		cinemaAddress.setText(miss.getCinameAddress());
 		cinemaPhone.setText(miss.getCinemaPhone());
 		partNarutoAdapter.setMiss(miss);
+		/*初始化操作按钮*/
+		initMissBtn();
 		/*初始化用不信息*/
 		loadUser();
+	}
+	private void initMissBtn(){
+		//验证是否可以撤销
+		int result=StringUtil.dateCompareByCurrent(miss.getRunTime(),MissBtnStatus.MAX_MISS_CANCEL_HOUR);
+		if(result<0){
+			missBtn.setVisibility(View.VISIBLE);
+			missBtn.setText(getResources().getString(R.string.miss_cancel));
+			missBtn.setOnClickListener(this);
+		}
+		//验证是否可以评价
+		result=StringUtil.dateCompareByCurrent(miss.getRunTime());
+		if(result>0){
+			missBtn.setVisibility(View.VISIBLE);
+			missBtn.setText(getResources().getString(R.string.branch_coin));
+			missBtn.setOnClickListener(this);
+		}
+		
 	}
 	private void loadUser() {
 		httpUsersService.addParams(httpUsersService.URL_KEY,Constant.User_API_URL);
@@ -125,6 +147,7 @@ public class MissSelfDetailActivity extends BaseActivity implements OnClickListe
 			case Miss.EVLATOIN_USER:
 				//评价用户
 				break;
+		
 			default:
 				break;
 
@@ -141,6 +164,9 @@ public class MissSelfDetailActivity extends BaseActivity implements OnClickListe
 				Intent intent = new Intent(this, CinemaMapActivity.class);
 				intent.putExtra("miss", miss);
 				startActivity(intent);
+				break;
+			case R.id.miss_btn:
+				
 				break;
 			default:
 				break;

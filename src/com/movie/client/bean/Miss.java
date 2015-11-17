@@ -264,6 +264,21 @@ public class Miss extends BaseBean implements Serializable {
 		miss.setCinameAddress("北京市通州区杨庄北里天时名苑14号楼F4-01");
 		miss.setAttend(users);
 		misses.add(miss);
+		miss = new Miss();
+		miss.setCinemaId("016fc79c22d5b3fc");
+		miss.setStatus(random.nextInt(3)+1);
+		miss.setCoin(0);
+		miss.setTrystId("016fc7cd5300bb03");
+		miss.setMemberId("016f9266086f4fab");
+		miss.setRunTime("2015-11-17 8:34:00");
+		miss.setFilmId(2015103001);
+		miss.setStage(stage);
+		miss.setIcon("http://101.200.176.217/test.jpg");
+		miss.setCinameCity("北京");
+		miss.setCinameName("博纳国际影城通州店");
+		miss.setCinameAddress("北京市通州区杨庄北里天时名苑14号楼F4-01");
+		miss.setAttend(users);
+		misses.add(miss);
 		
 		return misses;
 

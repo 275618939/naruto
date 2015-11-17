@@ -16,7 +16,6 @@ import android.widget.ScrollView;
 import com.movie.R;
 import com.movie.adapter.RankingAdapter;
 import com.movie.client.bean.User;
-import com.movie.util.Images;
 
 public class HomeFragment extends Fragment {
 
@@ -28,10 +27,12 @@ public class HomeFragment extends Fragment {
 	@Override
 	public View onCreateView(LayoutInflater inflater, ViewGroup container,
 			Bundle savedInstanceState) {
+		View titleView = getActivity().findViewById(R.id.main_head);
+		if(null!=titleView){
+			titleView.setVisibility(View.VISIBLE);
+		}
 		users.clear();
 		View view = LayoutInflater.from(getActivity()).inflate(R.layout.fragment_main, null);
-
-		// FragmentStatePagerAdapter
 		ViewPager pager = (ViewPager) view.findViewById(R.id.pager);
 		pager.setAdapter(new FragmentPagerAdapter(getChildFragmentManager()) {
 			public int getCount() {

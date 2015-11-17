@@ -13,8 +13,6 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.widget.ImageView;
-import android.widget.LinearLayout;
-import android.widget.RelativeLayout;
 import android.widget.TabHost.TabSpec;
 import android.widget.TextView;
 
@@ -48,9 +46,8 @@ public class MainActivity extends NarutoMonitorActivity implements
 	// 左侧按钮
 	SlidingMenu side_drawer;
 	// head 头部 的左侧菜单 按钮
-	ImageView user_info;
+	//ImageView user_info;
 	// head 头部 的用户头像
-	ImageView user_image;
 	TextView textView;
 	TextView mainTitle;
 	Bitmap headImage;
@@ -60,7 +57,6 @@ public class MainActivity extends NarutoMonitorActivity implements
 	ImageLoaderCache imageLoaderCache;
 	MainActivity mainActivity;
 	String login;
-
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
@@ -94,72 +90,13 @@ public class MainActivity extends NarutoMonitorActivity implements
 			// mTabHost.getTabWidget().getChildAt(i).setBackgroundResource(R.drawable.selector_tab_background);
 		}
 		mTabHost.getTabWidget().setDividerDrawable(null);
-
-		user_info = (ImageView) findViewById(R.id.user_info);
-		user_image = (ImageView) findViewById(R.id.user_image);
 		mainTitle = (TextView) findViewById(R.id.main_title);
-		user_info.setOnClickListener(this);
-		user_image.setOnClickListener(this);
+
 
 	}
-
-	public void initData() {
-
-		
+	public void initData() {	
 		httpLoginAutoService.execute(this);
-		
 	}
-
-	public void changeLogin(User user) {
-
-		LinearLayout loginLayout = (LinearLayout) side_drawer.findViewById(R.id.login_layout);
-		loginLayout.setVisibility(View.VISIBLE);
-		TextView textView = (TextView) side_drawer.findViewById(R.id.user_name);
-		LinearLayout logoutLayout = (LinearLayout) side_drawer.findViewById(R.id.logout_layout);
-		logoutLayout.setVisibility(View.GONE);
-		final RelativeLayout logoutBtn = (RelativeLayout) side_drawer.findViewById(R.id.logout_btn);
-		logoutBtn.setVisibility(View.VISIBLE);
-		if (null != user.getNickname()) {
-			mainTitle.setText(user.getNickname());
-			//textView.setText(user.getNickname());
-		} else {
-			mainTitle.setText("要设置昵称哟!");
-			//textView.setText("要设置昵称哟!");
-		}
-		textView.setText(login);
-		logoutBtn.setOnClickListener(new OnClickListener() {
-			@Override
-			public void onClick(View v) {
-				AlertDialog.Builder builder = new AlertDialog.Builder(v.getContext());
-
-				builder.setTitle("退出");
-				builder.setMessage("确定要退出吗?");
-				builder.setPositiveButton("取消",
-						new DialogInterface.OnClickListener() {
-							public void onClick(DialogInterface diaCustomDialoglog,int which) {
-							}
-						});
-				builder.setNegativeButton("确定",
-						new DialogInterface.OnClickListener() {
-							public void onClick(DialogInterface diaCustomDialoglog,int which) {
-								user_image.setImageResource(R.drawable.default_portrait);
-								mainTitle.setText(R.string.main_title);
-								LinearLayout logoutLayout = (LinearLayout) side_drawer.findViewById(R.id.logout_layout);
-								logoutLayout.setVisibility(View.VISIBLE);
-								LinearLayout lineLayout = (LinearLayout) side_drawer.findViewById(R.id.login_layout);
-								lineLayout.setVisibility(View.GONE);
-								logoutBtn.setVisibility(View.GONE);
-								httpLogotService.execute(mainActivity);
-
-							}
-						});
-				AlertDialog dialog = builder.create();
-				dialog.show();
-			}
-		});
-
-	}
-
 	/**
 	 * 初始化左侧按钮
 	 */
@@ -177,7 +114,7 @@ public class MainActivity extends NarutoMonitorActivity implements
 		 * imageView.setImageResource(mImageViewArray[index]);
 		 */
 
-		TextView textView = (TextView) view.findViewById(R.id.textview);
+		TextView textView = (TextView) view.findViewById(R.id.text_btn);
 		textView.setText(tabTextviewArray[index]);
 
 		return view;
@@ -188,20 +125,20 @@ public class MainActivity extends NarutoMonitorActivity implements
 
 		switch (v.getId()) {
 
-		case R.id.user_info: {
+		/*case R.id.user_info: {
 			if (side_drawer.isMenuShowing()) {
 				side_drawer.showContent();
 			} else {
 				side_drawer.showMenu();
 			}
 			break;
-		}
+		}*/
 		case R.id.user_image: {
-			if (side_drawer.isMenuShowing()) {
+			/*if (side_drawer.isMenuShowing()) {
 				side_drawer.showContent();
 			} else {
 				side_drawer.showMenu();
-			}
+			}*/
 			break;
 		}
 
@@ -228,7 +165,6 @@ public class MainActivity extends NarutoMonitorActivity implements
 		dialog.show();
 
 	}
-
 	@Override
 	public void SuccessCallBack(Map<String, Object> map) {
 		hideProgressDialog();
@@ -251,11 +187,9 @@ public class MainActivity extends NarutoMonitorActivity implements
 					if (value.containsKey("love"))
 						user.setCharm(Integer.parseInt(value.get("love").toString()));
 					if (user.getPortrait() != null&& !user.getPortrait().isEmpty()) {
-						ImageView user_logo = (ImageView) side_drawer.findViewById(R.id.show_user_logo);
-						imageLoaderCache.DisplayImage(user.getPortrait(),user_logo);
-						imageLoaderCache.DisplayImage(user.getPortrait(),user_image);
+						
 					}
-					changeLogin(user);
+					
 				}
 			} else if (tag.endsWith(httpLoginAutoService.TAG)) {
 				login =  map.get("login").toString();

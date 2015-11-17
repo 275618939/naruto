@@ -8,9 +8,12 @@
     <string name="integer_default">0</string>
     <string name="home_item_1">火影日排行榜</string>
     <string name="user_evaluation">伙影评价</string>
+    <string name="user_none_sign">这家伙,很懒没有任何介绍</string>
     <string name="home_miss">今日约会</string>
     <string name="miss">约会</string>
+    <string name="miss_evlation">评价</string>
     <string name="miss_enter">报名</string>
+    <string name="miss_cancel">撤销</string>
     <string name="kicked_out">踢出用户</string>
     <string name="cancel_miss">取消约会</string>
     <string name="miss_invite">应邀人%1$s个</string>
@@ -135,11 +138,12 @@
     <string name="left_drawer_item_search">搜索</string>
     <string name="left_drawer_item_offline">离线</string>
     <string name="left_drawer_item_offline_cancel">取消离线</string>
+    <string name="my_friends">好友</string>
     <string name="left_drawer_item_my_friends">我的好友</string>
     <string name="left_drawer_item_my_coin">我的影币</string>
     <string name="left_drawer_item_my_letters">我的消息</string>
     <string name="left_drawer_item_setting">设置</string>
-    <string name="left_drawer_item_logout">退出</string>
+    <string name="left_drawer_item_logout">注销用户</string>
     <string name="left_drawer_item_feedback">反馈</string>
     <string name="left_drawer_item_info">关于</string>
     <string name="drawer_right_tip_no_login">未登录</string>
