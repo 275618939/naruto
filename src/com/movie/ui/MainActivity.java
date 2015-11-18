@@ -15,7 +15,6 @@ import android.view.View.OnClickListener;
 import android.widget.TabHost.TabSpec;
 import android.widget.TextView;
 
-import com.jeremyfeinstein.slidingmenu.lib.SlidingMenu;
 import com.movie.R;
 import com.movie.app.Constant;
 import com.movie.client.bean.User;
@@ -30,7 +29,6 @@ import com.movie.network.HttpLoginAutoService;
 import com.movie.network.HttpLogoutService;
 import com.movie.network.HttpUserService;
 import com.movie.util.ImageLoaderCache;
-import com.movie.view.DrawerView;
 
 public class MainActivity extends NarutoMonitorActivity implements
 		OnClickListener, CallBackService {
@@ -42,8 +40,6 @@ public class MainActivity extends NarutoMonitorActivity implements
 	ArrayList<Fragment> fragments = new ArrayList<Fragment>();
 	FragmentTabHost mTabHost;
 	LayoutInflater layoutInflater;
-	// 左侧按钮
-	SlidingMenu side_drawer;
 	// head 头部 的左侧菜单 按钮
 	//ImageView user_info;
 	// head 头部 的用户头像
@@ -64,7 +60,6 @@ public class MainActivity extends NarutoMonitorActivity implements
 		httpUsersService = new HttpUserService(this);
 		httpLoginAutoService = new HttpLoginAutoService(this);
 		imageLoaderCache = new ImageLoaderCache(this);
-		initSlidingMenu();
 		initViews();
 		initData();
 	}
@@ -91,12 +86,7 @@ public class MainActivity extends NarutoMonitorActivity implements
 	public void initData() {	
 		httpLoginAutoService.execute(this);
 	}
-	/**
-	 * 初始化左侧按钮
-	 */
-	protected void initSlidingMenu() {
-		side_drawer = new DrawerView(this).initSlidingMenu();
-	}
+	
 
 	/**
 	 * 给Tab按钮设置图标和文字
