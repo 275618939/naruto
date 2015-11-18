@@ -6,6 +6,7 @@
     <string name="hello_world">欢迎使用伙影</string>
     <string name="main_title">未登录</string>
     <string name="integer_default">0</string>
+    <string name="loadfail_hint">加载失败,请点击重试</string>
     <string name="home_item_1">火影日排行榜</string>
     <string name="user_evaluation">伙影评价</string>
     <string name="user_none_sign">这家伙,很懒没有任何介绍</string>
@@ -35,6 +36,8 @@
     <string name="cinema_name">影院名称</string>
     <string name="cinema_address">影院地址</string>
     <string name="cinema_phone">影院电话</string>
+    <string name="miss_lately">最近</string>
+    <string name="miss_best">最款</string>
     <string name="miss_have">%1$s 个约会,点击查看&gt;</string>
     <string name="miss_none">暂时没有约会</string>
     <string name="movie_detail">观影信息</string>

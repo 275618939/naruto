@@ -7,6 +7,7 @@
 
     <include
         android:id="@+id/main_head"
+        android:visibility="gone"
         layout="@layout/main_head" />
 
     <FrameLayout
@@ -18,14 +19,6 @@
     <android.support.v4.app.FragmentTabHost
         android:id="@android:id/tabhost"
         style="@style/bottom_bar_style" >
-
-        <!--
-              <FrameLayout
-            android:id="@android:id/tabcontent"
-            android:layout_width="0dp"
-            android:layout_height="0dp"
-            android:layout_weight="0" />
-        -->
     </android.support.v4.app.FragmentTabHost>
 
 </LinearLayout>

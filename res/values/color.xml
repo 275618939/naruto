@@ -18,6 +18,7 @@
     <color name="tag6">#cccccc</color>
     <color name="tag7">#ccccff</color>
     <color name="tag8">#f7abb1</color>
+    <color name="background_tab_pressed">#8833B5E5</color>
     <color name="theme_setting_item_text_pressed">#fff4f6f8</color>
     <color name="light_white">#c8ffffff</color>
     <color name="window_bg">#ffeef1f3</color>

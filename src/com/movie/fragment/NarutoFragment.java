@@ -46,7 +46,7 @@ public class NarutoFragment extends Fragment implements OnClickListener,
 
 		View titleView = getActivity().findViewById(R.id.main_head);
 		if(null!=titleView){
-			titleView.setVisibility(View.VISIBLE);
+			titleView.setVisibility(View.GONE);
 		}
 		View view = LayoutInflater.from(getActivity()).inflate(R.layout.fragment_naruto, null);
 		httpMissUserQueryService = new HttpMissUserQueryService(getActivity());

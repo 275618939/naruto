@@ -12,7 +12,6 @@ import android.support.v4.app.FragmentTabHost;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.View.OnClickListener;
-import android.widget.ImageView;
 import android.widget.TabHost.TabSpec;
 import android.widget.TextView;
 
@@ -49,7 +48,6 @@ public class MainActivity extends NarutoMonitorActivity implements
 	//ImageView user_info;
 	// head 头部 的用户头像
 	TextView textView;
-	TextView mainTitle;
 	Bitmap headImage;
 	BaseService httpUsersService;
 	BaseService httpLogotService;
@@ -70,7 +68,6 @@ public class MainActivity extends NarutoMonitorActivity implements
 		initViews();
 		initData();
 	}
-
 	/**
 	 * 初始化界面
 	 */
@@ -86,11 +83,8 @@ public class MainActivity extends NarutoMonitorActivity implements
 			TabSpec tabSpec = mTabHost.newTabSpec(tabTextviewArray[i]).setIndicator(getTabItemView(i));
 			// 将Tab按钮添加进Tab选项卡中
 			mTabHost.addTab(tabSpec, fragmentArray[i], null);
-			// 设置Tab按钮的背景
-			// mTabHost.getTabWidget().getChildAt(i).setBackgroundResource(R.drawable.selector_tab_background);
 		}
 		mTabHost.getTabWidget().setDividerDrawable(null);
-		mainTitle = (TextView) findViewById(R.id.main_title);
 
 
 	}

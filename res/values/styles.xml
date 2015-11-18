@@ -61,6 +61,15 @@
         <item name="android:shadowRadius">2.0</item>
     </style>
 
+    <!--
+    <style name="loadAnimStyle" parent="@android:style/Widget.ProgressBar.Large">
+        <item name="android:indeterminateDrawable">@anim/load</item>
+    </style>
+    -->
+    <style name="loadAnimStyle" parent="@android:style/Widget.ProgressBar.Horizontal">
+        <item name="android:indeterminateDrawable">@anim/load</item>
+    </style>
+
     <style name="title_bar_style">
         <item name="android:background">@drawable/bg_titlebar</item>
         <!-- <item name="android:background" >@drawable/bg_headbar</item> -->

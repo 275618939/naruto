@@ -1,35 +1,28 @@
 package com.movie.fragment;
 
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
 import android.os.Bundle;
-import android.os.Handler;
 import android.support.v4.app.Fragment;
+import android.support.v4.app.FragmentManager;
+import android.support.v4.app.FragmentPagerAdapter;
+import android.support.v4.view.ViewPager;
+import android.util.DisplayMetrics;
 import android.view.LayoutInflater;
 import android.view.View;
-import android.view.View.OnClickListener;
 import android.view.ViewGroup;
 import android.widget.ListView;
-import android.widget.Toast;
 
-import com.handmark.pulltorefresh.library.PullToRefreshBase;
-import com.handmark.pulltorefresh.library.PullToRefreshBase.Mode;
-import com.handmark.pulltorefresh.library.PullToRefreshBase.OnRefreshListener2;
 import com.handmark.pulltorefresh.library.PullToRefreshListView;
 import com.movie.R;
 import com.movie.adapter.MissNarutoQueryAdapter;
-import com.movie.app.Constant;
-import com.movie.app.Constant.Page;
 import com.movie.client.bean.Miss;
 import com.movie.client.service.BaseService;
-import com.movie.client.service.CallBackService;
 import com.movie.network.HttpMissQueryService;
+import com.movie.view.PagerSlidingTabStrip;
 
-public class MissFragment extends Fragment implements OnClickListener,
-		CallBackService, OnRefreshListener2<ListView> {
+public class MissFragment extends Fragment {
 	public static final int REFRESH_COMPLETE = 0X110;
 	ListView missListView;
 	BaseService missQueryService;
@@ -38,176 +31,74 @@ public class MissFragment extends Fragment implements OnClickListener,
 	List<Miss> misses = new ArrayList<Miss>();
 	int page;
 	boolean isRefreshing;
-
+	MissBestFragment bestFragment;
+	MissLatelyFragment latelyFragment;
+	String[] titles;
+	PagerSlidingTabStrip tabs;
+	ViewPager pager;
+	DisplayMetrics dm;
+	//View rootView;
 	@Override
 	public View onCreateView(LayoutInflater inflater, ViewGroup container,
 			Bundle savedInstanceState) {
 
+
+		View  rootView = LayoutInflater.from(getActivity()).inflate(R.layout.fragment_miss, null);
 		View titleView = getActivity().findViewById(R.id.main_head);
 		if(null!=titleView){
-			titleView.setVisibility(View.VISIBLE);
+			titleView.setVisibility(View.GONE);
 		}
-		View view = LayoutInflater.from(getActivity()).inflate(R.layout.fragment_miss_query, null);
+		titles = new String[]{ getResources().getString(R.string.miss_lately), getResources().getString(R.string.miss_best)};
 		missQueryService = new HttpMissQueryService(getActivity());
 		misses.clear();
-		initView(view);
-		loadMiss();
-		return view;
+		initView(rootView);
+		return rootView;
 	}
 
 	public void initView(View view) {
 
-		missQueryAdapter = new MissNarutoQueryAdapter(getActivity(), mHandler, null);
-		refreshableListView = (PullToRefreshListView) view.findViewById(R.id.miss_list);
-		refreshableListView.setMode(Mode.BOTH);
-		refreshableListView.setOnRefreshListener(this);
-		refreshableListView.setAdapter(missQueryAdapter);
+		dm = getResources().getDisplayMetrics();
+		pager = (ViewPager)view.findViewById(R.id.pager);
+		tabs = (PagerSlidingTabStrip) view.findViewById(R.id.tabs);
+		pager.setAdapter(new MissAdapter(getChildFragmentManager(),titles));
+		tabs.setViewPager(pager);
 
 	}
 
-	private void loading() {
-		/*
-		 * LinearLayout loading; LinearLayout loadAfter; GifView gifView;
-		 */
-
-		/*
-		 * gifView = (GifView) view.findViewById(R.id.loadGif); loading =
-		 * (LinearLayout) view.findViewById(R.id.loading); loadAfter =
-		 * (LinearLayout) view.findViewById(R.id.loadAfter);
-		 * gifView.setGifImage(R.drawable.loading);
-		 * gifView.setGifImageType(GifImageType.COVER);
-		 * gifView.setShowDimension(300, 300); gifView.showCover();
-		 * gifView.showAnimation();
-		 */
-	}
-
-	private void loadMiss() {
-		missQueryService.addUrls(Constant.Miss_Query_API_URL);
-		missQueryService.addParams("page", page);
-		missQueryService.addParams("size", Page.DEFAULT_SIZE);
-		missQueryService.execute(this);
-	}
-
-	@Override
-	public void onClick(View v) {
-		switch (v.getId()) {
-		case REFRESH_COMPLETE:
-			loadMiss();
-			break;
-
-		default:
-			break;
-
+	public class MissAdapter extends FragmentPagerAdapter{
+		String[] _titles;
+		public MissAdapter(FragmentManager fm,String[] titles) {
+			super(fm);
+			_titles=titles;
 		}
-	}
+		
+		@Override
+		public CharSequence getPageTitle(int position) {
+			return _titles[position];
+		}
+		
+		@Override
+		public int getCount() {
+			return _titles.length;
+		}
 
-	Handler mHandler = new Handler() {
-		public void handleMessage(android.os.Message msg) {
-			switch (msg.what) {
-			case REFRESH_COMPLETE:
-				loadMiss();
-				break;
+		@Override
+		public Fragment getItem(int position) {
+			switch (position) {
+			case 0:
+				if (latelyFragment == null) {
+					latelyFragment = new MissLatelyFragment();
+				}
+				return latelyFragment;
+			case 1:
+				if (bestFragment == null) {
+					bestFragment = new MissBestFragment();
+				}
+				return bestFragment;
 			default:
-				break;
-
+				return null;
 			}
-		};
-	};
-
-	@Override
-	public void SuccessCallBack(Map<String, Object> map) {
-
-		refreshableListView.onRefreshComplete();
-		String code = map.get(Constant.ReturnCode.RETURN_STATE).toString();
-		if (Constant.ReturnCode.STATE_1.equals(code)) {
-			String tag = map.get(Constant.ReturnCode.RETURN_TAG).toString();
-			if (tag.endsWith(missQueryService.TAG)) {
-				List<HashMap<String, Object>> datas = (ArrayList<HashMap<String, Object>>) map.get(Constant.ReturnCode.RETURN_VALUE);
-				Miss miss = null;
-				int size = datas.size();
-				HashMap<String, Object> missMap = null;
-				for (int i = 0; i < size; i++) {
-					miss = new Miss();
-					missMap = datas.get(i);
-					if (missMap.containsKey("trystId"))
-						miss.setTrystId(missMap.get("trystId").toString());
-					if (missMap.containsKey("memberId"))
-						miss.setMemberId(missMap.get("memberId").toString());
-					if (missMap.containsKey("filmId"))
-						miss.setFilmId(Integer.parseInt(missMap.get("filmId").toString()));
-					if (missMap.containsKey("runTime"))
-						miss.setRunTime(missMap.get("runTime").toString());
-					if (missMap.containsKey("coin"))
-						miss.setCoin(Integer.parseInt(missMap.get("coin").toString()));
-					if (missMap.containsKey("cinemaId")) {
-
-					}
-					if (missMap.containsKey("attend")) {
-
-					}
-					if (missMap.containsKey("status")) {
-						miss.setStatus(Integer.parseInt(missMap.get("status").toString()));
-					}
-					miss.setIcon("http://101.200.176.217/test.jpg");
-					misses.add(miss);
-				}
-				if (size >= Page.DEFAULT_SIZE) {
-					page++;
-				}
-
-				missQueryAdapter.updateData(misses);
-				if (size <= 0) {
-					tempData();
-				}
-
-			}
-		} else {
-			tempData();
-			String message = map.get(Constant.ReturnCode.RETURN_MESSAGE).toString();
-			showToask(message);
 		}
-
-	}
-
-	private void tempData() {
-		misses=Miss.getTempData();
-		missQueryAdapter.updateData(misses);
-	}
-
-	@Override
-	public void ErrorCallBack(Map<String, Object> map) {
-
-		String message = map.get(Constant.ReturnCode.RETURN_MESSAGE).toString();
-		showToask(message);
-		tempData();
-
-	}
-
-	@Override
-	public void OnRequest() {
-		//showToask("加载约会信息");
-	}
-
-	protected void showToask(String hint) {
-		Toast toast = Toast.makeText(getActivity(), hint, Toast.LENGTH_SHORT);
-		toast.show();
-	}
-
-	// 下拉刷新
-	@Override
-	public void onPullDownToRefresh(PullToRefreshBase<ListView> refreshView) {
-		page = 0;
-		loadMiss();
-		
-	}
-
-	// 上拉Pulling Up
-	@Override
-	public void onPullUpToRefresh(PullToRefreshBase<ListView> refreshView) {
-		page = 1;
-		loadMiss();
-		
-
 	}
 
 }

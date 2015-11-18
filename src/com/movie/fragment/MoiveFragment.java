@@ -56,7 +56,7 @@ public class MoiveFragment extends Fragment implements CallBackService,
 		
 		View titleView = getActivity().findViewById(R.id.main_head);
 		if(null!=titleView){
-			titleView.setVisibility(View.VISIBLE);
+			titleView.setVisibility(View.GONE);
 		}
 		view = LayoutInflater.from(getActivity()).inflate(R.layout.fragment_movie, null);
 		movies.clear();
