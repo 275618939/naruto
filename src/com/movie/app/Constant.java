@@ -13,6 +13,7 @@ public interface Constant {
 	// 服务端web地址
 	// public static final String SERVER_URL =
 	// "http://192.168.22.25:8081/cms-web";
+	public static final String SERVER_ADRESS = "http://101.200.176.217";
 	public static final String SERVER_URL = "http://101.200.176.217/api";
 	// 服务端IP地址
 	// public static final String CIM_SERVER_HOST = "192.168.22.25";

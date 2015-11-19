@@ -29,11 +29,7 @@ public class HttpUPComingMovieService  extends  BaseService{
 		Message message = handler.obtainMessage();
 		try {
 			requestCount++;
-			String sid= getSid();
-			headers.put(SESSION_KEY, sid);
-			
 			String result  = HttpUtils.requestGet(Constant.Upcoming_API_URL,headers);
-		
 			if (result != null) {		
 				try {
 					result=result.replaceAll("[\\t\\n\\r]", "");

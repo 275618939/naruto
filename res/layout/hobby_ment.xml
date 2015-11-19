@@ -25,6 +25,6 @@
         android:layout_marginBottom="@dimen/btn_margin_bttom"
         android:layout_marginLeft="@dimen/btn_margin_left"
         android:background="@drawable/all_shape_button_white"
-        android:text="@string/next_movie" />
+        android:text="@string/upcoming_movie" />
 
 </FrameLayout>

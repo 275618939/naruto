@@ -4,6 +4,7 @@ import java.util.List;
 
 import android.content.Context;
 import android.content.Intent;
+import android.text.Html;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.View.OnClickListener;
@@ -18,6 +19,7 @@ import com.movie.R;
 import com.movie.client.bean.Movie;
 import com.movie.ui.MovieDetailActivity;
 import com.movie.util.ImageLoaderCache;
+import com.movie.util.MovieScore;
 
 public class MoviesAdapter extends BaseAdapter {
 	
@@ -67,8 +69,9 @@ public class MoviesAdapter extends BaseAdapter {
 			view = inflater.inflate(R.layout.movie_item, null);
 			mHolder = new ViewHolder();
 			mHolder.movieView=(RelativeLayout)view.findViewById(R.id.movie_view);
+			mHolder.movieNoneScoreLayout=(RelativeLayout)view.findViewById(R.id.movie_none_score_layout);
+			mHolder.movieHaveScoreLayout=(RelativeLayout)view.findViewById(R.id.movie_have_score_layout);
 			mHolder.movieImage= (ImageView)view.findViewById(R.id.movie_image);
-			mHolder.mentText = (TextView)view.findViewById(R.id.movie_ment);
 			mHolder.titleText = (TextView)view.findViewById(R.id.movie_title);
 			mHolder.startBar = (RatingBar)view.findViewById(R.id.movie_star);
 			mHolder.scoreText = (TextView)view.findViewById(R.id.movie_score);
@@ -80,12 +83,16 @@ public class MoviesAdapter extends BaseAdapter {
 		//获取position对应的数据
 		Movie movie = getItem(position);
 		if(movie!=null){
+			String score=MovieScore.GetScore(movie.getScore(), movie.getScoreCnt());
+			if(score.equals("NaN")){
+				mHolder.movieNoneScoreLayout.setVisibility(View.VISIBLE);
+				mHolder.movieHaveScoreLayout.setVisibility(View.GONE);
+			}
 			imageLoader.DisplayImage(movie.getIcon(), mHolder.movieImage);
-			mHolder.mentText.setText(String.valueOf(movie.getMiss()));
 			mHolder.titleText.setText(movie.getName());
-			mHolder.startBar.setRating(movie.getStart());
-			mHolder.scoreText.setText(String.valueOf(movie.getScore()));
-			mHolder.movieMent.setText(String.valueOf(movie.getTryst()));
+			mHolder.startBar.setRating(Float.valueOf(score));
+			mHolder.scoreText.setText(score);
+			mHolder.movieMent.setText(Html.fromHtml(String.format(context.getResources().getString(R.string.movie_miss_tryst), movie.getTryst())));
 			
 		}
 		mHolder.movieView.setOnClickListener(new UserSelectAction(position));
@@ -94,8 +101,9 @@ public class MoviesAdapter extends BaseAdapter {
 	static class ViewHolder {
 		
 		RelativeLayout movieView;
+		RelativeLayout movieNoneScoreLayout;
+		RelativeLayout movieHaveScoreLayout;
 		ImageView movieImage;
-		TextView mentText;
 		TextView movieMent;
 		TextView titleText;
 		RatingBar startBar;

@@ -17,6 +17,7 @@ import android.widget.TextView;
 
 import com.movie.R;
 import com.movie.app.Constant;
+import com.movie.app.ErrorState;
 import com.movie.client.bean.User;
 import com.movie.client.service.BaseService;
 import com.movie.client.service.CallBackService;
@@ -179,7 +180,9 @@ public class MainActivity extends NarutoMonitorActivity implements
 				login =  map.get("login").toString();
 				httpUsersService.execute(this);
 			}
-		} else {
+		}else if(ErrorState.ObjectNotExist.getState()==Integer.parseInt(code)){
+			
+	    }else {
 			String desc = map.get(Constant.ReturnCode.RETURN_MESSAGE).toString();
 			showToask(desc);
 		}

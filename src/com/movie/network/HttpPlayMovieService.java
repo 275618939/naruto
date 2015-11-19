@@ -29,17 +29,7 @@ public class HttpPlayMovieService  extends  BaseService{
 		Message message = handler.obtainMessage();
 		try {
 			requestCount++;
-			String sid= getSid();
-			headers.put(SESSION_KEY, sid);
-			Object page=params.get("page");
-			Object size=params.get("size");
-			StringBuilder path=new StringBuilder(Constant.Playing_API_URL);
-			if(null!=page){
-				path.append("/").append(page);
-			}
-			if(null!=size){
-				path.append("/").append(size);
-			}
+			StringBuilder path=new StringBuilder(Constant.Playing_API_URL);		
 			String result  = HttpUtils.requestGet(path.toString(),headers);
 			if (result != null) {		
 				try {

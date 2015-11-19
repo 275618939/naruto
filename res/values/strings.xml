@@ -42,6 +42,7 @@
     <string name="miss_none">暂时没有约会</string>
     <string name="movie_detail">观影信息</string>
     <string name="movie_cinema">上映影院</string>
+    <string name="movie_none_score">暂无评分</string>
     <string name="search_cinema">选择影院</string>
     <string name="miss_cinema">约会影院</string>
     <string name="comment">评论</string>
@@ -50,6 +51,7 @@
     <string name="movie_miss">观影约会</string>
     <string name="movie_intro">影片简介</string>
     <string name="movie_name">影片名称</string>
+    <string name="movie_miss_tryst"><Data><![CDATA[共<font color="#ff6434"><b>%1$s</b></font>个约会]]></Data></string>
     <string name="user_movie_pre">电影喜好</string>
     <string name="user_movies">想看的电影</string>
     <string name="user_miss">Ta的约会</string>
@@ -79,7 +81,7 @@
     <string name="captcha_change"><u>换一张</u></string>
     <string name="captcha_input">请输入图片中内容</string>
     <string name="current_movie">正在上映</string>
-    <string name="next_movie">即将上映</string>
+    <string name="upcoming_movie">即将上映</string>
     <string name="register_hint">请确认您的国家或地区并输入手机号</string>
     <string name="head_hint">设置头像</string>
     <string name="photograph">拍照</string>

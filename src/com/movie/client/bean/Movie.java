@@ -54,7 +54,8 @@ public class Movie extends BaseBean implements Serializable {
 	int type;
 	int tryst;
 	float start;
-	int score;
+	long score;
+	int scoreCnt;
     String playTime;
 	public Movie() {
 		super();
@@ -62,7 +63,7 @@ public class Movie extends BaseBean implements Serializable {
 	
 
 	public Movie(int id, String name, String icon, int miss, float start,
-			int score) {
+			long score) {
 		super();
 		this.id = id;
 		this.name = name;
@@ -75,7 +76,7 @@ public class Movie extends BaseBean implements Serializable {
 
 	public Movie(int id, String name, String icon, int miss, int interval,
 			List<String> directors, List<String> stars, int type, float start,
-			int score) {
+			long score) {
 		super();
 		this.id = id;
 		this.name = name;
@@ -172,11 +173,11 @@ public class Movie extends BaseBean implements Serializable {
 		this.start = start;
 	}
 
-	public int getScore() {
+	public long getScore() {
 		return score;
 	}
 
-	public void setScore(int score) {
+	public void setScore(long score) {
 		this.score = score;
 	}
 
@@ -223,6 +224,24 @@ public class Movie extends BaseBean implements Serializable {
 	public void setTryst(int tryst) {
 		this.tryst = tryst;
 	}
+
+
+	public int getScoreCnt() {
+		return scoreCnt;
+	}
+	
+
+
+	public void setScoreCnt(int scoreCnt) {
+		this.scoreCnt = scoreCnt;
+	}
+
+
+	
+
+
+	
+	
 	
 	
 	

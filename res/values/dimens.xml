@@ -30,7 +30,7 @@
     <dimen name="user_item_image_height">75dp</dimen>
     <dimen name="miss_image_width">120dp</dimen>
     <dimen name="miss_image_height">150dp</dimen>
-    <dimen name="movie_image_width">120dp</dimen>
+    <dimen name="movie_image_width">130dp</dimen>
     <dimen name="movie_image_height">150dp</dimen>
     <dimen name="view_small_padding">1dp</dimen>
     <dimen name="view_padding">6dp</dimen>

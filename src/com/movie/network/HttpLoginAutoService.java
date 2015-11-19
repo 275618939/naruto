@@ -38,7 +38,7 @@ public class HttpLoginAutoService extends BaseService {
 			requestCount++;
 			String sid = getSid();
 			Map<String, String> loginMap = loginDao.viewData(null, null);
-			if (loginMap == null) {
+			if (loginMap == null||loginMap.size()<0) {
 				throw new InvokeException(ErrorState.ObjectNotExist.getState(),ErrorState.ObjectNotExist.getMessage());
 			}
 			headers.put(SESSION_KEY, sid);
