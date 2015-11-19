@@ -30,7 +30,7 @@
             android:id="@+id/miss_layout_0"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginTop="@dimen/layout_item_top_1"
+            android:layout_marginTop="@dimen/layout_item_top_0"
             android:layout_toRightOf="@+id/miss_icon_layout"
             android:orientation="horizontal" >
 
@@ -81,6 +81,30 @@
             android:orientation="horizontal" >
 
             <TextView
+                android:id="@+id/miss_coin_hint"
+                style="@style/common_content_white_hint"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/miss_coin_hint" />
+
+            <TextView
+                android:id="@+id/miss_coin"
+                style="@style/common_content_white_hint"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/integer_default"
+                android:layout_marginLeft="@dimen/layout_left" />
+        </LinearLayout>
+
+        <LinearLayout
+            android:id="@+id/miss_layout_3"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/miss_layout_2"
+            android:layout_toRightOf="@+id/miss_icon_layout"
+            android:orientation="horizontal" >
+
+           <TextView
                 android:id="@+id/miss_name_hint"
                 style="@style/common_content_white_hint"
                 android:layout_width="wrap_content"
@@ -94,29 +118,6 @@
                 android:layout_height="wrap_content"
                 android:layout_marginLeft="@dimen/layout_left" />
         </LinearLayout>
-
-      <!--   <LinearLayout
-            android:id="@+id/miss_layout_3"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_below="@+id/miss_layout_2"
-            android:layout_toRightOf="@+id/miss_icon_layout"
-            android:orientation="horizontal" >
-
-            <TextView
-                android:id="@+id/miss_address_hint"
-                style="@style/common_content_white_hint"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="@string/cinema_address" />
-
-            <TextView
-                android:id="@+id/miss_address"
-                style="@style/common_content_white_hint"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginLeft="@dimen/layout_left" />
-        </LinearLayout> -->
     </RelativeLayout>
 
 </LinearLayout>

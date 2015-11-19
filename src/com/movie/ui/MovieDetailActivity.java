@@ -140,9 +140,7 @@ public class MovieDetailActivity extends BaseActivity implements OnClickListener
 		if(null!=movie){
 			imageLoaderCache.DisplayImage(movie.getIcon(), imagePoster);
 			String score=MovieScore.GetScore(movie.getScore(), movie.getScoreCnt());
-			float temp=(float)Math.round(Float.valueOf(score)*10+0.5)/10;
-			
-			startBar.setRating(6.5f);
+			startBar.setRating(Float.valueOf(score)/2f);
 			movieScore.setText(score);
 			if(score.equals("NaN")){
 				movieNoneScoreLayout.setVisibility(View.VISIBLE);

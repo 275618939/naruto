@@ -81,7 +81,7 @@ public class MissNarutoQueryAdapter extends BaseAdapter {
 			mHolder.missUser = (TextView) view.findViewById(R.id.miss_user);
 			mHolder.missDate = (TextView) view.findViewById(R.id.miss_date);
 			mHolder.missName = (TextView) view.findViewById(R.id.miss_name);
-			//mHolder.missAddress = (TextView) view.findViewById(R.id.miss_address);
+			mHolder.missCoin = (TextView) view.findViewById(R.id.miss_coin);
 			mHolder.missBtnLayout = (LinearLayout) view.findViewById(R.id.miss_btn_layout);
 			mHolder.missStageLayout = (LinearLayout) view.findViewById(R.id.miss_stage_layout);
 			view.setTag(mHolder);
@@ -94,7 +94,7 @@ public class MissNarutoQueryAdapter extends BaseAdapter {
 		mHolder.missUser.setText(miss.getMemberId());
 		mHolder.missDate.setText(miss.getRunTime());
 		mHolder.missName.setText(miss.getCinameName());
-		//mHolder.missAddress.setText(miss.getCinameAddress());
+		mHolder.missCoin.setText(miss.getCoin()==null?"0":miss.getCoin().toString());
 		int sourceId = MissStateBackColor.getState(miss.getStatus()).getSourceId();
 		mHolder.missItemView.setBackgroundResource(sourceId);
 		mHolder.missItemView.setOnClickListener(new UserSelectAction(position));
@@ -114,6 +114,8 @@ public class MissNarutoQueryAdapter extends BaseAdapter {
 		TextView missDate;
 		// 影片名称
 		TextView missName;
+		//悬赏影币
+		TextView missCoin;
 		// 约会地址
 		TextView missAddress;
 	

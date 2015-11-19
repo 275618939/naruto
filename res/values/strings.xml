@@ -17,6 +17,7 @@
     <string name="miss_cancel">撤销</string>
     <string name="kicked_out">踢出用户</string>
     <string name="cancel_miss">取消约会</string>
+    <string name="miss_coin_hint">悬赏影币</string>
     <string name="miss_invite">应邀人%1$s个</string>
     <string name="miss_user">发\u0020\u0020起 \u0020人</string>
     <string name="miss_date">约会时间</string>

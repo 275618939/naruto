@@ -5,27 +5,33 @@
     android:background="@color/window_bg"
     android:orientation="vertical" >
 
-    <RelativeLayout
+    <include layout="@layout/load_item" />
+
+    <LinearLayout
+        android:id="@+id/load_after"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginLeft="@dimen/layout_left"
-        android:layout_marginRight="@dimen/layout_right">
+        android:layout_height="match_parent"
+        android:orientation="vertical"
+        android:visibility="gone" >
 
-        <com.movie.view.RefreshableView
-            android:id="@+id/refresh_movies"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent" >
+        <LinearLayout
+            android:id="@+id/moive_layout"
+            android:layout_width="fill_parent"
+            android:layout_height="fill_parent"
+            android:layout_marginLeft="@dimen/layout_left"
+            android:layout_marginRight="@dimen/layout_right"
+            android:orientation="vertical" >
 
-            <GridView
-                android:id="@+id/movies"
+            <com.handmark.pulltorefresh.library.PullToRefreshGridView
+                android:id="@+id/moive_list"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
                 android:divider="@null"
                 android:horizontalSpacing="3dp"
                 android:numColumns="3"
                 android:stretchMode="columnWidth" >
-            </GridView>
-        </com.movie.view.RefreshableView>
-    </RelativeLayout>
+            </com.handmark.pulltorefresh.library.PullToRefreshGridView>
+        </LinearLayout>
+    </LinearLayout>
 
 </RelativeLayout>

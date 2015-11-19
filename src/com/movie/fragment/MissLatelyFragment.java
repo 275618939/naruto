@@ -14,7 +14,6 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.view.ViewGroup;
-import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.Toast;
 
@@ -35,16 +34,12 @@ import com.movie.view.LoadView;
 public class MissLatelyFragment extends Fragment implements OnClickListener,
 		CallBackService, OnRefreshListener2<ListView> {
 	public static final int REFRESH_COMPLETE = 0X110;
-	ListView missListView;
-	LinearLayout loadingLayout;
-	LinearLayout loadAfterLayout;
 	BaseService missQueryService;
 	PullToRefreshListView refreshableListView;
 	MissNarutoQueryAdapter missQueryAdapter;
 	LoadView loadView;
 	List<Miss> misses = new ArrayList<Miss>();
 	int page;
-	boolean isRefreshing;
 	ViewPager pager;
 	DisplayMetrics dm;
 	@Override
@@ -54,7 +49,6 @@ public class MissLatelyFragment extends Fragment implements OnClickListener,
 		View v= LayoutInflater.from(getActivity()).inflate(R.layout.fragment_miss_lately_query, null);
 		missQueryService = new HttpMissQueryService(getActivity());
 		loadView = new LoadView(v);
-		loadView.showLoadFail(this);
 		misses.clear();
 		initView(v);
 		loadMiss();
@@ -62,8 +56,6 @@ public class MissLatelyFragment extends Fragment implements OnClickListener,
 	}
 
 	public void initView(View view) {
-		loadingLayout = (LinearLayout)view.findViewById(R.id.loading);
-		loadAfterLayout = (LinearLayout)view.findViewById(R.id.loadAfter);
 		missQueryAdapter = new MissNarutoQueryAdapter(getActivity(), mHandler, null);
 		refreshableListView = (PullToRefreshListView) view.findViewById(R.id.miss_list);
 		refreshableListView.setMode(Mode.BOTH);
@@ -83,10 +75,11 @@ public class MissLatelyFragment extends Fragment implements OnClickListener,
 	@Override
 	public void onClick(View v) {
 		switch (v.getId()) {
-		case REFRESH_COMPLETE:
+			
+		   case R.id.loading_error:
 			loadMiss();
 			break;
-
+	
 		default:
 			break;
 
@@ -172,7 +165,7 @@ public class MissLatelyFragment extends Fragment implements OnClickListener,
 		String message = map.get(Constant.ReturnCode.RETURN_MESSAGE).toString();
 		showToask(message);
 		tempData();
-		loadView.showLoadFail(this);
+		loadView.showLoadFail(this,this);
 
 	}
 

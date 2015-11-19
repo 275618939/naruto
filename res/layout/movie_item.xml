@@ -71,7 +71,8 @@
         <RelativeLayout
             android:id="@+id/movie_have_score_layout"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content" >
+            android:layout_height="wrap_content"
+            android:gravity="center_vertical" >
 
             <RatingBar
                 android:id="@+id/movie_star"
@@ -87,9 +88,8 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_alignBottom="@+id/movie_star"
-                android:layout_marginLeft="@dimen/text_left"
                 android:layout_toRightOf="@+id/movie_star"
-                android:textColor="@color/pink"/>
+                android:textColor="@color/pink" />
         </RelativeLayout>
     </LinearLayout>
 

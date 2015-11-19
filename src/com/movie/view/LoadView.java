@@ -1,6 +1,7 @@
 package com.movie.view;
 
 import android.view.View;
+import android.view.View.OnClickListener;
 import android.widget.LinearLayout;
 
 import com.movie.R;
@@ -31,8 +32,9 @@ public class LoadView {
 		loadingLayout.setVisibility(View.VISIBLE);
 		loadingErrorLayout.setVisibility(View.GONE);
 	}
-	public void showLoadFail(CallBackService service) {
+	public void showLoadFail(CallBackService service,OnClickListener listener) {
 		loadingErrorLayout.setVisibility(View.VISIBLE);
+		loadingErrorLayout.setOnClickListener(listener);
 		loadingLayout.setVisibility(View.GONE);
 	}
 	public void showLoadAfter(CallBackService service) {

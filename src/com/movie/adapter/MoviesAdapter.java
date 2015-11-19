@@ -90,7 +90,7 @@ public class MoviesAdapter extends BaseAdapter {
 			}
 			imageLoader.DisplayImage(movie.getIcon(), mHolder.movieImage);
 			mHolder.titleText.setText(movie.getName());
-			mHolder.startBar.setRating(Float.valueOf(score));
+			mHolder.startBar.setRating(Float.valueOf(score)/2f);
 			mHolder.scoreText.setText(score);
 			mHolder.movieMent.setText(Html.fromHtml(String.format(context.getResources().getString(R.string.movie_miss_tryst), movie.getTryst())));
 			

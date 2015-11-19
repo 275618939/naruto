@@ -5,8 +5,6 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import android.graphics.Color;
-import android.graphics.drawable.ColorDrawable;
 import android.os.Bundle;
 import android.os.Handler;
 import android.support.v4.app.Fragment;
@@ -17,6 +15,10 @@ import android.view.ViewGroup;
 import android.widget.GridView;
 import android.widget.Toast;
 
+import com.handmark.pulltorefresh.library.PullToRefreshBase;
+import com.handmark.pulltorefresh.library.PullToRefreshBase.Mode;
+import com.handmark.pulltorefresh.library.PullToRefreshBase.OnRefreshListener2;
+import com.handmark.pulltorefresh.library.PullToRefreshGridView;
 import com.movie.R;
 import com.movie.adapter.MoviesAdapter;
 import com.movie.app.Constant;
@@ -24,21 +26,18 @@ import com.movie.client.bean.Movie;
 import com.movie.client.service.BaseService;
 import com.movie.client.service.CallBackService;
 import com.movie.network.HttpPlayMovieService;
-import com.movie.view.RefreshableView;
-import com.movie.view.RefreshableView.PullToRefreshListener;
+import com.movie.view.LoadView;
 
 public class MoiveCurrentFragment extends Fragment implements CallBackService,
-		OnClickListener, PullToRefreshListener {
+		OnClickListener, OnRefreshListener2<GridView> {
 
 	static final int REFRESH_COMPLETE = 0X110;
-	static final int ID=0X110102;
-	protected BaseService sessionService;
 	MoviesAdapter moviesAdapter;
 	BaseService playMovieService;
-	GridView moviesView;
-	RefreshableView refreshLayout;
+	PullToRefreshGridView refreshLayout;
 	List<Movie> movies = new ArrayList<Movie>();
 	View view;
+	LoadView loadView;
 
 	@Override
 	public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -49,7 +48,7 @@ public class MoiveCurrentFragment extends Fragment implements CallBackService,
 			titleView.setVisibility(View.GONE);
 		}
 		view = LayoutInflater.from(getActivity()).inflate(R.layout.fragment_movie_current, null);
-		movies.clear();
+		loadView = new LoadView(view);
 		playMovieService = new HttpPlayMovieService(getActivity());
 		initView(view);
 		loadPlayingMovie();
@@ -57,12 +56,11 @@ public class MoiveCurrentFragment extends Fragment implements CallBackService,
 	}
 
 	protected void initView(View view) {
-		moviesView = (GridView) view.findViewById(R.id.movies);
-		refreshLayout = (RefreshableView) view.findViewById(R.id.refresh_movies);
 		moviesAdapter = new MoviesAdapter(getActivity(), movies);
-		refreshLayout.setOnRefreshListener(this, ID);
-		moviesView.setAdapter(moviesAdapter);
-		moviesView.setSelector(new ColorDrawable(Color.TRANSPARENT));
+		refreshLayout = (PullToRefreshGridView) view.findViewById(R.id.moive_list);
+		refreshLayout.setMode(Mode.PULL_FROM_START);
+		refreshLayout.setOnRefreshListener(this);
+		refreshLayout.setAdapter(moviesAdapter);
 
 	}
 
@@ -85,16 +83,20 @@ public class MoiveCurrentFragment extends Fragment implements CallBackService,
 	@Override
 	public void onClick(View v) {
 		switch (v.getId()) {
-		
+			case R.id.loading_error:
+				loadPlayingMovie();
+				break;
+			default:
+				break;
 		}
 
 	}
 
 	@Override
 	public void SuccessCallBack(Map<String, Object> map) {
-		refreshLayout.finishRefreshing();
+		loadView.showLoadAfter(this);
+		refreshLayout.onRefreshComplete();
 		String code = map.get(Constant.ReturnCode.RETURN_STATE).toString();
-		movies.clear();
 		if (Constant.ReturnCode.STATE_1.equals(code)) {
 			String tag = map.get(Constant.ReturnCode.RETURN_TAG).toString();
 			List<HashMap<String, Object>> datas = (ArrayList<HashMap<String, Object>>) map.get(Constant.ReturnCode.RETURN_VALUE);
@@ -133,14 +135,16 @@ public class MoiveCurrentFragment extends Fragment implements CallBackService,
 
 	@Override
 	public void ErrorCallBack(Map<String, Object> map) {
-		refreshLayout.finishRefreshing();
+		refreshLayout.onRefreshComplete();
 		String message = map.get(Constant.ReturnCode.RETURN_MESSAGE).toString();
 		showToask(message);
+		loadView.showLoadFail(this,this);
+		
 	}
 
 	@Override
 	public void OnRequest() {
-		showToask("加载影片信息");
+		loadView.showLoading(this);
 	}
 
 	protected void showToask(String hint) {
@@ -149,9 +153,19 @@ public class MoiveCurrentFragment extends Fragment implements CallBackService,
 	}
 
 	@Override
-	public void onRefresh() {
-		mHandler.sendEmptyMessageDelayed(REFRESH_COMPLETE, 1000);
+	public void onPullDownToRefresh(PullToRefreshBase<GridView> refreshView) {
+		loadPlayingMovie();
 	}
+
+	@Override
+	public void onPullUpToRefresh(PullToRefreshBase<GridView> refreshView) {
+		// TODO Auto-generated method stub
+		
+	}
+
+	
+
+	
 
 
 }
