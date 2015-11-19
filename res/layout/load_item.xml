@@ -2,10 +2,8 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
-    android:layout_height="wrap_content"
+    android:layout_height="match_parent"
     android:orientation="vertical" >
-
-    <!-- android:layout_marginTop="@dimen/load_top" -->
 
     <LinearLayout
         android:id="@+id/loading"
@@ -15,7 +13,6 @@
         android:visibility="gone" >
 
         <ProgressBar
-            android:id="@+id/load_image"
             style="@style/loadAnimStyle"
             android:layout_width="320dp"
             android:layout_height="match_parent"

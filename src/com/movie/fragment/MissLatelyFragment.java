@@ -16,7 +16,6 @@ import android.view.View.OnClickListener;
 import android.view.ViewGroup;
 import android.widget.LinearLayout;
 import android.widget.ListView;
-import android.widget.ProgressBar;
 import android.widget.Toast;
 
 import com.handmark.pulltorefresh.library.PullToRefreshBase;
@@ -31,6 +30,7 @@ import com.movie.client.bean.Miss;
 import com.movie.client.service.BaseService;
 import com.movie.client.service.CallBackService;
 import com.movie.network.HttpMissQueryService;
+import com.movie.view.LoadView;
 
 public class MissLatelyFragment extends Fragment implements OnClickListener,
 		CallBackService, OnRefreshListener2<ListView> {
@@ -41,6 +41,7 @@ public class MissLatelyFragment extends Fragment implements OnClickListener,
 	BaseService missQueryService;
 	PullToRefreshListView refreshableListView;
 	MissNarutoQueryAdapter missQueryAdapter;
+	LoadView loadView;
 	List<Miss> misses = new ArrayList<Miss>();
 	int page;
 	boolean isRefreshing;
@@ -52,6 +53,8 @@ public class MissLatelyFragment extends Fragment implements OnClickListener,
 
 		View v= LayoutInflater.from(getActivity()).inflate(R.layout.fragment_miss_lately_query, null);
 		missQueryService = new HttpMissQueryService(getActivity());
+		loadView = new LoadView(v);
+		loadView.showLoadFail(this);
 		misses.clear();
 		initView(v);
 		loadMiss();
@@ -60,7 +63,6 @@ public class MissLatelyFragment extends Fragment implements OnClickListener,
 
 	public void initView(View view) {
 		loadingLayout = (LinearLayout)view.findViewById(R.id.loading);
-		ProgressBar bar = (ProgressBar)view.findViewById(R.id.load_image);
 		loadAfterLayout = (LinearLayout)view.findViewById(R.id.loadAfter);
 		missQueryAdapter = new MissNarutoQueryAdapter(getActivity(), mHandler, null);
 		refreshableListView = (PullToRefreshListView) view.findViewById(R.id.miss_list);
@@ -70,9 +72,6 @@ public class MissLatelyFragment extends Fragment implements OnClickListener,
 		
 	}
 
-	private void loading() {
-		
-	}
 
 	private void loadMiss() {
 		missQueryService.addUrls(Constant.Miss_Query_API_URL);
@@ -109,7 +108,7 @@ public class MissLatelyFragment extends Fragment implements OnClickListener,
 
 	@Override
 	public void SuccessCallBack(Map<String, Object> map) {
-
+		loadView.showLoadAfter(this);
 		refreshableListView.onRefreshComplete();
 		String code = map.get(Constant.ReturnCode.RETURN_STATE).toString();
 		if (Constant.ReturnCode.STATE_1.equals(code)) {
@@ -165,8 +164,6 @@ public class MissLatelyFragment extends Fragment implements OnClickListener,
 	private void tempData() {
 		misses=Miss.getTempData();
 		missQueryAdapter.updateData(misses);
-		//loadingLayout.setVisibility(View.GONE);
-		//loadAfterLayout.setVisibility(View.VISIBLE);
 	}
 
 	@Override
@@ -175,12 +172,13 @@ public class MissLatelyFragment extends Fragment implements OnClickListener,
 		String message = map.get(Constant.ReturnCode.RETURN_MESSAGE).toString();
 		showToask(message);
 		tempData();
+		loadView.showLoadFail(this);
 
 	}
 
 	@Override
 	public void OnRequest() {
-		//showToask("加载约会信息");
+		loadView.showLoading(this);
 	}
 
 	protected void showToask(String hint) {

@@ -5,8 +5,9 @@
     android:background="@color/white"
     android:orientation="vertical" >
 
-   
+    <include layout="@layout/load_item" />
 
+   
     <LinearLayout
         android:id="@+id/load_after"
         android:layout_width="match_parent"

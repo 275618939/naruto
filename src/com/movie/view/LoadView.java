@@ -1,10 +1,10 @@
 package com.movie.view;
 
-import com.movie.R;
-import com.movie.client.service.CallBackService;
-import android.content.Context;
 import android.view.View;
 import android.widget.LinearLayout;
+
+import com.movie.R;
+import com.movie.client.service.CallBackService;
 public class LoadView {
 
 	
@@ -12,18 +12,15 @@ public class LoadView {
 	public static final int LOAD_FAIL=0x002;
 	public static final int LOAD_LINEFAIL=0x003;
 	public static final int LOAD_AFTER=0x004;
-	Context context;
 	View rootView;
 	LinearLayout loadingLayout;
 	LinearLayout loadingErrorLayout; 
 	LinearLayout loadAfterLayout; 
-	public LoadView(Context context) {
-		this.context = context;
-	}
 
-	public LoadView(Context context, View rootView) {
-		this.context = context;
+
+	public LoadView(View rootView) {
 		this.rootView = rootView;
+		initView();
 	}
 	public void initView(){
 		loadingLayout=(LinearLayout)rootView.findViewById(R.id.loading);
