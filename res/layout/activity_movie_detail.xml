@@ -23,7 +23,7 @@
             <FrameLayout
                 android:id="@+id/user_brief"
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content"
+                android:layout_height="@dimen/movie_brief_height"
                 android:orientation="vertical" >
 
                 <LinearLayout
@@ -51,6 +51,23 @@
                         android:orientation="vertical" >
 
                         <LinearLayout
+                            android:id="@+id/movie_none_score_layout"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:layout_marginTop="@dimen/layout_item_top_0"
+                            android:orientation="horizontal"
+                            android:visibility="gone" >
+
+                            <TextView
+                                style="@style/common_content_hint"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:layout_marginLeft="@dimen/text_left"
+                                android:text="@string/movie_none_score" />
+                        </LinearLayout>
+
+                        <LinearLayout
+                            android:id="@+id/movie_have_score_layout"
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
                             android:layout_marginTop="@dimen/layout_item_top_0"
@@ -68,11 +85,10 @@
 
                             <TextView
                                 android:id="@+id/movie_score"
-                                style="@style/common_content_hint"
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
                                 android:layout_marginLeft="@dimen/text_left"
-                                android:text="9.5" />
+                                android:textColor="@color/pink" />
                         </LinearLayout>
 
                         <LinearLayout
@@ -153,12 +169,11 @@
                 <LinearLayout
                     android:id="@+id/user_tag"
                     android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
+                    android:layout_height="@dimen/movie_tag_height"
                     android:layout_gravity="bottom"
                     android:background="@drawable/bg_ment"
                     android:gravity="center_vertical"
-                    android:orientation="horizontal"
-                    android:paddingBottom="@dimen/nav_padding_bottom_20" >
+                    android:orientation="horizontal" >
 
                     <LinearLayout
                         android:layout_width="match_parent"
@@ -320,6 +335,13 @@
                         android:layout_height="wrap_content"
                         android:layout_gravity="left"
                         android:text="@string/movie_comment" />
+
+                    <TextView
+                        android:id="@+id/movie_comment_info"
+                        style="@style/common_content_text_style"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_alignParentRight="true" />
                 </RelativeLayout>
 
                 <ImageView

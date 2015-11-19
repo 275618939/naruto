@@ -64,9 +64,9 @@ public interface Constant {
 	public final static String Playing_API_URL = SERVER_URL+ "/film/playing";
 	// 查询电影详细信息
 	public final static String FileDetail_API_URL = SERVER_URL+ "/film/detail";
-	// 想看电影会员列表
-	public final static String FilmLove_API_URL = SERVER_URL+ "/film/love";
 	// 修改想看电影会员列表
+	public final static String FilmLove_API_URL = SERVER_URL+ "/film/love";
+	// 获取想看电影会员列表
 	public final static String Member_FileLove_API_URL = SERVER_URL+ "/member/film";
 	// 创建约会
 	public final static String Miss_Create_API_URL = SERVER_URL+ "/tryst/create";

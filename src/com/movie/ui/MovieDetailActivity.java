@@ -13,6 +13,7 @@ import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.RadioGroup;
 import android.widget.RadioGroup.OnCheckedChangeListener;
+import android.widget.RatingBar;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
@@ -29,8 +30,8 @@ import com.movie.fragment.SelfFragment;
 import com.movie.network.HttpFilmLoveService;
 import com.movie.network.HttpFilmLoveUpdateService;
 import com.movie.network.HttpMovieDetailService;
-import com.movie.network.HttpMovieMissQueryService;
 import com.movie.util.ImageLoaderCache;
+import com.movie.util.MovieScore;
 import com.movie.util.StringUtil;
 import com.movie.view.HorizontalListView;
 import com.movie.view.MovieCommentsDialog;
@@ -45,6 +46,8 @@ public class MovieDetailActivity extends BaseActivity implements OnClickListener
 	TextView movieBreif;
 	TextView loveFilm;
 	TextView movieInterval;
+	TextView movieScore;
+	RatingBar startBar;
 	TextView movieStart;
 	TextView movieStype;
 	TextView createMiss;
@@ -53,9 +56,12 @@ public class MovieDetailActivity extends BaseActivity implements OnClickListener
 	TextView movieStars;
 	TextView movieMissInfo;
 	TextView movieComment;
+	TextView movieCommentInfo;
 	ImageView imagePoster;
 	LinearLayout movieDetailPanel;
 	LinearLayout movieBriefPanel;
+	LinearLayout movieNoneScoreLayout;
+	LinearLayout movieHaveScoreLayout;
 	RelativeLayout filmLoveLayout;
 	RadioGroup movieTab;
 
@@ -66,7 +72,6 @@ public class MovieDetailActivity extends BaseActivity implements OnClickListener
 	BaseService httpFileLoveService;
 	BaseService httpMovieDetailService;
 	BaseService httpFilmLoveUpdateService;
-	BaseService httpMovieMissService;
 	FilmTypeService filmTypeService;
 	ImageLoaderCache imageLoaderCache;
 	Map<Integer,String> filemTypes;
@@ -77,7 +82,6 @@ public class MovieDetailActivity extends BaseActivity implements OnClickListener
 		httpFileLoveService =new HttpFilmLoveService(this);
 		httpMovieDetailService =new HttpMovieDetailService(this);
 		httpFilmLoveUpdateService = new HttpFilmLoveUpdateService(this);
-		httpMovieMissService = new HttpMovieMissQueryService(this);
 		filmTypeService = new FilmTypeService();
 		imageLoaderCache=new ImageLoaderCache(this);
 		initViews();
@@ -86,6 +90,8 @@ public class MovieDetailActivity extends BaseActivity implements OnClickListener
 
 	private void initViews() {
 		title = (TextView) findViewById(R.id.title);
+		movieScore= (TextView) findViewById(R.id.movie_score);
+		startBar= (RatingBar) findViewById(R.id.movie_star);
 		movieInterval = (TextView) findViewById(R.id.movie_interval);
 		movieStart = (TextView) findViewById(R.id.movie_start);
 		movieStype = (TextView) findViewById(R.id.movie_stype);
@@ -97,9 +103,12 @@ public class MovieDetailActivity extends BaseActivity implements OnClickListener
 		movieStars = (TextView) findViewById(R.id.movie_stars);
 		movieMissInfo = (TextView) findViewById(R.id.movie_miss_info);
 		movieComment = (TextView) findViewById(R.id.movie_comment);
+		movieCommentInfo = (TextView) findViewById(R.id.movie_comment_info);
 		imagePoster= (ImageView) findViewById(R.id.movie_poster);
 		movieDetailPanel = (LinearLayout)  findViewById(R.id.movie_detail_panel);
 		movieBriefPanel = (LinearLayout)  findViewById(R.id.movie_brief_panel);
+		movieNoneScoreLayout = (LinearLayout)  findViewById(R.id.movie_none_score_layout);
+		movieHaveScoreLayout = (LinearLayout)  findViewById(R.id.movie_have_score_layout);
 		filmLoveLayout = (RelativeLayout)  findViewById(R.id.film_love_layout);
 		movieTab = (RadioGroup) findViewById(R.id.movie_tab);
 		horizontalListView = (HorizontalListView) findViewById(R.id.layout_want_see);
@@ -130,41 +139,37 @@ public class MovieDetailActivity extends BaseActivity implements OnClickListener
 		title.setText(movie.getName());
 		if(null!=movie){
 			imageLoaderCache.DisplayImage(movie.getIcon(), imagePoster);
-			movieBreif.setText(movie.getBriefing());
+			String score=MovieScore.GetScore(movie.getScore(), movie.getScoreCnt());
+			float temp=(float)Math.round(Float.valueOf(score)*10+0.5)/10;
+			
+			startBar.setRating(6.5f);
+			movieScore.setText(score);
+			if(score.equals("NaN")){
+				movieNoneScoreLayout.setVisibility(View.VISIBLE);
+				movieHaveScoreLayout.setVisibility(View.GONE);
+			}
+			if(movie.getTryst()>0){
+				movieMissInfo.setText(String.format(getResources().getString(R.string.miss_have),String.valueOf(movie.getTryst())));
+				movieMissInfo.setOnClickListener(this);
+			}else{
+				movieMissInfo.setText(getResources().getString(R.string.miss_none));
+			}
+			loadMovieDetail();
 		}
-		movieInterval.setText(movie.getInterval()+"分钟");
-		movieStart.setText(StringUtil.strChangeLocalDate(movie.getPlayTime())+"中国上映");
-		movieScenarists.setText(StringUtil.listToString(movie.getScenarists(), "/"));
-		movieStype.setText(StringUtil.listToStringByMap(movie.getTypes(), filemTypes, "/"));
-		movieStars.setText(StringUtil.listToString(movie.getStars(), "/"));
-		if(movie.getTryst()>0){
-			movieMissInfo.setText(String.format(getResources().getString(R.string.miss_have),String.valueOf(movie.getTryst())));
-			movieMissInfo.setOnClickListener(this);
-		}else{
-			movieMissInfo.setText(getResources().getString(R.string.miss_none));
-		}
-		//loadMovieDetail();
-		loadMovieLove();
-		//loadMovieMiss();
-		
+
 	}
 	private void loadMovieDetail(){
 		httpMovieDetailService.addParams("filmId", movie.getId());
 		httpMovieDetailService.execute(this);
 	}
 	
-	private void loadMovieMiss(){
-		httpMovieMissService.addParams("filmId", movie.getId());
-		httpMovieMissService.addParams("page",Constant.Page.FIRST_PAGE);
-		httpMovieMissService.addParams("size",Constant.Page.WANT_SEE_MOIVE_SIZE);
-		httpMovieMissService.execute(this);
-	}
 	private void loadMovieLove(){
 		httpFileLoveService.addParams("filmId", movie.getId());
 		httpFileLoveService.addParams("page",Constant.Page.FIRST_PAGE);
 		httpFileLoveService.addParams("size",Constant.Page.WANT_SEE_MOIVE_SIZE);
 		httpFileLoveService.execute(this);
 	}
+	
 	private void updateFilmLove(){
 		
 		httpFilmLoveUpdateService.addParams("filmId", movie.getId());
@@ -219,63 +224,65 @@ public class MovieDetailActivity extends BaseActivity implements OnClickListener
 
 	@Override
 	public void onBackPressed() {
-		/*Intent intent = new Intent(this, MainActivity.class);
-		this.startActivity(intent);
-		this.finish();*/
 		super.onBackPressed();
 		overridePendingTransition(R.anim.slide_in_left, R.anim.slide_out_right);
 	}
 	@Override
+	@SuppressWarnings("unchecked")
 	public void SuccessCallBack(Map<String, Object> map) {
 		hideProgressDialog();
 		String code=map.get(Constant.ReturnCode.RETURN_STATE).toString();
+		String tag=map.get(Constant.ReturnCode.RETURN_TAG).toString();
 		if (Constant.ReturnCode.STATE_1.equals(code)) {
-			String tag=map.get(Constant.ReturnCode.RETURN_TAG).toString();
-			if(tag.equals(httpMovieMissService.TAG)){
-				 List<Map<String, Object>> values=(List<Map<String, Object>>) map.get(Constant.ReturnCode.RETURN_VALUE);
-				if(null!=values){
-					int size=values.size();
-					if(size>0){
-						movieMissInfo.setText(String.format(String.valueOf(size),getResources().getString(R.string.miss_have)));
-						movieMissInfo.setOnClickListener(this);
-					}else{
-						movieMissInfo.setText(getResources().getString(R.string.miss_none));
+		   try {
+				if(tag.equals(httpMovieDetailService.TAG)){
+					Map<String, Object> value =(Map<String, Object>) map.get(Constant.ReturnCode.RETURN_VALUE);
+					if(null!=value){
+						movieInterval.setText(String.format(getResources().getString(R.string.movie_interval),value.get("interval")));
+						movieStart.setText(String.format(getResources().getString(R.string.movie_start),StringUtil.strChangeLocalDate(value.get("start").toString())));
+						movieBreif.setText(value.get("briefing").toString());
+						movieScenarists.setText(StringUtil.listToString(((List<String>)value.get("directors")), "/"));
+						movieStype.setText(StringUtil.listToStringByMap(((List<Integer>)value.get("types")), filemTypes, "/"));
+						movieStars.setText(StringUtil.listToString(((List<String>)value.get("stars")), "/"));
+						if(value.containsKey("comment")){
+							movieCommentInfo.setText(String.format(getResources().getString(R.string.movie_comment_have),value.get("comment")));
+						}else{
+							movieCommentInfo.setText(getResources().getString(R.string.movie_comment_none));
+						}
 					}
+				}else if(tag.equals(httpFileLoveService.TAG)){ 
+				    List<Map<String, Object>> values=(List<Map<String, Object>>)map.get(Constant.ReturnCode.RETURN_VALUE);
+					User user = null;
+					users.clear();
+				    for(Map<String, Object> value:values){
+				    	user = new User();
+				    	user.setPortrait(value.get("portrait").toString());
+				    	user.setNickname(value.get("nickname").toString());
+				    	user.setMemberId(value.get("memberId").toString());
+				    	user.setSignature(value.get("signature").toString());
+				    	user.setHobbies((List<Integer>)value.get("hobbies"));
+				    	users.add(user);
+					}
+				    if(values.size()>=Page.WANT_SEE_MOIVE_SIZE){
+				    	filmLoveMore.setVisibility(View.VISIBLE);
+				    }
+				    if(values.size()>0){
+				        wantSeeMovieAdapter.updateData(users);
+				    	filmLoveLayout.setVisibility(View.VISIBLE);
+				    }
+				}else if(tag.equals(httpFilmLoveUpdateService.TAG)){ 
+					loadMovieLove();
 				}
+		   } catch (Exception e) {
+			   showToask(e.getMessage());
 			}
-			if(tag.equals(httpMovieDetailService.TAG)){
-				Map<String, Object> value =(Map<String, Object>) map.get(Constant.ReturnCode.RETURN_VALUE);
-				if(null!=value){
-					
-				}
-			}else if(tag.equals(httpFileLoveService.TAG)){ 
-			    List<Map<String, Object>> values=(List<Map<String, Object>>)map.get(Constant.ReturnCode.RETURN_VALUE);
-				User user = null;
-				users.clear();
-			    for(Map<String, Object> value:values){
-			    	user = new User();
-			    	user.setPortrait(value.get("portrait").toString());
-			    	user.setNickname(value.get("nickname").toString());
-			    	user.setMemberId(value.get("memberId").toString());
-			    	user.setSignature(value.get("signature").toString());
-			    	user.setHobbies((List<Integer>)value.get("hobbies"));
-			    	users.add(user);
-				}
-			    if(values.size()>=Page.WANT_SEE_MOIVE_SIZE){
-			    	filmLoveMore.setVisibility(View.VISIBLE);
-			    }
-			    if(values.size()>0){
-			        wantSeeMovieAdapter.updateData(users);
-			    	filmLoveLayout.setVisibility(View.VISIBLE);
-			    }else{
-			    /*	filmLoveLayout.setVisibility(View.VISIBLE);
-			    	filmLoveMore.setVisibility(View.VISIBLE);
-			    	wantSeeMovieAdapter.updateData(User.getTempData());*/
-			    }
-			 
-			  
-			}else if(tag.equals(httpFilmLoveUpdateService.TAG)){ 
-				loadMovieLove();
+			
+		}else if (Constant.ReturnCode.STATE_3.equals(code)) {
+			//提示用户登陆
+			if(tag.equals(httpFilmLoveUpdateService.TAG)){
+				Intent loginIntent = new Intent(this,LoginActivity.class);
+				this.overridePendingTransition(R.anim.slide_in_right, R.anim.slide_out_left);
+				startActivity(loginIntent);
 			}
 			
 		}else{

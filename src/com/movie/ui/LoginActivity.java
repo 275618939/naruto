@@ -131,9 +131,11 @@ public class LoginActivity extends BaseActivity implements OnClickListener, Call
 
 	@Override
 	public void onBackPressed() {
-		Intent intent = new Intent(this, MainActivity.class);
-		this.startActivity(intent);
-		this.finish();
+		super.onBackPressed();
+		overridePendingTransition(R.anim.slide_in_left, R.anim.slide_out_right);
+	/*	Intent intent = new Intent(this, MainActivity.class);
+		this.startActivity(intent);*/
+		
 	}
 
 	

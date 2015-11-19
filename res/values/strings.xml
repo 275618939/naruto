@@ -40,6 +40,8 @@
     <string name="miss_best">最款</string>
     <string name="miss_have">%1$s 个约会,点击查看&gt;</string>
     <string name="miss_none">暂时没有约会</string>
+    <string name="movie_interval">片长%1$s分钟</string>
+    <string name="movie_start">首映时间%1$s</string>
     <string name="movie_detail">观影信息</string>
     <string name="movie_cinema">上映影院</string>
     <string name="movie_none_score">暂无评分</string>
@@ -48,6 +50,8 @@
     <string name="comment">评论</string>
     <string name="comment_hint">请输入评论</string>
     <string name="movie_comment">影片评论</string>
+    <string name="movie_comment_none">暂无评论</string>
+    <string name="movie_comment_have">%1$人评论</string>
     <string name="movie_miss">观影约会</string>
     <string name="movie_intro">影片简介</string>
     <string name="movie_name">影片名称</string>

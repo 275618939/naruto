@@ -140,7 +140,7 @@ public class MoiveUpComingFragment extends Fragment implements CallBackService,
 
 	@Override
 	public void OnRequest() {
-		showToask("加载影片信息");
+		//showToask("加载影片信息");
 	}
 
 	protected void showToask(String hint) {

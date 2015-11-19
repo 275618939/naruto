@@ -32,7 +32,7 @@ public class HttpUPComingMovieService  extends  BaseService{
 			String result  = HttpUtils.requestGet(Constant.Upcoming_API_URL,headers);
 			if (result != null) {		
 				try {
-					result=result.replaceAll("[\\t\\n\\r]", "");
+					//result=result.replaceAll("[\\t\\n\\r]", "");
 					map = objectMapper.readValue(result, typeReference);
 				} catch (Exception e) {
 					throw new InvokeException(ErrorState.ConvertJsonFasle.getState(),ErrorState.ConvertJsonFasle.getMessage());

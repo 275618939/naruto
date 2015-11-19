@@ -1,6 +1,7 @@
 package com.movie.test;
 
-import com.movie.app.Constant;
+import com.movie.util.MovieScore;
+
 
 public class Test {
 
@@ -8,13 +9,8 @@ public class Test {
 	 * @param args
 	 */
 	public static void main(String[] args) {
-		// TODO Auto-generated method stub
-		String url="http://101.200.176.217/api/captcha/13800138000";
-		String Captcha_API_URL = Constant.SERVER_URL+ "/captcha/";
-		System.out.println(url.indexOf(Captcha_API_URL));
 		
-		/*int [] dd= strChangeInt("2012-02-34");
-		System.out.print(dd[1]);*/
+		System.out.println(MovieScore.GetScore(600,10));
 	
 		
 	}

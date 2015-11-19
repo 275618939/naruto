@@ -29,7 +29,7 @@ public class HttpMovieDetailService  extends  BaseService{
 		Message message = handler.obtainMessage();
 		try {
 			requestCount++;
-			String sid= getSid();
+			String sid = getSid();
 			headers.put(SESSION_KEY, sid);
 			Object filmId=params.get("filmId");
 			StringBuilder path=new StringBuilder(Constant.FileDetail_API_URL);

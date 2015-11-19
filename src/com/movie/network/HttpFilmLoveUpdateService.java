@@ -30,7 +30,7 @@ public class HttpFilmLoveUpdateService extends BaseService {
 			requestCount++;
 			String sid = getSid();
 			headers.put(SESSION_KEY, sid);
-			String result = HttpUtils.requestPut(Constant.Member_FileLove_API_URL, headers,params);
+			String result = HttpUtils.requestPut(Constant.FilmLove_API_URL, headers,params);
 			if (result != null) {
 				try {
 					map = objectMapper.readValue(result, typeReference);
