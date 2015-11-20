@@ -9,8 +9,8 @@
 
     <com.movie.view.RoundImageView
         android:id="@+id/user_image"
-        android:layout_width="60dp"
-        android:layout_height="60dp"
+        android:layout_width="@dimen/user_round_image_width"
+        android:layout_height="@dimen/user_round_image_height"
         android:layout_marginLeft="@dimen/input_margin_left"
         android:layout_marginTop="5dp"
         android:scaleType="centerCrop"

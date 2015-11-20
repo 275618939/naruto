@@ -70,7 +70,10 @@ public interface Constant {
 	public final static String Member_FileLove_API_URL = SERVER_URL+ "/member/film";
 	// 创建约会
 	public final static String Miss_Create_API_URL = SERVER_URL+ "/tryst/create";
-
+	// 创建电影评论
+	public final static String Movie_Comment_Create_API_URL = SERVER_URL+ "/film/comment";
+	// 查询电影评论
+	public final static String Movie_Comment_Query_API_URL = SERVER_URL+ "/film/comment";
 	// 查询电影下的约会
 	public final static String Miss_Film_Query_API_URL = SERVER_URL+ "/film/tryst";
 	// 查询会员发起的约会

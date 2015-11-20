@@ -7,6 +7,7 @@
     <dimen name="titleSize2">30sp</dimen>
     <dimen name="inputSize1">40.0dp</dimen>
     <dimen name="inputSize2">80.0dp</dimen>
+    <dimen name="inputSize60">60.0dp</dimen>
     <dimen name="textSizeS1">19.0sp</dimen>
     <dimen name="textSizeS2">16.0sp</dimen>
     <dimen name="textSizeS3">15.0sp</dimen>
@@ -22,6 +23,8 @@
     <dimen name="user_ment_height">50.0dip</dimen>
     <dimen name="slef_back_height">180dp</dimen>
     <dimen name="user_tag_height">35dp</dimen>
+    <dimen name="user_round_image_width">60dp</dimen>
+    <dimen name="user_round_image_height">60dp</dimen>
     <dimen name="user_logo_image_width">80dp</dimen>
     <dimen name="user_logo_image_height">80dp</dimen>
     <dimen name="user_image_width">120dp</dimen>
@@ -43,6 +46,7 @@
     <dimen name="margin_width">20.0dip</dimen>
     <dimen name="layout_item_top">20.0dip</dimen>
     <dimen name="layout_item_top_30">30.0dip</dimen>
+    <dimen name="layout_item_top_03">3.0dip</dimen>
     <dimen name="layout_item_top_0">5.0dip</dimen>
     <dimen name="layout_item_top_1">10.0dip</dimen>
     <dimen name="layout_item_bottom">10.0dip</dimen>

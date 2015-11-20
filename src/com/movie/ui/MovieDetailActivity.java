@@ -11,17 +11,25 @@ import android.view.View;
 import android.view.View.OnClickListener;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
+import android.widget.ListView;
 import android.widget.RadioGroup;
 import android.widget.RadioGroup.OnCheckedChangeListener;
 import android.widget.RatingBar;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
+import com.handmark.pulltorefresh.library.PullToRefreshBase;
+import com.handmark.pulltorefresh.library.PullToRefreshListView;
+import com.handmark.pulltorefresh.library.PullToRefreshBase.Mode;
+import com.handmark.pulltorefresh.library.PullToRefreshBase.OnRefreshListener2;
 import com.movie.R;
+import com.movie.adapter.MoviesCommentAdapter;
 import com.movie.adapter.WantSeeMovieAdapter;
 import com.movie.app.Constant;
 import com.movie.app.Constant.Page;
+import com.movie.client.bean.Login;
 import com.movie.client.bean.Movie;
+import com.movie.client.bean.MovieComment;
 import com.movie.client.bean.User;
 import com.movie.client.service.BaseService;
 import com.movie.client.service.CallBackService;
@@ -29,6 +37,8 @@ import com.movie.client.service.FilmTypeService;
 import com.movie.fragment.SelfFragment;
 import com.movie.network.HttpFilmLoveService;
 import com.movie.network.HttpFilmLoveUpdateService;
+import com.movie.network.HttpMovieCommentCreateService;
+import com.movie.network.HttpMovieCommentQueryService;
 import com.movie.network.HttpMovieDetailService;
 import com.movie.util.ImageLoaderCache;
 import com.movie.util.MovieScore;
@@ -37,7 +47,7 @@ import com.movie.view.HorizontalListView;
 import com.movie.view.MovieCommentsDialog;
 
 
-public class MovieDetailActivity extends BaseActivity implements OnClickListener, CallBackService {
+public class MovieDetailActivity extends BaseActivity implements OnClickListener, CallBackService , OnRefreshListener2<ListView>{
 
 
 	protected static int LOADUSERCOMPLETE=1;
@@ -64,17 +74,21 @@ public class MovieDetailActivity extends BaseActivity implements OnClickListener
 	LinearLayout movieHaveScoreLayout;
 	RelativeLayout filmLoveLayout;
 	RadioGroup movieTab;
-
-	
-	List<User> users=new ArrayList<User>();
+	PullToRefreshListView refreshableView;
+	MoviesCommentAdapter commentAdapter;
 	WantSeeMovieAdapter wantSeeMovieAdapter;
 	HorizontalListView horizontalListView;
 	BaseService httpFileLoveService;
 	BaseService httpMovieDetailService;
 	BaseService httpFilmLoveUpdateService;
+	BaseService httpCommentCreateService;
+	BaseService httpCommentQueryService;
 	FilmTypeService filmTypeService;
 	ImageLoaderCache imageLoaderCache;
 	Map<Integer,String> filemTypes;
+	List<User> users=new ArrayList<User>();
+	List<MovieComment> comments = new ArrayList<MovieComment>(); 
+	int page;
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
@@ -82,6 +96,8 @@ public class MovieDetailActivity extends BaseActivity implements OnClickListener
 		httpFileLoveService =new HttpFilmLoveService(this);
 		httpMovieDetailService =new HttpMovieDetailService(this);
 		httpFilmLoveUpdateService = new HttpFilmLoveUpdateService(this);
+		httpCommentCreateService = new HttpMovieCommentCreateService(this);
+		httpCommentQueryService = new HttpMovieCommentQueryService(this);
 		filmTypeService = new FilmTypeService();
 		imageLoaderCache=new ImageLoaderCache(this);
 		initViews();
@@ -111,9 +127,14 @@ public class MovieDetailActivity extends BaseActivity implements OnClickListener
 		movieHaveScoreLayout = (LinearLayout)  findViewById(R.id.movie_have_score_layout);
 		filmLoveLayout = (RelativeLayout)  findViewById(R.id.film_love_layout);
 		movieTab = (RadioGroup) findViewById(R.id.movie_tab);
+		refreshableView =  (PullToRefreshListView) findViewById(R.id.movie_comment_list);
 		horizontalListView = (HorizontalListView) findViewById(R.id.layout_want_see);
 		wantSeeMovieAdapter = new WantSeeMovieAdapter(this, users);
+		commentAdapter = new MoviesCommentAdapter(this, comments);
 		horizontalListView.setAdapter(wantSeeMovieAdapter);
+		refreshableView.setAdapter(commentAdapter);
+		refreshableView.setMode(Mode.PULL_FROM_END);
+		refreshableView.setOnRefreshListener(this);
 		loveFilm.setOnClickListener(this);
 		filmLoveMore.setOnClickListener(this);
 		createMiss.setOnClickListener(this);
@@ -153,6 +174,7 @@ public class MovieDetailActivity extends BaseActivity implements OnClickListener
 				movieMissInfo.setText(getResources().getString(R.string.miss_none));
 			}
 			loadMovieDetail();
+			loadMovieComment();
 		}
 
 	}
@@ -174,10 +196,28 @@ public class MovieDetailActivity extends BaseActivity implements OnClickListener
 		httpFilmLoveUpdateService.execute(this);
 	}
 	
+	private void createComment(String content,int score){
+		httpCommentCreateService.addParams("filmId", movie.getId());
+		httpCommentCreateService.addParams("content", content);
+		httpCommentCreateService.addParams("score", score);
+		httpCommentCreateService.execute(this);
+	}
+	private void loadMovieComment(){
+		httpCommentQueryService.addParams("filmId", movie.getId());
+		httpCommentQueryService.addParams("page", page);
+		httpCommentQueryService.addParams("size", Page.DEFAULT_SIZE);
+		httpCommentQueryService.execute(this);
+	}
+	
 	@Override
 	public void onClick(View v) {
 		switch (v.getId()) {
 			case R.id.movie_comment:
+				Login login=getLogin();
+				if(null==login){
+					goLogin();
+					return;
+				}
 				final MovieCommentsDialog.Builder builder = new MovieCommentsDialog.Builder(this);
 				builder.setTitle(R.string.comment);
 				builder.setPositiveButton("取消",
@@ -191,7 +231,10 @@ public class MovieDetailActivity extends BaseActivity implements OnClickListener
 							public void onClick(DialogInterface dialog, int which) {
 								dialog.dismiss();
 								String comments=builder.getComments();
-								
+								if(comments==null||comments.isEmpty())
+									return;
+								int score=builder.getRatingBarValue();
+								createComment(comments,score);
 							}
 						});
 
@@ -215,9 +258,7 @@ public class MovieDetailActivity extends BaseActivity implements OnClickListener
 				
 				break;
 		}
-		
 	
-
 	}
 
 	@Override
@@ -228,6 +269,7 @@ public class MovieDetailActivity extends BaseActivity implements OnClickListener
 	@Override
 	@SuppressWarnings("unchecked")
 	public void SuccessCallBack(Map<String, Object> map) {
+		refreshableView.onRefreshComplete();
 		hideProgressDialog();
 		String code=map.get(Constant.ReturnCode.RETURN_STATE).toString();
 		String tag=map.get(Constant.ReturnCode.RETURN_TAG).toString();
@@ -268,8 +310,22 @@ public class MovieDetailActivity extends BaseActivity implements OnClickListener
 				        wantSeeMovieAdapter.updateData(users);
 				    	filmLoveLayout.setVisibility(View.VISIBLE);
 				    }
-				}else if(tag.equals(httpFilmLoveUpdateService.TAG)){ 
+				}else if(tag.equals(httpFilmLoveUpdateService.TAG)) { 
 					loadMovieLove();
+				}else if(tag.equals(httpCommentQueryService.TAG)) { 
+					List<Map<String, Object>> values=(List<Map<String, Object>>)map.get(Constant.ReturnCode.RETURN_VALUE);
+					MovieComment movieComment=null;
+					for(Map<String, Object> value:values){
+						movieComment = new MovieComment();
+						movieComment.setPortrait(Constant.SERVER_ADRESS+value.get("portrait").toString());
+						movieComment.setNickname(value.get("nickname").toString());
+						movieComment.setMemberId(value.get("memberId").toString());
+						movieComment.setContent(value.get("content").toString());
+						movieComment.setTime(value.get("time").toString());
+						movieComment.setScore(Integer.parseInt(value.get("time").toString()));
+					    comments.add(movieComment);
+					}
+					commentAdapter.updateData(comments);
 				}
 		   } catch (Exception e) {
 			   showToask(e.getMessage());
@@ -277,11 +333,11 @@ public class MovieDetailActivity extends BaseActivity implements OnClickListener
 			
 		}else if (Constant.ReturnCode.STATE_3.equals(code)) {
 			//提示用户登陆
-			if(tag.equals(httpFilmLoveUpdateService.TAG)){
+			//if(tag.equals(httpFilmLoveUpdateService.TAG)){
 				Intent loginIntent = new Intent(this,LoginActivity.class);
 				this.overridePendingTransition(R.anim.slide_in_right, R.anim.slide_out_left);
 				startActivity(loginIntent);
-			}
+			//}
 			
 		}else{
 			String message=map.get(Constant.ReturnCode.RETURN_MESSAGE).toString();
@@ -294,18 +350,36 @@ public class MovieDetailActivity extends BaseActivity implements OnClickListener
 		hideProgressDialog();
 		String message=map.get(Constant.ReturnCode.RETURN_MESSAGE).toString();
 		showToask(message);
-		int size=0;
-		if(size>0){
-			movieMissInfo.setText(String.format(getResources().getString(R.string.miss_have),String.valueOf(size)));
-			movieMissInfo.setOnClickListener(this);
-		}else{
-			movieMissInfo.setText(getResources().getString(R.string.miss_none));
+		String tag=map.get(Constant.ReturnCode.RETURN_TAG).toString();
+		if(tag.equals(httpCommentQueryService.TAG)){
+			MovieComment comment=new MovieComment();
+			comment.setPortrait("/portrait-img/3fe2fc0264f24347b56fbcbd292e1003.jpg");
+			comment.setNickname("牛牛");
+			comment.setMemberId("0170289b5e287f71");
+			comment.setContent("测试");
+			comment.setTime("2015-11-20 16:14:57");
+			comment.setScore(10);
+		    comments.add(comment);
+		    commentAdapter.updateData(comments);
 		}
+		
 	}
 
 	@Override
 	public void OnRequest() {
 		showProgressDialog("提示", "正在加载，请稍后....");		
+	}
+
+	@Override
+	public void onPullDownToRefresh(PullToRefreshBase<ListView> refreshView) {
+		
+		
+	}
+
+	@Override
+	public void onPullUpToRefresh(PullToRefreshBase<ListView> refreshView) {
+		page++;
+		loadMovieComment();
 	}
 	
 	

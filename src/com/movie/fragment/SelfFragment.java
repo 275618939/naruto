@@ -23,6 +23,7 @@ import com.movie.app.Constant.ReturnCode;
 import com.movie.client.bean.User;
 import com.movie.client.service.BaseService;
 import com.movie.client.service.CallBackService;
+import com.movie.network.HttpLoginAutoService;
 import com.movie.network.HttpLogoutService;
 import com.movie.network.HttpUserService;
 import com.movie.ui.LoginActivity;
@@ -50,6 +51,7 @@ public class SelfFragment extends Fragment implements OnClickListener , CallBack
 	//电影下的约会
 	public static final String CONDITION_KEY = "miss_query_key";
 	User user;
+	BaseService httpLoginAutoService;
 	BaseService httpUsersService;
 	BaseService httpLogotService;
 	RelativeLayout loginLayout;
@@ -76,6 +78,7 @@ public class SelfFragment extends Fragment implements OnClickListener , CallBack
 		View view = LayoutInflater.from(getActivity()).inflate(R.layout.fragment_self, null);
 		httpUsersService = new HttpUserService(getActivity());
 		httpLogotService = new HttpLogoutService(getActivity());
+		httpLoginAutoService = new HttpLoginAutoService(getActivity());
 		initView(view);
 		return view;
 	}
@@ -103,9 +106,12 @@ public class SelfFragment extends Fragment implements OnClickListener , CallBack
 		myMissLayout.setOnClickListener(this);
 	}
 
-	private void initUser(){
+	private void initUser() {
 		httpUsersService.addParams(httpUsersService.URL_KEY,Constant.User_API_URL);
 		httpUsersService.execute(this);
+	}
+	private void autoLogin() {
+		httpLoginAutoService.execute(this);
 	}
 	private void logoutUser(){
 		loginLayout.setVisibility(View.VISIBLE);
@@ -182,7 +188,6 @@ public class SelfFragment extends Fragment implements OnClickListener , CallBack
 		String code = map.get(Constant.ReturnCode.RETURN_STATE).toString();
 		if (Constant.ReturnCode.STATE_1.equals(code)) {
 			String tag = map.get(Constant.ReturnCode.RETURN_TAG).toString();
-			
 			if (tag.endsWith(httpUsersService.TAG)) {
 				user = new User();			
 				Map<String, Object> values = (Map<String, Object>) map.get(ReturnCode.RETURN_VALUE);
@@ -214,13 +219,16 @@ public class SelfFragment extends Fragment implements OnClickListener , CallBack
 					int tryst=Integer.parseInt(values.get("tryst").toString());
 					user.setTryst(tryst);
 				}
-				
 				loginLayout.setVisibility(View.GONE);
 				logoutLayout.setVisibility(View.VISIBLE);
 				loginAfterLayout.setVisibility(View.VISIBLE);
-				
-			
+			}else if(tag.endsWith(httpLoginAutoService.TAG)){
+				initUser();
 			}
+		}else if (Constant.ReturnCode.STATE_3.equals(code)) {
+			//自动登陆
+			autoLogin();
+			
 		}else {
 			String message = map.get(Constant.ReturnCode.RETURN_MESSAGE).toString();
 			showToask(message);

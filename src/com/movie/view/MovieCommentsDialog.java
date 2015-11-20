@@ -8,6 +8,7 @@ import android.view.View;
 import android.view.ViewGroup.LayoutParams;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.RatingBar;
 import android.widget.TextView;
 
 import com.movie.R;
@@ -26,6 +27,7 @@ public class MovieCommentsDialog extends Dialog {
 		private Context context;
 		private String title;
 		private EditText comments;
+		private RatingBar ratingBar;
 		private String positiveButtonText;
 		private String negativeButtonText;
 		private DialogInterface.OnClickListener positiveButtonClickListener;
@@ -35,10 +37,11 @@ public class MovieCommentsDialog extends Dialog {
 		public Builder(Context context) {
 			this.context = context;
 		}
-
-	
 		public String getComments(){
 			return this.comments.getText().toString();
+		}
+		public int getRatingBarValue(){
+			return (int)ratingBar.getRating()*10;
 		}
 
 		/**
@@ -114,7 +117,8 @@ public class MovieCommentsDialog extends Dialog {
 			dialog.addContentView(layout, new LayoutParams(LayoutParams.MATCH_PARENT, LayoutParams.WRAP_CONTENT));
 			// set the dialog title
 			((TextView) layout.findViewById(R.id.title)).setText(title);
-			comments=((EditText) layout.findViewById(R.id.comment_input));
+			comments=(EditText) layout.findViewById(R.id.comment_input);
+			ratingBar=(RatingBar) layout.findViewById(R.id.movie_star);
 			// set the confirm button
 			if (positiveButtonText != null) {
 				((Button) layout.findViewById(R.id.positiveButton)).setText(positiveButtonText);

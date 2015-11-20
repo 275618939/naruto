@@ -4,12 +4,16 @@ import java.text.SimpleDateFormat;
 
 import android.app.Activity;
 import android.app.ProgressDialog;
+import android.content.Intent;
 import android.os.Bundle;
 import android.view.GestureDetector;
 import android.view.MotionEvent;
 import android.view.View;
 import android.widget.Toast;
 
+import com.movie.R;
+import com.movie.client.bean.Login;
+import com.movie.client.service.LoginService;
 import com.movie.listener.BackGestureListener;
 
 public class BaseActivity extends Activity {
@@ -21,11 +25,14 @@ public class BaseActivity extends Activity {
 	GestureDetector mGestureDetector;
 	/** 是否需要监听手势关闭功能 */
 	private boolean mNeedBackGesture = false;
+	
+	protected LoginService loginService;
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		// TODO Auto-generated method stub
 		super.onCreate(savedInstanceState);
+		loginService=new LoginService();
 		initGestureDetector();
 	}
 
@@ -33,6 +40,15 @@ public class BaseActivity extends Activity {
 		if (mGestureDetector == null) {
 			mGestureDetector = new GestureDetector(getApplicationContext(),new BackGestureListener(this));
 		}
+	}
+	protected Login getLogin(){
+		Login login=loginService.getLogin();
+		return login;
+	}
+	protected void goLogin(){
+		Intent loginIntent = new Intent(this,LoginActivity.class);
+		this.overridePendingTransition(R.anim.slide_in_right, R.anim.slide_out_left);
+		startActivity(loginIntent);
 	}
 
 	@Override

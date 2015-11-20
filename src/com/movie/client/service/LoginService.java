@@ -27,10 +27,8 @@ public class LoginService  {
 		Map<String, String> valuesMap = loginDao.viewData(null, null);
 		Login login = null;
 		if (valuesMap != null && !((Map<String, String>) valuesMap).isEmpty()) {
-			login = new Login(valuesMap.get(SQLHelper.ACCOUNT),
-					valuesMap.get(SQLHelper.PASS));
+			login = new Login(valuesMap.get(SQLHelper.ACCOUNT),valuesMap.get(SQLHelper.PASS));
 		}
-
 		return login;
 	}
 
