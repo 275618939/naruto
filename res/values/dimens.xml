@@ -18,6 +18,7 @@
     <dimen name="text_left_2">2dp</dimen>
     <dimen name="text_right">5dp</dimen>
     <dimen name="text_right_2">2dp</dimen>
+    <dimen name="detail_panel_bref">500dp</dimen>
     <dimen name="panel_item">95dp</dimen>
     <dimen name="input_width_1">180dp</dimen>
     <dimen name="user_ment_height">50.0dip</dimen>

@@ -1,5 +1,6 @@
 package com.movie.ui;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -48,6 +49,9 @@ public class HobbyActivity extends BaseActivity implements OnClickListener,CallB
 
 	private void initData() {
 		user = (User) getIntent().getSerializableExtra("user");
+		if(user.getHobbies()==null){
+			user.setHobbies(new ArrayList<Integer>());
+		}
 		title.setText("修改喜好");
 		hobbies= hobbyService.getHobbyMap();
 		hobbyView.setHobbies(hobbies);

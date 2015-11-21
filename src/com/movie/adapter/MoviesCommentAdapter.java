@@ -77,8 +77,8 @@ public class MoviesCommentAdapter extends BaseAdapter {
 		if(movieComment!=null){
 			imageLoader.DisplayImage(movieComment.getPortrait(),mHolder.imageView);
 			mHolder.nickname.setText(movieComment.getNickname());
-			mHolder.starBar.setRating(Float.valueOf(movieComment.getScore())/10/2f);
-			mHolder.score.setText(String.valueOf((Float.valueOf(movieComment.getScore())/10)));
+			mHolder.starBar.setRating(Float.valueOf(movieComment.getScore())/10f/2f);
+			mHolder.score.setText(String.valueOf(movieComment.getScore()/10f));
 			mHolder.content.setText(movieComment.getContent());
 			mHolder.time.setText(movieComment.getTime());
 		}
@@ -112,9 +112,9 @@ public class MoviesCommentAdapter extends BaseAdapter {
 		@Override
 		public void onClick(View v) {
 			
-			MovieComment movie=movieComments.get(position);
+			MovieComment comment=movieComments.get(position);
 			Intent intent=new Intent(context,MovieDetailActivity.class);
-			intent.putExtra("movie", movie);
+			intent.putExtra("memberId", comment.getMemberId());
 			context.startActivity(intent);
 			
 		}

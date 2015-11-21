@@ -65,7 +65,7 @@
                 android:layout_height="wrap_content"
                 android:layout_marginLeft="@dimen/text_left"
                 android:text="@string/movie_none_score"
-                android:textSize="@dimen/textSize11sp" />
+                android:textSize="@dimen/textSize13sp" />
         </RelativeLayout>
 
         <RelativeLayout

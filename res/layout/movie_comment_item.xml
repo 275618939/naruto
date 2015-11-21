@@ -9,23 +9,23 @@
         android:id="@+id/movie_comment_item_view"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginBottom="@dimen/layout_item_bottom"
-        android:background="@drawable/background_with_border_radius" >
+        android:layout_marginTop="@dimen/layout_item_top_1" >
+
+        <com.movie.view.RoundImageView
+            android:id="@+id/user_image"
+            android:layout_width="@dimen/user_round_image_width"
+            android:layout_height="@dimen/user_round_image_height"
+            android:scaleType="centerCrop"
+            android:src="@drawable/default_portrait" />
 
         <LinearLayout
             android:id="@+id/user_layout"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_margin="@dimen/layout_item_top_1"
+            android:layout_marginLeft="@dimen/text_left"
+            android:layout_toRightOf="@+id/user_image"
             android:orientation="horizontal" >
-
-            <com.movie.view.RoundImageView
-                android:id="@+id/user_image"
-                android:layout_width="@dimen/user_round_image_width"
-                android:layout_height="@dimen/user_round_image_height"
-                android:layout_marginLeft="@dimen/input_margin_left"
-                android:scaleType="centerCrop"
-                android:src="@drawable/default_portrait" />
 
             <TextView
                 android:id="@+id/nickname"
@@ -40,6 +40,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginLeft="@dimen/text_left"
+                android:layout_marginTop="@dimen/layout_item_top_03"
                 android:numStars="5" >
             </RatingBar>
 
@@ -56,6 +57,8 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_below="@+id/user_layout"
+            android:layout_marginLeft="@dimen/text_left"
+            android:layout_toRightOf="@+id/user_image"
             android:orientation="horizontal" >
 
             <TextView
@@ -73,8 +76,7 @@
             android:layout_alignParentRight="true"
             android:layout_below="@+id/comment_content_layout"
             android:layout_marginRight="@dimen/layout_right"
-            android:gravity="right"
-            android:visibility="gone" >
+            android:gravity="right" >
 
             <TextView
                 android:id="@+id/time"

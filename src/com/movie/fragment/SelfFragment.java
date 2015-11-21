@@ -23,6 +23,7 @@ import com.movie.app.Constant.ReturnCode;
 import com.movie.client.bean.User;
 import com.movie.client.service.BaseService;
 import com.movie.client.service.CallBackService;
+import com.movie.client.service.UserService;
 import com.movie.network.HttpLoginAutoService;
 import com.movie.network.HttpLogoutService;
 import com.movie.network.HttpUserService;
@@ -193,7 +194,7 @@ public class SelfFragment extends Fragment implements OnClickListener , CallBack
 				Map<String, Object> values = (Map<String, Object>) map.get(ReturnCode.RETURN_VALUE);
 				user.setMemberId(values.get("memberId").toString());
 				if (values.containsKey("portrait")) {
-					user.setPortrait(values.get("portrait").toString());
+					user.setPortrait(Constant.SERVER_ADRESS+values.get("portrait").toString());
 					loaderCache.DisplayImage(user.getPortrait(), userInfoLogo);
 				}
 				if (values.containsKey("sex")) {

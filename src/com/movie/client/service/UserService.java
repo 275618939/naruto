@@ -4,7 +4,6 @@ import java.util.Map;
 
 import android.content.Context;
 
-import com.movie.app.NarutoApplication;
 import com.movie.client.bean.User;
 import com.movie.client.dao.BaseDao;
 import com.movie.client.dao.UserDaoImple;

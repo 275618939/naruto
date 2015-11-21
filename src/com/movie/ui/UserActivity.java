@@ -391,7 +391,7 @@ public class UserActivity extends BaseActivity implements OnClickListener, CallB
 						user.setSignature(value.get("signature").toString());
 					}
 					if(value.containsKey("portrait")){
-						headUrl=value.get("portrait").toString();
+						headUrl=Constant.SERVER_ADRESS+value.get("portrait").toString();
 						user.setPortrait(headUrl);
 						imageLoaderCache.DisplayImage(headUrl, headImage);
 					}

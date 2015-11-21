@@ -16,6 +16,7 @@ import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.movie.R;
+import com.movie.app.Constant.NameShow;
 import com.movie.client.bean.Movie;
 import com.movie.ui.MovieDetailActivity;
 import com.movie.util.ImageLoaderCache;
@@ -89,7 +90,11 @@ public class MoviesAdapter extends BaseAdapter {
 				mHolder.movieHaveScoreLayout.setVisibility(View.GONE);
 			}
 			imageLoader.DisplayImage(movie.getIcon(), mHolder.movieImage);
-			mHolder.titleText.setText(movie.getName());
+			if(movie.getName().length()>NameShow.MOVIENAME_MAX){
+				mHolder.titleText.setText(movie.getName().substring(0, NameShow.MOVIENAME_MAX));
+			}else{
+				mHolder.titleText.setText(movie.getName());
+			}
 			mHolder.startBar.setRating(Float.valueOf(score)/2f);
 			mHolder.scoreText.setText(score);
 			mHolder.movieMent.setText(Html.fromHtml(String.format(context.getResources().getString(R.string.movie_miss_tryst), movie.getTryst())));

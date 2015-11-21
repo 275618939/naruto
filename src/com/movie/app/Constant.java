@@ -2,8 +2,6 @@ package com.movie.app;
 
 import java.nio.charset.Charset;
 
-import android.R.integer;
-
 /**
  * 
  * @version 1.0
@@ -36,7 +34,7 @@ public interface Constant {
 	// 用户修改密码api
 	public final static String SetPwd_API_URL = SERVER_URL+ "/account/setpwd";
 	// 查询用户个人信息
-	public final static String User_API_URL = SERVER_URL+ "/member/myself";
+	public final static String User_API_URL = SERVER_URL+ "/member/query";
 	// 查询其他用户个人信息
 	public final static String User_Query_API_URL = SERVER_URL+ "/member/query";
 	// 查询喜好信息
@@ -64,9 +62,9 @@ public interface Constant {
 	public final static String Playing_API_URL = SERVER_URL+ "/film/playing";
 	// 查询电影详细信息
 	public final static String FileDetail_API_URL = SERVER_URL+ "/film/detail";
-	// 修改想看电影会员列表
+	// 修改或查询想看电影会员列表
 	public final static String FilmLove_API_URL = SERVER_URL+ "/film/love";
-	// 获取想看电影会员列表
+	// 获取想看的电影列表
 	public final static String Member_FileLove_API_URL = SERVER_URL+ "/member/film";
 	// 创建约会
 	public final static String Miss_Create_API_URL = SERVER_URL+ "/tryst/create";
@@ -116,6 +114,8 @@ public interface Constant {
 		public final static int MAXHOBBIES = 3;
 		// 评价最大显示项
 		public final static int COMMENTS_MAX_SHOW = 4;
+		// 电影评论最大显示项
+		public final static int MOVIES_COMMENTS_MAX_SHOW = 3;
 
 	}
 
@@ -132,6 +132,9 @@ public interface Constant {
 
 		public static final int HEADWIDTH = 550;
 		public static final int HEADHEIGTH = 550;
+	}
+	public static class NameShow{
+		public static final int MOVIENAME_MAX=8;
 	}
 
 	public static interface MessageType {

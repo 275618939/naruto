@@ -20,25 +20,30 @@ public enum MissStage {
 		return message;
 	}
 
-	public static MissStage getState(int state) {
+	public static MissStage getState(int id) {
 
-		switch (state) {
-		case 1:
-
-			return Apply;
-		case 2:
-
-			return BeInvited;
-		case 3:
-
-			return At;
-		case 4:
-
-			return End;
-
-		default:
-			return End;
+		try {
+			return MissStage.values()[id];
+		} catch (Throwable e) {
+			throw new RuntimeException("not exist MissStage: " + id);
 		}
+//		switch (state) {
+//		case 1:
+//
+//			return Apply;
+//		case 2:
+//
+//			return BeInvited;
+//		case 3:
+//
+//			return At;
+//		case 4:
+//
+//			return End;
+//
+//		default:
+//			return End;
+//		}
 
 	}
 

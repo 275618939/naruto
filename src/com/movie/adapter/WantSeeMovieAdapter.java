@@ -102,7 +102,7 @@ public class WantSeeMovieAdapter extends BaseAdapter {
 			
 			User user=users.get(position);
 			Intent intent=new Intent(context,UserDetailActivity.class);
-			intent.putExtra("user", user);
+			intent.putExtra("memberId", user.getMemberId());
 			context.startActivity(intent);
 			
 		}

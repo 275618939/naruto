@@ -22,6 +22,7 @@ import android.widget.TextView;
 
 import com.movie.R;
 import com.movie.adapter.EvaluationAdapter;
+import com.movie.app.BackGroundColor;
 import com.movie.app.Constant;
 import com.movie.app.Constant.Page;
 import com.movie.app.Constant.ReturnCode;
@@ -36,6 +37,7 @@ import com.movie.network.HttpUserCommentService;
 import com.movie.network.HttpUserFilmTypeService;
 import com.movie.network.HttpUserLoveService;
 import com.movie.network.HttpUserService;
+import com.movie.util.Horoscope;
 import com.movie.util.ImageLoaderCache;
 import com.movie.util.StringUtil;
 
@@ -43,6 +45,7 @@ public class UserDetailActivity extends BaseActivity implements
 		OnClickListener, CallBackService {
 
 	User user;
+	String memberId;
 	TextView title;
 	TextView right_text;
 	ImageView headView;
@@ -64,8 +67,11 @@ public class UserDetailActivity extends BaseActivity implements
 	TextView userMoviesWant;
 	TextView userMiss;
 	TextView userLove;
+	TextView userConstell;
+	TextView hobbyArrowMore;
 	LinearLayout hobbiesLayout;
 	LinearLayout commentsLayout;
+	LinearLayout layoutMoviesPre;
 	List<Map<Integer, Integer>> comments;
 	ImageLoaderCache loaderCache;
 	Map<Integer,String> hobbiesMap;
@@ -100,45 +106,32 @@ public class UserDetailActivity extends BaseActivity implements
 		userMoviesWant = (TextView) findViewById(R.id.user_movies_want);
 		userMiss = (TextView) findViewById(R.id.user_miss);
 		userMoviesPre = (TextView) findViewById(R.id.user_movies_pre);
+		userConstell = (TextView) findViewById(R.id.user_constell);
 		hobbiesLayout = (LinearLayout) findViewById(R.id.hobbies);
 		commentsLayout = (LinearLayout) findViewById(R.id.comments_layout);
+		layoutMoviesPre = (LinearLayout) findViewById(R.id.layout_movies_pre);
 		hobbyMore = (RelativeLayout) findViewById(R.id.hobby_arrow);
 		commnetsMore = (TextView) findViewById(R.id.comments_more);
+		hobbyArrowMore = (TextView) findViewById(R.id.hobby_arrow_more);
 		userLove = (TextView) findViewById(R.id.userLove);
 		commentsView.setAdapter(evaluationAdapter);
 		commentsView.setSelector(new ColorDrawable(Color.TRANSPARENT));
 		userLove.setOnClickListener(this);
-		
-		
-	/*	LinearLayout.LayoutParams params=new LinearLayout.LayoutParams(0, 0);
-		commentsLayout.setLayoutParams(params);*/
-
 	}
 
 	
 	private void loadData() {
-		user = (User) getIntent().getSerializableExtra("user");
-		if (user != null) {
-			loadUser();
-		}
+		memberId = getIntent().getStringExtra("memberId");
 		hobbiesMap= hobbyService.getHobbyMap();
 		filmTypeMap=filmTypeService.getFilmTypeMap();
-		
-		if(user.getFilmType()==null||user.getFilmType().size()<=0){
-			userMoviesPre.setText(getResources().getString(R.string.movie_none));
-		}else{
-			StringUtil.listToStringByMap(user.getFilmType(), filmTypeMap, "/");
-		}
-		userMoviesWant.setText(String.format(getResources().getString(R.string.movie_none)));
-		userMiss.setText(String.format(getResources().getString(R.string.miss_none)));
-		
 		//loadUserComments();
+		loadUser();
 		loadUserFilmType();
 	}
 
 	/* 获取传递过来的数据 */
 	private void loadUser() {
-		httpUsersService.addParams("userId", user.getMemberId());
+		httpUsersService.addParams("userId", memberId);
 		httpUsersService.addParams(httpUsersService.URL_KEY,Constant.User_Query_API_URL);
 		httpUsersService.execute(this);
 	}
@@ -207,16 +200,21 @@ public class UserDetailActivity extends BaseActivity implements
 		String code = map.get(Constant.ReturnCode.RETURN_STATE).toString();
 		if (Constant.ReturnCode.STATE_1.equals(code)) {
 			String tag = map.get(Constant.ReturnCode.RETURN_TAG).toString();
-			
 			if (tag.endsWith(httpUsersService.TAG)) {
+				user = new User();
 				Map<String, Object> values = (Map<String, Object>) map.get(ReturnCode.RETURN_VALUE);
 				if (values.containsKey("portrait")) {
-					user.setPortrait(values.get("portrait").toString());
-					loaderCache.DisplayImage(values.get("portrait").toString(),headView);
+					user.setPortrait(Constant.SERVER_ADRESS+values.get("portrait").toString());
+					loaderCache.DisplayImage(user.getPortrait(),headView);
 				}
 				if (values.containsKey("sex")) {
 					user.setSex(Integer.parseInt(values.get("sex").toString()));
 					userSex.setText(SexState.getState(Integer.parseInt(values.get("sex").toString())).getMessage());
+				}
+				if (values.containsKey("birthday")) {
+					user.setBirthday(values.get("birthday").toString());
+					int [] date=StringUtil.strConvertInts(user.getBirthday());
+					userConstell.setText(Horoscope.getHoroscope((byte)date[1],(byte)date[2]).getCnName());
 				}
 				if (values.containsKey("nickname")) {
 					user.setNickname(values.get("nickname").toString());
@@ -240,6 +238,7 @@ public class UserDetailActivity extends BaseActivity implements
 					TextView textView = null;
 					if (null != hobbies) {
 						int size = hobbies.size();
+					
 						for (int i = 0; i < Page.MAXHOBBIES; i++) {
 							textView = new TextView(new ContextThemeWrapper(this, R.style.common_tag), null, 0);
 							int key = hobbies.get(i);
@@ -248,12 +247,20 @@ public class UserDetailActivity extends BaseActivity implements
 							params.setMargins(0, 0, 10, 0);
 							textView.setLayoutParams(params);
 							textView.setText(value);
+							textView.setBackgroundResource(BackGroundColor.getState(i).getSourceId());
 							hobbiesLayout.addView(textView);
 						}
 						if (size > Page.MAXHOBBIES) {
+							hobbyArrowMore.setVisibility(View.VISIBLE);
 							hobbyMore.setOnClickListener(this);
 						}
 					}
+					if(user.getFilmType()!=null&&user.getFilmType().size()>0){
+						layoutMoviesPre.setVisibility(View.VISIBLE);
+						StringUtil.listToStringByMap(user.getFilmType(), filmTypeMap, "/");
+					}
+					userMoviesWant.setText(String.format(getResources().getString(R.string.movie_none)));
+					userMiss.setText(String.format(getResources().getString(R.string.miss_none)));
 				}
 				if(values.containsKey("tryst")){
 					int tryst=Integer.parseInt(values.get("tryst").toString());
@@ -304,10 +311,10 @@ public class UserDetailActivity extends BaseActivity implements
 		comments = new ArrayList<Map<Integer, Integer>>();
 		for (int i = 0; i < Constant.Page.COMMENTS_MAX_SHOW; i++) {
 			maps = new HashMap<Integer, Integer>();
-			maps.put(i, random.nextInt(100));
+			maps.put(i+1, random.nextInt(100));
 			comments.add(maps);
 		}
-		evaluationAdapter.updateData(user.getSex(),comments);
+		evaluationAdapter.updateData(true,user.getSex(),comments);
 	}
 
 	@Override

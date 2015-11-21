@@ -12,6 +12,7 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.movie.R;
+import com.movie.app.BackGroundColor;
 import com.movie.app.Constant;
 import com.movie.client.dao.BaseDao;
 
@@ -23,7 +24,6 @@ public class HobbyAdapter extends BaseAdapter {
 	Context context;
 	LayoutInflater inflater;
 	BaseDao commentDao;
-	int[] colors=new int[]{R.color.tag1,R.color.tag2,R.color.tag3,R.color.tag4,R.color.tag5,R.color.tag6,R.color.tag7,R.color.tag8};
 	
 	public HobbyAdapter(Context context, Map<Integer,String> hobbies,List<Integer> userHobbies) {
 		this.context = context;
@@ -61,7 +61,7 @@ public class HobbyAdapter extends BaseAdapter {
 			mHolder = (ViewHolder) view.getTag();
 		}
 		int index=position%Constant.Page.COMMENTS_MAX_SHOW;
-		mHolder.Dictionary.setBackgroundResource(colors[index]);
+		mHolder.Dictionary.setBackgroundResource(BackGroundColor.getState(index).getSourceId());
 		Integer hobby = getItem(position);
 		if(null!=hobby){
 			mHolder.Dictionary.setText(hobbies.get(hobby));

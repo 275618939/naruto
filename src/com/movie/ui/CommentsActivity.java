@@ -56,7 +56,7 @@ public class CommentsActivity extends BaseActivity implements OnClickListener,Ca
 		comments=new ArrayList<Map<Integer,Integer>>();
 		for(int i=0;i<20;i++){
     		maps=new HashMap<Integer, Integer>();
-    		maps.put(i%Constant.Page.COMMENTS_MAX_SHOW,random.nextInt(100));
+    		maps.put(i%8+1,random.nextInt(100));
 		    comments.add(maps);
 		}
 		evaluationAdapter.updateData(comments);

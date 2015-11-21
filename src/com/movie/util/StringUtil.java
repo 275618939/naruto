@@ -158,6 +158,14 @@ public class StringUtil {
 		temp[2] = Integer.parseInt(date.substring(8, 10));
 		return temp;
 	}
+	//date 格式 yyyyMMdd
+	public static int[] strConvertInts(String date) {
+		int[] temp = new int[3];
+		temp[0] = Integer.parseInt(date.substring(0, 4));
+		temp[1] = Integer.parseInt(date.substring(4, 6));
+		temp[2] = Integer.parseInt(date.substring(6, 8));
+		return temp;
+	}
 
 	public static String listToString(List<String> stringList, String sp) {
 		if (stringList == null) {

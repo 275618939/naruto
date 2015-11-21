@@ -32,7 +32,7 @@ public class HttpFilmLoveService extends BaseService {
 			Object filmId=params.get("filmId");
 			Object page=params.get("page");
 			Object size=params.get("size");
-			StringBuilder path=new StringBuilder(Constant.Member_FileLove_API_URL);
+			StringBuilder path=new StringBuilder(Constant.FilmLove_API_URL);
 			if(null!=filmId){
 				path.append("/").append(filmId);
 			}

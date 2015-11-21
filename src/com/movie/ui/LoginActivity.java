@@ -19,9 +19,11 @@ import android.widget.TextView;
 import com.movie.R;
 import com.movie.app.Constant;
 import com.movie.client.bean.Login;
+import com.movie.client.bean.User;
 import com.movie.client.service.BaseService;
 import com.movie.client.service.CallBackService;
 import com.movie.client.service.LoginService;
+import com.movie.client.service.UserService;
 import com.movie.network.HttpCaptchaService;
 import com.movie.network.HttpLoginService;
 import com.movie.util.BytesUtils;
@@ -40,6 +42,7 @@ public class LoginActivity extends BaseActivity implements OnClickListener, Call
 	TextView right_text;
 	ImageView captchaView;
 	LoginService loginService;
+	UserService userService;
 	BaseService httpLoginService;
 	BaseService httpCaptchaService;
 	
@@ -50,6 +53,7 @@ public class LoginActivity extends BaseActivity implements OnClickListener, Call
 		loginService = new LoginService();
 		httpLoginService=new HttpLoginService(this);
 		httpCaptchaService=new HttpCaptchaService(this);
+		userService = new UserService();
 		initViews();
 		initData();
 	}
@@ -160,9 +164,13 @@ public class LoginActivity extends BaseActivity implements OnClickListener, Call
 					
 					e.printStackTrace();
 				}	
+				String memberId=map.get("value").toString();
 				login.setAccount(account);
 				login.setPass(pwd);
 				loginService.addLogin(login);
+				User user=new User();
+				user.setMemberId(memberId);
+				userService.addUser(user);
 				
 				onBackPressed();
 			}else if(tag.equals(httpCaptchaService.TAG)){

@@ -19,8 +19,8 @@
         <LinearLayout
             android:layout_width="fill_parent"
             android:layout_height="wrap_content"
-            android:gravity="center_horizontal"
             android:layout_marginBottom="@dimen/layout_item_bottom"
+            android:gravity="center_horizontal"
             android:orientation="vertical" >
 
             <LinearLayout
@@ -274,6 +274,7 @@
                 android:id="@+id/layout_hobby"
                 android:layout_width="match_parent"
                 android:layout_height="55dp"
+                android:layout_marginBottom="@dimen/layout_item_bottom"
                 android:layout_marginLeft="@dimen/layout_left"
                 android:layout_marginRight="@dimen/layout_right"
                 android:layout_marginTop="@dimen/layout_item_top"
@@ -284,7 +285,6 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:orientation="horizontal"
-                    android:paddingBottom="@dimen/nav_padding_bottom"
                     android:paddingTop="@dimen/nav_padding_top" >
 
                     <TextView

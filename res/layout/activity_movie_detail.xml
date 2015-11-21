@@ -1,22 +1,22 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:layout_width="fill_parent"
-    android:layout_height="fill_parent"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
     android:orientation="vertical" >
 
     <include
         android:id="@+id/title_bar"
         layout="@layout/common_head" />
 
-    <ScrollView
+    <com.handmark.pulltorefresh.library.PullToRefreshScrollView
         android:id="@+id/movie_detail_view"
-        android:layout_width="fill_parent"
-        android:layout_height="fill_parent"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
         android:layout_below="@+id/title_bar" >
 
         <LinearLayout
-            android:layout_width="fill_parent"
-            android:layout_height="wrap_content"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
             android:gravity="center_horizontal"
             android:orientation="vertical" >
 
@@ -224,16 +224,14 @@
             </RadioGroup>
 
             <ImageView
-                style="@style/input_item_line"
-                android:layout_marginLeft="4dp"
-                android:layout_marginRight="4dp" />
+                style="@style/input_item_line"/>
 
             <!-- 电影信息简介 start -->
 
             <LinearLayout
                 android:id="@+id/movie_brief_panel"
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content"
+                android:layout_height="400dp"
                 android:layout_marginLeft="@dimen/layout_left"
                 android:layout_marginRight="@dimen/layout_right"
                 android:layout_marginTop="@dimen/layout_item_top_1"
@@ -251,10 +249,11 @@
             <LinearLayout
                 android:id="@+id/movie_detail_panel"
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content"
+                android:layout_height="@dimen/detail_panel_bref"
                 android:layout_marginLeft="@dimen/layout_left"
                 android:layout_marginRight="@dimen/layout_right"
                 android:layout_marginTop="@dimen/layout_item_top_1"
+                
                 android:orientation="vertical" >
 
                 <RelativeLayout
@@ -291,8 +290,6 @@
                     <ImageView
                         style="@style/input_item_line"
                         android:layout_below="@+id/layout_want_see"
-                        android:layout_marginLeft="4dp"
-                        android:layout_marginRight="4dp"
                         android:layout_marginTop="@dimen/layout_item_top_1" />
                 </RelativeLayout>
 
@@ -319,11 +316,10 @@
 
                 <ImageView
                     style="@style/input_item_line"
-                    android:layout_marginLeft="4dp"
-                    android:layout_marginRight="4dp"
                     android:layout_marginTop="@dimen/layout_item_top_1" />
 
                 <RelativeLayout
+                    android:id="@+id/movie_comments_layout"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_marginTop="@dimen/layout_item_top_1"
@@ -346,22 +342,20 @@
 
                 <ImageView
                     style="@style/input_item_line"
-                    android:layout_marginLeft="4dp"
-                    android:layout_marginRight="4dp"
                     android:layout_marginTop="@dimen/layout_item_top_1" />
 
-               
                 <com.handmark.pulltorefresh.library.PullToRefreshListView
                     android:id="@+id/movie_comment_list"
                     android:layout_width="match_parent"
-                    android:layout_height="match_parent"
-                    android:divider="@null" >
+                    android:layout_height="190dp"
+                    android:divider="@color/input_item_line"
+                    android:dividerHeight="0.5dip" >
                 </com.handmark.pulltorefresh.library.PullToRefreshListView>
             </LinearLayout>
             <!-- 观影信息 end -->
 
         </LinearLayout>
-    </ScrollView>
+    </com.handmark.pulltorefresh.library.PullToRefreshScrollView>
 
     <LinearLayout
         style="@style/bottom_bar_style"

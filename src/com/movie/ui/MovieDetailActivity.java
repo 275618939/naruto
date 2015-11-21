@@ -7,6 +7,7 @@ import java.util.Map;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.widget.ImageView;
@@ -16,12 +17,15 @@ import android.widget.RadioGroup;
 import android.widget.RadioGroup.OnCheckedChangeListener;
 import android.widget.RatingBar;
 import android.widget.RelativeLayout;
+import android.widget.ScrollView;
 import android.widget.TextView;
 
 import com.handmark.pulltorefresh.library.PullToRefreshBase;
-import com.handmark.pulltorefresh.library.PullToRefreshListView;
 import com.handmark.pulltorefresh.library.PullToRefreshBase.Mode;
+import com.handmark.pulltorefresh.library.PullToRefreshBase.OnRefreshListener;
 import com.handmark.pulltorefresh.library.PullToRefreshBase.OnRefreshListener2;
+import com.handmark.pulltorefresh.library.PullToRefreshListView;
+import com.handmark.pulltorefresh.library.PullToRefreshScrollView;
 import com.movie.R;
 import com.movie.adapter.MoviesCommentAdapter;
 import com.movie.adapter.WantSeeMovieAdapter;
@@ -47,7 +51,7 @@ import com.movie.view.HorizontalListView;
 import com.movie.view.MovieCommentsDialog;
 
 
-public class MovieDetailActivity extends BaseActivity implements OnClickListener, CallBackService , OnRefreshListener2<ListView>{
+public class MovieDetailActivity extends BaseActivity implements OnClickListener, CallBackService , OnRefreshListener2<ListView>,OnRefreshListener<ScrollView>{
 
 
 	protected static int LOADUSERCOMPLETE=1;
@@ -73,11 +77,13 @@ public class MovieDetailActivity extends BaseActivity implements OnClickListener
 	LinearLayout movieNoneScoreLayout;
 	LinearLayout movieHaveScoreLayout;
 	RelativeLayout filmLoveLayout;
+	RelativeLayout movieCommentsLayout;
 	RadioGroup movieTab;
 	PullToRefreshListView refreshableView;
 	MoviesCommentAdapter commentAdapter;
 	WantSeeMovieAdapter wantSeeMovieAdapter;
 	HorizontalListView horizontalListView;
+	PullToRefreshScrollView refreshableScollView;
 	BaseService httpFileLoveService;
 	BaseService httpMovieDetailService;
 	BaseService httpFilmLoveUpdateService;
@@ -126,19 +132,26 @@ public class MovieDetailActivity extends BaseActivity implements OnClickListener
 		movieNoneScoreLayout = (LinearLayout)  findViewById(R.id.movie_none_score_layout);
 		movieHaveScoreLayout = (LinearLayout)  findViewById(R.id.movie_have_score_layout);
 		filmLoveLayout = (RelativeLayout)  findViewById(R.id.film_love_layout);
+		movieCommentsLayout = (RelativeLayout)  findViewById(R.id.movie_comments_layout);
 		movieTab = (RadioGroup) findViewById(R.id.movie_tab);
 		refreshableView =  (PullToRefreshListView) findViewById(R.id.movie_comment_list);
 		horizontalListView = (HorizontalListView) findViewById(R.id.layout_want_see);
+		refreshableScollView=(PullToRefreshScrollView) findViewById(R.id.movie_detail_view);
 		wantSeeMovieAdapter = new WantSeeMovieAdapter(this, users);
 		commentAdapter = new MoviesCommentAdapter(this, comments);
 		horizontalListView.setAdapter(wantSeeMovieAdapter);
 		refreshableView.setAdapter(commentAdapter);
 		refreshableView.setMode(Mode.PULL_FROM_END);
+		refreshableView.setFocusable(false);
+		refreshableScollView.setMode(Mode.PULL_FROM_START);
+		
 		refreshableView.setOnRefreshListener(this);
 		loveFilm.setOnClickListener(this);
 		filmLoveMore.setOnClickListener(this);
 		createMiss.setOnClickListener(this);
 		movieComment.setOnClickListener(this);
+		movieCommentsLayout.setOnClickListener(this);
+		refreshableScollView.setOnRefreshListener(this);
 		movieTab.setOnCheckedChangeListener(new OnCheckedChangeListener() {
 
 			public void onCheckedChanged(RadioGroup group,int checkedId) {
@@ -173,8 +186,7 @@ public class MovieDetailActivity extends BaseActivity implements OnClickListener
 			}else{
 				movieMissInfo.setText(getResources().getString(R.string.miss_none));
 			}
-			loadMovieDetail();
-			loadMovieComment();
+			refreshableScollView.setRefreshing();
 		}
 
 	}
@@ -184,6 +196,7 @@ public class MovieDetailActivity extends BaseActivity implements OnClickListener
 	}
 	
 	private void loadMovieLove(){
+		users.clear();
 		httpFileLoveService.addParams("filmId", movie.getId());
 		httpFileLoveService.addParams("page",Constant.Page.FIRST_PAGE);
 		httpFileLoveService.addParams("size",Constant.Page.WANT_SEE_MOIVE_SIZE);
@@ -203,6 +216,7 @@ public class MovieDetailActivity extends BaseActivity implements OnClickListener
 		httpCommentCreateService.execute(this);
 	}
 	private void loadMovieComment(){
+		comments.clear();
 		httpCommentQueryService.addParams("filmId", movie.getId());
 		httpCommentQueryService.addParams("page", page);
 		httpCommentQueryService.addParams("size", Page.DEFAULT_SIZE);
@@ -212,6 +226,11 @@ public class MovieDetailActivity extends BaseActivity implements OnClickListener
 	@Override
 	public void onClick(View v) {
 		switch (v.getId()) {
+			case R.id.movie_comments_layout:
+				Intent commentIntent = new Intent(this, MovieCommentQueryActivity.class);
+				commentIntent.putExtra("filmId", movie.getId());
+				startActivity(commentIntent);
+				break;
 			case R.id.movie_comment:
 				Login login=getLogin();
 				if(null==login){
@@ -233,7 +252,7 @@ public class MovieDetailActivity extends BaseActivity implements OnClickListener
 								String comments=builder.getComments();
 								if(comments==null||comments.isEmpty())
 									return;
-								int score=builder.getRatingBarValue();
+								int score=builder.getRatingBarValue()*2;
 								createComment(comments,score);
 							}
 						});
@@ -270,6 +289,7 @@ public class MovieDetailActivity extends BaseActivity implements OnClickListener
 	@SuppressWarnings("unchecked")
 	public void SuccessCallBack(Map<String, Object> map) {
 		refreshableView.onRefreshComplete();
+		refreshableScollView.onRefreshComplete();
 		hideProgressDialog();
 		String code=map.get(Constant.ReturnCode.RETURN_STATE).toString();
 		String tag=map.get(Constant.ReturnCode.RETURN_TAG).toString();
@@ -293,14 +313,11 @@ public class MovieDetailActivity extends BaseActivity implements OnClickListener
 				}else if(tag.equals(httpFileLoveService.TAG)){ 
 				    List<Map<String, Object>> values=(List<Map<String, Object>>)map.get(Constant.ReturnCode.RETURN_VALUE);
 					User user = null;
-					users.clear();
 				    for(Map<String, Object> value:values){
 				    	user = new User();
-				    	user.setPortrait(value.get("portrait").toString());
+				    	user.setPortrait(Constant.SERVER_ADRESS+value.get("portrait").toString());
 				    	user.setNickname(value.get("nickname").toString());
 				    	user.setMemberId(value.get("memberId").toString());
-				    	user.setSignature(value.get("signature").toString());
-				    	user.setHobbies((List<Integer>)value.get("hobbies"));
 				    	users.add(user);
 					}
 				    if(values.size()>=Page.WANT_SEE_MOIVE_SIZE){
@@ -312,20 +329,28 @@ public class MovieDetailActivity extends BaseActivity implements OnClickListener
 				    }
 				}else if(tag.equals(httpFilmLoveUpdateService.TAG)) { 
 					loadMovieLove();
+				}else if(tag.equals(httpCommentCreateService.TAG)) { 
+					loadMovieComment();
 				}else if(tag.equals(httpCommentQueryService.TAG)) { 
 					List<Map<String, Object>> values=(List<Map<String, Object>>)map.get(Constant.ReturnCode.RETURN_VALUE);
 					MovieComment movieComment=null;
+					int size=0;
 					for(Map<String, Object> value:values){
+					   if(size>=Page.MOVIES_COMMENTS_MAX_SHOW)
+						  break;
 						movieComment = new MovieComment();
 						movieComment.setPortrait(Constant.SERVER_ADRESS+value.get("portrait").toString());
 						movieComment.setNickname(value.get("nickname").toString());
 						movieComment.setMemberId(value.get("memberId").toString());
 						movieComment.setContent(value.get("content").toString());
 						movieComment.setTime(value.get("time").toString());
-						movieComment.setScore(Integer.parseInt(value.get("time").toString()));
+						movieComment.setScore(Integer.parseInt(value.get("score").toString()));
 					    comments.add(movieComment);
+					    size++;
 					}
 					commentAdapter.updateData(comments);
+				
+				
 				}
 		   } catch (Exception e) {
 			   showToask(e.getMessage());
@@ -350,24 +375,11 @@ public class MovieDetailActivity extends BaseActivity implements OnClickListener
 		hideProgressDialog();
 		String message=map.get(Constant.ReturnCode.RETURN_MESSAGE).toString();
 		showToask(message);
-		String tag=map.get(Constant.ReturnCode.RETURN_TAG).toString();
-		if(tag.equals(httpCommentQueryService.TAG)){
-			MovieComment comment=new MovieComment();
-			comment.setPortrait("/portrait-img/3fe2fc0264f24347b56fbcbd292e1003.jpg");
-			comment.setNickname("牛牛");
-			comment.setMemberId("0170289b5e287f71");
-			comment.setContent("测试");
-			comment.setTime("2015-11-20 16:14:57");
-			comment.setScore(10);
-		    comments.add(comment);
-		    commentAdapter.updateData(comments);
-		}
-		
 	}
 
 	@Override
 	public void OnRequest() {
-		showProgressDialog("提示", "正在加载，请稍后....");		
+		//showProgressDialog("提示", "正在加载，请稍后....");		
 	}
 
 	@Override
@@ -379,6 +391,13 @@ public class MovieDetailActivity extends BaseActivity implements OnClickListener
 	@Override
 	public void onPullUpToRefresh(PullToRefreshBase<ListView> refreshView) {
 		page++;
+		loadMovieComment();
+	}
+
+	@Override
+	public void onRefresh(PullToRefreshBase<ScrollView> refreshView) {
+		loadMovieDetail();
+		loadMovieLove();
 		loadMovieComment();
 	}
 	
