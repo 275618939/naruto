@@ -16,10 +16,15 @@ import android.view.View.OnClickListener;
 import android.widget.GridView;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
+import android.widget.ScrollView;
 import android.widget.LinearLayout.LayoutParams;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
+import com.handmark.pulltorefresh.library.PullToRefreshBase;
+import com.handmark.pulltorefresh.library.PullToRefreshScrollView;
+import com.handmark.pulltorefresh.library.PullToRefreshBase.Mode;
+import com.handmark.pulltorefresh.library.PullToRefreshBase.OnRefreshListener;
 import com.movie.R;
 import com.movie.adapter.EvaluationAdapter;
 import com.movie.app.BackGroundColor;
@@ -32,6 +37,7 @@ import com.movie.client.service.BaseService;
 import com.movie.client.service.CallBackService;
 import com.movie.client.service.FilmTypeService;
 import com.movie.client.service.HobbyService;
+import com.movie.client.service.UserService;
 import com.movie.fragment.SelfFragment;
 import com.movie.network.HttpUserCommentService;
 import com.movie.network.HttpUserFilmTypeService;
@@ -42,7 +48,7 @@ import com.movie.util.ImageLoaderCache;
 import com.movie.util.StringUtil;
 
 public class UserDetailActivity extends BaseActivity implements
-		OnClickListener, CallBackService {
+		OnClickListener, CallBackService,OnRefreshListener<ScrollView> {
 
 	User user;
 	String memberId;
@@ -54,10 +60,12 @@ public class UserDetailActivity extends BaseActivity implements
 	BaseService httpUserCommentService;
 	BaseService httpUserFilmTyService;
 	BaseService httpUserLoveService;
+	UserService userService;
 	HobbyService hobbyService;
 	FilmTypeService filmTypeService;
 	EvaluationAdapter evaluationAdapter;
 	GridView commentsView;
+	PullToRefreshScrollView refreshableScollView;
 	TextView userSex;
 	TextView loveView;
 	TextView charmView;
@@ -72,6 +80,7 @@ public class UserDetailActivity extends BaseActivity implements
 	LinearLayout hobbiesLayout;
 	LinearLayout commentsLayout;
 	LinearLayout layoutMoviesPre;
+	LinearLayout userDetailTool;
 	List<Map<Integer, Integer>> comments;
 	ImageLoaderCache loaderCache;
 	Map<Integer,String> hobbiesMap;
@@ -87,6 +96,7 @@ public class UserDetailActivity extends BaseActivity implements
 		httpUserFilmTyService = new HttpUserFilmTypeService(this);
 		httpUserLoveService = new HttpUserLoveService(this);
 		hobbyService = new HobbyService();
+		userService = new UserService();
 		filmTypeService = new FilmTypeService();
 		loaderCache = new ImageLoaderCache(this);
 		initViews();
@@ -110,13 +120,17 @@ public class UserDetailActivity extends BaseActivity implements
 		hobbiesLayout = (LinearLayout) findViewById(R.id.hobbies);
 		commentsLayout = (LinearLayout) findViewById(R.id.comments_layout);
 		layoutMoviesPre = (LinearLayout) findViewById(R.id.layout_movies_pre);
+		userDetailTool  = (LinearLayout) findViewById(R.id.user_detail_tool);
 		hobbyMore = (RelativeLayout) findViewById(R.id.hobby_arrow);
 		commnetsMore = (TextView) findViewById(R.id.comments_more);
 		hobbyArrowMore = (TextView) findViewById(R.id.hobby_arrow_more);
 		userLove = (TextView) findViewById(R.id.userLove);
+		refreshableScollView=(PullToRefreshScrollView) findViewById(R.id.user_detail_view);
+		refreshableScollView.setMode(Mode.PULL_FROM_START);
 		commentsView.setAdapter(evaluationAdapter);
 		commentsView.setSelector(new ColorDrawable(Color.TRANSPARENT));
 		userLove.setOnClickListener(this);
+		refreshableScollView.setOnRefreshListener(this);
 	}
 
 	
@@ -124,9 +138,15 @@ public class UserDetailActivity extends BaseActivity implements
 		memberId = getIntent().getStringExtra("memberId");
 		hobbiesMap= hobbyService.getHobbyMap();
 		filmTypeMap=filmTypeService.getFilmTypeMap();
+		refreshableScollView.setRefreshing();
+		User loginUser = userService.getUserItem();
+		if(null!=loginUser){
+			if(memberId.equals(loginUser.getMemberId())){
+				userDetailTool.setVisibility(View.GONE);
+			}
+		}
 		//loadUserComments();
-		loadUser();
-		loadUserFilmType();
+		
 	}
 
 	/* 获取传递过来的数据 */
@@ -196,6 +216,7 @@ public class UserDetailActivity extends BaseActivity implements
 
 	@Override
 	public void SuccessCallBack(Map<String, Object> map) {
+		refreshableScollView.onRefreshComplete();
 		hideProgressDialog();
 		String code = map.get(Constant.ReturnCode.RETURN_STATE).toString();
 		if (Constant.ReturnCode.STATE_1.equals(code)) {
@@ -314,11 +335,12 @@ public class UserDetailActivity extends BaseActivity implements
 			maps.put(i+1, random.nextInt(100));
 			comments.add(maps);
 		}
-		evaluationAdapter.updateData(true,user.getSex(),comments);
+		evaluationAdapter.updateData(true,user.getSex()==null?1:user.getSex(),comments);
 	}
 
 	@Override
 	public void ErrorCallBack(Map<String, Object> map) {
+		refreshableScollView.onRefreshComplete();
 		hideProgressDialog();
 		String message = map.get(Constant.ReturnCode.RETURN_MESSAGE).toString();
 		showToask(message);
@@ -327,7 +349,13 @@ public class UserDetailActivity extends BaseActivity implements
 
 	@Override
 	public void OnRequest() {
-		showProgressDialog("提示", "请稍后......");
+		//showProgressDialog("提示", "请稍后......");
+	}
+
+	@Override
+	public void onRefresh(PullToRefreshBase<ScrollView> refreshView) {
+		loadUser();
+		loadUserFilmType();
 	}
 
 }

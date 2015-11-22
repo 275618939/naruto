@@ -18,6 +18,7 @@ import android.widget.TextView;
 import com.movie.R;
 import com.movie.app.Constant;
 import com.movie.client.bean.Login;
+import com.movie.client.bean.User;
 import com.movie.client.service.BaseService;
 import com.movie.client.service.CallBackService;
 import com.movie.client.service.LoginService;
@@ -42,6 +43,7 @@ public class RegisterActivity extends BaseActivity implements OnClickListener, C
 	ImageView clearPassConfirm;
 	Button codeBtn;
 	UserService userService;
+	LoginService loginService;
 	VerifyCodeCountTimer  countTimer;
 	BaseService  httpMobileCaptchaService;
 	BaseService  httpRegisterService;
@@ -51,6 +53,8 @@ public class RegisterActivity extends BaseActivity implements OnClickListener, C
 		setContentView(R.layout.activity_register);
 		httpMobileCaptchaService =new HttpMobileCaptchaService(this);
 		httpRegisterService = new HttpRegisterService(this);
+		userService = new UserService();
+		loginService =new LoginService();
 		initViews();
 		initData();
 	}
@@ -186,13 +190,15 @@ public class RegisterActivity extends BaseActivity implements OnClickListener, C
 				} catch (NoSuchAlgorithmException e) {
 					e.printStackTrace();
 				}
-				LoginService loginService=new LoginService();
-				loginService.deleteLogin();
+				String memberId=map.get("value").toString();
 				Login login=new Login();
 				login.setAccount(account);
 				login.setPass(pwd);
 				loginService.addLogin(login);
-				Intent intent = new Intent(this, MainActivity.class);
+				User user=new User();
+				user.setMemberId(memberId);
+				userService.addUser(user);
+				Intent intent = new Intent(this, RegsiterGuideActivity.class);
 				startActivity(intent);
 				this.finish();
 			}
@@ -211,6 +217,6 @@ public class RegisterActivity extends BaseActivity implements OnClickListener, C
 
 	@Override
 	public void OnRequest() {
-		showProgressDialog("提示", "正在注册，请稍后......");
+		showProgressDialog("提示", "请稍后......");
 	}
 }

@@ -23,14 +23,14 @@ import com.movie.app.Constant.ReturnCode;
 import com.movie.client.bean.User;
 import com.movie.client.service.BaseService;
 import com.movie.client.service.CallBackService;
-import com.movie.client.service.UserService;
 import com.movie.network.HttpLoginAutoService;
 import com.movie.network.HttpLogoutService;
 import com.movie.network.HttpUserService;
 import com.movie.ui.LoginActivity;
 import com.movie.ui.MissSelfQueryActivity;
-import com.movie.ui.MySelfDetailActivity;
+import com.movie.ui.RegsiterGuideActivity;
 import com.movie.ui.UserActivity;
+import com.movie.ui.UserDetailActivity;
 import com.movie.util.ImageLoaderCache;
 
 public class SelfFragment extends Fragment implements OnClickListener , CallBackService{
@@ -155,9 +155,13 @@ public class SelfFragment extends Fragment implements OnClickListener , CallBack
 				Intent loginIntent = new Intent(getActivity(),LoginActivity.class);
 				getActivity().overridePendingTransition(R.anim.slide_in_right, R.anim.slide_out_left);
 				startActivity(loginIntent);
+				getActivity().finish();
+			
 				break;
 			case R.id.user_info_logo:
-				Intent userIntent = new Intent(getActivity(),MySelfDetailActivity.class);
+				Intent userIntent = new Intent(getActivity(),UserDetailActivity.class);
+				userIntent.putExtra("memberId", user.getMemberId());
+				//Intent userIntent = new Intent(getActivity(),MySelfDetailActivity.class);
 				//getActivity().overridePendingTransition(R.anim.slide_in_right, R.anim.slide_out_left);
 				startActivity(userIntent);
 				break;
@@ -232,7 +236,7 @@ public class SelfFragment extends Fragment implements OnClickListener , CallBack
 			
 		}else {
 			String message = map.get(Constant.ReturnCode.RETURN_MESSAGE).toString();
-			showToask(message);
+			//showToask(message);
 		}
 	}
 
@@ -241,7 +245,7 @@ public class SelfFragment extends Fragment implements OnClickListener , CallBack
 	@Override
 	public void ErrorCallBack(Map<String, Object> map) {
 		String message = map.get(Constant.ReturnCode.RETURN_MESSAGE).toString();
-		showToask(message);
+		//showToask(message);
 	}
 
 	protected void showToask(String hint) {
@@ -251,7 +255,7 @@ public class SelfFragment extends Fragment implements OnClickListener , CallBack
 
 	@Override
 	public void OnRequest() {
-		showToask("加载个人信息");
+		//showToask("加载个人信息");
 	}
 
 	

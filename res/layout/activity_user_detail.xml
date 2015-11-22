@@ -313,6 +313,7 @@
 
     <LinearLayout
         style="@style/bottom_bar_style_1"
+        android:id="@+id/user_detail_tool"
         android:layout_alignParentBottom="true" >
 
         <TextView

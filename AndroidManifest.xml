@@ -93,6 +93,11 @@
             android:alwaysRetainTaskState="true"
             android:launchMode="singleTop"
             android:screenOrientation="portrait" />
+         <activity
+            android:name=".ui.RegsiterGuideActivity"
+            android:alwaysRetainTaskState="true"
+            android:launchMode="singleTop"
+            android:screenOrientation="portrait" />
         <activity
             android:name=".ui.MovieDetailActivity"
             android:alwaysRetainTaskState="true"

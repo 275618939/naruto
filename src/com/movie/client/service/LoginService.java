@@ -16,7 +16,6 @@ public class LoginService  {
 		loginDao = new LoginDaoImple();
 	}
 	public void addLogin(Login login) {
-
 		loginDao.deleteData(null, null);
 		loginDao.setContentValues(login);
 		loginDao.addData();

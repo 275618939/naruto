@@ -100,6 +100,7 @@
     <string name="love_hint">魅力</string>
     <string name="random">随机</string>
     <string name="nickname">昵称</string>
+    <string name="nonenickname">未设置昵称</string>
     <string name="edit_nick">请输入昵称</string>
     <string name="edit">编辑</string>
     <string name="head">头像</string>

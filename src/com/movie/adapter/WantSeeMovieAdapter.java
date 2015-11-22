@@ -33,6 +33,7 @@ public class WantSeeMovieAdapter extends BaseAdapter {
 		this.users = users;
 		imageLoader=new ImageLoaderCache(context);
 		inflater = LayoutInflater.from(context);
+		
 	}
 	
 	@Override
