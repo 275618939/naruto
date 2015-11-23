@@ -53,6 +53,11 @@ public class LoadView {
 		loadingErrorLayout.setVisibility(View.GONE);
 		loadingLayout.setVisibility(View.GONE);
 	}
+	public void hideAllHit(CallBackService service) {
+		loadingLineFail.setVisibility(View.GONE);
+		loadingErrorLayout.setVisibility(View.GONE);
+		loadingLayout.setVisibility(View.GONE);
+	}
 	
 	
 

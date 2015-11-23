@@ -28,6 +28,7 @@ import com.movie.client.bean.User;
 import com.movie.client.service.BaseService;
 import com.movie.client.service.CallBackService;
 import com.movie.network.HttpNarutoQueryService;
+import com.movie.network.HttpRegionService;
 import com.movie.view.LoadView;
 
 public class NarutoCharmFragment extends Fragment implements CallBackService,
@@ -37,6 +38,7 @@ public class NarutoCharmFragment extends Fragment implements CallBackService,
 	NarutoAdapter natutoAdapter;
 	PullToRefreshListView refreshView;
 	BaseService httpNarutoBaseService;
+	BaseService httpRegionService;
 	List<User> users = new ArrayList<User>();
 	View view;
 	LoadView loadView;
@@ -51,10 +53,12 @@ public class NarutoCharmFragment extends Fragment implements CallBackService,
 			titleView.setVisibility(View.GONE);
 		}
 		httpNarutoBaseService = new HttpNarutoQueryService(getActivity());
+		httpRegionService = new HttpRegionService(getActivity());
 		view = LayoutInflater.from(getActivity()).inflate(R.layout.fragment_naruto_charm, null);
 		loadView = new LoadView(view);
 		initView(view);
 		loadUser();
+		httpRegionService.execute(this);
 		return view;
 	}
 

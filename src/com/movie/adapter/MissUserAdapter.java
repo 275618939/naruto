@@ -38,7 +38,7 @@ public class MissUserAdapter extends BaseAdapter {
 		this.context = context;
 		this.userList = users;
 		inflater = LayoutInflater.from(context);
-		imageLoaderCache = new ImageLoaderCache(context);
+		imageLoaderCache=ImageLoaderCache.getInstance(context);
 
 	}
 

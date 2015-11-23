@@ -34,7 +34,7 @@ public class MoviesAdapter extends BaseAdapter {
 	public MoviesAdapter(Context context,List<Movie> movies) {
 		this.context = context;
 		this.movies = movies;
-		imageLoader=new ImageLoaderCache(context);
+		imageLoader=ImageLoaderCache.getInstance(context);
 		inflater = LayoutInflater.from(context);
 		initData();
 	}

@@ -52,7 +52,7 @@ public class PartNarutoExpandableAdapter extends BaseExpandableListAdapter {
 	Handler handler;
 	public PartNarutoExpandableAdapter(Context context,List<Dictionary> parents, List<List<User>> childs) {
 		inflater = LayoutInflater.from(context);
-		imageLoaderCache = new ImageLoaderCache(context);
+		imageLoaderCache=ImageLoaderCache.getInstance(context);
 		this.parents = parents;
 		this.childs = childs;
 		this.context = context;

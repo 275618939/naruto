@@ -15,7 +15,6 @@ import android.widget.TextView;
 
 import com.movie.R;
 import com.movie.client.bean.MovieComment;
-import com.movie.ui.MovieDetailActivity;
 import com.movie.ui.UserDetailActivity;
 import com.movie.util.ImageLoaderCache;
 import com.movie.view.RoundImageView;
@@ -32,7 +31,7 @@ public class MoviesCommentAdapter extends BaseAdapter {
 	public MoviesCommentAdapter(Context context,List<MovieComment> movieComments) {
 		this.context = context;
 		this.movieComments = movieComments;
-		imageLoader=new ImageLoaderCache(context);
+		imageLoader=ImageLoaderCache.getInstance(context);
 		inflater = LayoutInflater.from(context);
 		initData();
 	}

@@ -90,6 +90,7 @@ public class UserDetailActivity extends BaseActivity implements
 	boolean isLove;
 	LoadView loadView;
 	User loginUser;
+	String requestTag;
 
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
@@ -164,22 +165,25 @@ public class UserDetailActivity extends BaseActivity implements
 
 	/* 获取传递过来的数据 */
 	private void loadUser() {
+		requestTag=httpUsersService.TAG;
 		httpUsersService.addParams("userId", memberId);
 		httpUsersService.addParams(httpUsersService.URL_KEY,Constant.User_Query_API_URL);
 		httpUsersService.execute(this);
 	}
 	private void loadUserComments(){
-		httpUserCommentService.addParams("memberId", user.getMemberId());
+		httpUserCommentService.addParams("memberId", memberId);
 		httpUserCommentService.execute(this);
 	}
 	private void loadUserFilmType(){
+		
 		httpUserFilmTyService.addParams("page",0);
 		httpUserFilmTyService.addParams("size",Constant.Page.WANT_SEE_MOIVE_SIZE);
 		httpUserFilmTyService.execute(this);
 	}
 	private void putLove(){
 		isLove=true;
-		httpUserLoveService.addParams("memberId", user.getMemberId());
+		requestTag=httpUserLoveService.TAG;
+		httpUserLoveService.addParams("memberId", memberId);
 		httpUserLoveService.execute(this);
 	}
 
@@ -233,6 +237,7 @@ public class UserDetailActivity extends BaseActivity implements
 
 	@Override
 	public void SuccessCallBack(Map<String, Object> map) {
+		hideProgressDialog();
 		loadView.showLoadAfter(this);
 		refreshableScollView.onRefreshComplete();
 		hideProgressDialog();
@@ -333,6 +338,8 @@ public class UserDetailActivity extends BaseActivity implements
 					userMoviesWant.setOnClickListener(this);
 				}
 				
+			}else if(tag.endsWith(httpUserLoveService.TAG)){
+				loadUser();
 			}
 		} else {
 			
@@ -359,16 +366,23 @@ public class UserDetailActivity extends BaseActivity implements
 	@Override
 	public void ErrorCallBack(Map<String, Object> map) {
 		refreshableScollView.onRefreshComplete();
-		hideProgressDialog();
 		String message = map.get(Constant.ReturnCode.RETURN_MESSAGE).toString();
-		showToask(message);
-		loadView.showLoadFail(this,this);
-		
+		String tag = map.get(Constant.ReturnCode.RETURN_TAG).toString();
+		if(tag.endsWith(httpUsersService.TAG)){
+			loadView.showLoadFail(this,this);
+		}else{
+			loadView.hideAllHit(this);
+			showToask(message);
+		}
 	}
 
 	@Override
 	public void OnRequest() {
-		loadView.showLoading(this);
+		if(requestTag.equals(httpUserLoveService.TAG)){
+			showProgressDialog("提示", "请稍后......");
+		}else{
+			loadView.showLoading(this);
+		}
 	}
 
 	@Override

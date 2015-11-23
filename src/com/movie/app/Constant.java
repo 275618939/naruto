@@ -97,7 +97,8 @@ public interface Constant {
 	public final static String Member_Love_Query_API_URL = SERVER_URL+ "/member/byLove";
 	// 查询会员列表By最近
 	public final static String Member_Near_Query_API_URL = SERVER_URL+ "/member/near";
-	
+	// 查询城市id
+	public final static String Region_API_URL = SERVER_URL+ "/region";
 
 	public static final int CIM_SERVER_PORT = 23456;
 	

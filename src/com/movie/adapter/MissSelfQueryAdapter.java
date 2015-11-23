@@ -39,7 +39,7 @@ public class MissSelfQueryAdapter extends BaseAdapter {
 		this.context = context;
 		this.misses = misses;
 		inflater = LayoutInflater.from(context);
-		imageLoaderCache = new ImageLoaderCache(context);
+		imageLoaderCache=ImageLoaderCache.getInstance(context);
 
 	}
 	public MissSelfQueryAdapter(Context context,Handler handler, List<Miss> misses) {

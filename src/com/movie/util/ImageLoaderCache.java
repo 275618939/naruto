@@ -21,8 +21,12 @@ import android.graphics.BitmapFactory;
 import android.widget.ImageView;
 
 import com.movie.R;
+import com.movie.client.db.DBUtil;
 
 public class ImageLoaderCache {
+	
+	private static ImageLoaderCache imageInstance;
+	
 	MemoryCache memoryCache = new MemoryCache();  
     FileCache fileCache;  
     private Map<ImageView, String> imageViews = Collections.synchronizedMap(new WeakHashMap<ImageView, String>());  
@@ -33,6 +37,15 @@ public class ImageLoaderCache {
         fileCache = new FileCache(context);  
         executorService = Executors.newFixedThreadPool(5);  
     }  
+    /**
+	 * 初始化图片加载类
+	 */
+	public static ImageLoaderCache getInstance(Context context) {
+		if (imageInstance == null) {
+			imageInstance = new ImageLoaderCache(context);
+		}
+		return imageInstance;
+	}
   
     // 当进入listview时默认的图片，可换成你自己的默认图片  
     final int stub_id = R.drawable.empty_photo;  
@@ -43,13 +56,19 @@ public class ImageLoaderCache {
         // 先从内存缓存中查找  
   
         Bitmap bitmap = memoryCache.get(url);  
-        if (bitmap != null)  
+        if (bitmap != null)  {
             imageView.setImageBitmap(bitmap);  
+//            if(!bitmap.isRecycled()){
+//            	bitmap.recycle();   //回收图片所占的内存         
+//                System.gc();
+//            }
+        }
         else {  
             // 若没有的话则开启新线程加载图片  
             queuePhoto(url, imageView);  
             imageView.setImageResource(stub_id);  
-        }  
+        } 
+      
     }  
   
     private void queuePhoto(String url, ImageView imageView) {  

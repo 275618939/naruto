@@ -37,7 +37,7 @@ public class MissNarutoQueryAdapter extends BaseAdapter {
 		this.context = context;
 		this.misses = misses;
 		inflater = LayoutInflater.from(context);
-		imageLoaderCache = new ImageLoaderCache(context);
+		imageLoaderCache=ImageLoaderCache.getInstance(context);
 
 	}
 	public MissNarutoQueryAdapter(Context context,Handler handler, List<Miss> misses) {
