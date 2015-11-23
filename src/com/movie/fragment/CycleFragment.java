@@ -43,11 +43,11 @@ public class CycleFragment extends Fragment implements OnPageChangeListener {
 	private ImageCycleViewListener mImageCycleViewListener;
 	List<ADInfo> infos = new ArrayList<ADInfo>();
 	List<ImageView> views = new ArrayList<ImageView>();
-	String[] imageUrls = {"http://img2.imgtn.bdimg.com/it/u=3093785514,1341050958&fm=21&gp=0.jpg",
-            "http://img2.3lian.com/2014/f2/37/d/40.jpg",
-            "http://d.3987.com/sqmy_131219/001.jpg",
-            "http://img2.3lian.com/2014/f2/37/d/39.jpg",
-            "http://www.8kmm.com/UploadFiles/2012/8/201208140920132659.jpg"};
+	String[] imageUrls = { "http://img.my.csdn.net/uploads/201309/01/1378037235_3453.jpg",  
+	         "http://img.my.csdn.net/uploads/201309/01/1378037235_7476.jpg",  
+	         "http://img.my.csdn.net/uploads/201309/01/1378037235_9280.jpg",  
+	         "http://img.my.csdn.net/uploads/201309/01/1378037234_3539.jpg",  
+	         "http://img.my.csdn.net/uploads/201309/01/1378037234_6318.jpg"};
 	
 	View rootView;
 	@Override

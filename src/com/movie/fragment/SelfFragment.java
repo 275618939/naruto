@@ -28,7 +28,6 @@ import com.movie.network.HttpLogoutService;
 import com.movie.network.HttpUserService;
 import com.movie.ui.LoginActivity;
 import com.movie.ui.MissSelfQueryActivity;
-import com.movie.ui.RegsiterGuideActivity;
 import com.movie.ui.UserActivity;
 import com.movie.ui.UserDetailActivity;
 import com.movie.util.ImageLoaderCache;

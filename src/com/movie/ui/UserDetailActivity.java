@@ -46,6 +46,7 @@ import com.movie.network.HttpUserService;
 import com.movie.util.Horoscope;
 import com.movie.util.ImageLoaderCache;
 import com.movie.util.StringUtil;
+import com.movie.view.LoadView;
 
 public class UserDetailActivity extends BaseActivity implements
 		OnClickListener, CallBackService,OnRefreshListener<ScrollView> {
@@ -81,11 +82,14 @@ public class UserDetailActivity extends BaseActivity implements
 	LinearLayout commentsLayout;
 	LinearLayout layoutMoviesPre;
 	LinearLayout userDetailTool;
+	RelativeLayout userDetailParent;
 	List<Map<Integer, Integer>> comments;
 	ImageLoaderCache loaderCache;
 	Map<Integer,String> hobbiesMap;
 	Map<Integer,String> filmTypeMap;
 	boolean isLove;
+	LoadView loadView;
+	User loginUser;
 
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
@@ -104,7 +108,8 @@ public class UserDetailActivity extends BaseActivity implements
 	}
 
 	private void initViews() {
-		
+		userDetailParent = (RelativeLayout) findViewById(R.id.user_detail_parent);
+		loadView = new LoadView(userDetailParent);
 		evaluationAdapter = new EvaluationAdapter(this,comments);
 		title = (TextView) findViewById(R.id.title);
 		headView = (ImageView) findViewById(R.id.user_poster);
@@ -130,6 +135,7 @@ public class UserDetailActivity extends BaseActivity implements
 		commentsView.setAdapter(evaluationAdapter);
 		commentsView.setSelector(new ColorDrawable(Color.TRANSPARENT));
 		userLove.setOnClickListener(this);
+		refreshableScollView.setMode(Mode.PULL_FROM_START);
 		refreshableScollView.setOnRefreshListener(this);
 	}
 
@@ -139,13 +145,20 @@ public class UserDetailActivity extends BaseActivity implements
 		hobbiesMap= hobbyService.getHobbyMap();
 		filmTypeMap=filmTypeService.getFilmTypeMap();
 		refreshableScollView.setRefreshing();
-		User loginUser = userService.getUserItem();
+		loginUser = userService.getUserItem();
+		loadUser();
+		loadUserFilmType();
+		//loadUserComments();
+		
+	}
+	@Override
+	public void onStart(){
+		super.onStart();
 		if(null!=loginUser){
 			if(memberId.equals(loginUser.getMemberId())){
 				userDetailTool.setVisibility(View.GONE);
 			}
 		}
-		//loadUserComments();
 		
 	}
 
@@ -193,6 +206,10 @@ public class UserDetailActivity extends BaseActivity implements
 			missIntent.putExtra(SelfFragment.CONDITION_KEY, user);
 			startActivity(missIntent);
 			break;
+		case R.id.loading_error:
+			loadUser();
+			loadUserFilmType();
+			break;
 		case R.id.userLove:
 			if(isLove) {
 				showToask("您已经心动过了哟!");
@@ -216,6 +233,7 @@ public class UserDetailActivity extends BaseActivity implements
 
 	@Override
 	public void SuccessCallBack(Map<String, Object> map) {
+		loadView.showLoadAfter(this);
 		refreshableScollView.onRefreshComplete();
 		hideProgressDialog();
 		String code = map.get(Constant.ReturnCode.RETURN_STATE).toString();
@@ -344,12 +362,13 @@ public class UserDetailActivity extends BaseActivity implements
 		hideProgressDialog();
 		String message = map.get(Constant.ReturnCode.RETURN_MESSAGE).toString();
 		showToask(message);
+		loadView.showLoadFail(this,this);
 		
 	}
 
 	@Override
 	public void OnRequest() {
-		//showProgressDialog("提示", "请稍后......");
+		loadView.showLoading(this);
 	}
 
 	@Override

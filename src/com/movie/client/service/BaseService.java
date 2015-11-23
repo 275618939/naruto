@@ -11,11 +11,14 @@ import org.codehaus.jackson.map.ObjectMapper;
 import org.codehaus.jackson.type.TypeReference;
 
 import android.content.Context;
+import android.net.ConnectivityManager;
 import android.os.Handler;
 import android.os.Message;
 import android.util.Log;
 
+import com.movie.R;
 import com.movie.app.Constant;
+import com.movie.app.Constant.ReturnCode;
 import com.movie.app.ErrorState;
 import com.movie.app.InvokeException;
 import com.movie.client.bean.Session;
@@ -52,6 +55,14 @@ public abstract class BaseService  {
 	public void  execute(final CallBackService callbackService) {
 		this.callBackService=callbackService;
 		this.callBackService.OnRequest();
+		if(!checkNetworkState()){
+			HashMap<String, Object> map=new HashMap<String, Object>();
+			map.put(Constant.ReturnCode.RETURN_TAG, TAG);
+			map.put(Constant.ReturnCode.RETURN_STATE,ReturnCode.STATE_999);
+			map.put(Constant.ReturnCode.RETURN_MESSAGE,context.getString(R.string.linefail_hint));
+			this.callBackService.ErrorCallBack(map);
+			return;
+		}
 	    executor.execute(new Runnable() {
 			@Override
 			public void run() {
@@ -70,6 +81,20 @@ public abstract class BaseService  {
 		headers.clear();
 		params.clear();
 	}
+	/** 
+     * 检测网络是否连接 
+     * @return 
+     */  
+    protected boolean checkNetworkState() {  
+        boolean flag = false;  
+        //得到网络连接信息  
+        ConnectivityManager  manager = (ConnectivityManager)context.getSystemService(Context.CONNECTIVITY_SERVICE);  
+        //去进行判断网络是否连接  
+        if (manager.getActiveNetworkInfo() != null) {  
+            flag = manager.getActiveNetworkInfo().isAvailable();  
+        }  
+        return flag;  
+    }  
 	/**
 	 * 获取回话SID
 	 * @return SID

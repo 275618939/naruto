@@ -42,4 +42,25 @@
             android:text="@string/loadfail_hint" />
     </LinearLayout>
 
+    <LinearLayout
+        android:id="@+id/loading_line_fail"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:gravity="center"
+        android:orientation="vertical"
+        android:visibility="gone" >
+
+        <ImageView
+            android:id="@+id/line_fail"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:background="@drawable/wifi" />
+
+        <TextView
+            style="@style/common_content_hint"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/linefail_hint" />
+    </LinearLayout>
+
 </LinearLayout>

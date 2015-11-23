@@ -16,6 +16,7 @@ import android.widget.TextView;
 import com.movie.R;
 import com.movie.client.bean.MovieComment;
 import com.movie.ui.MovieDetailActivity;
+import com.movie.ui.UserDetailActivity;
 import com.movie.util.ImageLoaderCache;
 import com.movie.view.RoundImageView;
 
@@ -113,7 +114,7 @@ public class MoviesCommentAdapter extends BaseAdapter {
 		public void onClick(View v) {
 			
 			MovieComment comment=movieComments.get(position);
-			Intent intent=new Intent(context,MovieDetailActivity.class);
+			Intent intent=new Intent(context,UserDetailActivity.class);
 			intent.putExtra("memberId", comment.getMemberId());
 			context.startActivity(intent);
 			

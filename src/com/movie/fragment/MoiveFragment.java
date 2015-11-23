@@ -16,7 +16,6 @@ import com.movie.view.PagerSlidingTabStrip;
 
 public class MoiveFragment extends Fragment implements OnClickListener {
 
-	int page;
 	MoiveCurrentFragment currentFragment;
 	MoiveUpComingFragment upComingFragment;
 	String[] titles;

@@ -17,6 +17,7 @@ public class LoadView {
 	LinearLayout loadingLayout;
 	LinearLayout loadingErrorLayout; 
 	LinearLayout loadAfterLayout; 
+	LinearLayout loadingLineFail;
 
 
 	public LoadView(View rootView) {
@@ -27,23 +28,30 @@ public class LoadView {
 		loadingLayout=(LinearLayout)rootView.findViewById(R.id.loading);
 		loadingErrorLayout=(LinearLayout)rootView.findViewById(R.id.loading_error);
 		loadAfterLayout=(LinearLayout)rootView.findViewById(R.id.load_after);
+		loadingLineFail=(LinearLayout)rootView.findViewById(R.id.loading_line_fail);
 	}
 	public void showLoading(CallBackService service) {
 		loadingLayout.setVisibility(View.VISIBLE);
 		loadingErrorLayout.setVisibility(View.GONE);
+		loadingLineFail.setVisibility(View.GONE);
 	}
 	public void showLoadFail(CallBackService service,OnClickListener listener) {
 		loadingErrorLayout.setVisibility(View.VISIBLE);
 		loadingErrorLayout.setOnClickListener(listener);
 		loadingLayout.setVisibility(View.GONE);
+		loadingLineFail.setVisibility(View.GONE);
 	}
 	public void showLoadAfter(CallBackService service) {
 		loadAfterLayout.setVisibility(View.VISIBLE);
 		loadingErrorLayout.setVisibility(View.GONE);
 		loadingLayout.setVisibility(View.GONE);
+		loadingLineFail.setVisibility(View.GONE);
 	}
 	public void showLoadLineFail(CallBackService service) {
-
+		loadingLineFail.setVisibility(View.VISIBLE);
+		loadAfterLayout.setVisibility(View.GONE);
+		loadingErrorLayout.setVisibility(View.GONE);
+		loadingLayout.setVisibility(View.GONE);
 	}
 	
 	

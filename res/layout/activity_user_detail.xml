@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/user_detail_parent"
     android:layout_width="fill_parent"
     android:layout_height="fill_parent"
     android:orientation="vertical" >
@@ -8,313 +9,329 @@
         android:id="@+id/title_bar"
         layout="@layout/common_head" />
 
-    <com.handmark.pulltorefresh.library.PullToRefreshScrollView
-        android:id="@+id/user_detail_view"
+    <include layout="@layout/load_item" />
+
+    <LinearLayout
+        android:id="@+id/load_after"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:layout_below="@+id/title_bar" >
+        android:layout_below="@+id/title_bar"
+        android:orientation="vertical"
+        android:visibility="gone" >
 
-        <LinearLayout
+        <com.handmark.pulltorefresh.library.PullToRefreshScrollView
+            android:id="@+id/user_detail_view"
             android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:gravity="center_horizontal"
-            android:orientation="vertical" >
-
-            <FrameLayout
-                android:id="@+id/user_brief"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:orientation="vertical" >
-
-                <LinearLayout
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_marginTop="@dimen/layout_item_top_1"
-                    android:orientation="horizontal" >
-
-                    <LinearLayout
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_marginLeft="@dimen/layout_left" >
-
-                        <ImageView
-                            android:id="@+id/user_poster"
-                            android:layout_width="@dimen/user_image_width"
-                            android:layout_height="@dimen/user_image_width"
-                            android:scaleType="centerCrop"
-                            android:src="@drawable/default_portrait" />
-                    </LinearLayout>
-
-                    <LinearLayout
-                        android:id="@+id/user_introduce"
-                        android:layout_width="match_parent"
-                        android:layout_height="match_parent"
-                        android:layout_marginLeft="@dimen/layout_left"
-                        android:orientation="vertical" >
-
-                        <LinearLayout
-                            android:layout_width="match_parent"
-                            android:layout_height="wrap_content"
-                            android:orientation="horizontal" >
-
-                            <TextView
-                                android:id="@+id/user_sex"
-                                style="@style/common_content_text_style"
-                                android:layout_width="wrap_content"
-                                android:layout_height="wrap_content" />
-
-                            <TextView
-                                android:id="@+id/user_constell"
-                                style="@style/common_content_text_style"
-                                android:layout_width="wrap_content"
-                                android:layout_height="wrap_content"
-                                android:layout_marginLeft="@dimen/text_left" />
-                        </LinearLayout>
-
-                        <LinearLayout
-                            android:layout_width="match_parent"
-                            android:layout_height="wrap_content"
-                            android:orientation="horizontal" >
-
-                            <TextView
-                                style="@style/common_content_text_style"
-                                android:layout_width="wrap_content"
-                                android:layout_height="wrap_content"
-                                android:text="@string/charm" />
-
-                            <TextView
-                                android:id="@+id/charm"
-                                style="@style/common_content_text_style"
-                                android:layout_width="wrap_content"
-                                android:layout_height="wrap_content"
-                                android:layout_marginLeft="@dimen/text_left"
-                                android:text="@string/integer_default" />
-                        </LinearLayout>
-
-                        <LinearLayout
-                            android:layout_width="match_parent"
-                            android:layout_height="wrap_content"
-                            android:orientation="horizontal" >
-
-                            <TextView
-                                style="@style/common_content_text_style"
-                                android:layout_width="wrap_content"
-                                android:layout_height="wrap_content"
-                                android:text="@string/love_hint" />
-
-                            <TextView
-                                android:id="@+id/love"
-                                style="@style/common_content_text_style"
-                                android:layout_width="wrap_content"
-                                android:layout_height="wrap_content"
-                                android:layout_marginLeft="@dimen/text_left"
-                                android:text="@string/user_love_none" />
-                        </LinearLayout>
-
-                        <RelativeLayout
-                            android:id="@+id/hobby_arrow"
-                            android:layout_width="match_parent"
-                            android:layout_height="wrap_content"
-                            android:gravity="center_vertical"
-                            android:layout_marginLeft="@dimen/layout_left"
-                            android:layout_marginRight="@dimen/layout_right"
-                            android:layout_marginTop="@dimen/layout_item_top_0" >
-
-                            <LinearLayout
-                                android:id="@+id/hobbies"
-                                android:layout_width="wrap_content"
-                                android:layout_height="wrap_content"
-                                android:layout_alignParentLeft="true"
-                                android:orientation="horizontal" >
-                            </LinearLayout>
-
-                            <TextView
-                                android:id="@+id/hobby_arrow_more"
-                                style="@style/common_title"
-                                android:layout_width="wrap_content"
-                                android:layout_height="wrap_content"
-                                android:layout_marginTop="2dp"
-                                android:layout_alignParentRight="true"
-                                android:text="@string/more"
-                                android:visibility="gone" />
-                            <!--
-                                 <ImageView
-                                android:id="@+id/hobby_arrow_more"
-                                style="@style/setting_arrow" />
-                            -->
-                        </RelativeLayout>
-                    </LinearLayout>
-                </LinearLayout>
-
-                <LinearLayout
-                    android:id="@+id/user_tag"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_marginTop="120dp"
-                    android:background="@drawable/bg_ment"
-                    android:gravity="center_vertical"
-                    android:orientation="horizontal"
-                    android:paddingBottom="@dimen/nav_padding_bottom"
-                    android:paddingTop="@dimen/nav_padding_top" >
-
-                    <LinearLayout
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:layout_marginLeft="@dimen/layout_left_4"
-                        android:orientation="horizontal" >
-
-                        <TextView
-                            android:id="@+id/sign_hint"
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:text="@string/signature"
-                            android:textColor="@color/dot_select_color"
-                            android:textSize="@dimen/titleSize1" />
-
-                        <TextView
-                            android:id="@+id/sign"
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:layout_marginLeft="@dimen/layout_left_1"
-                            android:layout_marginRight="@dimen/layout_right"
-                            android:textColor="@color/dot_select_color" />
-                    </LinearLayout>
-                </LinearLayout>
-            </FrameLayout>
+            android:layout_height="match_parent" >
 
             <LinearLayout
                 android:layout_width="match_parent"
-                android:layout_height="@dimen/detail_panel_bref"
-                android:layout_marginLeft="@dimen/layout_left"
-                android:layout_marginRight="@dimen/layout_right"
-                android:layout_marginTop="@dimen/layout_item_top_1"
+                android:layout_height="match_parent"
+                android:gravity="center_horizontal"
                 android:orientation="vertical" >
 
-                <LinearLayout
-                    android:id="@+id/comments_layout"
+                <FrameLayout
+                    android:id="@+id/user_brief"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:orientation="vertical"
-                    android:visibility="gone" >
+                    android:orientation="vertical" >
+
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="@dimen/layout_item_top_1"
+                        android:orientation="horizontal" >
+
+                        <LinearLayout
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_marginLeft="@dimen/layout_left" >
+
+                            <ImageView
+                                android:id="@+id/user_poster"
+                                android:layout_width="@dimen/user_image_width"
+                                android:layout_height="@dimen/user_image_width"
+                                android:scaleType="centerCrop"
+                                android:src="@drawable/default_portrait" />
+                        </LinearLayout>
+
+                        <LinearLayout
+                            android:id="@+id/user_introduce"
+                            android:layout_width="match_parent"
+                            android:layout_height="match_parent"
+                            android:layout_marginLeft="@dimen/layout_left"
+                            android:orientation="vertical" >
+
+                            <LinearLayout
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                android:orientation="horizontal" >
+
+                                <TextView
+                                    android:id="@+id/user_sex"
+                                    style="@style/common_content_text_style"
+                                    android:layout_width="wrap_content"
+                                    android:layout_height="wrap_content" />
+
+                                <TextView
+                                    android:id="@+id/user_constell"
+                                    style="@style/common_content_text_style"
+                                    android:layout_width="wrap_content"
+                                    android:layout_height="wrap_content"
+                                    android:layout_marginLeft="@dimen/text_left" />
+                            </LinearLayout>
+
+                            <LinearLayout
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                android:orientation="horizontal" >
+
+                                <TextView
+                                    style="@style/common_content_text_style"
+                                    android:layout_width="wrap_content"
+                                    android:layout_height="wrap_content"
+                                    android:text="@string/charm" />
+
+                                <RatingBar
+                                    android:id="@+id/user_charm"
+                                    style="@style/charmBar"
+                                    android:layout_width="wrap_content"
+                                    android:layout_height="wrap_content"
+                                    android:layout_marginLeft="@dimen/text_left"
+                                    android:layout_marginTop="3dp"
+                                    android:numStars="5" >
+                                </RatingBar>
+
+                                <TextView
+                                    android:id="@+id/charm"
+                                    style="@style/common_content_text_style"
+                                    android:layout_width="wrap_content"
+                                    android:layout_height="wrap_content"
+                                    android:layout_marginLeft="@dimen/text_left"
+                                    android:text="@string/integer_default" />
+                            </LinearLayout>
+
+                            <LinearLayout
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                android:orientation="horizontal" >
+
+                                <TextView
+                                    style="@style/common_content_text_style"
+                                    android:layout_width="wrap_content"
+                                    android:layout_height="wrap_content"
+                                    android:text="@string/love_hint" />
+
+                                <TextView
+                                    android:id="@+id/love"
+                                    style="@style/common_content_text_style"
+                                    android:layout_width="wrap_content"
+                                    android:layout_height="wrap_content"
+                                    android:layout_marginLeft="@dimen/text_left"
+                                    android:text="@string/user_love_none" />
+                            </LinearLayout>
+
+                            <RelativeLayout
+                                android:id="@+id/hobby_arrow"
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                android:layout_marginLeft="@dimen/layout_left"
+                                android:layout_marginRight="@dimen/layout_right"
+                                android:layout_marginTop="@dimen/layout_item_top_0"
+                                android:gravity="center_vertical" >
+
+                                <LinearLayout
+                                    android:id="@+id/hobbies"
+                                    android:layout_width="wrap_content"
+                                    android:layout_height="wrap_content"
+                                    android:layout_alignParentLeft="true"
+                                    android:orientation="horizontal" >
+                                </LinearLayout>
+
+                                <TextView
+                                    android:id="@+id/hobby_arrow_more"
+                                    style="@style/common_title"
+                                    android:layout_width="wrap_content"
+                                    android:layout_height="wrap_content"
+                                    android:layout_alignParentRight="true"
+                                    android:layout_marginTop="2dp"
+                                    android:text="@string/more"
+                                    android:visibility="gone" />
+                            </RelativeLayout>
+                        </LinearLayout>
+                    </LinearLayout>
+
+                    <LinearLayout
+                        android:id="@+id/user_tag"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="120dp"
+                        android:background="@drawable/bg_ment"
+                        android:gravity="center_vertical"
+                        android:orientation="horizontal"
+                        android:paddingBottom="@dimen/nav_padding_bottom"
+                        android:paddingTop="@dimen/nav_padding_top" >
+
+                        <LinearLayout
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:layout_marginLeft="@dimen/layout_left_4"
+                            android:orientation="horizontal" >
+
+                            <TextView
+                                android:id="@+id/sign_hint"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:text="@string/signature"
+                                android:textColor="@color/dot_select_color"
+                                android:textSize="@dimen/titleSize1" />
+
+                            <TextView
+                                android:id="@+id/sign"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:layout_marginLeft="@dimen/layout_left_1"
+                                android:layout_marginRight="@dimen/layout_right"
+                                android:textColor="@color/dot_select_color" />
+                        </LinearLayout>
+                    </LinearLayout>
+                </FrameLayout>
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="@dimen/detail_panel_bref"
+                    android:layout_marginLeft="@dimen/layout_left"
+                    android:layout_marginRight="@dimen/layout_right"
+                    android:layout_marginTop="@dimen/layout_item_top_1"
+                    android:orientation="vertical" >
+
+                    <LinearLayout
+                        android:id="@+id/comments_layout"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:orientation="vertical"
+                        android:visibility="gone" >
+
+                        <RelativeLayout
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content" >
+
+                            <TextView
+                                style="@style/common_title"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:layout_alignParentLeft="true"
+                                android:text="@string/user_evaluation" />
+
+                            <TextView
+                                android:id="@+id/comments_more"
+                                style="@style/common_title"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:layout_alignParentRight="true"
+                                android:text="@string/more"
+                                android:visibility="gone" />
+                        </RelativeLayout>
+
+                        <com.movie.view.CommentsGridView
+                            android:id="@+id/comments"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:layout_marginTop="@dimen/layout_item_top_1"
+                            android:divider="@null"
+                            android:horizontalSpacing="5dp"
+                            android:numColumns="4"
+                            android:stretchMode="columnWidth" >
+                        </com.movie.view.CommentsGridView>
+
+                        <ImageView
+                            style="@style/input_item_line"
+                            android:layout_marginTop="@dimen/layout_item_top_1" />
+                    </LinearLayout>
+
+                    <LinearLayout
+                        android:id="@+id/layout_movies_pre"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="@dimen/layout_item_top_1"
+                        android:orientation="vertical"
+                        android:visibility="gone" >
+
+                        <TextView
+                            style="@style/common_title"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_gravity="left"
+                            android:text="@string/user_movie_pre" />
+
+                        <TextView
+                            android:id="@+id/user_movies_pre"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_marginLeft="@dimen/layout_left_2"
+                            android:layout_marginTop="@dimen/layout_item_top_1" />
+
+                        <ImageView
+                            style="@style/input_item_line"
+                            android:layout_marginTop="@dimen/layout_item_top_1" />
+                    </LinearLayout>
 
                     <RelativeLayout
+                        android:id="@+id/layout_movies_want"
                         android:layout_width="match_parent"
-                        android:layout_height="wrap_content" >
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="@dimen/layout_item_top_1"
+                        android:orientation="horizontal" >
 
                         <TextView
                             style="@style/common_title"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:layout_alignParentLeft="true"
-                            android:text="@string/user_evaluation" />
+                            android:text="@string/user_movies" />
 
                         <TextView
-                            android:id="@+id/comments_more"
+                            android:id="@+id/user_movies_want"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_alignParentRight="true" />
+                    </RelativeLayout>
+
+                    <ImageView
+                        style="@style/input_item_line"
+                        android:layout_marginTop="@dimen/layout_item_top_1" />
+
+                    <RelativeLayout
+                        android:id="@+id/layout_miss"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginBottom="@dimen/layout_item_bottom"
+                        android:layout_marginTop="@dimen/layout_item_top_1"
+                        android:orientation="horizontal" >
+
+                        <TextView
                             style="@style/common_title"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:layout_alignParentRight="true"
-                            android:text="@string/more"
-                            android:visibility="gone" />
+                            android:layout_alignParentLeft="true"
+                            android:text="@string/user_miss" />
+
+                        <TextView
+                            android:id="@+id/user_miss"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_alignParentRight="true" />
                     </RelativeLayout>
-
-                    <com.movie.view.CommentsGridView
-                        android:id="@+id/comments"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:layout_marginTop="@dimen/layout_item_top_1"
-                        android:divider="@null"
-                        android:horizontalSpacing="5dp"
-                        android:numColumns="4"
-                        android:stretchMode="columnWidth" >
-                    </com.movie.view.CommentsGridView>
-
-                    <ImageView
-                        style="@style/input_item_line"
-                        android:layout_marginTop="@dimen/layout_item_top_1" />
                 </LinearLayout>
-
-                <LinearLayout
-                    android:id="@+id/layout_movies_pre"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_marginTop="@dimen/layout_item_top_1"
-                    android:orientation="vertical"
-                    android:visibility="gone" >
-
-                    <TextView
-                        style="@style/common_title"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_gravity="left"
-                        android:text="@string/user_movie_pre" />
-
-                    <TextView
-                        android:id="@+id/user_movies_pre"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_marginLeft="@dimen/layout_left_2"
-                        android:layout_marginTop="@dimen/layout_item_top_1" />
-
-                    <ImageView
-                        style="@style/input_item_line"
-                        android:layout_marginTop="@dimen/layout_item_top_1" />
-                </LinearLayout>
-
-                <RelativeLayout
-                    android:id="@+id/layout_movies_want"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_marginTop="@dimen/layout_item_top_1"
-                    android:orientation="horizontal" >
-
-                    <TextView
-                        style="@style/common_title"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_alignParentLeft="true"
-                        android:text="@string/user_movies" />
-
-                    <TextView
-                        android:id="@+id/user_movies_want"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_alignParentRight="true" />
-                </RelativeLayout>
-
-                <ImageView
-                    style="@style/input_item_line"
-                    android:layout_marginTop="@dimen/layout_item_top_1" />
-
-                <RelativeLayout
-                    android:id="@+id/layout_miss"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_marginBottom="@dimen/layout_item_bottom"
-                    android:layout_marginTop="@dimen/layout_item_top_1"
-                    android:orientation="horizontal" >
-
-                    <TextView
-                        style="@style/common_title"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_alignParentLeft="true"
-                        android:text="@string/user_miss" />
-
-                    <TextView
-                        android:id="@+id/user_miss"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_alignParentRight="true" />
-                </RelativeLayout>
             </LinearLayout>
-        </LinearLayout>
-    </com.handmark.pulltorefresh.library.PullToRefreshScrollView>
+        </com.handmark.pulltorefresh.library.PullToRefreshScrollView>
+    </LinearLayout>
 
     <LinearLayout
-        style="@style/bottom_bar_style_1"
         android:id="@+id/user_detail_tool"
-        android:layout_alignParentBottom="true" >
+        style="@style/bottom_bar_style_1"
+        android:layout_alignParentBottom="true"
+        android:layout_gravity="bottom" >
 
         <TextView
             style="@style/common_title"

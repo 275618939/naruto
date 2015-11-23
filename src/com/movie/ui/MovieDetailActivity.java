@@ -47,6 +47,7 @@ import com.movie.util.ImageLoaderCache;
 import com.movie.util.MovieScore;
 import com.movie.util.StringUtil;
 import com.movie.view.HorizontalListView;
+import com.movie.view.LoadView;
 import com.movie.view.MovieCommentsDialog;
 
 
@@ -94,6 +95,8 @@ public class MovieDetailActivity extends BaseActivity implements OnClickListener
 	List<User> users=new ArrayList<User>();
 	List<MovieComment> comments = new ArrayList<MovieComment>(); 
 	int page;
+	LoadView loadView;
+	RelativeLayout movieDetailParent;
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
@@ -110,6 +113,8 @@ public class MovieDetailActivity extends BaseActivity implements OnClickListener
 	}
 
 	private void initViews() {
+		movieDetailParent = (RelativeLayout) findViewById(R.id.movie_detail_parent);
+		loadView = new LoadView(movieDetailParent);
 		title = (TextView) findViewById(R.id.title);
 		movieScore= (TextView) findViewById(R.id.movie_score);
 		startBar= (RatingBar) findViewById(R.id.movie_star);
@@ -143,14 +148,14 @@ public class MovieDetailActivity extends BaseActivity implements OnClickListener
 		refreshableView.setMode(Mode.PULL_FROM_END);
 		refreshableView.setFocusable(false);
 		refreshableScollView.setMode(Mode.PULL_FROM_START);
-		
+		refreshableScollView.setOnRefreshListener(this);
 		refreshableView.setOnRefreshListener(this);
 		loveFilm.setOnClickListener(this);
 		filmLoveMore.setOnClickListener(this);
 		createMiss.setOnClickListener(this);
 		movieComment.setOnClickListener(this);
 		movieCommentsLayout.setOnClickListener(this);
-		refreshableScollView.setOnRefreshListener(this);
+		
 		movieTab.setOnCheckedChangeListener(new OnCheckedChangeListener() {
 
 			public void onCheckedChanged(RadioGroup group,int checkedId) {
@@ -185,10 +190,12 @@ public class MovieDetailActivity extends BaseActivity implements OnClickListener
 			}else{
 				movieMissInfo.setText(getResources().getString(R.string.miss_none));
 			}
-			refreshableScollView.setRefreshing();
+			loadMovieDetail();
+			loadMovieLove();
+			loadMovieComment();
 		}
-
 	}
+	
 	private void loadMovieDetail(){
 		httpMovieDetailService.addParams("filmId", movie.getId());
 		httpMovieDetailService.execute(this);
@@ -287,6 +294,7 @@ public class MovieDetailActivity extends BaseActivity implements OnClickListener
 	@Override
 	@SuppressWarnings("unchecked")
 	public void SuccessCallBack(Map<String, Object> map) {
+		loadView.showLoadAfter(this);
 		refreshableView.onRefreshComplete();
 		refreshableScollView.onRefreshComplete();
 		hideProgressDialog();
@@ -371,6 +379,7 @@ public class MovieDetailActivity extends BaseActivity implements OnClickListener
 
 	@Override
 	public void ErrorCallBack(Map<String, Object> map) {
+		loadView.showLoadFail(this,this);
 		hideProgressDialog();
 		String message=map.get(Constant.ReturnCode.RETURN_MESSAGE).toString();
 		showToask(message);
@@ -378,7 +387,7 @@ public class MovieDetailActivity extends BaseActivity implements OnClickListener
 
 	@Override
 	public void OnRequest() {
-		//showProgressDialog("提示", "正在加载，请稍后....");		
+		loadView.showLoading(this);	
 	}
 
 	@Override

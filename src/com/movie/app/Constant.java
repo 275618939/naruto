@@ -91,7 +91,14 @@ public interface Constant {
 	// 同意约会
 	public final static String Agree_Apply_API_URL = SERVER_URL+ "/tryst/agree";
 	
-	// 注意，这里的端口不是tomcat的端口，CIM端口在服务端spring-cim.xml中配置的，没改动就使用默认的23456
+	// 查询会员列表By颜值
+	public final static String Member_ByFace_Query_API_URL = SERVER_URL+ "/member/byFace";
+	// 查询会员列表By心动
+	public final static String Member_Love_Query_API_URL = SERVER_URL+ "/member/byLove";
+	// 查询会员列表By最近
+	public final static String Member_Near_Query_API_URL = SERVER_URL+ "/member/near";
+	
+
 	public static final int CIM_SERVER_PORT = 23456;
 	
     public static class MissBtnStatus{
@@ -184,6 +191,8 @@ public interface Constant {
 		public static String STATE_12 = "12";
 
 		public static String STATE_101 = "101";
+		
+		public static String STATE_999 = "999";
 
 	}
 
