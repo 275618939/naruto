@@ -21,7 +21,6 @@ import android.graphics.BitmapFactory;
 import android.widget.ImageView;
 
 import com.movie.R;
-import com.movie.client.db.DBUtil;
 
 public class ImageLoaderCache {
 	

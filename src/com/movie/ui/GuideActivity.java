@@ -14,6 +14,7 @@ import android.widget.LinearLayout;
 
 import com.movie.R;
 import com.movie.adapter.ViewPagerAdapter;
+import com.movie.app.SexState;
 import com.movie.client.service.BaseService;
 import com.movie.client.service.CallBackService;
 import com.movie.network.HttpCommentService;
@@ -70,8 +71,13 @@ public class GuideActivity extends BaseActivity implements OnPageChangeListener 
 	}
 	private void initData(){
 		httpHobbyService.execute(this);
+		//加载男性评价
+		httpCommentService.addParams("type", SexState.MAN.getState());
 		httpCommentService.execute(this);
 		httpFilmTypeService.execute(this);
+		//加载女性评价
+		httpCommentService.addParams("type", SexState.WOMAN.getState());
+		httpCommentService.execute(this);
 	}
 
 	private void initDots() {

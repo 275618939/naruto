@@ -117,12 +117,6 @@ public class MoiveUpComingFragment extends Fragment implements CallBackService,
 						movie.setTryst(Integer.parseInt(movieMap.get("tryst").toString()));
 					movies.add(movie);
 				}
-
-			} else {
-				int len = Movie.movies.length;
-				for (int i = 0; i < len; i++) {
-					movies.add(Movie.movies[i]);
-				}
 			}
 		} else {
 			String message = map.get(Constant.ReturnCode.RETURN_MESSAGE)

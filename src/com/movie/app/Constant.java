@@ -44,7 +44,7 @@ public interface Constant {
 	// 用户心动
 	public final static String User_Love_API_URL = SERVER_URL+ "/member/love";
 	// 查询所有评价信息
-	public final static String Dic_Comment_API_URL = SERVER_URL+ "/dictionary/comment";
+	public final static String Dic_Comment_API_URL = SERVER_URL+ "/dictionary/effect";
 	// 查询所有影片类型信息
 	public final static String Dic_FilmType_API_URL = SERVER_URL+ "/dictionary/filmType";
 	// 查询会员评价信息

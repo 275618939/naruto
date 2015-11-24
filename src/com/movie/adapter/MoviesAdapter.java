@@ -133,7 +133,7 @@ public class MoviesAdapter extends BaseAdapter {
 			
 			Movie movie=movies.get(position);
 			Intent intent=new Intent(context,MovieDetailActivity.class);
-			intent.putExtra("movie", movie);
+			intent.putExtra("filmId", movie.getId());
 			context.startActivity(intent);
 			
 		}

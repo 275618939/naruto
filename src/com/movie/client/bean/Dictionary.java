@@ -2,7 +2,6 @@ package com.movie.client.bean;
 
 import java.io.Serializable;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -19,17 +18,9 @@ public class Dictionary extends BaseBean implements Serializable {
 	
 	public final static Map<Integer,String> womenDictionaries = new HashMap<Integer,String>();
 	public final static Map<Integer,String> menDictionaries = new HashMap<Integer,String>();
-
 	public final static Map<Integer, Map<Integer,String>> commentsMap = new HashMap<Integer, Map<Integer,String>>();
-
-	public final static List<Dictionary> hobbies = new ArrayList(Arrays.asList(
-			new Dictionary(1, "美食"), new Dictionary(2, "旅行"), new Dictionary(3,
-					"趣味"), new Dictionary(4, "摄影"), new Dictionary(5, "电影"),
-			new Dictionary(6, "人文"), new Dictionary(7, "艺术"), new Dictionary(8,
-					"娱乐"), new Dictionary(9, "读书"), new Dictionary(10, "居家"),
-			new Dictionary(11, "历史")));
-
 	int id;
+	int type;
 	String name;
 	static {
 		womenDictionaries.put(1, "腹黑");
@@ -93,7 +84,15 @@ public class Dictionary extends BaseBean implements Serializable {
 			comments.add(maps);
 		}
 		return comments;
-
 	}
+
+	public int getType() {
+		return type;
+	}
+
+	public void setType(int type) {
+		this.type = type;
+	}
+	
 
 }

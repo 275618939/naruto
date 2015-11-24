@@ -57,6 +57,7 @@ public class Movie extends BaseBean implements Serializable {
 	long score;
 	int scoreCnt;
     String playTime;
+    int loveCnt;
 	public Movie() {
 		super();
 	}
@@ -235,6 +236,17 @@ public class Movie extends BaseBean implements Serializable {
 	public void setScoreCnt(int scoreCnt) {
 		this.scoreCnt = scoreCnt;
 	}
+
+
+	public int getLoveCnt() {
+		return loveCnt;
+	}
+
+
+	public void setLoveCnt(int loveCnt) {
+		this.loveCnt = loveCnt;
+	}
+	
 
 
 	

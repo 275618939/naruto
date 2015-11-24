@@ -56,6 +56,7 @@ public class MovieDetailActivity extends BaseActivity implements OnClickListener
 
 	protected static int LOADUSERCOMPLETE=1;
 	Movie movie;
+	String filmId;
 	TextView title;
 	TextView movieBreif;
 	TextView loveFilm;
@@ -173,37 +174,20 @@ public class MovieDetailActivity extends BaseActivity implements OnClickListener
 
 	private void initData() {
 		filemTypes=filmTypeService.getFilmTypeMap();
-		movie = (Movie) getIntent().getSerializableExtra("movie");
-		title.setText(movie.getName());
-		if(null!=movie){
-			imageLoaderCache.DisplayImage(movie.getIcon(), imagePoster);
-			String score=MovieScore.GetScore(movie.getScore(), movie.getScoreCnt());
-			startBar.setRating(Float.valueOf(score)/2f);
-			movieScore.setText(score);
-			if(score.equals("NaN")){
-				movieNoneScoreLayout.setVisibility(View.VISIBLE);
-				movieHaveScoreLayout.setVisibility(View.GONE);
-			}
-			if(movie.getTryst()>0){
-				movieMissInfo.setText(String.format(getResources().getString(R.string.miss_have),String.valueOf(movie.getTryst())));
-				movieMissInfo.setOnClickListener(this);
-			}else{
-				movieMissInfo.setText(getResources().getString(R.string.miss_none));
-			}
-			loadMovieDetail();
-			loadMovieLove();
-			loadMovieComment();
-		}
+		filmId = getIntent().getStringExtra("filmId");
+		loadMovieDetail();
+		loadMovieLove();
+		loadMovieComment();
 	}
 	
 	private void loadMovieDetail(){
-		httpMovieDetailService.addParams("filmId", movie.getId());
+		httpMovieDetailService.addParams("filmId", filmId);
 		httpMovieDetailService.execute(this);
 	}
 	
 	private void loadMovieLove(){
 		users.clear();
-		httpFileLoveService.addParams("filmId", movie.getId());
+		httpFileLoveService.addParams("filmId",filmId);
 		httpFileLoveService.addParams("page",Constant.Page.FIRST_PAGE);
 		httpFileLoveService.addParams("size",Constant.Page.WANT_SEE_MOIVE_SIZE);
 		httpFileLoveService.execute(this);
@@ -211,19 +195,19 @@ public class MovieDetailActivity extends BaseActivity implements OnClickListener
 	
 	private void updateFilmLove(){
 		
-		httpFilmLoveUpdateService.addParams("filmId", movie.getId());
+		httpFilmLoveUpdateService.addParams("filmId", filmId);
 		httpFilmLoveUpdateService.execute(this);
 	}
 	
 	private void createComment(String content,int score){
-		httpCommentCreateService.addParams("filmId", movie.getId());
+		httpCommentCreateService.addParams("filmId",filmId);
 		httpCommentCreateService.addParams("content", content);
 		httpCommentCreateService.addParams("score", score);
 		httpCommentCreateService.execute(this);
 	}
 	private void loadMovieComment(){
 		comments.clear();
-		httpCommentQueryService.addParams("filmId", movie.getId());
+		httpCommentQueryService.addParams("filmId", filmId);
 		httpCommentQueryService.addParams("page", page);
 		httpCommentQueryService.addParams("size", Page.DEFAULT_SIZE);
 		httpCommentQueryService.execute(this);
@@ -234,7 +218,7 @@ public class MovieDetailActivity extends BaseActivity implements OnClickListener
 		switch (v.getId()) {
 			case R.id.movie_comments_layout:
 				Intent commentIntent = new Intent(this, MovieCommentQueryActivity.class);
-				commentIntent.putExtra("filmId", movie.getId());
+				commentIntent.putExtra("filmId", filmId);
 				startActivity(commentIntent);
 				break;
 			case R.id.movie_comment:
@@ -305,14 +289,45 @@ public class MovieDetailActivity extends BaseActivity implements OnClickListener
 				if(tag.equals(httpMovieDetailService.TAG)){
 					Map<String, Object> value =(Map<String, Object>) map.get(Constant.ReturnCode.RETURN_VALUE);
 					if(null!=value){
+						movie =new Movie();
+						movie.setId(Integer.parseInt(value.get("filmId").toString()));
+						movie.setName(value.get("filmName").toString());
+						movie.setIcon(value.get("filmIcon").toString());
+						if(value.containsKey("scoreTtl")){
+							movie.setScore(Long.valueOf(value.get("scoreTtl").toString()));
+						}
+						if(value.containsKey("scoreCnt")){
+							movie.setScoreCnt(Integer.parseInt(value.get("scoreCnt").toString()));
+						}
+						if(value.containsKey("trystCnt")){
+							movie.setTryst(Integer.parseInt(value.get("trystCnt").toString()));
+						}
+						if(value.containsKey("loveCnt")){
+							movie.setLoveCnt(Integer.parseInt(value.get("loveCnt").toString()));
+						}
+						title.setText(movie.getName());
+						imageLoaderCache.DisplayImage(movie.getIcon(), imagePoster);
+						String score=MovieScore.GetScore(movie.getScore(), movie.getScoreCnt());
+						startBar.setRating(Float.valueOf(score)/2f);
+						movieScore.setText(score);
+						if(score.equals("NaN")){
+							movieNoneScoreLayout.setVisibility(View.VISIBLE);
+							movieHaveScoreLayout.setVisibility(View.GONE);
+						}
+						if(movie.getTryst()>0){
+							movieMissInfo.setText(String.format(getResources().getString(R.string.miss_have),String.valueOf(movie.getTryst())));
+							movieMissInfo.setOnClickListener(this);
+						}else{
+							movieMissInfo.setText(getResources().getString(R.string.miss_none));
+						}
 						movieInterval.setText(String.format(getResources().getString(R.string.movie_interval),value.get("interval")));
 						movieStart.setText(String.format(getResources().getString(R.string.movie_start),StringUtil.strChangeLocalDate(value.get("start").toString())));
 						movieBreif.setText(value.get("briefing").toString());
 						movieScenarists.setText(StringUtil.listToString(((List<String>)value.get("directors")), "/"));
 						movieStype.setText(StringUtil.listToStringByMap(((List<Integer>)value.get("types")), filemTypes, "/"));
 						movieStars.setText(StringUtil.listToString(((List<String>)value.get("stars")), "/"));
-						if(value.containsKey("comment")){
-							movieCommentInfo.setText(String.format(getResources().getString(R.string.movie_comment_have),value.get("comment")));
+						if(value.containsKey("commentCnt")){
+							movieCommentInfo.setText(String.format(getResources().getString(R.string.movie_comment_have),value.get("commentCnt")));
 						}else{
 							movieCommentInfo.setText(getResources().getString(R.string.movie_comment_none));
 						}

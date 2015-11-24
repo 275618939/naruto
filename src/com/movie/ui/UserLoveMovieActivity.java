@@ -159,12 +159,7 @@ public class UserLoveMovieActivity extends BaseActivity implements
 					page++;
 				}
 
-			} else {
-				int len = Movie.movies.length;
-				for (int i = 0; i < len; i++) {
-					movies.add(Movie.movies[i]);
-				}
-			}
+			} 
 		}else{
 			String message = map.get(Constant.ReturnCode.RETURN_MESSAGE).toString();
 			showToask(message);

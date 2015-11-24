@@ -1,7 +1,8 @@
 package com.movie.network;
 
+import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.Iterator;
+import java.util.List;
 import java.util.Map;
 
 import android.content.Context;
@@ -52,16 +53,16 @@ public class HttpHobbyService extends BaseService {
 				}
 				Integer state = (Integer) map.get(Constant.ReturnCode.RETURN_STATE);
 				if (state == ErrorState.Success.getState()) {
-					Map<String, String> value = (HashMap<String, String>) map.get(Constant.ReturnCode.RETURN_VALUE);
-					Iterator<String> keys= value.keySet().iterator();
-					String key=null;
+					List<HashMap<String, String>> value = (ArrayList<HashMap<String, String>>) map.get(Constant.ReturnCode.RETURN_VALUE);
 					String data= null;
 					Dictionary hobby = null;
-					while(keys.hasNext()){
-						 key=keys.next();
-						 data=value.get(key);
+					int size=value.size();
+					Map<String, String> hobbyMap=null;
+					for(int i=0;i<size;i++){
+						 hobbyMap=value.get(i);
+					     data=hobbyMap.get("name");
 						 hobby = new Dictionary();
-						 hobby.setId(Integer.parseInt(key));
+						 hobby.setId(Integer.parseInt(String.valueOf(hobbyMap.get("id"))));
 						 hobby.setName(data);
 						 hobbyDao.setContentValues(hobby);
 						 hobbyDao.addData();

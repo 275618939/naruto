@@ -1,7 +1,9 @@
 package com.movie.network;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Iterator;
+import java.util.List;
 import java.util.Map;
 
 import android.content.Context;
@@ -52,16 +54,17 @@ public class HttpFilmTypeService  extends  BaseService{
 			    }
 				Integer state = (Integer) map.get(Constant.ReturnCode.RETURN_STATE);
 				if (state==ErrorState.Success.getState()) {
-					Map<String, String> value = (HashMap<String, String>) map.get(Constant.ReturnCode.RETURN_VALUE);
-					Iterator<String> keys= value.keySet().iterator();
+					List<HashMap<String, String>> value = (ArrayList<HashMap<String, String>>) map.get(Constant.ReturnCode.RETURN_VALUE);
 					String key=null;
 					String data= null;
 					Dictionary dictionary = null;
-					while(keys.hasNext()){
-						 key=keys.next();
-						 data=value.get(key);
+					int size=value.size();
+					Map<String, String> filmTypeMap=null;
+					for(int i=0;i<size;i++){
+						 filmTypeMap=value.get(i);
+						 data=filmTypeMap.get("name");
 						 dictionary = new Dictionary();
-						 dictionary.setId(Integer.parseInt(key));
+						 dictionary.setId(Integer.parseInt(String.valueOf(filmTypeMap.get("id"))));
 						 dictionary.setName(data);
 						 filmTypeDao.setContentValues(dictionary);
 						 filmTypeDao.addData();

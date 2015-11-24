@@ -1,6 +1,5 @@
 package com.movie.adapter;
 
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
@@ -18,13 +17,12 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.movie.R;
+import com.movie.app.BackGroundColor;
 import com.movie.app.Constant;
 import com.movie.client.bean.Dictionary;
 import com.movie.client.bean.Miss;
 import com.movie.client.bean.User;
-import com.movie.client.dao.BaseDao;
-import com.movie.client.dao.CommentDaoImple;
-import com.movie.client.db.SQLHelper;
+import com.movie.client.service.CommentService;
 
 public class EvaluationAdapter extends BaseAdapter {
 	
@@ -36,9 +34,9 @@ public class EvaluationAdapter extends BaseAdapter {
 	boolean showCount;
 	Context context;
 	LayoutInflater inflater;
-	BaseDao commentDao;
+	CommentService commentService;
 	Handler handler;
-	int[] colors=new int[]{R.color.tag1,R.color.tag2,R.color.tag3,R.color.tag4,R.color.tag5,R.color.tag6,R.color.tag7,R.color.tag8};
+
 	
 	public EvaluationAdapter(Context context,List<Map<Integer,Integer>> dictionarys) {
 		this.context = context;
@@ -61,17 +59,9 @@ public class EvaluationAdapter extends BaseAdapter {
 		initData();
 	}
 	protected void initData(){
-		commentDao =new CommentDaoImple();
-		List<Map<String, String>> DictionaryList = commentDao.listData(null, null);
-		if(null!=DictionaryList&&DictionaryList.size()>0){
-			dictionarysAll =new HashMap<Integer, String>();
-			for (Map<String, String> map : DictionaryList) {
-				dictionarysAll.put(Integer.parseInt(map.get(SQLHelper.ID)),map.get(SQLHelper.NAME));
-			}
-		}else{
-			dictionarysAll=Dictionary.commentsMap.get(sex);
-		}
-	
+		commentService =new CommentService();
+		Map<Integer, Map<Integer,String>> commentsMap = commentService.getCommentsMap();
+		dictionarysAll=commentsMap.get(sex);
 	}
 	@Override
 	public int getCount() {
@@ -108,7 +98,7 @@ public class EvaluationAdapter extends BaseAdapter {
 			mHolder = (ViewHolder) view.getTag();
 		}
 		int index=position%Constant.Page.COMMENTS_MAX_SHOW;
-		mHolder.dictionary.setBackgroundResource(colors[index]);
+		mHolder.dictionary.setBackgroundResource(BackGroundColor.getState(index).getSourceId());
 		//获取position对应的数据
 		Map<Integer,Integer> Dictionarys = getItem(position);
 		if(null!=Dictionarys){

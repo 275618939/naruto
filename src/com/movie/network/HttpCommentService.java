@@ -1,7 +1,9 @@
 package com.movie.network;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Iterator;
+import java.util.List;
 import java.util.Map;
 
 import android.content.Context;
@@ -36,15 +38,17 @@ public class HttpCommentService  extends  BaseService{
 		Message message = handler.obtainMessage();
 		try {
 			requestCount++;
-			String sid= getSid();
-			headers.put(SESSION_KEY, sid);
 			int count = commentDao.countData(null);
 			if(count>0){
 				throw new InvokeException(ErrorState.Success.getState(),ErrorState.Success.getMessage());
 			}
-			String result  = HttpUtils.requestGet(Constant.Dic_Comment_API_URL,headers);
+			String sid= getSid();
+			Object type=params.get("type");
+			headers.put(SESSION_KEY, sid);
+			StringBuilder builder=new StringBuilder(Constant.Dic_Comment_API_URL);
+			builder.append("/").append(type);
+			String result  = HttpUtils.requestGet(builder.toString(),headers);
 			if (result != null) {		
-				
 				try {
 					map = objectMapper.readValue(result, typeReference);
 				} catch (Exception e) {
@@ -52,16 +56,19 @@ public class HttpCommentService  extends  BaseService{
 			    }
 				Integer state = (Integer) map.get(Constant.ReturnCode.RETURN_STATE);
 				if (state==ErrorState.Success.getState()) {
-					Map<String, String> value = (HashMap<String, String>) map.get(Constant.ReturnCode.RETURN_VALUE);
-					Iterator<String> keys= value.keySet().iterator();
-					String key=null;
+					List<HashMap<String, String>> value = (ArrayList<HashMap<String, String>>) map.get(Constant.ReturnCode.RETURN_VALUE);
+					Integer key=null;
 					String data= null;
 					Dictionary comment = null;
-					while(keys.hasNext()){
-						 key=keys.next();
-						 data=value.get(key);
+					int size=value.size();
+					Map<String, String> commentMap=null;
+					for(int i=0;i<size;i++){
+						 commentMap=value.get(i);
+						 key=Integer.valueOf(String.valueOf(commentMap.get("id")));
+					     data=commentMap.get("name");
 						 comment = new Dictionary();
-						 comment.setId(Integer.parseInt(key));
+						 comment.setId(key.intValue());
+						 comment.setType(Integer.valueOf(String.valueOf(type)));
 						 comment.setName(data);
 						 commentDao.setContentValues(comment);
 						 commentDao.addData();

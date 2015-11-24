@@ -65,7 +65,7 @@
     <string name="user_miss">Ta的约会</string>
     <string name="self_miss">我的约会</string>
     <string name="user_session">聊聊</string>
-    <string name="user_love_movie"><Data><![CDATA[Ta想看<font color="#ff6434"><b>%1$s</b></font>%2$s部电影]]></Data></string>
+    <string name="user_love_movie"><Data><![CDATA[Ta想看<font color="#ff6434"><b>%1$s</b></font>等%2$s部电影]]></Data></string>
     <string name="user_ing_miss">%1$s个进行中的约会</string>
     <string name="user_love">心动</string>
     <string name="user_love_count">%1$s人心动过</string>
@@ -98,7 +98,7 @@
     <string name="charm">颜值</string>
     <string name="message">留言</string>
     <string name="love">心动</string>
-    <string name="love_hint">魅力</string>
+    <string name="love_hint">心动</string>
     <string name="random">随机</string>
     <string name="nickname">昵称</string>
     <string name="nonenickname">未设置昵称</string>

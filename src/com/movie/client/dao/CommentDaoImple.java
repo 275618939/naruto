@@ -18,6 +18,7 @@ public class CommentDaoImple extends BaseDao {
 			Dictionary comment = (Dictionary) baseBean;
 			contentValues = new ContentValues();
 			contentValues.put(SQLHelper.ID, comment.getId());
+			contentValues.put(SQLHelper.TYPE, comment.getType());
 			contentValues.put(SQLHelper.NAME, comment.getName());
 		}
 

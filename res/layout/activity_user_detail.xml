@@ -93,7 +93,7 @@
                                     android:text="@string/charm" />
 
                                 <RatingBar
-                                    android:id="@+id/user_charm"
+                                    android:id="@+id/user_charm_bar"
                                     style="@style/charmBar"
                                     android:layout_width="wrap_content"
                                     android:layout_height="wrap_content"
@@ -127,8 +127,7 @@
                                     style="@style/common_content_text_style"
                                     android:layout_width="wrap_content"
                                     android:layout_height="wrap_content"
-                                    android:layout_marginLeft="@dimen/text_left"
-                                    android:text="@string/user_love_none" />
+                                    android:layout_marginLeft="@dimen/text_left"/>
                             </LinearLayout>
 
                             <RelativeLayout

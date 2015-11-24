@@ -8,6 +8,7 @@ import com.movie.util.Images;
 
 public class User extends BaseBean implements Serializable {
 
+	public static final int USER_LOVE = 0X111; // 会员心动
 	private static final long serialVersionUID = 6477157496175784788L;
 	private String memberId;
 	private String portrait;
@@ -28,6 +29,11 @@ public class User extends BaseBean implements Serializable {
 	private String sid;
 	private String name;
 	private String constell;
+	private int filmId;
+	private String filmName;
+	private int filmCnt;
+	private long face;
+	private int faceCnt; 
 
 	public User() {
 	}
@@ -241,6 +247,48 @@ public class User extends BaseBean implements Serializable {
 	public void setLoveMovieName(String loveMovieName) {
 		this.loveMovieName = loveMovieName;
 	}
+
+	public String getFilmName() {
+		return filmName;
+	}
+
+	public void setFilmName(String filmName) {
+		this.filmName = filmName;
+	}
+
+	public int getFilmCnt() {
+		return filmCnt;
+	}
+
+	public void setFilmCnt(int filmCnt) {
+		this.filmCnt = filmCnt;
+	}
+
+	public long getFace() {
+		return face;
+	}
+
+	public void setFace(long face) {
+		this.face = face;
+	}
+
+	public int getFaceCnt() {
+		return faceCnt;
+	}
+
+	public void setFaceCnt(int faceCnt) {
+		this.faceCnt = faceCnt;
+	}
+
+	public int getFilmId() {
+		return filmId;
+	}
+
+	public void setFilmId(int filmId) {
+		this.filmId = filmId;
+	}
+	
+	
 	
 	
 

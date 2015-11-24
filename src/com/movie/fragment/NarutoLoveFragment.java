@@ -5,6 +5,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.os.Handler;
 import android.support.v4.app.Fragment;
@@ -23,18 +24,25 @@ import com.movie.R;
 import com.movie.adapter.NarutoAdapter;
 import com.movie.app.Constant;
 import com.movie.app.Constant.Page;
+import com.movie.app.Constant.ReturnCode;
 import com.movie.client.bean.User;
 import com.movie.client.service.BaseService;
 import com.movie.client.service.CallBackService;
 import com.movie.network.HttpNarutoQueryService;
+import com.movie.network.HttpRegionService;
+import com.movie.network.HttpUserLoveService;
+import com.movie.ui.LoginActivity;
 import com.movie.view.LoadView;
 
 public class NarutoLoveFragment extends Fragment implements CallBackService,
 		OnClickListener, OnRefreshListener2<ListView> {
 
+
 	NarutoAdapter natutoAdapter;
 	PullToRefreshListView refreshView;
 	BaseService httpNarutoBaseService;
+	BaseService httpRegionService;
+	BaseService httpUserLoveService;
 	List<User> users = new ArrayList<User>();
 	View view;
 	LoadView loadView;
@@ -48,16 +56,20 @@ public class NarutoLoveFragment extends Fragment implements CallBackService,
 		if (null != titleView) {
 			titleView.setVisibility(View.GONE);
 		}
+		httpUserLoveService = new HttpUserLoveService(getActivity());
 		httpNarutoBaseService = new HttpNarutoQueryService(getActivity());
+		httpRegionService = new HttpRegionService(getActivity());
 		view = LayoutInflater.from(getActivity()).inflate(R.layout.fragment_naruto_love, null);
 		loadView = new LoadView(view);
 		initView(view);
+		users.clear();
 		loadUser();
+		
 		return view;
 	}
 
 	protected void initView(View view) {
-		natutoAdapter = new NarutoAdapter(getActivity(), users);
+		natutoAdapter = new NarutoAdapter(getActivity(), mHandler,users);
 		refreshView = (PullToRefreshListView) view.findViewById(R.id.naruto_list);
 		refreshView.setMode(Mode.BOTH);
 		refreshView.setOnRefreshListener(this);
@@ -66,19 +78,29 @@ public class NarutoLoveFragment extends Fragment implements CallBackService,
 
 	private void loadUser() {
 		httpNarutoBaseService.addUrls(Constant.Member_Love_Query_API_URL);
-		httpNarutoBaseService.addParams("regionId", "");
+		httpNarutoBaseService.addParams("regionId", 10);
 		httpNarutoBaseService.addParams("page", page);
 		httpNarutoBaseService.addParams("size", Page.DEFAULT_SIZE);
 		httpNarutoBaseService.execute(this);
 	}
+	private void putLove(String memberId){
+		httpUserLoveService.addParams("memberId", memberId);
+		httpUserLoveService.execute(this);
+	}
 	Handler mHandler = new Handler() {
 		public void handleMessage(android.os.Message msg) {
 			switch (msg.what) {
-			
+				case User.USER_LOVE:
+					Bundle bundle = msg.getData();
+					String memberId =  bundle.getString("memberId");
+					putLove(memberId);
+					break;
+				default:
+					break;
 			}
 		};
 	};
-
+	
 	@Override
 	public void onClick(View v) {
 		switch (v.getId()) {
@@ -108,7 +130,7 @@ public class NarutoLoveFragment extends Fragment implements CallBackService,
 					user = new User();
 					userMap = datas.get(i);
 					if (userMap.containsKey("portrait")) {
-						user.setPortrait(userMap.get("portrait").toString());
+						user.setPortrait(Constant.SERVER_ADRESS+userMap.get("portrait").toString());
 					}
 					if (userMap.containsKey("memberId")) {
 						user.setMemberId(userMap.get("memberId").toString());
@@ -116,36 +138,42 @@ public class NarutoLoveFragment extends Fragment implements CallBackService,
 					if (userMap.containsKey("nickname")) {
 						user.setNickname(userMap.get("nickname").toString());
 					}
-					if (userMap.containsKey("signature")) {
-						user.setSignature(userMap.get("signature").toString());
+					if (userMap.containsKey("birthday")) {
+						user.setBirthday(userMap.get("birthday").toString());
 					}
+					if (userMap.containsKey("filmName")) {
+						user.setFilmName(userMap.get("filmName").toString());
+					}	
 					if (userMap.containsKey("love")) {
-						user.setLove(Integer.valueOf(userMap.get("love")
-								.toString()));
+						user.setLove(Integer.valueOf(userMap.get("love").toString()));
 					}
 					if (userMap.containsKey("sex")) {
-						user.setSex(Integer.valueOf(userMap.get("sex")
-								.toString()));
+						user.setSex(Integer.valueOf(userMap.get("sex").toString()));
 					}
-					if (userMap.containsKey("charm")) {
-						user.setCharm(Integer.valueOf(userMap.get("charm")
-								.toString()));
+					if (userMap.containsKey("tryst")) {
+						user.setTryst(Integer.valueOf(userMap.get("tryst").toString()));
 					}
-					if (userMap.containsKey("stage")) {
-						user.setStage(Integer.valueOf(userMap.get("stage")
-								.toString()));
+					if (userMap.containsKey("faceCnt")) {
+						user.setFaceCnt(Integer.valueOf(userMap.get("faceCnt").toString()));
 					}
-					if (userMap.containsKey("hobbies")) {
-
+					if (userMap.containsKey("face")) {
+						user.setFace(Long.valueOf(userMap.get("face").toString()));
 					}
 					users.add(user);
 				}
 				natutoAdapter.updateData(users);
 
+			}else if(tag.equals(httpUserLoveService.TAG)){
+				showToask("感谢^_^您的关注!");
+				loadUser();
 			}
-		} else {
-			String message = map.get(Constant.ReturnCode.RETURN_MESSAGE)
-					.toString();
+		} else if (Constant.ReturnCode.STATE_3.equals(code)) {
+			//提示用户登陆
+			Intent loginIntent = new Intent(getActivity(),LoginActivity.class);
+			getActivity().overridePendingTransition(R.anim.slide_in_right, R.anim.slide_out_left);
+			startActivity(loginIntent);
+		}else {
+			String message = map.get(Constant.ReturnCode.RETURN_MESSAGE).toString();
 			showToask(message);
 		}
 	}
@@ -153,9 +181,15 @@ public class NarutoLoveFragment extends Fragment implements CallBackService,
 	@Override
 	public void ErrorCallBack(Map<String, Object> map) {
 		refreshView.onRefreshComplete();
+		String state= map.get(Constant.ReturnCode.RETURN_STATE).toString();
+		if(state.equals(ReturnCode.STATE_999)){
+			loadView.showLoadLineFail(this);
+		}else{
+			loadView.showLoadFail(this, this);
+		}
 		String message = map.get(Constant.ReturnCode.RETURN_MESSAGE).toString();
-		//showToask(message);
-		loadView.showLoadFail(this, this);
+		showToask(message);
+		
 
 	}
 
@@ -182,5 +216,6 @@ public class NarutoLoveFragment extends Fragment implements CallBackService,
 		loadUser();
 
 	}
+
 
 }

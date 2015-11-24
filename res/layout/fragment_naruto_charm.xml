@@ -19,6 +19,7 @@
             android:layout_height="fill_parent"
             android:layout_marginLeft="@dimen/layout_left"
             android:layout_marginRight="@dimen/layout_right"
+            android:layout_marginTop="@dimen/layout_item_top_1"
             android:orientation="vertical" >
 
             <com.handmark.pulltorefresh.library.PullToRefreshListView

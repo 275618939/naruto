@@ -3,7 +3,6 @@ package com.movie.adapter;
 import java.util.List;
 
 import android.content.Context;
-import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
 import android.os.Handler;
@@ -16,15 +15,20 @@ import android.view.ViewGroup;
 import android.widget.BaseAdapter;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
+import android.widget.RatingBar;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.movie.R;
 import com.movie.app.SexState;
-import com.movie.client.bean.Miss;
 import com.movie.client.bean.User;
+import com.movie.client.service.UserService;
+import com.movie.ui.MovieDetailActivity;
 import com.movie.ui.UserDetailActivity;
+import com.movie.util.Horoscope;
 import com.movie.util.ImageLoaderCache;
-import com.movie.view.MessageDialog;
+import com.movie.util.StringUtil;
+import com.movie.util.UserCharm;
 
 public class NarutoAdapter extends BaseAdapter {
 
@@ -33,13 +37,17 @@ public class NarutoAdapter extends BaseAdapter {
 	LayoutInflater inflater;
 	ImageLoaderCache imageLoaderCache;
 	Handler handler;
+	UserService userService;
+	User loginUser;
+	boolean isLove;
 
 	public NarutoAdapter(Context context, List<User> users) {
 		this.context = context;
 		this.userList = users;
 		inflater = LayoutInflater.from(context);
 		imageLoaderCache=ImageLoaderCache.getInstance(context);
-
+		userService = new UserService();
+		init();
 	}
 
 	public NarutoAdapter(Context context, Handler handler, List<User> users) {
@@ -48,6 +56,11 @@ public class NarutoAdapter extends BaseAdapter {
 		inflater = LayoutInflater.from(context);
 		imageLoaderCache = new ImageLoaderCache(context);
 		this.handler = handler;
+		userService = new UserService();
+		init();
+	}
+	private void init(){
+		loginUser=userService.getUserItem();
 	}
 
 	@Override
@@ -79,6 +92,8 @@ public class NarutoAdapter extends BaseAdapter {
 		if (view == null) {
 			view = inflater.inflate(R.layout.naruto_item, null);
 			mHolder = new ViewHolder();
+			mHolder.movieBreifLayout= (LinearLayout) view.findViewById(R.id.movie_breif_layout);
+			mHolder.userBreifLayout= (LinearLayout) view.findViewById(R.id.user_breif_layout);
 			mHolder.userItemView = (LinearLayout) view.findViewById(R.id.user_item_view);
 			mHolder.userIcon = (ImageView) view.findViewById(R.id.user_icon);
 			mHolder.userName = (TextView) view.findViewById(R.id.user_name);
@@ -87,7 +102,12 @@ public class NarutoAdapter extends BaseAdapter {
 			mHolder.userCharm = (TextView) view.findViewById(R.id.user_charm);
 			mHolder.userLove = (TextView) view.findViewById(R.id.user_love);
 			mHolder.userMovieLove = (TextView) view.findViewById(R.id.user_movie_love);
-			mHolder.userIngMiss = (TextView) view.findViewById(R.id.user_ing_miss);
+			mHolder.userCharmBar = (RatingBar) view.findViewById(R.id.user_charm_bar);
+			mHolder.userBtnView = (LinearLayout) view.findViewById(R.id.user_btn_view);
+			//mHolder.userIngMiss = (TextView) view.findViewById(R.id.user_ing_miss);
+			mHolder.userBtnMessage = (TextView) view.findViewById(R.id.user_btn_message);
+			mHolder.userBtnLove = (TextView) view.findViewById(R.id.user_btn_love);
+			mHolder.missInvite = (TextView) view.findViewById(R.id.miss_invite);
 
 			view.setTag(mHolder);
 		} else {
@@ -99,19 +119,44 @@ public class NarutoAdapter extends BaseAdapter {
 		imageLoaderCache.DisplayImage(user.getPortrait(), mHolder.userIcon);
 		mHolder.userName.setText(user.getNickname());
 		mHolder.userSex.setText(SexState.getState(user.getSex()).getMessage());
-		mHolder.userCharm.setText(user.getCharm().toString());
-		mHolder.userLove.setText(String.format(context.getResources().getString(R.string.user_love_count), user.getLove()));
-		mHolder.userConstell.setText(user.getConstell());
+		mHolder.userLove.setText(String.format(context.getResources().getString(R.string.user_love_count), user.getLove()==null?"0":user.getLove()));
+		if(null!=user.getBirthday()&&!user.getBirthday().isEmpty()){
+			int [] date=StringUtil.strConvertInts(user.getBirthday());
+			mHolder.userConstell.setText(Horoscope.getHoroscope((byte)date[1],(byte)date[2]).getCnName());
+		}
 		mHolder.userItemView.setOnClickListener(new UserSelectAction(position));
-		mHolder.userMovieLove.setText(Html.fromHtml(String.format(context.getResources().getString(R.string.user_love_movie), user.getLoveMovieName(),user.getLoveMovie())));
-		mHolder.userIngMiss.setText(String.format(context.getResources().getString(R.string.user_ing_miss), user.getTryst()));
-
+		if(user.getFilmName()!=null&&!user.getFilmName().isEmpty()){
+		   mHolder.userMovieLove.setText(Html.fromHtml(String.format(context.getResources().getString(R.string.user_love_movie), user.getFilmName(),user.getFilmCnt())));
+		}
+		//mHolder.userIngMiss.setText(String.format(context.getResources().getString(R.string.user_ing_miss), user.getTryst()));
+		String score=UserCharm.GetScore(user.getFace(), user.getFaceCnt()<=0?1:user.getFaceCnt());
+		if(score.equals("NaN")){
+			
+		}else{
+			mHolder.userCharmBar.setRating(Float.valueOf(score)/2f);
+			mHolder.userCharm.setText(score);
+		}
+		if(loginUser.getMemberId().equals(user.getMemberId())){
+			mHolder.userBtnView.setVisibility(View.GONE);
+		}else{
+			mHolder.userBtnView.setVisibility(View.VISIBLE);
+		}
+		mHolder.userBreifLayout.setOnClickListener(new UserSelectAction(position));
+		mHolder.userBtnLove.setOnClickListener(new UserSelectAction(position));
+		mHolder.missInvite.setOnClickListener(new UserSelectAction(position));
+		mHolder.userBtnMessage.setOnClickListener(new UserSelectAction(position));
+		mHolder.movieBreifLayout.setOnClickListener(new UserSelectAction(position));
 		return view;
 	}
 
 	static class ViewHolder {
-
+		
+		LinearLayout movieBreifLayout;
+		LinearLayout userBtnView;
+        LinearLayout userBreifLayout;
 		LinearLayout userItemView;
+		//用户颜值
+		RatingBar userCharmBar;
 		// 用户LOGO
 		ImageView userIcon;
 		// 用户
@@ -124,12 +169,14 @@ public class NarutoAdapter extends BaseAdapter {
 		TextView userCharm;
 		// 用户心动数
 		TextView userLove;
-		// 用户操作按钮
-		TextView missBtn;
 		// 用户想看的电影
 		TextView userMovieLove;
-		// 用户进行中的约会
-		TextView userIngMiss;
+		// 用户留言
+		TextView userBtnMessage;
+		// 用户心动
+	    TextView userBtnLove;
+	    // 用户邀请
+	    TextView missInvite;
 
 	}
 
@@ -151,40 +198,35 @@ public class NarutoAdapter extends BaseAdapter {
 		public void onClick(final View v) {
 			final User user = userList.get(position);
 			switch (v.getId()) {
-			case R.id.miss_user_item_view:
-
-				Intent intent = new Intent(context, UserDetailActivity.class);
-				intent.putExtra("user", user);
-				context.startActivity(intent);
+			case R.id.movie_breif_layout:
+				Intent movieDetailIntent = new Intent(context, MovieDetailActivity.class);
+				movieDetailIntent.putExtra("filmId", user.getFilmId());
+				context.startActivity(movieDetailIntent);
 				break;
-			case R.id.miss_btn_layout:
-				final MessageDialog.Builder builder = new MessageDialog.Builder(v.getContext());
-				builder.setTitle(R.string.cancel_miss);
-				builder.setMessage("您确定要同意此申请么?");
-				builder.setPositiveButton("取消",
-						new DialogInterface.OnClickListener() {
-							public void onClick(DialogInterface dialog,
-									int which) {
-								dialog.dismiss();
-							}
-						});
-				builder.setNegativeButton("确定",
-						new android.content.DialogInterface.OnClickListener() {
-							public void onClick(DialogInterface dialog,
-									int which) {
-								dialog.dismiss();
-								v.setVisibility(View.GONE);
-								Message message = new Message();
-								message.what = Miss.AGREE_MISS;
-								Bundle bundle = new Bundle();
-								bundle.putSerializable("user", user);
-								message.setData(bundle);
-								handler.sendMessage(message);
-							}
-						});
-
-				builder.create().show();
+			case R.id.user_breif_layout:
+				Intent userDetailIntent = new Intent(context, UserDetailActivity.class);
+				userDetailIntent.putExtra("memberId", user.getMemberId());
+				context.startActivity(userDetailIntent);
 				break;
+			case R.id.user_btn_message:
+				break;
+			case R.id.user_btn_love:
+				if(isLove) {
+					Toast toast = Toast.makeText(context, "您已经心动过了哟!", Toast.LENGTH_SHORT);
+					toast.show();
+					return;
+				}
+				Message message=new Message();
+				message.what=User.USER_LOVE;
+				Bundle bundle=new Bundle();
+				bundle.putString("memberId", user.getMemberId());
+				message.setData(bundle);
+				handler.sendMessage(message);
+				isLove=true;
+				break;
+			case R.id.miss_invite:
+				break;
+			
 			default:
 				break;
 			}

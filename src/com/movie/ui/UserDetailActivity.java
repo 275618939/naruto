@@ -16,6 +16,7 @@ import android.view.View.OnClickListener;
 import android.widget.GridView;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
+import android.widget.RatingBar;
 import android.widget.ScrollView;
 import android.widget.LinearLayout.LayoutParams;
 import android.widget.RelativeLayout;
@@ -46,11 +47,12 @@ import com.movie.network.HttpUserService;
 import com.movie.util.Horoscope;
 import com.movie.util.ImageLoaderCache;
 import com.movie.util.StringUtil;
+import com.movie.util.UserCharm;
 import com.movie.view.LoadView;
 
 public class UserDetailActivity extends BaseActivity implements
 		OnClickListener, CallBackService,OnRefreshListener<ScrollView> {
-
+	
 	User user;
 	String memberId;
 	TextView title;
@@ -78,6 +80,7 @@ public class UserDetailActivity extends BaseActivity implements
 	TextView userLove;
 	TextView userConstell;
 	TextView hobbyArrowMore;
+	RatingBar userCharmBar;
 	LinearLayout hobbiesLayout;
 	LinearLayout commentsLayout;
 	LinearLayout layoutMoviesPre;
@@ -131,6 +134,7 @@ public class UserDetailActivity extends BaseActivity implements
 		commnetsMore = (TextView) findViewById(R.id.comments_more);
 		hobbyArrowMore = (TextView) findViewById(R.id.hobby_arrow_more);
 		userLove = (TextView) findViewById(R.id.userLove);
+		userCharmBar = (RatingBar) findViewById(R.id.user_charm_bar);
 		refreshableScollView=(PullToRefreshScrollView) findViewById(R.id.user_detail_view);
 		refreshableScollView.setMode(Mode.PULL_FROM_START);
 		commentsView.setAdapter(evaluationAdapter);
@@ -268,14 +272,21 @@ public class UserDetailActivity extends BaseActivity implements
 					user.setSignature(values.get("signature").toString());
 					signView.setText(values.get("signature").toString());
 				}
-				if (values.containsKey("love")) {
-					user.setLove(Integer.parseInt(values.get("love").toString()));
-					loveView.setText(String.format(getResources().getString(R.string.user_love_count), values.get("love")));
+				if (values.containsKey("loveCnt")) {
+					user.setLove(Integer.parseInt(values.get("loveCnt").toString()));
+					loveView.setText(String.format(getResources().getString(R.string.user_love_count), user.getLove()));
 				}
-				if (values.containsKey("charm")) {
-					user.setCharm(Integer.parseInt(values.get("charm").toString()));
-					charmView.setText(values.get("charm") == null ? "0": values.get("charm").toString());
+				if(values.containsKey("faceTtl")){
+					user.setFace(Integer.parseInt(values.get("faceTtl").toString()));
 				}
+				if(values.containsKey("faceCnt")){
+					user.setFaceCnt(Integer.parseInt(values.get("faceCnt").toString()));
+				}
+				String score=UserCharm.GetScore(user.getFace(), user.getFaceCnt()<=0?1:user.getFaceCnt());
+				if(!score.equals("NaN")){
+					userCharmBar.setRating(Float.valueOf(score)/2f);
+					charmView.setText(score);
+				}				
 				if (values.containsKey("hobbies")) {
 					List<Integer> hobbies = (List<Integer>) values.get("hobbies");
 					user.setHobbies(hobbies);
@@ -303,14 +314,26 @@ public class UserDetailActivity extends BaseActivity implements
 						layoutMoviesPre.setVisibility(View.VISIBLE);
 						StringUtil.listToStringByMap(user.getFilmType(), filmTypeMap, "/");
 					}
-					userMoviesWant.setText(String.format(getResources().getString(R.string.movie_none)));
+					
+				}
+				if(values.containsKey("trystCnt")){
+					int tryst=Integer.parseInt(values.get("trystCnt").toString());
+					userMiss.setText(String.format(getResources().getString(R.string.miss_have),tryst));
+					user.setTryst(tryst);
+					userMiss.setOnClickListener(this);
+				}else{
 					userMiss.setText(String.format(getResources().getString(R.string.miss_none)));
 				}
-				if(values.containsKey("tryst")){
-					int tryst=Integer.parseInt(values.get("tryst").toString());
-					userMiss.setText(String.format(getResources().getString(R.string.miss_have),tryst));
+				if(values.containsKey("filmCnt")){
+					int filmCnt=Integer.parseInt(values.get("filmCnt").toString());
+					user.setFilmCnt(filmCnt);
+					userMoviesWant.setText(String.format(getResources().getString(R.string.movie_have),filmCnt));
 					userMiss.setOnClickListener(this);
+				}else{
+					userMoviesWant.setText(String.format(getResources().getString(R.string.movie_none)));
 				}
+				
+				
 				initTempComments();
 
 			}else if(tag.endsWith(httpUserCommentService.TAG)){
