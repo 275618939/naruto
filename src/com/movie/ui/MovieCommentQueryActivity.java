@@ -132,7 +132,7 @@ public class MovieCommentQueryActivity extends BaseActivity implements OnClickLi
 
 	@Override
 	public void ErrorCallBack(Map<String, Object> map) {
-
+		refreshableView.onRefreshComplete();
 		loadView.showLoadFail(this,this);
 		String message = map.get(Constant.ReturnCode.RETURN_MESSAGE).toString();
 		showToask(message);

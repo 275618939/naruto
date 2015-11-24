@@ -10,6 +10,7 @@ import android.os.Handler;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.widget.ListView;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.handmark.pulltorefresh.library.PullToRefreshBase;
@@ -20,6 +21,7 @@ import com.movie.R;
 import com.movie.adapter.MissSelfQueryAdapter;
 import com.movie.app.Constant;
 import com.movie.app.Constant.Page;
+import com.movie.app.Constant.ReturnCode;
 import com.movie.client.bean.Miss;
 import com.movie.client.bean.Movie;
 import com.movie.client.bean.User;
@@ -28,12 +30,14 @@ import com.movie.client.service.CallBackService;
 import com.movie.fragment.SelfFragment;
 import com.movie.network.HttpMissCancelService;
 import com.movie.network.HttpMissQueryService;
+import com.movie.view.LoadView;
 
 public class MissSelfQueryActivity extends BaseActivity implements OnClickListener,CallBackService, OnRefreshListener2<ListView> {
 
-	public static final int REFRESH_COMPLETE = 0X110;
+	LoadView loadView;
 	TextView title;
 	ListView myMissList;
+	RelativeLayout userMissParentLayout;
 	MissSelfQueryAdapter selfQueryAdapter;
 	BaseService missQueryService;
 	BaseService httpMissCancelService;
@@ -57,6 +61,8 @@ public class MissSelfQueryActivity extends BaseActivity implements OnClickListen
 	private void initViews() {
 
 		title = (TextView) findViewById(R.id.title);
+		userMissParentLayout= (RelativeLayout)findViewById(R.id.user_miss_parent_layout);
+		loadView = new LoadView(userMissParentLayout);
 		selfQueryAdapter = new MissSelfQueryAdapter(this, mHandler, null);
 		refreshableListView = (PullToRefreshListView) findViewById(R.id.slef_miss_list);
 		refreshableListView.setMode(Mode.BOTH);
@@ -68,9 +74,7 @@ public class MissSelfQueryActivity extends BaseActivity implements OnClickListen
 	private void initData() {
 		page=0;
 		missType=SelfFragment.MY_MISS;
-		loadMissData();
-		//tempData();
-		
+		loadMissData();		
 	}
 
 	private void loadMissData() {
@@ -142,9 +146,6 @@ public class MissSelfQueryActivity extends BaseActivity implements OnClickListen
 	Handler mHandler = new Handler() {
 		public void handleMessage(android.os.Message msg) {
 			switch (msg.what) {
-			case REFRESH_COMPLETE:
-				loadMissData();
-				break;
 			case Miss.CANCLE_MISS:
 				cancelMiss();
 			default:
@@ -162,8 +163,8 @@ public class MissSelfQueryActivity extends BaseActivity implements OnClickListen
 
 	@Override
 	public void SuccessCallBack(Map<String, Object> map) {
+		loadView.showLoadAfter(this);
 		refreshableListView.onRefreshComplete();
-		hideProgressDialog();
 		String code = map.get(Constant.ReturnCode.RETURN_STATE).toString();
 		if (Constant.ReturnCode.STATE_1.equals(code)) {
 			String tag = map.get(Constant.ReturnCode.RETURN_TAG).toString();
@@ -197,17 +198,9 @@ public class MissSelfQueryActivity extends BaseActivity implements OnClickListen
 					miss.setIcon("http://101.200.176.217/test.jpg");
 					misses.add(miss);
 				}
-				if (size >= Page.DEFAULT_SIZE) {
-					page++;
-				}
 				selfQueryAdapter.updateData(misses);
-				if (size <= 0) {
-					tempData();
-				}
-
 			}
 		} else {
-			tempData();
 			String message = map.get(Constant.ReturnCode.RETURN_MESSAGE).toString();
 			showToask(message);
 		}
@@ -217,25 +210,25 @@ public class MissSelfQueryActivity extends BaseActivity implements OnClickListen
 	@Override
 	public void ErrorCallBack(Map<String, Object> map) {
 		refreshableListView.onRefreshComplete();
-		hideProgressDialog();
-		tempData();
 		String message = map.get(Constant.ReturnCode.RETURN_MESSAGE).toString();
+		String code = map.get(Constant.ReturnCode.RETURN_STATE).toString();
 		showToask(message);
+		if(code.equals(ReturnCode.STATE_999)){
+			loadView.hideAllHit(this);
+		}else{
+			loadView.showLoadFail(this,this);
+		}
+	
 	}
 
 	@Override
 	public void OnRequest() {
-		showProgressDialog("提示", "请稍后......");
-
-	}
-
-	private void tempData() {
-		misses=Miss.getTempData();
-		selfQueryAdapter.updateData(misses);
+		loadView.showLoading(this);
 	}
 	@Override
 	public void onPullDownToRefresh(PullToRefreshBase<ListView> refreshView) {
 		page = 0;
+		misses.clear();
 		loadMissData();
 		
 	}

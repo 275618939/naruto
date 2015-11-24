@@ -30,6 +30,7 @@ import com.movie.adapter.MoviesCommentAdapter;
 import com.movie.adapter.WantSeeMovieAdapter;
 import com.movie.app.Constant;
 import com.movie.app.Constant.Page;
+import com.movie.app.Constant.ReturnCode;
 import com.movie.client.bean.Login;
 import com.movie.client.bean.Movie;
 import com.movie.client.bean.MovieComment;
@@ -56,7 +57,7 @@ public class MovieDetailActivity extends BaseActivity implements OnClickListener
 
 	protected static int LOADUSERCOMPLETE=1;
 	Movie movie;
-	String filmId;
+	int filmId;
 	TextView title;
 	TextView movieBreif;
 	TextView loveFilm;
@@ -174,7 +175,7 @@ public class MovieDetailActivity extends BaseActivity implements OnClickListener
 
 	private void initData() {
 		filemTypes=filmTypeService.getFilmTypeMap();
-		filmId = getIntent().getStringExtra("filmId");
+		filmId = getIntent().getIntExtra("filmId",0);
 		loadMovieDetail();
 		loadMovieLove();
 		loadMovieComment();
@@ -292,7 +293,7 @@ public class MovieDetailActivity extends BaseActivity implements OnClickListener
 						movie =new Movie();
 						movie.setId(Integer.parseInt(value.get("filmId").toString()));
 						movie.setName(value.get("filmName").toString());
-						movie.setIcon(value.get("filmIcon").toString());
+						movie.setIcon(Constant.SERVER_ADRESS+value.get("filmIcon").toString());
 						if(value.containsKey("scoreTtl")){
 							movie.setScore(Long.valueOf(value.get("scoreTtl").toString()));
 						}
@@ -384,6 +385,7 @@ public class MovieDetailActivity extends BaseActivity implements OnClickListener
 				Intent loginIntent = new Intent(this,LoginActivity.class);
 				this.overridePendingTransition(R.anim.slide_in_right, R.anim.slide_out_left);
 				startActivity(loginIntent);
+				this.finish();
 			//}
 			
 		}else{
@@ -394,10 +396,19 @@ public class MovieDetailActivity extends BaseActivity implements OnClickListener
 
 	@Override
 	public void ErrorCallBack(Map<String, Object> map) {
-		loadView.showLoadFail(this,this);
-		hideProgressDialog();
 		String message=map.get(Constant.ReturnCode.RETURN_MESSAGE).toString();
+		refreshableScollView.onRefreshComplete();
+		String tag = map.get(Constant.ReturnCode.RETURN_TAG).toString();
+		String code = map.get(Constant.ReturnCode.RETURN_STATE).toString();
 		showToask(message);
+		if(code.equals(ReturnCode.STATE_999)){
+			loadView.hideAllHit(this);
+			return;
+		}
+		if(tag.endsWith(httpMovieDetailService.TAG)){
+			loadView.showLoadFail(this,this);
+		}
+		
 	}
 
 	@Override

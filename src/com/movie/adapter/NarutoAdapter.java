@@ -92,6 +92,7 @@ public class NarutoAdapter extends BaseAdapter {
 		if (view == null) {
 			view = inflater.inflate(R.layout.naruto_item, null);
 			mHolder = new ViewHolder();
+			mHolder.userMovieTag = (LinearLayout) view.findViewById(R.id.user_movie_tag);
 			mHolder.movieBreifLayout= (LinearLayout) view.findViewById(R.id.movie_breif_layout);
 			mHolder.userBreifLayout= (LinearLayout) view.findViewById(R.id.user_breif_layout);
 			mHolder.userItemView = (LinearLayout) view.findViewById(R.id.user_item_view);
@@ -126,7 +127,10 @@ public class NarutoAdapter extends BaseAdapter {
 		}
 		mHolder.userItemView.setOnClickListener(new UserSelectAction(position));
 		if(user.getFilmName()!=null&&!user.getFilmName().isEmpty()){
+			mHolder.userMovieTag.setVisibility(View.VISIBLE);
 		   mHolder.userMovieLove.setText(Html.fromHtml(String.format(context.getResources().getString(R.string.user_love_movie), user.getFilmName(),user.getFilmCnt())));
+		}else{
+			mHolder.userMovieTag.setVisibility(View.GONE);
 		}
 		//mHolder.userIngMiss.setText(String.format(context.getResources().getString(R.string.user_ing_miss), user.getTryst()));
 		String score=UserCharm.GetScore(user.getFace(), user.getFaceCnt()<=0?1:user.getFaceCnt());
@@ -136,10 +140,12 @@ public class NarutoAdapter extends BaseAdapter {
 			mHolder.userCharmBar.setRating(Float.valueOf(score)/2f);
 			mHolder.userCharm.setText(score);
 		}
-		if(loginUser.getMemberId().equals(user.getMemberId())){
-			mHolder.userBtnView.setVisibility(View.GONE);
-		}else{
-			mHolder.userBtnView.setVisibility(View.VISIBLE);
+		if(loginUser!=null){
+			if(loginUser.getMemberId().equals(user.getMemberId())){
+				mHolder.userBtnView.setVisibility(View.GONE);
+			}else{
+				mHolder.userBtnView.setVisibility(View.VISIBLE);
+			}
 		}
 		mHolder.userBreifLayout.setOnClickListener(new UserSelectAction(position));
 		mHolder.userBtnLove.setOnClickListener(new UserSelectAction(position));
@@ -150,7 +156,7 @@ public class NarutoAdapter extends BaseAdapter {
 	}
 
 	static class ViewHolder {
-		
+		LinearLayout userMovieTag;
 		LinearLayout movieBreifLayout;
 		LinearLayout userBtnView;
         LinearLayout userBreifLayout;

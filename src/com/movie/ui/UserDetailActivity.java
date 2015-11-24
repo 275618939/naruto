@@ -181,6 +181,7 @@ public class UserDetailActivity extends BaseActivity implements
 	private void loadUserFilmType(){
 		
 		httpUserFilmTyService.addParams("page",0);
+		httpUserFilmTyService.addParams("memberId", memberId);
 		httpUserFilmTyService.addParams("size",Constant.Page.WANT_SEE_MOIVE_SIZE);
 		httpUserFilmTyService.execute(this);
 	}
@@ -364,6 +365,11 @@ public class UserDetailActivity extends BaseActivity implements
 			}else if(tag.endsWith(httpUserLoveService.TAG)){
 				loadUser();
 			}
+		}else if (Constant.ReturnCode.STATE_3.equals(code)) {
+			Intent loginIntent = new Intent(this,LoginActivity.class);
+			this.overridePendingTransition(R.anim.slide_in_right, R.anim.slide_out_left);
+			startActivity(loginIntent);
+			this.finish();
 		} else {
 			
 			String message = map.get(Constant.ReturnCode.RETURN_MESSAGE).toString();
@@ -391,12 +397,16 @@ public class UserDetailActivity extends BaseActivity implements
 		refreshableScollView.onRefreshComplete();
 		String message = map.get(Constant.ReturnCode.RETURN_MESSAGE).toString();
 		String tag = map.get(Constant.ReturnCode.RETURN_TAG).toString();
+		String code = map.get(Constant.ReturnCode.RETURN_STATE).toString();
+		showToask(message);
+		if(code.equals(ReturnCode.STATE_999)){
+			loadView.hideAllHit(this);
+			return;
+		}
 		if(tag.endsWith(httpUsersService.TAG)){
 			loadView.showLoadFail(this,this);
-		}else{
-			loadView.hideAllHit(this);
-			showToask(message);
 		}
+	
 	}
 
 	@Override
