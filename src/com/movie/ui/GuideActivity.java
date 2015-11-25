@@ -20,6 +20,7 @@ import com.movie.client.service.CallBackService;
 import com.movie.network.HttpCommentService;
 import com.movie.network.HttpFilmTypeService;
 import com.movie.network.HttpHobbyService;
+import com.movie.network.HttpRegionService;
 
 /**
  * 引导界面
@@ -34,6 +35,7 @@ public class GuideActivity extends BaseActivity implements OnPageChangeListener 
 	BaseService httpHobbyService;
 	BaseService httpCommentService;
 	BaseService httpFilmTypeService;
+	BaseService httpRegionService;
 	// 底部小点图片
 	private ImageView[] dots;
 
@@ -47,6 +49,7 @@ public class GuideActivity extends BaseActivity implements OnPageChangeListener 
 		httpHobbyService = new HttpHobbyService(this);
 		httpCommentService = new HttpCommentService(this);
 		httpFilmTypeService = new HttpFilmTypeService(this);
+		httpRegionService = new HttpRegionService(this);
 		// 初始化页面
 		initViews();
 		// 初始化底部小点
@@ -78,6 +81,8 @@ public class GuideActivity extends BaseActivity implements OnPageChangeListener 
 		//加载女性评价
 		httpCommentService.addParams("type", SexState.WOMAN.getState());
 		httpCommentService.execute(this);
+		//初始化当前用户位置ID
+		httpRegionService.execute(this);
 	}
 
 	private void initDots() {

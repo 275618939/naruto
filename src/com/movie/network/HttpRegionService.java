@@ -8,8 +8,10 @@ import android.os.Message;
 import com.movie.app.Constant;
 import com.movie.app.ErrorState;
 import com.movie.app.InvokeException;
+import com.movie.client.bean.Dictionary;
 import com.movie.client.service.BaseService;
 import com.movie.client.service.CallBackService;
+import com.movie.client.service.RegionService;
 import com.movie.util.HttpUtils;
 
 public class HttpRegionService extends BaseService {
@@ -41,6 +43,9 @@ public class HttpRegionService extends BaseService {
 				Integer state = (Integer) map.get(Constant.ReturnCode.RETURN_STATE);
 				if (state == ErrorState.Success.getState()) {
 					message.what = SUCCESS_STATE;
+					Integer id=  (Integer)map.get(Constant.ReturnCode.RETURN_VALUE);
+					RegionService regionService=new RegionService();
+					regionService.addRegion(new Dictionary(id, ""));
 				} else if (state == ErrorState.SessionInvalid.getState()) {
 					if (requestCount < MAXREQUEST) {
 						updateSid();

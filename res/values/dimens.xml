@@ -22,10 +22,12 @@
     <dimen name="panel_item">95dp</dimen>
     <dimen name="input_width_1">180dp</dimen>
     <dimen name="user_ment_height">50.0dip</dimen>
-    <dimen name="slef_back_height">180dp</dimen>
+    <dimen name="slef_back_height">220dp</dimen>
     <dimen name="user_tag_height">35dp</dimen>
     <dimen name="user_round_image_width">60dp</dimen>
     <dimen name="user_round_image_height">60dp</dimen>
+    <dimen name="user_select_image_width">68dp</dimen>
+    <dimen name="user_select_image_height">68dp</dimen>
     <dimen name="user_logo_image_width">80dp</dimen>
     <dimen name="user_logo_image_height">80dp</dimen>
     <dimen name="user_image_width">120dp</dimen>
@@ -53,6 +55,7 @@
     <dimen name="layout_item_bottom">10.0dip</dimen>
     <dimen name="layout_item_bottom_2">20.0dip</dimen>
     <dimen name="layout_item_bottom_1">5.0dip</dimen>
+    <dimen name="layout_left_0">5.0dip</dimen>
     <dimen name="layout_left">10.0dip</dimen>
     <dimen name="layout_left_15">15.0dip</dimen>
     <dimen name="layout_left_18">18.0dip</dimen>
@@ -70,6 +73,7 @@
     <dimen name="nav_height">52.0dip</dimen>
     <dimen name="nav_btn_height">34.0dip</dimen>
     <dimen name="nav_btn_text_size">15.0sp</dimen>
+    <dimen name="padding5">5dip</dimen>
     <dimen name="nav_padding_top">15.0dip</dimen>
     <dimen name="nav_padding_bottom">15.0dip</dimen>
     <dimen name="nav_padding_bottom_20">20.0dip</dimen>

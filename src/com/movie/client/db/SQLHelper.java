@@ -15,6 +15,7 @@ public class SQLHelper extends SQLiteOpenHelper {
 	public static final String TABLE_HOBBY = "hobby";// 喜好表
 	public static final String TABLE_COMMENT = "comment";// 评价表
 	public static final String TABLE_FILMTYPE = "filmType";// 电影类型表
+	public static final String TABLE_REGION = "region";// 用户当前城市位置
 	public static final String ID = "id";//
 	public static final String TYPE = "type";//
 	public static final String NAME = "name";
@@ -76,6 +77,9 @@ public class SQLHelper extends SQLiteOpenHelper {
 			db.execSQL("create table if not exists " + TABLE_FILMTYPE
 					+ "(_id INTEGER PRIMARY KEY AUTOINCREMENT, " + ID
 					+ " INTEGER , " + NAME + " TEXT )");
+			db.execSQL("create table if not exists " + TABLE_REGION
+					+ "(_id INTEGER PRIMARY KEY AUTOINCREMENT, " + ID
+					+ " INTEGER )");
 
 
 			// createUserTable();

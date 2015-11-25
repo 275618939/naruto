@@ -28,8 +28,8 @@ import com.movie.app.Constant.ReturnCode;
 import com.movie.client.bean.User;
 import com.movie.client.service.BaseService;
 import com.movie.client.service.CallBackService;
+import com.movie.client.service.RegionService;
 import com.movie.network.HttpNarutoQueryService;
-import com.movie.network.HttpRegionService;
 import com.movie.network.HttpUserLoveService;
 import com.movie.ui.LoginActivity;
 import com.movie.view.LoadView;
@@ -41,12 +41,13 @@ public class NarutoCharmFragment extends Fragment implements CallBackService,
 	NarutoAdapter natutoAdapter;
 	PullToRefreshListView refreshView;
 	BaseService httpNarutoBaseService;
-	BaseService httpRegionService;
 	BaseService httpUserLoveService;
+	RegionService regionService;
 	List<User> users = new ArrayList<User>();
 	View view;
 	LoadView loadView;
 	int page;
+	int region;
 
 	@Override
 	public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -58,9 +59,10 @@ public class NarutoCharmFragment extends Fragment implements CallBackService,
 		}
 		httpUserLoveService = new HttpUserLoveService(getActivity());
 		httpNarutoBaseService = new HttpNarutoQueryService(getActivity());
-		httpRegionService = new HttpRegionService(getActivity());
+		regionService = new RegionService();
 		view = LayoutInflater.from(getActivity()).inflate(R.layout.fragment_naruto_charm, null);
 		loadView = new LoadView(view);
+		region=regionService.getRegionId();
 		initView(view);
 		users.clear();
 		loadUser();
@@ -75,10 +77,11 @@ public class NarutoCharmFragment extends Fragment implements CallBackService,
 		refreshView.setOnRefreshListener(this);
 		refreshView.setAdapter(natutoAdapter);
 	}
+	
 
 	private void loadUser() {
 		httpNarutoBaseService.addUrls(Constant.Member_ByFace_Query_API_URL);
-		httpNarutoBaseService.addParams("regionId", 10);
+		httpNarutoBaseService.addParams("regionId", region);
 		httpNarutoBaseService.addParams("page", page);
 		httpNarutoBaseService.addParams("size", Page.DEFAULT_SIZE);
 		httpNarutoBaseService.execute(this);

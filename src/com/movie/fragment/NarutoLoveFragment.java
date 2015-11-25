@@ -28,8 +28,8 @@ import com.movie.app.Constant.ReturnCode;
 import com.movie.client.bean.User;
 import com.movie.client.service.BaseService;
 import com.movie.client.service.CallBackService;
+import com.movie.client.service.RegionService;
 import com.movie.network.HttpNarutoQueryService;
-import com.movie.network.HttpRegionService;
 import com.movie.network.HttpUserLoveService;
 import com.movie.ui.LoginActivity;
 import com.movie.view.LoadView;
@@ -41,12 +41,13 @@ public class NarutoLoveFragment extends Fragment implements CallBackService,
 	NarutoAdapter natutoAdapter;
 	PullToRefreshListView refreshView;
 	BaseService httpNarutoBaseService;
-	BaseService httpRegionService;
 	BaseService httpUserLoveService;
+	RegionService regionService;
 	List<User> users = new ArrayList<User>();
 	View view;
 	LoadView loadView;
 	int page;
+	int region;
 
 	@Override
 	public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -58,9 +59,10 @@ public class NarutoLoveFragment extends Fragment implements CallBackService,
 		}
 		httpUserLoveService = new HttpUserLoveService(getActivity());
 		httpNarutoBaseService = new HttpNarutoQueryService(getActivity());
-		httpRegionService = new HttpRegionService(getActivity());
+		regionService = new RegionService();
 		view = LayoutInflater.from(getActivity()).inflate(R.layout.fragment_naruto_love, null);
 		loadView = new LoadView(view);
+		region=regionService.getRegionId();
 		initView(view);
 		users.clear();
 		loadUser();
@@ -75,10 +77,11 @@ public class NarutoLoveFragment extends Fragment implements CallBackService,
 		refreshView.setOnRefreshListener(this);
 		refreshView.setAdapter(natutoAdapter);
 	}
+	
 
 	private void loadUser() {
 		httpNarutoBaseService.addUrls(Constant.Member_Love_Query_API_URL);
-		httpNarutoBaseService.addParams("regionId", 10);
+		httpNarutoBaseService.addParams("regionId", region);
 		httpNarutoBaseService.addParams("page", page);
 		httpNarutoBaseService.addParams("size", Page.DEFAULT_SIZE);
 		httpNarutoBaseService.execute(this);
@@ -141,11 +144,17 @@ public class NarutoLoveFragment extends Fragment implements CallBackService,
 					if (userMap.containsKey("birthday")) {
 						user.setBirthday(userMap.get("birthday").toString());
 					}
+					if (userMap.containsKey("filmId")) {
+						user.setFilmId(Integer.parseInt(userMap.get("filmId").toString()));
+					}
 					if (userMap.containsKey("filmName")) {
 						user.setFilmName(userMap.get("filmName").toString());
 					}	
-					if (userMap.containsKey("love")) {
-						user.setLove(Integer.valueOf(userMap.get("love").toString()));
+					if (userMap.containsKey("filmCnt")) {
+						user.setFilmCnt(Integer.parseInt(userMap.get("filmCnt").toString()));
+					}	
+					if (userMap.containsKey("loveCnt")) {
+						user.setLove(Integer.valueOf(userMap.get("loveCnt").toString()));
 					}
 					if (userMap.containsKey("sex")) {
 						user.setSex(Integer.valueOf(userMap.get("sex").toString()));
@@ -165,6 +174,7 @@ public class NarutoLoveFragment extends Fragment implements CallBackService,
 
 			}else if(tag.equals(httpUserLoveService.TAG)){
 				showToask("感谢^_^您的关注!");
+				users.clear();
 				loadUser();
 			}
 		} else if (Constant.ReturnCode.STATE_3.equals(code)) {

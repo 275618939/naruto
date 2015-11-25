@@ -30,13 +30,13 @@
                 android:layout_width="match_parent"
                 android:layout_height="@dimen/slef_back_height"
                 android:background="@drawable/bg_ment"
-                android:gravity="center"
                 android:orientation="horizontal" >
 
                 <RelativeLayout
                     android:id="@+id/login_layout"
                     android:layout_width="match_parent"
-                    android:layout_height="wrap_content" >
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="@dimen/layout_item_top" >
 
                     <com.movie.view.RoundImageView
                         android:id="@+id/login_logo"
@@ -63,6 +63,7 @@
                     android:id="@+id/logout_layout"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
+                    android:layout_marginTop="@dimen/layout_item_top"
                     android:visibility="gone" >
 
                     <LinearLayout
@@ -97,7 +98,6 @@
                             android:layout_height="wrap_content"
                             android:layout_marginLeft="@dimen/layout_left_2"
                             android:layout_marginRight="@dimen/layout_right_2"
-                            android:layout_marginTop="@dimen/layout_item_top_1"
                             android:text="@string/drawer_right_tip_no_login"
                             android:textSize="@dimen/textSize12sp" />
                     </LinearLayout>
@@ -111,6 +111,19 @@
                         android:background="@drawable/user_edit" />
                 </RelativeLayout>
             </LinearLayout>
+
+            <GridView
+                android:id="@+id/userPhotoGridview"
+                android:layout_width="match_parent"
+                android:layout_height="@dimen/user_select_image_height"
+                android:layout_gravity="bottom"
+                android:layout_marginLeft="@dimen/layout_left_0"
+                android:layout_marginBottom="@dimen/layout_item_bottom_1"
+                android:horizontalSpacing="3dp"
+                android:numColumns="4"
+                android:scrollbars="none"
+                android:verticalSpacing="5dp" >
+            </GridView>
         </FrameLayout>
 
         <LinearLayout
@@ -199,18 +212,11 @@
                     android:gravity="center"
                     android:orientation="vertical" >
 
-                    <TextView
-                        style="@style/common_content_hint"
+                    <ImageView
+                        android:id="@+id/user_sign_in"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:text="0" />
-
-                    <TextView
-                        android:id="@+id/self_friends"
-                        style="@style/common_content_hint"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:text="@string/my_friends" />
+                        android:background="@drawable/qian" />
                 </LinearLayout>
             </LinearLayout>
 
@@ -335,7 +341,7 @@
 
             <LinearLayout
                 android:id="@+id/my_letters_layout"
-                style="@style/setting_item_end">
+                style="@style/setting_item_end" >
 
                 <TextView
                     android:id="@+id/my_letters"
