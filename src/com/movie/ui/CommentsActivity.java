@@ -25,11 +25,11 @@ import com.movie.view.CommentsGridView;
 
 public class CommentsActivity extends BaseActivity implements OnClickListener,CallBackService {
 
-	public HashMap<String, Object> apiParams = new HashMap<String, Object>();
+
 	TextView title;
 	CommentsGridView gridView;
 	EvaluationAdapter evaluationAdapter;
-	List<Map<Integer, Integer>> comments;
+	List<Map<Integer, Integer>> comments=new ArrayList<Map<Integer,Integer>>();;
 	BaseService sessionService;
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
@@ -53,7 +53,6 @@ public class CommentsActivity extends BaseActivity implements OnClickListener,Ca
 	private void loadComments(){
 		Map<Integer, Integer> maps=null;
 		Random random=new Random();
-		comments=new ArrayList<Map<Integer,Integer>>();
 		for(int i=0;i<20;i++){
     		maps=new HashMap<Integer, Integer>();
     		maps.put(i%8+1,random.nextInt(100));
@@ -61,9 +60,6 @@ public class CommentsActivity extends BaseActivity implements OnClickListener,Ca
 		}
 		evaluationAdapter.updateData(comments);
 	}
-
-
-
 	@Override
 	public void onClick(View v) {
 		switch (v.getId()) {
@@ -73,6 +69,8 @@ public class CommentsActivity extends BaseActivity implements OnClickListener,Ca
 	}
 	@Override
 	public void onBackPressed() {
+		comments.clear();
+		evaluationAdapter=null;
 		Intent intent = new Intent(this, UserDetailActivity.class);
 		this.startActivity(intent);
 		this.finish();

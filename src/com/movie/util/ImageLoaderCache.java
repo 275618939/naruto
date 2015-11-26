@@ -1,9 +1,12 @@
 package com.movie.util;
 
+import java.io.BufferedInputStream;
+import java.io.BufferedOutputStream;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
+import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
 import java.net.HttpURLConnection;
@@ -24,8 +27,8 @@ import com.movie.R;
 
 public class ImageLoaderCache {
 	
+	 
 	private static ImageLoaderCache imageInstance;
-	
 	MemoryCache memoryCache = new MemoryCache();  
     FileCache fileCache;  
     private Map<ImageView, String> imageViews = Collections.synchronizedMap(new WeakHashMap<ImageView, String>());  
@@ -53,21 +56,15 @@ public class ImageLoaderCache {
     public void DisplayImage(String url, ImageView imageView) {  
         imageViews.put(imageView, url);  
         // 先从内存缓存中查找  
-  
         Bitmap bitmap = memoryCache.get(url);  
         if (bitmap != null)  {
             imageView.setImageBitmap(bitmap);  
-//            if(!bitmap.isRecycled()){
-//            	bitmap.recycle();   //回收图片所占的内存         
-//                System.gc();
-//            }
         }
         else {  
             // 若没有的话则开启新线程加载图片  
             queuePhoto(url, imageView);  
             imageView.setImageResource(stub_id);  
         } 
-      
     }  
   
     private void queuePhoto(String url, ImageView imageView) {  
@@ -76,19 +73,24 @@ public class ImageLoaderCache {
     }  
   
     private Bitmap getBitmap(String url) {  
-        File f = fileCache.getFile(url);  
-  
-        // 先从文件缓存中查找是否有  
+        // File f = fileCache.getFile(url);  
+        Bitmap bitmap = null;  
+        File imageFile = new File(fileCache.getImagePath(url));  
+        if (!imageFile.exists()) {  
+        	bitmap=downloadImage(url);  
+        }else{
+        	bitmap=decodeFile(imageFile);  
+        }
+        return bitmap;
+       /* // 先从文件缓存中查找是否有  
         Bitmap b = decodeFile(f);  
         if (b != null)  
             return b;  
-  
         // 最后从指定的url中下载图片  
         try {  
-            Bitmap bitmap = null;  
+          
             URL imageUrl = new URL(url);  
-            HttpURLConnection conn = (HttpURLConnection) imageUrl  
-                    .openConnection();  
+            HttpURLConnection conn = (HttpURLConnection) imageUrl.openConnection();  
             conn.setConnectTimeout(30000);  
             conn.setReadTimeout(30000);  
             conn.setInstanceFollowRedirects(true);  
@@ -96,13 +98,66 @@ public class ImageLoaderCache {
             OutputStream os = new FileOutputStream(f);  
             CopyStream(is, os);  
             os.close();  
-            bitmap = decodeFile(f);  
+           
             return bitmap;  
         } catch (Exception ex) {  
             ex.printStackTrace();  
             return null;  
-        }  
+        }  */
     }  
+    /** 
+     * 将图片下载到SD卡缓存起来。 
+     *  
+     * @param imageUrl 
+     *            图片的URL地址。 
+     */  
+    public Bitmap downloadImage(String imageUrl) {  
+        HttpURLConnection con = null;  
+        FileOutputStream fos = null;  
+        BufferedOutputStream bos = null;  
+        BufferedInputStream bis = null;  
+        File imageFile = null;  
+        Bitmap bitmap = null;  
+        try {  
+            URL url = new URL(imageUrl);  
+            con = (HttpURLConnection) url.openConnection();  
+            con.setConnectTimeout(5 * 1000);  
+            con.setReadTimeout(15 * 1000);  
+            con.setInstanceFollowRedirects(true); 
+            //con.setDoOutput(true);  
+            bis = new BufferedInputStream(con.getInputStream());  
+            imageFile = new File(fileCache.getImagePath(imageUrl));  
+            fos = new FileOutputStream(imageFile);  
+            bos = new BufferedOutputStream(fos);  
+            byte[] b = new byte[1024];  
+            int length;  
+            while ((length = bis.read(b)) != -1) {  
+                bos.write(b, 0, length);  
+                bos.flush();  
+            }  
+        } catch (Exception e) {  
+            e.printStackTrace();  
+        } finally {  
+            try {  
+                if (bis != null) {  
+                    bis.close();  
+                }  
+                if (bos != null) {  
+                    bos.close();  
+                }  
+                if (con != null) {  
+                    con.disconnect();  
+                }  
+            } catch (IOException e) {  
+                e.printStackTrace();  
+            }  
+        } 
+        if(null!=imageFile){
+        	bitmap = decodeFile(imageFile);  
+        }
+       return bitmap;
+    }  
+   
   
     // decode这个图片并且按比例缩放以减少内存消耗，虚拟机对每张图片的缓存大小也是有限制的  
     private Bitmap decodeFile(File f) {  
@@ -111,14 +166,12 @@ public class ImageLoaderCache {
             BitmapFactory.Options o = new BitmapFactory.Options();  
             o.inJustDecodeBounds = true;  
             BitmapFactory.decodeStream(new FileInputStream(f), null, o);  
-  
             // Find the correct scale value. It should be the power of 2.  
             final int REQUIRED_SIZE = 70;  
             int width_tmp = o.outWidth, height_tmp = o.outHeight;  
             int scale = 1;  
             while (true) {  
-                if (width_tmp / 2 < REQUIRED_SIZE  
-                        || height_tmp / 2 < REQUIRED_SIZE)  
+                if (width_tmp / 2 < REQUIRED_SIZE   || height_tmp / 2 < REQUIRED_SIZE)  
                     break;  
                 width_tmp /= 2;  
                 height_tmp /= 2;  

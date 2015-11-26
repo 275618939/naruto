@@ -33,6 +33,7 @@ import com.movie.adapter.SignInAdapter;
 import com.movie.adapter.UserPhotoGridAdapter;
 import com.movie.app.Constant;
 import com.movie.app.Constant.ReturnCode;
+import com.movie.app.NarutoApplication;
 import com.movie.client.bean.User;
 import com.movie.client.service.BaseService;
 import com.movie.client.service.CallBackService;
@@ -43,8 +44,8 @@ import com.movie.ui.LoginActivity;
 import com.movie.ui.MissSelfQueryActivity;
 import com.movie.ui.UserActivity;
 import com.movie.ui.UserDetailActivity;
-import com.movie.util.ImageLoaderCache;
 import com.movie.view.CommentsGridView;
+import com.nostra13.universalimageloader.core.ImageLoader;
 
 public class SelfFragment extends Fragment implements OnClickListener , CallBackService{
 	
@@ -74,7 +75,7 @@ public class SelfFragment extends Fragment implements OnClickListener , CallBack
 	RelativeLayout logoutLayout;
 	LinearLayout myMissLayout;
 	LinearLayout loginAfterLayout;
-	ImageLoaderCache loaderCache;
+	ImageLoader loaderCache;
 	ImageView loginLogo;
 	ImageView userInfoLogo;
 	ImageView userEdit;
@@ -98,7 +99,7 @@ public class SelfFragment extends Fragment implements OnClickListener , CallBack
 		if(null!=titleView){
 			titleView.setVisibility(View.GONE);
 		}
-		loaderCache = new ImageLoaderCache(getActivity());
+		loaderCache = ImageLoader.getInstance();
 		View view = LayoutInflater.from(getActivity()).inflate(R.layout.fragment_self, null);
 		httpUsersService = new HttpUserService(getActivity());
 		httpLogotService = new HttpLogoutService(getActivity());
@@ -297,7 +298,7 @@ public class SelfFragment extends Fragment implements OnClickListener , CallBack
 				user.setMemberId(values.get("memberId").toString());
 				if (values.containsKey("portrait")) {
 					user.setPortrait(Constant.SERVER_ADRESS+values.get("portrait").toString());
-					loaderCache.DisplayImage(user.getPortrait(), userInfoLogo);
+					loaderCache.displayImage(user.getPortrait(), userInfoLogo,NarutoApplication.imageOptions);
 				}
 				if (values.containsKey("sex")) {
 					user.setSex(Integer.parseInt(values.get("sex").toString()));	
@@ -354,6 +355,13 @@ public class SelfFragment extends Fragment implements OnClickListener , CallBack
 	@Override
 	public void OnRequest() {
 		//showToask("加载个人信息");
+	}
+	@Override
+	public void onDestroyView() {
+		// TODO Auto-generated method stub
+		super.onDestroyView();
+		signInAdapter = null;
+		signInList=null;
 	}
 
 	

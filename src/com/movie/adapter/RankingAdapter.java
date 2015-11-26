@@ -14,22 +14,24 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.movie.R;
+import com.movie.app.NarutoApplication;
 import com.movie.client.bean.User;
 import com.movie.ui.UserDetailActivity;
-import com.movie.util.ImageLoaderCache;
+import com.nostra13.universalimageloader.core.ImageLoader;
 
 public class RankingAdapter extends BaseAdapter {
 	
 	List<User> userList;
 	Context context;
 	LayoutInflater inflater;
-	ImageLoaderCache imageLoaderCache;
+	ImageLoader imageLoaderCache;
 
 	public RankingAdapter(Context context, List<User> users) {
 		this.context = context;
 		this.userList = users;
 		inflater = LayoutInflater.from(context);
-		imageLoaderCache=ImageLoaderCache.getInstance(context);
+		imageLoaderCache=ImageLoader.getInstance();
+
 	
 	}
 	@Override
@@ -71,7 +73,7 @@ public class RankingAdapter extends BaseAdapter {
 		}
 		//获取position对应的数据
 		User user = getItem(position);
-		imageLoaderCache.DisplayImage(user.getPortrait(), mHolder.userImage);
+		imageLoaderCache.displayImage(user.getPortrait(), mHolder.userImage,NarutoApplication.imageOptions);
 		mHolder.userNickName.setText(user.getNickname());
 		mHolder.userMiss.setText(String.format(context.getResources().getString(R.string.miss_invite), user.getTryst()));
 		mHolder.missTime.setText("2015-11-8 20:59");

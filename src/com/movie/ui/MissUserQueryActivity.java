@@ -22,7 +22,6 @@ import com.movie.client.service.BaseService;
 import com.movie.client.service.CallBackService;
 import com.movie.network.HttpMissAgreeService;
 import com.movie.network.HttpMissUserQueryService;
-import com.movie.util.ImageLoaderCache;
 import com.movie.view.RefreshableListView;
 import com.movie.view.RefreshableListView.PullToRefreshListener;
 
@@ -38,7 +37,6 @@ public class MissUserQueryActivity extends BaseActivity implements
 	BaseService httpMissAgreeService;
 	BaseService httoMissUserQueryService;
 	RefreshableListView refreshableListView;
-	ImageLoaderCache loaderCache;
 	Miss miss;
 	int page;
 
@@ -48,7 +46,6 @@ public class MissUserQueryActivity extends BaseActivity implements
 		setContentView(R.layout.activity_miss_user_query);
 		httpMissAgreeService = new HttpMissAgreeService(this);
 		httoMissUserQueryService = new HttpMissUserQueryService(this);
-		loaderCache = new ImageLoaderCache(this);
 		initViews();
 		initData();
 	}

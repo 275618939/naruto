@@ -23,16 +23,17 @@ import android.widget.PopupWindow;
 import android.widget.TextView;
 
 import com.movie.R;
+import com.movie.app.NarutoApplication;
 import com.movie.app.SelfPartNarutoBtn;
 import com.movie.app.SexState;
 import com.movie.client.bean.Dictionary;
 import com.movie.client.bean.Miss;
 import com.movie.client.bean.User;
 import com.movie.ui.UserDetailActivity;
-import com.movie.util.ImageLoaderCache;
 import com.movie.util.StringUtil;
 import com.movie.view.CommentsGridView;
 import com.movie.view.MessageDialog;
+import com.nostra13.universalimageloader.core.ImageLoader;
 
 public class PartNarutoExpandableAdapter extends BaseExpandableListAdapter {
 
@@ -41,7 +42,7 @@ public class PartNarutoExpandableAdapter extends BaseExpandableListAdapter {
 	Miss miss;
 	int status;
 	private LayoutInflater inflater;
-	ImageLoaderCache imageLoaderCache;
+	ImageLoader imageLoaderCache;
 	Context context;
 	PopupWindow popupWindow;
 	View popView;
@@ -52,7 +53,7 @@ public class PartNarutoExpandableAdapter extends BaseExpandableListAdapter {
 	Handler handler;
 	public PartNarutoExpandableAdapter(Context context,List<Dictionary> parents, List<List<User>> childs) {
 		inflater = LayoutInflater.from(context);
-		imageLoaderCache=ImageLoaderCache.getInstance(context);
+		imageLoaderCache=ImageLoader.getInstance();
 		this.parents = parents;
 		this.childs = childs;
 		this.context = context;
@@ -61,7 +62,7 @@ public class PartNarutoExpandableAdapter extends BaseExpandableListAdapter {
 	public PartNarutoExpandableAdapter(Context context,Handler handler,List<Dictionary> parents, List<List<User>> childs) {
 		this.handler=handler;
 		inflater = LayoutInflater.from(context);
-		imageLoaderCache = new ImageLoaderCache(context);
+		imageLoaderCache=ImageLoader.getInstance();
 		this.parents = parents;
 		this.childs = childs;
 		this.context = context;
@@ -157,7 +158,7 @@ public class PartNarutoExpandableAdapter extends BaseExpandableListAdapter {
 		}
 		// 获取position对应的数据
 		User user = childs.get(groupPosition).get(childPosition);
-		imageLoaderCache.DisplayImage(user.getPortrait(), mHolder.userIcon);
+		imageLoaderCache.displayImage(user.getPortrait(), mHolder.userIcon,NarutoApplication.imageOptions);
 		mHolder.missUserName.setText(user.getNickname());
 		mHolder.missUserSex.setText(SexState.getState(user.getSex()).getMessage());
 		mHolder.missUserCharm.setText(user.getCharm().toString());

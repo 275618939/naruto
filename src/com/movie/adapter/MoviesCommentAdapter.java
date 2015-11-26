@@ -14,10 +14,11 @@ import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.movie.R;
+import com.movie.app.NarutoApplication;
 import com.movie.client.bean.MovieComment;
 import com.movie.ui.UserDetailActivity;
-import com.movie.util.ImageLoaderCache;
 import com.movie.view.RoundImageView;
+import com.nostra13.universalimageloader.core.ImageLoader;
 
 public class MoviesCommentAdapter extends BaseAdapter {
 	
@@ -25,13 +26,13 @@ public class MoviesCommentAdapter extends BaseAdapter {
 	List<MovieComment> movieComments;
 	Context context;
 	LayoutInflater inflater;
-	ImageLoaderCache imageLoader;
+	ImageLoader imageLoaderCache;
 	
 	
 	public MoviesCommentAdapter(Context context,List<MovieComment> movieComments) {
 		this.context = context;
 		this.movieComments = movieComments;
-		imageLoader=ImageLoaderCache.getInstance(context);
+		imageLoaderCache=ImageLoader.getInstance();
 		inflater = LayoutInflater.from(context);
 		initData();
 	}
@@ -75,7 +76,7 @@ public class MoviesCommentAdapter extends BaseAdapter {
 		//获取position对应的数据
 		MovieComment movieComment = getItem(position);
 		if(movieComment!=null){
-			imageLoader.DisplayImage(movieComment.getPortrait(),mHolder.imageView);
+			imageLoaderCache.displayImage(movieComment.getPortrait(),mHolder.imageView,NarutoApplication.imageOptions);
 			mHolder.nickname.setText(movieComment.getNickname());
 			mHolder.starBar.setRating(Float.valueOf(movieComment.getScore())/10f/2f);
 			mHolder.score.setText(String.valueOf(movieComment.getScore()/10f));

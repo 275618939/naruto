@@ -17,19 +17,17 @@ import android.widget.TextView;
 
 import com.movie.R;
 import com.movie.app.MissStateBackColor;
+import com.movie.app.NarutoApplication;
 import com.movie.client.bean.Miss;
 import com.movie.ui.MissNarutoDetailActivity;
-import com.movie.util.ImageLoaderCache;
+import com.nostra13.universalimageloader.core.ImageLoader;
 
 public class MissNarutoQueryAdapter extends BaseAdapter {
 
-	
-	
-	
 	List<Miss> misses;
 	Context context;
 	LayoutInflater inflater;
-	ImageLoaderCache imageLoaderCache;
+	ImageLoader imageLoaderCache;
 	Handler handler;
 	int missType;
 
@@ -37,15 +35,14 @@ public class MissNarutoQueryAdapter extends BaseAdapter {
 		this.context = context;
 		this.misses = misses;
 		inflater = LayoutInflater.from(context);
-		imageLoaderCache=ImageLoaderCache.getInstance(context);
-
+		imageLoaderCache=ImageLoader.getInstance();
 	}
 	public MissNarutoQueryAdapter(Context context,Handler handler, List<Miss> misses) {
 		this.context = context;
 		this.misses = misses;
 		this.handler=handler;
 		inflater = LayoutInflater.from(context);
-		imageLoaderCache = new ImageLoaderCache(context);
+		imageLoaderCache=ImageLoader.getInstance();
 
 	}
 
@@ -90,7 +87,7 @@ public class MissNarutoQueryAdapter extends BaseAdapter {
 		}
 		// 获取position对应的数据
 		Miss miss = getItem(position);
-		imageLoaderCache.DisplayImage(miss.getIcon(),mHolder.missIcon);
+		imageLoaderCache.displayImage(miss.getIcon(),mHolder.missIcon,NarutoApplication.imageOptions);
 		mHolder.missUser.setText(miss.getMemberId());
 		mHolder.missDate.setText(miss.getRunTime());
 		mHolder.missName.setText(miss.getCinameName());

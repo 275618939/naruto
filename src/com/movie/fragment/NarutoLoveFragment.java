@@ -43,7 +43,7 @@ public class NarutoLoveFragment extends Fragment implements CallBackService,
 	BaseService httpNarutoBaseService;
 	BaseService httpUserLoveService;
 	RegionService regionService;
-	List<User> users = new ArrayList<User>();
+	List<User> users =new ArrayList<User>();
 	View view;
 	LoadView loadView;
 	int page;
@@ -60,13 +60,11 @@ public class NarutoLoveFragment extends Fragment implements CallBackService,
 		httpUserLoveService = new HttpUserLoveService(getActivity());
 		httpNarutoBaseService = new HttpNarutoQueryService(getActivity());
 		regionService = new RegionService();
-		view = LayoutInflater.from(getActivity()).inflate(R.layout.fragment_naruto_love, null);
+		view = LayoutInflater.from(getActivity()).inflate(R.layout.fragment_naruto_love, null);		
 		loadView = new LoadView(view);
 		region=regionService.getRegionId();
 		initView(view);
-		users.clear();
 		loadUser();
-		
 		return view;
 	}
 
@@ -226,6 +224,12 @@ public class NarutoLoveFragment extends Fragment implements CallBackService,
 		loadUser();
 
 	}
-
+	@Override
+	public void onDestroyView() {
+		// TODO Auto-generated method stub
+		super.onDestroyView();
+		natutoAdapter = null;
+		users.clear();
+	}
 
 }

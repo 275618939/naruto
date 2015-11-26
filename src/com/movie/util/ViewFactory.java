@@ -5,6 +5,7 @@ import android.view.LayoutInflater;
 import android.widget.ImageView;
 
 import com.movie.R;
+import com.movie.app.NarutoApplication;
 import com.nostra13.universalimageloader.core.ImageLoader;
 /**
  * ImageView创建工厂
@@ -18,9 +19,8 @@ public class ViewFactory {
 	 * @return
 	 */
 	public static ImageView getImageView(Context context, String url) {
-		ImageView imageView = (ImageView)LayoutInflater.from(context).inflate(
-				R.layout.view_banner, null);
-		ImageLoader.getInstance().displayImage(url, imageView);
+		ImageView imageView = (ImageView)LayoutInflater.from(context).inflate(R.layout.view_banner, null);
+		ImageLoader.getInstance().displayImage(url, imageView,NarutoApplication.imageOptions);
 		return imageView;
 	}
 }

@@ -35,7 +35,7 @@ public class MoiveCurrentFragment extends Fragment implements CallBackService,
 	MoviesAdapter moviesAdapter;
 	BaseService playMovieService;
 	PullToRefreshGridView refreshLayout;
-	List<Movie> movies = new ArrayList<Movie>();
+	List<Movie> movies= new ArrayList<Movie>();
 	View view;
 	LoadView loadView;
 
@@ -61,9 +61,7 @@ public class MoiveCurrentFragment extends Fragment implements CallBackService,
 		refreshLayout.setMode(Mode.PULL_FROM_START);
 		refreshLayout.setOnRefreshListener(this);
 		refreshLayout.setAdapter(moviesAdapter);
-
 	}
-
 	protected void loadPlayingMovie() {
 		movies.clear();
 		playMovieService.execute(this);
@@ -121,8 +119,7 @@ public class MoiveCurrentFragment extends Fragment implements CallBackService,
 
 			} 
 		} else {
-			String message = map.get(Constant.ReturnCode.RETURN_MESSAGE)
-					.toString();
+			String message = map.get(Constant.ReturnCode.RETURN_MESSAGE).toString();
 			showToask(message);
 		}
 		moviesAdapter.updateData(movies);
@@ -145,6 +142,13 @@ public class MoiveCurrentFragment extends Fragment implements CallBackService,
 	protected void showToask(String hint) {
 		Toast toast = Toast.makeText(getActivity(), hint, Toast.LENGTH_SHORT);
 		toast.show();
+	}
+	@Override
+	public void onDestroyView() {
+		// TODO Auto-generated method stub
+		super.onDestroyView();
+		moviesAdapter = null;
+		movies.clear();
 	}
 
 	@Override

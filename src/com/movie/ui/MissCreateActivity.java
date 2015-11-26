@@ -134,7 +134,7 @@ public class MissCreateActivity extends BaseActivity implements OnClickListener,
 		cinemaPoi.putExtra("cointInfo", cointInfo);
 		cinemaPoi.putExtra("movie", movie);
 		startActivity(cinemaPoi);
-		
+
 	}
 
 	@Override

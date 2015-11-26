@@ -124,7 +124,7 @@ public class ForgetActivity extends BaseActivity implements OnClickListener,Call
 	public void onBackPressed() {
 		Intent intent = new Intent(this, LoginActivity.class);
 		this.startActivity(intent);
-		//this.finish();
+		this.finish();
 	}
 
 	@Override

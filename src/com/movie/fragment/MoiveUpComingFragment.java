@@ -48,7 +48,7 @@ public class MoiveUpComingFragment extends Fragment implements CallBackService,
 		}
 		view = LayoutInflater.from(getActivity()).inflate(R.layout.fragment_movie_upcoming, null);
 		loadView = new LoadView(view);
-		upComingMovieService = new HttpUPComingMovieService(getActivity());
+		upComingMovieService = new HttpUPComingMovieService(getActivity());	
 		initView(view);
 		loadUpcomingMovie();
 		return view;
@@ -119,8 +119,7 @@ public class MoiveUpComingFragment extends Fragment implements CallBackService,
 				}
 			}
 		} else {
-			String message = map.get(Constant.ReturnCode.RETURN_MESSAGE)
-					.toString();
+			String message = map.get(Constant.ReturnCode.RETURN_MESSAGE).toString();
 			showToask(message);
 		}
 		moviesAdapter.updateData(movies);
@@ -134,7 +133,13 @@ public class MoiveUpComingFragment extends Fragment implements CallBackService,
 		showToask(message);
 		loadView.showLoadFail(this,this);
 	}
-
+	@Override
+	public void onDestroyView() {
+		// TODO Auto-generated method stub
+		super.onDestroyView();
+		moviesAdapter = null;
+		movies.clear();
+	}
 	@Override
 	public void OnRequest() {
 		loadView.showLoading(this);

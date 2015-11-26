@@ -18,10 +18,11 @@ import android.widget.TextView;
 import com.movie.R;
 import com.movie.app.MissState;
 import com.movie.app.MissStateBackColor;
+import com.movie.app.NarutoApplication;
 import com.movie.client.bean.Miss;
 import com.movie.ui.MissSelfDetailActivity;
-import com.movie.util.ImageLoaderCache;
 import com.movie.util.StringUtil;
+import com.nostra13.universalimageloader.core.ImageLoader;
 
 public class MissSelfQueryAdapter extends BaseAdapter {
 
@@ -31,7 +32,7 @@ public class MissSelfQueryAdapter extends BaseAdapter {
 	List<Miss> misses;
 	Context context;
 	LayoutInflater inflater;
-	ImageLoaderCache imageLoaderCache;
+	ImageLoader imageLoaderCache;
 	Handler handler;
 	int missType;
 
@@ -39,7 +40,7 @@ public class MissSelfQueryAdapter extends BaseAdapter {
 		this.context = context;
 		this.misses = misses;
 		inflater = LayoutInflater.from(context);
-		imageLoaderCache=ImageLoaderCache.getInstance(context);
+		imageLoaderCache=ImageLoader.getInstance();
 
 	}
 	public MissSelfQueryAdapter(Context context,Handler handler, List<Miss> misses) {
@@ -47,7 +48,7 @@ public class MissSelfQueryAdapter extends BaseAdapter {
 		this.misses = misses;
 		this.handler=handler;
 		inflater = LayoutInflater.from(context);
-		imageLoaderCache = new ImageLoaderCache(context);
+		imageLoaderCache=ImageLoader.getInstance();
 
 	}
 
@@ -93,7 +94,7 @@ public class MissSelfQueryAdapter extends BaseAdapter {
 		}
 		// 获取position对应的数据
 		Miss miss = getItem(position);
-		imageLoaderCache.DisplayImage(miss.getIcon(),mHolder.missIcon);
+		imageLoaderCache.displayImage(miss.getIcon(),mHolder.missIcon,NarutoApplication.imageOptions);
 		//mHolder.missUser.setText(miss.getMemberId());
 		mHolder.missDate.setText(StringUtil.getShortStrBySym(miss.getRunTime(),":"));
 		mHolder.missName.setText(miss.getCinameName());

@@ -16,22 +16,23 @@ import android.view.View.OnClickListener;
 import android.widget.GridView;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
-import android.widget.RatingBar;
-import android.widget.ScrollView;
 import android.widget.LinearLayout.LayoutParams;
+import android.widget.RatingBar;
 import android.widget.RelativeLayout;
+import android.widget.ScrollView;
 import android.widget.TextView;
 
 import com.handmark.pulltorefresh.library.PullToRefreshBase;
-import com.handmark.pulltorefresh.library.PullToRefreshScrollView;
 import com.handmark.pulltorefresh.library.PullToRefreshBase.Mode;
 import com.handmark.pulltorefresh.library.PullToRefreshBase.OnRefreshListener;
+import com.handmark.pulltorefresh.library.PullToRefreshScrollView;
 import com.movie.R;
 import com.movie.adapter.EvaluationAdapter;
 import com.movie.app.BackGroundColor;
 import com.movie.app.Constant;
 import com.movie.app.Constant.Page;
 import com.movie.app.Constant.ReturnCode;
+import com.movie.app.NarutoApplication;
 import com.movie.app.SexState;
 import com.movie.client.bean.User;
 import com.movie.client.service.BaseService;
@@ -45,10 +46,10 @@ import com.movie.network.HttpUserFilmTypeService;
 import com.movie.network.HttpUserLoveService;
 import com.movie.network.HttpUserService;
 import com.movie.util.Horoscope;
-import com.movie.util.ImageLoaderCache;
 import com.movie.util.StringUtil;
 import com.movie.util.UserCharm;
 import com.movie.view.LoadView;
+import com.nostra13.universalimageloader.core.ImageLoader;
 
 public class UserDetailActivity extends BaseActivity implements
 		OnClickListener, CallBackService,OnRefreshListener<ScrollView> {
@@ -87,7 +88,7 @@ public class UserDetailActivity extends BaseActivity implements
 	LinearLayout userDetailTool;
 	RelativeLayout userDetailParent;
 	List<Map<Integer, Integer>> comments;
-	ImageLoaderCache loaderCache;
+	ImageLoader imageLoaderCache;
 	Map<Integer,String> hobbiesMap;
 	Map<Integer,String> filmTypeMap;
 	boolean isLove;
@@ -106,7 +107,7 @@ public class UserDetailActivity extends BaseActivity implements
 		hobbyService = new HobbyService();
 		userService = new UserService();
 		filmTypeService = new FilmTypeService();
-		loaderCache = new ImageLoaderCache(this);
+		imageLoaderCache=ImageLoader.getInstance();
 		initViews();
 		loadData();
 	}
@@ -254,7 +255,7 @@ public class UserDetailActivity extends BaseActivity implements
 				Map<String, Object> values = (Map<String, Object>) map.get(ReturnCode.RETURN_VALUE);
 				if (values.containsKey("portrait")) {
 					user.setPortrait(Constant.SERVER_ADRESS+values.get("portrait").toString());
-					loaderCache.DisplayImage(user.getPortrait(),headView);
+					imageLoaderCache.displayImage(user.getPortrait(),headView,NarutoApplication.imageOptions);
 				}
 				if (values.containsKey("sex")) {
 					user.setSex(Integer.parseInt(values.get("sex").toString()));

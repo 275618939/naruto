@@ -31,7 +31,6 @@ public class HomeFragment extends Fragment {
 		if(null!=titleView){
 			titleView.setVisibility(View.VISIBLE);
 		}
-		users.clear();
 		View view = LayoutInflater.from(getActivity()).inflate(R.layout.fragment_main, null);
 		ViewPager pager = (ViewPager) view.findViewById(R.id.pager);
 		pager.setAdapter(new FragmentPagerAdapter(getChildFragmentManager()) {
@@ -46,11 +45,19 @@ public class HomeFragment extends Fragment {
 		});
 		mainScrollView = (ScrollView) view.findViewById(R.id.main_scroll_view);
 		mainScrollView.smoothScrollTo(0, 0);
+		users.clear();
 		users=User.getTempData();
 		rankingAdapter = new RankingAdapter(view.getContext(), users);
 		GridView gridView = (GridView) view.findViewById(R.id.miss_grid);
 		gridView.setAdapter(rankingAdapter);
 		return view;
+	}
+	@Override
+	public void onDestroyView() {
+		// TODO Auto-generated method stub
+		super.onDestroyView();
+		rankingAdapter = null;
+		users.clear();
 	}
 
 

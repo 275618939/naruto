@@ -61,12 +61,10 @@ public class NarutoCharmFragment extends Fragment implements CallBackService,
 		httpNarutoBaseService = new HttpNarutoQueryService(getActivity());
 		regionService = new RegionService();
 		view = LayoutInflater.from(getActivity()).inflate(R.layout.fragment_naruto_charm, null);
-		loadView = new LoadView(view);
+		loadView = new LoadView(view);		
 		region=regionService.getRegionId();
 		initView(view);
-		users.clear();
-		loadUser();
-		
+		loadUser();		
 		return view;
 	}
 
@@ -77,8 +75,6 @@ public class NarutoCharmFragment extends Fragment implements CallBackService,
 		refreshView.setOnRefreshListener(this);
 		refreshView.setAdapter(natutoAdapter);
 	}
-	
-
 	private void loadUser() {
 		httpNarutoBaseService.addUrls(Constant.Member_ByFace_Query_API_URL);
 		httpNarutoBaseService.addParams("regionId", region);
@@ -108,7 +104,6 @@ public class NarutoCharmFragment extends Fragment implements CallBackService,
 	public void onClick(View v) {
 		switch (v.getId()) {
 		case R.id.loading_error:
-			users.clear();
 			loadUser();
 			break;
 		default:
@@ -202,7 +197,13 @@ public class NarutoCharmFragment extends Fragment implements CallBackService,
 		
 
 	}
-
+	@Override
+	public void onDestroyView() {
+		// TODO Auto-generated method stub
+		super.onDestroyView();
+		natutoAdapter = null;
+		users.clear();
+	}
 	@Override
 	public void OnRequest() {
 		loadView.showLoading(this);

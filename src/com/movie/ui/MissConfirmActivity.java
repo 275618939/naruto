@@ -125,8 +125,7 @@ public class MissConfirmActivity extends BaseActivity implements
 			String tag = map.get(Constant.ReturnCode.RETURN_TAG).toString();
 			Intent intent = new Intent(this, MainActivity.class);
 			startActivity(intent);
-			this.finish();
-			
+			finish();
 		} else {
 			String message = map.get(Constant.ReturnCode.RETURN_MESSAGE).toString();
 			showToask(message);

@@ -23,7 +23,6 @@ import com.movie.client.bean.Miss;
 import com.movie.client.bean.User;
 import com.movie.fragment.SelfFragment;
 import com.movie.ui.MissUserQueryActivity;
-import com.movie.util.ImageLoaderCache;
 import com.movie.view.MessageDialog;
 
 public class MissQueryAdapter extends BaseAdapter {
@@ -34,7 +33,6 @@ public class MissQueryAdapter extends BaseAdapter {
 	List<Miss> misses;
 	Context context;
 	LayoutInflater inflater;
-	ImageLoaderCache imageLoaderCache;
 	Handler handler;
 	int missType;
 
@@ -42,16 +40,12 @@ public class MissQueryAdapter extends BaseAdapter {
 		this.context = context;
 		this.misses = misses;
 		inflater = LayoutInflater.from(context);
-		imageLoaderCache=ImageLoaderCache.getInstance(context);
-
 	}
 	public MissQueryAdapter(Context context,Handler handler, List<Miss> misses) {
 		this.context = context;
 		this.misses = misses;
 		this.handler=handler;
 		inflater = LayoutInflater.from(context);
-		imageLoaderCache = new ImageLoaderCache(context);
-
 	}
 
 	@Override
@@ -106,7 +100,7 @@ public class MissQueryAdapter extends BaseAdapter {
 		mHolder.missDate.setText(miss.getRunTime());
 		mHolder.missName.setText(miss.getCinameName());
 		//mHolder.missAddress.setText(miss.getCinameAddress());
-		mHolder.missState.setText(miss.getStatus());
+		//mHolder.missState.setText(miss.getStatus());
 		if (null != users) {
 			mHolder.missPart.setText(String.valueOf(users.size()));
 		}
@@ -118,7 +112,7 @@ public class MissQueryAdapter extends BaseAdapter {
 		if(missType>SelfFragment.MY_MISS){
 			if(null!=miss.getStage()){
 				mHolder.missStageLayout.setVisibility(View.VISIBLE);
-				mHolder.missStage.setText(MissStage.getState(miss.getStage()).getMessage());
+				//mHolder.missStage.setText(MissStage.getState(miss.getStage()).getMessage());
 			}
 		}
 		mHolder.missItemView.setOnClickListener(new UserSelectAction(position));

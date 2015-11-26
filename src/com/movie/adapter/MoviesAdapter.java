@@ -17,10 +17,11 @@ import android.widget.TextView;
 
 import com.movie.R;
 import com.movie.app.Constant.NameShow;
+import com.movie.app.NarutoApplication;
 import com.movie.client.bean.Movie;
 import com.movie.ui.MovieDetailActivity;
-import com.movie.util.ImageLoaderCache;
 import com.movie.util.MovieScore;
+import com.nostra13.universalimageloader.core.ImageLoader;
 
 public class MoviesAdapter extends BaseAdapter {
 	
@@ -28,13 +29,12 @@ public class MoviesAdapter extends BaseAdapter {
 	List<Movie> movies;
 	Context context;
 	LayoutInflater inflater;
-	ImageLoaderCache imageLoader;
-	
+	ImageLoader imageLoaderCache;
 	
 	public MoviesAdapter(Context context,List<Movie> movies) {
 		this.context = context;
 		this.movies = movies;
-		imageLoader=ImageLoaderCache.getInstance(context);
+		imageLoaderCache=ImageLoader.getInstance();
 		inflater = LayoutInflater.from(context);
 		initData();
 	}
@@ -89,7 +89,7 @@ public class MoviesAdapter extends BaseAdapter {
 				mHolder.movieNoneScoreLayout.setVisibility(View.VISIBLE);
 				mHolder.movieHaveScoreLayout.setVisibility(View.GONE);
 			}
-			imageLoader.DisplayImage(movie.getIcon(), mHolder.movieImage);
+			imageLoaderCache.displayImage(movie.getIcon(), mHolder.movieImage,NarutoApplication.imageOptions);
 			if(movie.getName().length()>NameShow.MOVIENAME_MAX){
 				mHolder.titleText.setText(movie.getName().substring(0, NameShow.MOVIENAME_MAX));
 			}else{

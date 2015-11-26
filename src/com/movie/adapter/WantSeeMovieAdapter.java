@@ -13,11 +13,12 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.movie.R;
+import com.movie.app.NarutoApplication;
 import com.movie.client.bean.User;
 import com.movie.ui.UserDetailActivity;
-import com.movie.util.ImageLoaderCache;
 import com.movie.util.StringUtil;
 import com.movie.view.RoundImageView;
+import com.nostra13.universalimageloader.core.ImageLoader;
 
 public class WantSeeMovieAdapter extends BaseAdapter {
 	
@@ -25,13 +26,13 @@ public class WantSeeMovieAdapter extends BaseAdapter {
 	List<User> users;
 	Context context;
 	LayoutInflater inflater;
-	ImageLoaderCache imageLoader;
+	ImageLoader imageLoaderCache;
 	
 	
 	public WantSeeMovieAdapter(Context context,List<User> users) {
 		this.context = context;
 		this.users = users;
-		imageLoader=new ImageLoaderCache(context);
+		imageLoaderCache=ImageLoader.getInstance();
 		inflater = LayoutInflater.from(context);
 		
 	}
@@ -73,7 +74,7 @@ public class WantSeeMovieAdapter extends BaseAdapter {
 		}
 		//获取position对应的数据
 		User user = getItem(position);
-		imageLoader.DisplayImage(user.getPortrait(), mHolder.userImage);
+		imageLoaderCache.displayImage(user.getPortrait(), mHolder.userImage,NarutoApplication.imageOptions);
 		mHolder.userNick.setText(StringUtil.getShortStr(user.getNickname(), 3));
 		mHolder.userImage.setOnClickListener(new UserSelectAction(position));
 		return view;

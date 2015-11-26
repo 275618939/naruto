@@ -19,26 +19,27 @@ import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.movie.R;
+import com.movie.app.NarutoApplication;
 import com.movie.app.SexState;
 import com.movie.client.bean.Miss;
 import com.movie.client.bean.User;
 import com.movie.ui.UserDetailActivity;
-import com.movie.util.ImageLoaderCache;
 import com.movie.view.MessageDialog;
+import com.nostra13.universalimageloader.core.ImageLoader;
 
 public class MissUserAdapter extends BaseAdapter {
 
 	List<User> userList;
 	Context context;
 	LayoutInflater inflater;
-	ImageLoaderCache imageLoaderCache;
+	ImageLoader imageLoaderCache;
 	Handler handler;
 
 	public MissUserAdapter(Context context, List<User> users) {
 		this.context = context;
 		this.userList = users;
 		inflater = LayoutInflater.from(context);
-		imageLoaderCache=ImageLoaderCache.getInstance(context);
+		imageLoaderCache=ImageLoader.getInstance();
 
 	}
 
@@ -46,7 +47,7 @@ public class MissUserAdapter extends BaseAdapter {
 		this.context = context;
 		this.userList = users;
 		inflater = LayoutInflater.from(context);
-		imageLoaderCache = new ImageLoaderCache(context);
+		imageLoaderCache=ImageLoader.getInstance();
 		this.handler = handler;
 	}
 
@@ -94,7 +95,7 @@ public class MissUserAdapter extends BaseAdapter {
 		// 获取position对应的数据
 		User user = getItem(position);
 
-		imageLoaderCache.DisplayImage(user.getPortrait(), mHolder.missIcon);
+		imageLoaderCache.displayImage(user.getPortrait(), mHolder.missIcon,NarutoApplication.imageOptions);
 		mHolder.missUserName.setText(user.getNickname());
 		mHolder.missUserSex.setText(SexState.getState(user.getSex()).getMessage());
 		mHolder.missUserCharm.setText(user.getCharm().toString());

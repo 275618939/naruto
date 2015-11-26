@@ -45,8 +45,6 @@ public class NarutoFragment extends Fragment implements OnClickListener{
 		pager.setAdapter(new MissAdapter(getChildFragmentManager(),titles));
 		tabs.setViewPager(pager);
 	}
-
-	
 	@Override
 	public void onClick(View v) {
 		switch (v.getId()) {}

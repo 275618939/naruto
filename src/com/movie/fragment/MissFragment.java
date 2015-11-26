@@ -1,8 +1,5 @@
 package com.movie.fragment;
 
-import java.util.ArrayList;
-import java.util.List;
-
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
@@ -17,7 +14,6 @@ import android.widget.ListView;
 import com.handmark.pulltorefresh.library.PullToRefreshListView;
 import com.movie.R;
 import com.movie.adapter.MissNarutoQueryAdapter;
-import com.movie.client.bean.Miss;
 import com.movie.client.service.BaseService;
 import com.movie.network.HttpMissQueryService;
 import com.movie.view.PagerSlidingTabStrip;
@@ -28,7 +24,6 @@ public class MissFragment extends Fragment {
 	BaseService missQueryService;
 	PullToRefreshListView refreshableListView;
 	MissNarutoQueryAdapter missQueryAdapter;
-	List<Miss> misses = new ArrayList<Miss>();
 	int page;
 	boolean isRefreshing;
 	MissBestFragment bestFragment;
@@ -50,7 +45,6 @@ public class MissFragment extends Fragment {
 		}
 		titles = new String[]{ getResources().getString(R.string.miss_lately), getResources().getString(R.string.miss_best)};
 		missQueryService = new HttpMissQueryService(getActivity());
-		misses.clear();
 		initView(rootView);
 		return rootView;
 	}

@@ -5,7 +5,6 @@ import java.util.Map;
 
 import android.app.AlertDialog;
 import android.content.DialogInterface;
-import android.graphics.Bitmap;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentTabHost;
@@ -26,7 +25,6 @@ import com.movie.fragment.MoiveFragment;
 import com.movie.fragment.NarutoFragment;
 import com.movie.fragment.SelfFragment;
 import com.movie.network.HttpLoginAutoService;
-import com.movie.util.ImageLoaderCache;
 
 public class MainActivity extends NarutoMonitorActivity implements
 		OnClickListener, CallBackService {
@@ -39,7 +37,6 @@ public class MainActivity extends NarutoMonitorActivity implements
 	FragmentTabHost mTabHost;
 	LayoutInflater layoutInflater;
 	BaseService httpLoginAutoService;
-	ImageLoaderCache imageLoaderCache;
 	String login;
 
 	@Override
@@ -47,7 +44,6 @@ public class MainActivity extends NarutoMonitorActivity implements
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_main);
 		httpLoginAutoService = new HttpLoginAutoService(this);
-		imageLoaderCache = new ImageLoaderCache(this);
 		initViews();
 		initData();
 	}
@@ -72,6 +68,7 @@ public class MainActivity extends NarutoMonitorActivity implements
 		mTabHost.getTabWidget().setDividerDrawable(null);
 
 	}
+	
 
 	public void initData() {
 		httpLoginAutoService.execute(this);

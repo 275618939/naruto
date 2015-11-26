@@ -1,7 +1,6 @@
 package com.movie.ui;
 
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.Map;
 
 import android.os.Bundle;
@@ -19,7 +18,6 @@ import com.movie.view.HobbyView;
 
 public class HobbyActivity extends BaseActivity implements OnClickListener,CallBackService {
 
-	public HashMap<String, Object> apiParams = new HashMap<String, Object>();
 	User user;
 	TextView title;
 	TextView right;

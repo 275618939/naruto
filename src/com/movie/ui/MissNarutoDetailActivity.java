@@ -16,12 +16,13 @@ import android.widget.TextView;
 import com.movie.R;
 import com.movie.adapter.PartNarutoExpandableAdapter;
 import com.movie.app.Constant;
+import com.movie.app.NarutoApplication;
 import com.movie.client.bean.Dictionary;
 import com.movie.client.bean.Miss;
 import com.movie.client.bean.User;
 import com.movie.client.service.CallBackService;
-import com.movie.util.ImageLoaderCache;
 import com.movie.view.ExpandListViewForScrollView;
+import com.nostra13.universalimageloader.core.ImageLoader;
 
 
 public class MissNarutoDetailActivity extends BaseActivity implements OnClickListener, CallBackService {
@@ -41,7 +42,7 @@ public class MissNarutoDetailActivity extends BaseActivity implements OnClickLis
 	ExpandListViewForScrollView missPartList;
 	//PartNarutoAdapter partNarutoAdapter;
 	PartNarutoExpandableAdapter partNarutoAdapter;
-	ImageLoaderCache imageLoaderCache;
+	ImageLoader imageLoaderCache;
 	LinearLayout layoutCinemaAddress;
 	List<Dictionary> parents=new ArrayList<Dictionary>();
     List<List<User>> childs = new ArrayList<List<User>>();
@@ -50,7 +51,7 @@ public class MissNarutoDetailActivity extends BaseActivity implements OnClickLis
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_miss_naruto_detail);
 	
-		imageLoaderCache=new ImageLoaderCache(this);
+		imageLoaderCache=ImageLoader.getInstance();
 		initViews();
 		initData();
 		initPartUser();
@@ -82,7 +83,7 @@ public class MissNarutoDetailActivity extends BaseActivity implements OnClickLis
 			return;
 		}
 		title.setText(miss.getMovieName());
-		imageLoaderCache.DisplayImage(miss.getIcon(), missIcon);
+		imageLoaderCache.displayImage(miss.getIcon(), missIcon,NarutoApplication.imageOptions);
 		missCreateUser.setText(miss.getCreateUserName());
 		missDate.setText(miss.getRunTime());
 		missMovieName.setText(miss.getMovieName());

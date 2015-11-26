@@ -25,6 +25,7 @@ import com.movie.adapter.EvaluationAdapter;
 import com.movie.app.Constant;
 import com.movie.app.Constant.Page;
 import com.movie.app.Constant.ReturnCode;
+import com.movie.app.NarutoApplication;
 import com.movie.app.SexState;
 import com.movie.client.bean.User;
 import com.movie.client.service.BaseService;
@@ -35,7 +36,7 @@ import com.movie.fragment.SelfFragment;
 import com.movie.network.HttpUserCommentService;
 import com.movie.network.HttpUserFilmTypeService;
 import com.movie.network.HttpUserService;
-import com.movie.util.ImageLoaderCache;
+import com.nostra13.universalimageloader.core.ImageLoader;
 
 public class MySelfDetailActivity extends BaseActivity implements
 		OnClickListener, CallBackService {
@@ -63,7 +64,7 @@ public class MySelfDetailActivity extends BaseActivity implements
 	LinearLayout hobbiesLayout;
 	LinearLayout commentsLayout;
 	List<Map<Integer, Integer>> comments;
-	ImageLoaderCache loaderCache;
+	ImageLoader imageLoaderCache;
 	Map<Integer,String> hobbiesMap;
 	Map<Integer,String> filmTypeMap;
 
@@ -76,7 +77,7 @@ public class MySelfDetailActivity extends BaseActivity implements
 		httpUserFilmTyService = new HttpUserFilmTypeService(this);
 		hobbyService = new HobbyService();
 		filmTypeService = new FilmTypeService();
-		loaderCache = new ImageLoaderCache(this);
+		imageLoaderCache=ImageLoader.getInstance();
 		initViews();
 		loadData();
 	}
@@ -191,7 +192,7 @@ public class MySelfDetailActivity extends BaseActivity implements
 				Map<String, Object> values = (Map<String, Object>) map.get(ReturnCode.RETURN_VALUE);
 				user.setMemberId(values.get("memberId").toString());
 				if (values.containsKey("portrait")) {
-					loaderCache.DisplayImage(values.get("portrait").toString(),headView);
+					imageLoaderCache.displayImage(Constant.SERVER_ADRESS+values.get("portrait").toString(),headView,NarutoApplication.imageOptions);
 					user.setPortrait(values.get("portrait").toString());
 				}
 				if (values.containsKey("sex")) {

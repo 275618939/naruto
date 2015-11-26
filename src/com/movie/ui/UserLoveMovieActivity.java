@@ -23,7 +23,6 @@ import com.movie.client.bean.User;
 import com.movie.client.service.BaseService;
 import com.movie.client.service.CallBackService;
 import com.movie.network.HttpUserFilmTypeService;
-import com.movie.util.ImageLoaderCache;
 import com.movie.view.RefreshableView;
 import com.movie.view.RefreshableView.PullToRefreshListener;
 
@@ -34,7 +33,6 @@ public class UserLoveMovieActivity extends BaseActivity implements
 	TextView title;
 	GridView moviesView;
 	RefreshableView refreshLayout;
-	ImageLoaderCache loaderCache;
 	BaseService httpUserFilmService;
 	MoviesAdapter moviesAdapter;
 	List<Movie> movies = new ArrayList<Movie>();
@@ -46,7 +44,6 @@ public class UserLoveMovieActivity extends BaseActivity implements
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_user_love_movie);
 		httpUserFilmService = new HttpUserFilmTypeService(this);
-		loaderCache = new ImageLoaderCache(this);
 		initViews();
 		initData();
 	}
@@ -65,7 +62,7 @@ public class UserLoveMovieActivity extends BaseActivity implements
 
 	private void initData() {
 		page = 0;
-		title.setText("参与会员");
+		title.setText("想看电影");
 		user = (User) getIntent().getSerializableExtra("user");
 		if (null != user) {
 			loadMovies();
@@ -127,31 +124,16 @@ public class UserLoveMovieActivity extends BaseActivity implements
 				HashMap<String, Object> movieMap = null;
 				for (int i = 0; i < size; i++) {
 					movie = new Movie();
-					movieMap = datas.get(i);
-					if (movieMap.containsKey("filmId"))
-						movie.setId(Integer.parseInt(movieMap.get("filmId").toString()));
-					if (movieMap.containsKey("name"))
-						movie.setName(movieMap.get("name").toString());
-					if (movieMap.containsKey("briefing"))
-						movie.setBriefing(movieMap.get("briefing").toString());
-					if (movieMap.containsKey("icon"))
-						movie.setIcon(movieMap.get("icon").toString());
-					if (movieMap.containsKey("start"))
-						movie.setPlayTime(movieMap.get("start").toString());
-					if (movieMap.containsKey("interval"))
-						movie.setInterval(Integer.parseInt(movieMap.get("interval").toString()));
-					if (movieMap.containsKey("directors")) {
-						movie.setDirectors((List<String>)movieMap.get("directors"));
-					}
-					if (movieMap.containsKey("stars")) {
-						movie.setStars((List<String>)movieMap.get("stars"));
-					}
-					if (movieMap.containsKey("types")) {
-						movie.setTypes((List<Integer>)movieMap.get("types"));
-					}
-					if (movieMap.containsKey("scenarists")) {
-						movie.setScenarists((List<String>)movieMap.get("scenarists"));
-					}
+					movieMap = datas.get(i);	
+					movie.setId(Integer.parseInt(movieMap.get("filmId").toString()));
+					movie.setName(movieMap.get("filmName").toString());
+					movie.setIcon(Constant.SERVER_ADRESS+movieMap.get("filmIcon").toString());
+					if(movieMap.containsKey("score"))
+						movie.setScore(Long.parseLong(movieMap.get("score").toString())/10);
+					if(movieMap.containsKey("scoreCnt"))
+						movie.setScoreCnt(Integer.parseInt(movieMap.get("scoreCnt").toString()));
+					if(movieMap.containsKey("tryst"))
+						movie.setTryst(Integer.parseInt(movieMap.get("tryst").toString()));
 					movies.add(movie);
 				}
 			

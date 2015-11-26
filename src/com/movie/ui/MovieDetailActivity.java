@@ -31,6 +31,7 @@ import com.movie.adapter.WantSeeMovieAdapter;
 import com.movie.app.Constant;
 import com.movie.app.Constant.Page;
 import com.movie.app.Constant.ReturnCode;
+import com.movie.app.NarutoApplication;
 import com.movie.client.bean.Login;
 import com.movie.client.bean.Movie;
 import com.movie.client.bean.MovieComment;
@@ -44,12 +45,12 @@ import com.movie.network.HttpFilmLoveUpdateService;
 import com.movie.network.HttpMovieCommentCreateService;
 import com.movie.network.HttpMovieCommentQueryService;
 import com.movie.network.HttpMovieDetailService;
-import com.movie.util.ImageLoaderCache;
 import com.movie.util.MovieScore;
 import com.movie.util.StringUtil;
 import com.movie.view.HorizontalListView;
 import com.movie.view.LoadView;
 import com.movie.view.MovieCommentsDialog;
+import com.nostra13.universalimageloader.core.ImageLoader;
 
 
 public class MovieDetailActivity extends BaseActivity implements OnClickListener, CallBackService , OnRefreshListener2<ListView>,OnRefreshListener<ScrollView>{
@@ -92,7 +93,7 @@ public class MovieDetailActivity extends BaseActivity implements OnClickListener
 	BaseService httpCommentCreateService;
 	BaseService httpCommentQueryService;
 	FilmTypeService filmTypeService;
-	ImageLoaderCache imageLoaderCache;
+	ImageLoader imageLoaderCache;
 	Map<Integer,String> filemTypes;
 	List<User> users=new ArrayList<User>();
 	List<MovieComment> comments = new ArrayList<MovieComment>(); 
@@ -109,7 +110,7 @@ public class MovieDetailActivity extends BaseActivity implements OnClickListener
 		httpCommentCreateService = new HttpMovieCommentCreateService(this);
 		httpCommentQueryService = new HttpMovieCommentQueryService(this);
 		filmTypeService = new FilmTypeService();
-		imageLoaderCache=new ImageLoaderCache(this);
+		imageLoaderCache=ImageLoader.getInstance();
 		initViews();
 		initData();
 	}
@@ -307,7 +308,7 @@ public class MovieDetailActivity extends BaseActivity implements OnClickListener
 							movie.setLoveCnt(Integer.parseInt(value.get("loveCnt").toString()));
 						}
 						title.setText(movie.getName());
-						imageLoaderCache.DisplayImage(movie.getIcon(), imagePoster);
+						imageLoaderCache.displayImage(movie.getIcon(), imagePoster,NarutoApplication.imageOptions);
 						String score=MovieScore.GetScore(movie.getScore(), movie.getScoreCnt());
 						startBar.setRating(Float.valueOf(score)/2f);
 						movieScore.setText(score);

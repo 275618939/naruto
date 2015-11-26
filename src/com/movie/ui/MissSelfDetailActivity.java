@@ -19,15 +19,16 @@ import com.movie.adapter.PartNarutoExpandableAdapter;
 import com.movie.app.Constant;
 import com.movie.app.Constant.MissBtnStatus;
 import com.movie.app.Constant.ReturnCode;
+import com.movie.app.NarutoApplication;
 import com.movie.client.bean.Dictionary;
 import com.movie.client.bean.Miss;
 import com.movie.client.bean.User;
 import com.movie.client.service.BaseService;
 import com.movie.client.service.CallBackService;
 import com.movie.network.HttpUserService;
-import com.movie.util.ImageLoaderCache;
 import com.movie.util.StringUtil;
 import com.movie.view.ExpandListViewForScrollView;
+import com.nostra13.universalimageloader.core.ImageLoader;
 
 
 public class MissSelfDetailActivity extends BaseActivity implements OnClickListener, CallBackService {
@@ -50,7 +51,7 @@ public class MissSelfDetailActivity extends BaseActivity implements OnClickListe
 	BaseService httpUsersService;
 	ExpandListViewForScrollView missPartList;
 	PartNarutoExpandableAdapter partNarutoAdapter;
-	ImageLoaderCache imageLoaderCache;
+	ImageLoader imageLoaderCache;
 	List<Dictionary> parents=new ArrayList<Dictionary>();
     List<List<User>> childs = new ArrayList<List<User>>();
     User user;
@@ -59,7 +60,7 @@ public class MissSelfDetailActivity extends BaseActivity implements OnClickListe
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_miss_self_detail);
 		httpUsersService = new HttpUserService(this);
-		imageLoaderCache=new ImageLoaderCache(this);
+		imageLoaderCache=ImageLoader.getInstance();
 		initViews();
 		initData();
 		initPartUser();
@@ -93,7 +94,7 @@ public class MissSelfDetailActivity extends BaseActivity implements OnClickListe
 			return;
 		}
 		title.setText(miss.getMovieName());
-		imageLoaderCache.DisplayImage(miss.getIcon(), missIcon);
+		imageLoaderCache.displayImage(miss.getIcon(), missIcon,NarutoApplication.imageOptions);
 		missCreateUser.setText(miss.getCreateUserName());
 		missDate.setText(StringUtil.getShortStrBySym(miss.getRunTime(),":"));
 		missMovieName.setText(miss.getMovieName());

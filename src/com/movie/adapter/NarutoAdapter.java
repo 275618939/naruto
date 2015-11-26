@@ -20,22 +20,23 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.movie.R;
+import com.movie.app.NarutoApplication;
 import com.movie.app.SexState;
 import com.movie.client.bean.User;
 import com.movie.client.service.UserService;
 import com.movie.ui.MovieDetailActivity;
 import com.movie.ui.UserDetailActivity;
 import com.movie.util.Horoscope;
-import com.movie.util.ImageLoaderCache;
 import com.movie.util.StringUtil;
 import com.movie.util.UserCharm;
+import com.nostra13.universalimageloader.core.ImageLoader;
 
 public class NarutoAdapter extends BaseAdapter {
 
 	List<User> userList;
 	Context context;
 	LayoutInflater inflater;
-	ImageLoaderCache imageLoaderCache;
+	ImageLoader imageLoaderCache;
 	Handler handler;
 	UserService userService;
 	User loginUser;
@@ -45,7 +46,7 @@ public class NarutoAdapter extends BaseAdapter {
 		this.context = context;
 		this.userList = users;
 		inflater = LayoutInflater.from(context);
-		imageLoaderCache=ImageLoaderCache.getInstance(context);
+		imageLoaderCache=ImageLoader.getInstance();
 		userService = new UserService();
 		init();
 	}
@@ -54,7 +55,7 @@ public class NarutoAdapter extends BaseAdapter {
 		this.context = context;
 		this.userList = users;
 		inflater = LayoutInflater.from(context);
-		imageLoaderCache = new ImageLoaderCache(context);
+		imageLoaderCache=ImageLoader.getInstance();
 		this.handler = handler;
 		userService = new UserService();
 		init();
@@ -117,7 +118,7 @@ public class NarutoAdapter extends BaseAdapter {
 		// 获取position对应的数据
 		User user = getItem(position);
 
-		imageLoaderCache.DisplayImage(user.getPortrait(), mHolder.userIcon);
+		imageLoaderCache.displayImage(user.getPortrait(), mHolder.userIcon,NarutoApplication.imageOptions);
 		mHolder.userName.setText(user.getNickname());
 		mHolder.userSex.setText(SexState.getState(user.getSex()).getMessage());
 		mHolder.userLove.setText(String.format(context.getResources().getString(R.string.user_love_count), user.getLove()==null?"0":user.getLove()));

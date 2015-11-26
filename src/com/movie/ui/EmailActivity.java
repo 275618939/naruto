@@ -21,8 +21,6 @@ public class EmailActivity extends BaseActivity implements OnClickListener,CallB
 	EditText email;
 	ImageView clear;
 
-	
-
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);

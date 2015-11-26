@@ -25,6 +25,7 @@ import android.widget.Toast;
 import com.movie.R;
 import com.movie.app.Constant;
 import com.movie.app.InvokeException;
+import com.movie.app.NarutoApplication;
 import com.movie.client.bean.User;
 import com.movie.client.service.BaseService;
 import com.movie.client.service.CallBackService;
@@ -39,6 +40,7 @@ import com.movie.view.BirthdayDialog;
 import com.movie.view.HeadDialog;
 import com.movie.view.RoundImageView;
 import com.movie.view.SexDialog;
+import com.nostra13.universalimageloader.core.ImageLoader;
 
 
 public class UserActivity extends BaseActivity implements OnClickListener, CallBackService {
@@ -77,7 +79,7 @@ public class UserActivity extends BaseActivity implements OnClickListener, CallB
 	String headUrl;
 	String picPath;  
 	Intent lastIntent; 
-	ImageLoaderCache imageLoaderCache;
+	ImageLoader imageLoaderCache;
 	User user;
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
@@ -85,7 +87,7 @@ public class UserActivity extends BaseActivity implements OnClickListener, CallB
 		setContentView(R.layout.activity_user);
 		httpUserUpdateService = new HttpUserUpdateService(this);
 		httpUserService = new HttpUserService(this);
-		imageLoaderCache = new ImageLoaderCache(this);
+		imageLoaderCache=ImageLoader.getInstance();
 		initViews();
 		initData();
 		getUser();
@@ -393,7 +395,7 @@ public class UserActivity extends BaseActivity implements OnClickListener, CallB
 					if(value.containsKey("portrait")){
 						headUrl=Constant.SERVER_ADRESS+value.get("portrait").toString();
 						user.setPortrait(headUrl);
-						imageLoaderCache.DisplayImage(headUrl, headImage);
+						imageLoaderCache.displayImage(headUrl, headImage,NarutoApplication.imageOptions);
 					}
 					if (value.containsKey("hobbies")) {
 						user.setHobbies((List<Integer>)value.get("hobbies"));

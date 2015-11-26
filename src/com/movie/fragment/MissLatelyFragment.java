@@ -168,7 +168,14 @@ public class MissLatelyFragment extends Fragment implements OnClickListener,
 		loadView.showLoadFail(this,this);
 
 	}
-
+	/* 摧毁视图 */
+	@Override
+	public void onDestroyView() {
+		// TODO Auto-generated method stub
+		super.onDestroyView();
+		missQueryAdapter = null;
+		misses.clear();
+	}
 	@Override
 	public void OnRequest() {
 		loadView.showLoading(this);
