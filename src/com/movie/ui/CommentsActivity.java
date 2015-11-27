@@ -16,11 +16,12 @@ import android.widget.TextView;
 
 import com.movie.R;
 import com.movie.adapter.EvaluationAdapter;
+import com.movie.app.BaseActivity;
 import com.movie.app.Constant;
-import com.movie.app.SexState;
 import com.movie.client.service.BaseService;
 import com.movie.client.service.CallBackService;
 import com.movie.network.HttpSessionService;
+import com.movie.state.SexState;
 import com.movie.view.CommentsGridView;
 
 public class CommentsActivity extends BaseActivity implements OnClickListener,CallBackService {
@@ -39,43 +40,52 @@ public class CommentsActivity extends BaseActivity implements OnClickListener,Ca
 		initViews();
 		initData();
 	}
-	private void initViews() {
+	@Override
+	protected void initViews() {
 		evaluationAdapter = new EvaluationAdapter(this,SexState.WOMAN.getState(), comments);
 		title = (TextView) findViewById(R.id.title);
 		gridView = (CommentsGridView) findViewById(R.id.comments);
 		gridView.setSelector(new ColorDrawable(Color.TRANSPARENT));
 		gridView.setAdapter(evaluationAdapter);
+		
 	}
-	private void initData() {
+	@Override
+	protected void initEvents() {
+
+	}
+	@Override
+	protected void initData() {
 		title.setText("伙影评价");
+		
+	}
+	@Override
+	protected void onResume() {
+		super.onResume();
 		loadComments();
 	}
-	private void loadComments(){
-		Map<Integer, Integer> maps=null;
-		Random random=new Random();
-		for(int i=0;i<20;i++){
-    		maps=new HashMap<Integer, Integer>();
-    		maps.put(i%8+1,random.nextInt(100));
-		    comments.add(maps);
-		}
-		evaluationAdapter.updateData(comments);
+	@Override
+	protected void onPause() {
+		super.onPause();
+		comments.clear();
+	}
+	@Override
+	protected void onDestroy() {
+		super.onDestroy();
+		evaluationAdapter=null;
 	}
 	@Override
 	public void onClick(View v) {
-		switch (v.getId()) {
-		
+		switch (v.getId()) {		
 		}
-
 	}
 	@Override
 	public void onBackPressed() {
 		comments.clear();
 		evaluationAdapter=null;
 		Intent intent = new Intent(this, UserDetailActivity.class);
-		this.startActivity(intent);
-		this.finish();
+		startActivity(intent);
+		finish();
 	}
-
 	@Override
 	public void SuccessCallBack(Map<String, Object> map) {
 		hideProgressDialog();
@@ -96,6 +106,17 @@ public class CommentsActivity extends BaseActivity implements OnClickListener,Ca
 	public void OnRequest() {
 		showProgressDialog("提示", "加载数据....");
 	}
+	private void loadComments(){
+		Map<Integer, Integer> maps=null;
+		Random random=new Random();
+		for(int i=0;i<20;i++){
+    		maps=new HashMap<Integer, Integer>();
+    		maps.put(i%8+1,random.nextInt(100));
+		    comments.add(maps);
+		}
+		evaluationAdapter.updateData(comments);
+	}
+	
 
 	
 

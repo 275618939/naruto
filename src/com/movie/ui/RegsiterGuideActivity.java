@@ -14,6 +14,7 @@ import android.widget.RadioGroup.OnCheckedChangeListener;
 import android.widget.TextView;
 
 import com.movie.R;
+import com.movie.app.BaseActivity;
 import com.movie.app.Constant;
 import com.movie.client.service.BaseService;
 import com.movie.client.service.CallBackService;
@@ -37,17 +38,21 @@ public class RegsiterGuideActivity extends BaseActivity implements OnClickListen
 		setContentView(R.layout.activity_regsiter_guide);
 		httpUserDateService = new HttpUserUpdateService(this);
 		initViews();
+		initEvents();
 		initData();
 	}
-
-	private void initViews() {
-
+	@Override
+	protected void initViews() {
 		title = (TextView) findViewById(R.id.title);
 		right = (TextView) findViewById(R.id.right_text);
 		nickName = (EditText) findViewById(R.id.nickName);
 		sexRadioGroup = (RadioGroup) findViewById(R.id.sexRadioGroup);
 		clear = (ImageView) findViewById(R.id.clear);
 		right.setVisibility(View.VISIBLE);
+	}
+
+	@Override
+	protected void initEvents() {
 		right.setOnClickListener(this);
 		clear.setOnClickListener(this);
 		sexRadioGroup.setOnCheckedChangeListener(new OnCheckedChangeListener() {
@@ -62,9 +67,11 @@ public class RegsiterGuideActivity extends BaseActivity implements OnClickListen
 
 			}
 		});
+		
 	}
 
-	private void initData() {
+	@Override
+	protected void initData() {
 		title.setText("设置基本信息");
 		right.setText("保存");
 	}
@@ -124,5 +131,7 @@ public class RegsiterGuideActivity extends BaseActivity implements OnClickListen
 	public void OnRequest() {
 		showProgressDialog("提示", "正在提交，请稍后......");		
 	}
+
+	
 
 }

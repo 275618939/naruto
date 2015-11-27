@@ -11,6 +11,7 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.movie.R;
+import com.movie.app.BaseActivity;
 import com.movie.app.Constant;
 import com.movie.client.service.BaseService;
 import com.movie.client.service.CallBackService;
@@ -34,22 +35,28 @@ public class MobileActivity extends BaseActivity implements OnClickListener,Call
 		initData();
 	}
 
-	private void initViews() {
-
+	@Override
+	protected void initViews() {
 		title = (TextView) findViewById(R.id.title);
 		right = (TextView) findViewById(R.id.right_text);
 		mobile = (EditText) findViewById(R.id.mobile);
 		clear = (ImageView) findViewById(R.id.clear);
-		
-
 		right.setVisibility(View.VISIBLE);
-		right.setOnClickListener(this);
-		clear.setOnClickListener(this);
+
 	}
 
-	private void initData() {
+	@Override
+	protected void initEvents() {
+		right.setOnClickListener(this);
+		clear.setOnClickListener(this);
+		
+	}
+
+	@Override
+	protected void initData() {
 		title.setText("修改手机");
 		right.setText("保存");
+		
 	}
 
 	private void modifyUser() {
@@ -113,5 +120,6 @@ public class MobileActivity extends BaseActivity implements OnClickListener,Call
 	public void OnRequest() {
 		showProgressDialog("提示", "正在提交，请稍后......");		
 	}
+
 
 }

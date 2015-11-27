@@ -5,15 +5,15 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import android.app.Activity;
+import android.content.Context;
 import android.os.Bundle;
 import android.os.Handler;
-import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.view.ViewGroup;
 import android.widget.GridView;
-import android.widget.Toast;
 
 import com.handmark.pulltorefresh.library.PullToRefreshBase;
 import com.handmark.pulltorefresh.library.PullToRefreshBase.Mode;
@@ -21,24 +21,34 @@ import com.handmark.pulltorefresh.library.PullToRefreshBase.OnRefreshListener2;
 import com.handmark.pulltorefresh.library.PullToRefreshGridView;
 import com.movie.R;
 import com.movie.adapter.MoviesAdapter;
+import com.movie.app.BaseFragment;
 import com.movie.app.Constant;
+import com.movie.app.Constant.ReturnCode;
 import com.movie.client.bean.Movie;
 import com.movie.client.service.BaseService;
 import com.movie.client.service.CallBackService;
 import com.movie.network.HttpPlayMovieService;
-import com.movie.view.LoadView;
 
-public class MoiveCurrentFragment extends Fragment implements CallBackService,
+public class MoiveCurrentFragment extends BaseFragment implements CallBackService,
 		OnClickListener, OnRefreshListener2<GridView> {
 
 	static final int REFRESH_COMPLETE = 0X110;
 	MoviesAdapter moviesAdapter;
 	BaseService playMovieService;
-	PullToRefreshGridView refreshLayout;
+	PullToRefreshGridView refreshViewLayout;
 	List<Movie> movies= new ArrayList<Movie>();
-	View view;
-	LoadView loadView;
-
+	public MoiveCurrentFragment() {
+		super();		
+	}
+	public MoiveCurrentFragment(Activity activity,Context context) {
+		super(activity, context);
+	}
+	@Override
+	public void onCreate(Bundle savedInstanceState){
+		super.onCreate(savedInstanceState);
+		playMovieService = new HttpPlayMovieService(getActivity());
+		
+	}
 	@Override
 	public View onCreateView(LayoutInflater inflater, ViewGroup container,
 			Bundle savedInstanceState) {
@@ -47,20 +57,38 @@ public class MoiveCurrentFragment extends Fragment implements CallBackService,
 		if (null != titleView) {
 			titleView.setVisibility(View.GONE);
 		}
-		view = LayoutInflater.from(getActivity()).inflate(R.layout.fragment_movie_current, null);
-		loadView = new LoadView(view);
-		playMovieService = new HttpPlayMovieService(getActivity());
-		initView(view);
-		loadPlayingMovie();
-		return view;
+		if(rootView==null){  
+	        rootView=inflater.inflate(R.layout.fragment_movie_current,container,false);  
+	    }  
+		ViewGroup parent = (ViewGroup) rootView.getParent();  
+	    if (parent != null) {  
+	        parent.removeView(rootView);  
+	    }   
+		loadView.initView(rootView);
+		isPrepared=true;
+		return super.onCreateView(inflater, container, savedInstanceState);
 	}
-
-	protected void initView(View view) {
+	@Override
+	protected void initViews() {
 		moviesAdapter = new MoviesAdapter(getActivity(), movies);
-		refreshLayout = (PullToRefreshGridView) view.findViewById(R.id.moive_list);
-		refreshLayout.setMode(Mode.PULL_FROM_START);
-		refreshLayout.setOnRefreshListener(this);
-		refreshLayout.setAdapter(moviesAdapter);
+		refreshViewLayout = (PullToRefreshGridView) rootView.findViewById(R.id.moive_list);
+		refreshViewLayout.setMode(Mode.PULL_FROM_START);
+		refreshViewLayout.setAdapter(moviesAdapter);	
+
+	}
+	@Override
+	protected void initEvents() {
+		refreshViewLayout.setOnRefreshListener(this);
+	}
+	@Override
+	protected void lazyLoad() {
+		
+		if (!isVisible||!isPrepared) {
+			return;
+		}		
+		//加载缓存数据
+		//加载网络数据
+		loadPlayingMovie();
 	}
 	protected void loadPlayingMovie() {
 		movies.clear();
@@ -93,10 +121,10 @@ public class MoiveCurrentFragment extends Fragment implements CallBackService,
 	@Override
 	public void SuccessCallBack(Map<String, Object> map) {
 		loadView.showLoadAfter(this);
-		refreshLayout.onRefreshComplete();
+		refreshViewLayout.onRefreshComplete();
 		String code = map.get(Constant.ReturnCode.RETURN_STATE).toString();
+		String tag = map.get(Constant.ReturnCode.RETURN_TAG).toString();
 		if (Constant.ReturnCode.STATE_1.equals(code)) {
-			String tag = map.get(Constant.ReturnCode.RETURN_TAG).toString();
 			List<HashMap<String, Object>> datas = (ArrayList<HashMap<String, Object>>) map.get(Constant.ReturnCode.RETURN_VALUE);
 			if (datas != null && datas.size() > 0) {
 				Movie movie = null;
@@ -127,38 +155,36 @@ public class MoiveCurrentFragment extends Fragment implements CallBackService,
 
 	@Override
 	public void ErrorCallBack(Map<String, Object> map) {
-		refreshLayout.onRefreshComplete();
+		refreshViewLayout.onRefreshComplete();
 		String message = map.get(Constant.ReturnCode.RETURN_MESSAGE).toString();
-		showToask(message);
-		loadView.showLoadFail(this,this);
+		String state= map.get(Constant.ReturnCode.RETURN_STATE).toString();
+		if(state.equals(ReturnCode.STATE_999)){
+			loadView.showLoadLineFail(this);
+		}else{
+			loadView.showLoadFail(this, this);
+			showToask(message);
+		}
 		
 	}
-
 	@Override
 	public void OnRequest() {
 		loadView.showLoading(this);
 	}
-
-	protected void showToask(String hint) {
-		Toast toast = Toast.makeText(getActivity(), hint, Toast.LENGTH_SHORT);
-		toast.show();
-	}
 	@Override
 	public void onDestroyView() {
-		// TODO Auto-generated method stub
 		super.onDestroyView();
 		moviesAdapter = null;
 		movies.clear();
 	}
-
 	@Override
 	public void onPullDownToRefresh(PullToRefreshBase<GridView> refreshView) {
+		
 		loadPlayingMovie();
 	}
 
 	@Override
 	public void onPullUpToRefresh(PullToRefreshBase<GridView> refreshView) {
-		// TODO Auto-generated method stub
+		
 		
 	}
 

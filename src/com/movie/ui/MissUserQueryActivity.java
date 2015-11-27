@@ -14,6 +14,7 @@ import android.widget.TextView;
 
 import com.movie.R;
 import com.movie.adapter.MissUserAdapter;
+import com.movie.app.BaseActivity;
 import com.movie.app.Constant;
 import com.movie.app.Constant.Page;
 import com.movie.client.bean.Miss;
@@ -47,31 +48,32 @@ public class MissUserQueryActivity extends BaseActivity implements
 		httpMissAgreeService = new HttpMissAgreeService(this);
 		httoMissUserQueryService = new HttpMissUserQueryService(this);
 		initViews();
+		initEvents();
 		initData();
 	}
-
-	private void initViews() {
-
+	@Override
+	protected void initViews() {
 		title = (TextView) findViewById(R.id.title);
 		userViewList = (ListView) findViewById(R.id.miss_user_list);
 		userAdapter = new MissUserAdapter(this, mHandler, null);
 		userViewList.setAdapter(userAdapter);
 		refreshableListView = (RefreshableListView) findViewById(R.id.refresh_user);
-		refreshableListView.setOnRefreshListener(this, 0);
-
 	}
 
-	private void initData() {
+	@Override
+	protected void initEvents() {
+		refreshableListView.setOnRefreshListener(this, 0);		
+	}
+	@Override
+	protected void initData() {
 		page = 0;
 		title.setText("参与会员");
 		miss = (Miss) getIntent().getSerializableExtra("miss");
 		if (null != miss) {
 			userAdapter.updateData(miss.getAttend());
 		}
-		loadUser();
-
+		loadUser();		
 	}
-
 	private void loadUser() {
 		httoMissUserQueryService.addParams("trystId", miss.getTrystId());
 		httoMissUserQueryService.addParams("page", page);
@@ -201,11 +203,16 @@ public class MissUserQueryActivity extends BaseActivity implements
 		showProgressDialog("提示", "请稍后......");
 
 	}
-
 	@Override
 	public void onRefresh() {
 		mHandler.sendEmptyMessageDelayed(REFRESH_COMPLETE, 1000);
-
+	}
+	@Override
+	protected void onDestroy() {
+		super.onDestroy();
+		userAdapter=null;
+		users.clear();
 	}
 
+	
 }

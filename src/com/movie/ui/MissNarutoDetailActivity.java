@@ -15,6 +15,7 @@ import android.widget.TextView;
 
 import com.movie.R;
 import com.movie.adapter.PartNarutoExpandableAdapter;
+import com.movie.app.BaseActivity;
 import com.movie.app.Constant;
 import com.movie.app.NarutoApplication;
 import com.movie.client.bean.Dictionary;
@@ -50,15 +51,14 @@ public class MissNarutoDetailActivity extends BaseActivity implements OnClickLis
 	public void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_miss_naruto_detail);
-	
 		imageLoaderCache=ImageLoader.getInstance();
 		initViews();
+		initEvents();
 		initData();
 		initPartUser();
 	}
-
-	private void initViews() {
-		
+	@Override
+	protected void initViews() {
 		missDetailView = (ScrollView)findViewById(R.id.miss_detail_view);
 		missDetailView.smoothScrollTo(0, 0);
 		title = (TextView) findViewById(R.id.title);
@@ -73,11 +73,15 @@ public class MissNarutoDetailActivity extends BaseActivity implements OnClickLis
 		missPartList = (ExpandListViewForScrollView) findViewById(R.id.miss_part_list);
 		partNarutoAdapter = new PartNarutoExpandableAdapter(this, null,null);
 		missPartList.setAdapter(partNarutoAdapter);
-		layoutCinemaAddress.setOnClickListener(this);
 	}
 
-	private void initData() {
+	@Override
+	protected void initEvents() {
+		layoutCinemaAddress.setOnClickListener(this);		
+	}
 
+	@Override
+	protected void initData() {
 		miss = (Miss) getIntent().getSerializableExtra("miss");
 		if(null==miss){
 			return;
@@ -123,6 +127,7 @@ public class MissNarutoDetailActivity extends BaseActivity implements OnClickLis
 	public void onBackPressed() {
 		super.onBackPressed();
 		overridePendingTransition(R.anim.slide_in_left, R.anim.slide_out_right);
+		finish();
 	}
 	@Override
 	public void SuccessCallBack(Map<String, Object> map) {
@@ -150,6 +155,15 @@ public class MissNarutoDetailActivity extends BaseActivity implements OnClickLis
 	public void OnRequest() {
 		showProgressDialog("提示", "正在加载，请稍后....");		
 	}
+	@Override
+	protected void onDestroy() {
+		super.onDestroy();
+		partNarutoAdapter=null;
+		parents.clear();
+		childs.clear();
+	}
+	
+
 	
 	
 

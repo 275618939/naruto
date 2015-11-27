@@ -1,29 +1,35 @@
 package com.movie.fragment;
 
+import android.app.Activity;
+import android.content.Context;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentPagerAdapter;
 import android.support.v4.view.ViewPager;
-import android.util.DisplayMetrics;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.view.ViewGroup;
 
 import com.movie.R;
+import com.movie.app.BaseFragment;
 import com.movie.view.PagerSlidingTabStrip;
 
-public class MoiveFragment extends Fragment implements OnClickListener {
+public class MoiveFragment extends BaseFragment implements OnClickListener {
 
 	MoiveCurrentFragment currentFragment;
 	MoiveUpComingFragment upComingFragment;
 	String[] titles;
 	PagerSlidingTabStrip tabs;
 	ViewPager pager;
-	DisplayMetrics dm;
-	View view;
-
+	TabAdapter tabAdapter;
+	public MoiveFragment() {
+		super();
+	}
+	public MoiveFragment(Activity activity,Context context) {
+		super(activity, context);
+	}
 	@Override
 	public View onCreateView(LayoutInflater inflater, ViewGroup container,Bundle savedInstanceState) {
 		
@@ -31,33 +37,46 @@ public class MoiveFragment extends Fragment implements OnClickListener {
 		if(null!=titleView){
 			titleView.setVisibility(View.GONE);
 		}
-		view = LayoutInflater.from(getActivity()).inflate(R.layout.fragment_movie, null);
-		initView(view);
-		return view;
+		if(rootView==null){  
+	         rootView=inflater.inflate(R.layout.fragment_movie,container,false);  
+	    }  
+		ViewGroup parent = (ViewGroup) rootView.getParent();  
+	    if (parent != null) {  
+	        parent.removeView(rootView);  
+	    }   
+	    isVisible=true;
+		return super.onCreateView(inflater, container, savedInstanceState);
 	}
+	@Override
+	protected void initViews() {
 
-	protected void initView(View view) {
+		pager = (ViewPager)rootView.findViewById(R.id.pager);
+		tabs = (PagerSlidingTabStrip) rootView.findViewById(R.id.tabs);
 		titles = new String[]{ getResources().getString(R.string.current_movie), getResources().getString(R.string.upcoming_movie)};
-		dm = getResources().getDisplayMetrics();
-		pager = (ViewPager)view.findViewById(R.id.pager);
-		tabs = (PagerSlidingTabStrip) view.findViewById(R.id.tabs);
-		pager.setAdapter(new MissAdapter(getChildFragmentManager(),titles));
+		tabAdapter = new TabAdapter(getChildFragmentManager(),titles);		
+		pager.setAdapter(tabAdapter);
 		tabs.setViewPager(pager);
 	}
-
-	
+	@Override
+	protected void initEvents() {
+	}
+	@Override
+	protected void lazyLoad() {
+		
+	}
 	@Override
 	public void onClick(View v) {
-		switch (v.getId()) {}
+		switch (v.getId()) {
+		
+		}
 
 	}
-	public class MissAdapter extends FragmentPagerAdapter{
+	public class TabAdapter extends FragmentPagerAdapter{
 		String[] _titles;
-		public MissAdapter(FragmentManager fm,String[] titles) {
+		public TabAdapter(FragmentManager fm,String[] titles) {
 			super(fm);
 			_titles=titles;
 		}
-		
 		@Override
 		public CharSequence getPageTitle(int position) {
 			return _titles[position];
@@ -86,7 +105,7 @@ public class MoiveFragment extends Fragment implements OnClickListener {
 			}
 		}
 	}
-
+	
 
 
 

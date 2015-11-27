@@ -13,6 +13,7 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.movie.R;
+import com.movie.app.BaseActivity;
 import com.movie.app.Constant;
 import com.movie.client.service.BaseService;
 import com.movie.client.service.CallBackService;
@@ -37,11 +38,11 @@ public class ForgetActivity extends BaseActivity implements OnClickListener,Call
 		httpCaptchaService = new HttpCaptchaService(this);
 		httpForgetService = new HttpAccountForgetService(this);
 		initViews();
+		initEvents();
 		initData();
 	}
-
-	private void initViews() {
-
+	@Override
+	protected void initViews() {
 		title = (TextView) findViewById(R.id.title);
 		right = (TextView) findViewById(R.id.right_text);
 		change = (TextView) findViewById(R.id.change);
@@ -50,6 +51,9 @@ public class ForgetActivity extends BaseActivity implements OnClickListener,Call
 		clear = (ImageView) findViewById(R.id.clear_login);
 		captchaImage = (ImageView) findViewById(R.id.captcha_image);
 		right.setVisibility(View.VISIBLE);
+	}
+	@Override
+	protected void initEvents() {
 		right.setOnClickListener(this);
 		clear.setOnClickListener(this);
 		change.setOnClickListener(this);
@@ -66,13 +70,15 @@ public class ForgetActivity extends BaseActivity implements OnClickListener,Call
 
 			}
 		});
+		
 	}
 
-	private void initData() {
+	@Override
+	protected void initData() {
 		title.setText("忘记密码");
 		right.setText("下一步");
+		
 	}
-
 	private void doCaptcha(String account) {
 		if (null != account && !account.isEmpty()) {
 			httpCaptchaService.addParams("login", account);
@@ -80,7 +86,6 @@ public class ForgetActivity extends BaseActivity implements OnClickListener,Call
 		}
 
 	}
-
 	private void nextActivity() {
 
 		String value = login.getText().toString();
@@ -165,4 +170,5 @@ public class ForgetActivity extends BaseActivity implements OnClickListener,Call
 
 	}
 
+	
 }

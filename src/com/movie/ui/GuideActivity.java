@@ -14,13 +14,14 @@ import android.widget.LinearLayout;
 
 import com.movie.R;
 import com.movie.adapter.ViewPagerAdapter;
-import com.movie.app.SexState;
+import com.movie.app.BaseActivity;
 import com.movie.client.service.BaseService;
 import com.movie.client.service.CallBackService;
 import com.movie.network.HttpCommentService;
 import com.movie.network.HttpFilmTypeService;
 import com.movie.network.HttpHobbyService;
 import com.movie.network.HttpRegionService;
+import com.movie.state.SexState;
 
 /**
  * 引导界面
@@ -50,14 +51,15 @@ public class GuideActivity extends BaseActivity implements OnPageChangeListener 
 		httpCommentService = new HttpCommentService(this);
 		httpFilmTypeService = new HttpFilmTypeService(this);
 		httpRegionService = new HttpRegionService(this);
-		// 初始化页面
+	
 		initViews();
-		// 初始化底部小点
+		initEvents();
 		initDots();
-		// 初始化字典数据
 		initData();
 	}
-	private void initViews() {
+	@Override
+	protected void initViews() {
+		
 		LayoutInflater inflater = LayoutInflater.from(this);
 		views = new ArrayList<View>();
 		// 初始化引导图片列表
@@ -69,10 +71,14 @@ public class GuideActivity extends BaseActivity implements OnPageChangeListener 
 		vpAdapter = new ViewPagerAdapter(views, this);		
 		vp = (ViewPager) findViewById(R.id.viewpager);
 		vp.setAdapter(vpAdapter);
-		// 绑定回调
-		vp.setOnPageChangeListener(this);
+
 	}
-	private void initData(){
+	@Override
+	protected void initEvents() {
+		vp.addOnPageChangeListener(this);		
+	}
+	@Override
+	protected void initData() {
 		httpHobbyService.execute(this);
 		//加载男性评价
 		httpCommentService.addParams("type", SexState.MAN.getState());
@@ -83,7 +89,9 @@ public class GuideActivity extends BaseActivity implements OnPageChangeListener 
 		httpCommentService.execute(this);
 		//初始化当前用户位置ID
 		httpRegionService.execute(this);
+		
 	}
+	
 
 	private void initDots() {
 		LinearLayout ll = (LinearLayout) findViewById(R.id.ll);
@@ -146,5 +154,6 @@ public class GuideActivity extends BaseActivity implements OnPageChangeListener 
 		// TODO Auto-generated method stub
 		
 	}
+	
 
 }

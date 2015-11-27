@@ -16,6 +16,7 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.movie.R;
+import com.movie.app.BaseActivity;
 import com.movie.app.Constant;
 import com.movie.client.bean.Login;
 import com.movie.client.bean.User;
@@ -56,11 +57,11 @@ public class RegisterActivity extends BaseActivity implements OnClickListener, C
 		userService = new UserService();
 		loginService =new LoginService();
 		initViews();
+		initEvents();
 		initData();
 	}
-
-	private void initViews() {
-
+	@Override
+	protected void initViews() {
 		login = (EditText) this.findViewById(R.id.login);
 		clearLogin=(ImageView)this.findViewById(R.id.clear_login);
 		password = (EditText) this.findViewById(R.id.password);
@@ -71,36 +72,24 @@ public class RegisterActivity extends BaseActivity implements OnClickListener, C
 		registerButton = (Button) this.findViewById(R.id.register);
 		codeBtn=(Button) this.findViewById(R.id.send_captcha);
 		login.setInputType(EditorInfo.TYPE_CLASS_NUMBER);		
+		title = (TextView) findViewById(R.id.title);
+		countTimer= new VerifyCodeCountTimer(codeBtn, 0xfff30008, 0xff969696);
+
+	}
+
+	@Override
+	protected void initEvents() {
 		registerButton.setOnClickListener(this);
 		clearLogin.setOnClickListener(this);
 		clearPass.setOnClickListener(this);
 		clearPassConfirm.setOnClickListener(this);
 		codeBtn.setOnClickListener(this);
-		title = (TextView) findViewById(R.id.title);
-		countTimer= new VerifyCodeCountTimer(codeBtn, 0xfff30008, 0xff969696);
-		
-		
-/*		login.setOnFocusChangeListener(new OnFocusChangeListener() {
-			@Override
-			public void onFocusChange(View v, boolean hasFocus) {
-				if(!hasFocus){
-					TextView account=(TextView)v;
-					String content=account.getText().toString();
-					if(null==content||content.isEmpty())
-						return;
-					doCaptcha(content);
-					
-				}
-				
-				
-			}
-		});*/
 	}
 
-	private void initData() {
+	@Override
+	protected void initData() {
 		title.setText("注册");
 	}
-
 	private void doCaptcha(){
 		String account=login.getText().toString();
 		if(null!=account&&!account.isEmpty()){			
@@ -219,4 +208,6 @@ public class RegisterActivity extends BaseActivity implements OnClickListener, C
 	public void OnRequest() {
 		showProgressDialog("提示", "请稍后......");
 	}
+
+	
 }

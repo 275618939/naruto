@@ -7,13 +7,13 @@ import android.content.Context;
 import android.os.Message;
 
 import com.movie.app.Constant;
-import com.movie.app.ErrorState;
 import com.movie.app.InvokeException;
 import com.movie.client.dao.BaseDao;
 import com.movie.client.dao.LoginDaoImple;
 import com.movie.client.db.SQLHelper;
 import com.movie.client.service.BaseService;
 import com.movie.client.service.CallBackService;
+import com.movie.state.ErrorState;
 import com.movie.util.HttpUtils;
 
 public class HttpLoginAutoService extends BaseService {

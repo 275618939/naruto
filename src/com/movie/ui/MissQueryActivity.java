@@ -15,6 +15,7 @@ import android.widget.TextView;
 
 import com.movie.R;
 import com.movie.adapter.MissQueryAdapter;
+import com.movie.app.BaseActivity;
 import com.movie.app.Constant;
 import com.movie.app.Constant.Page;
 import com.movie.client.bean.Miss;
@@ -43,7 +44,6 @@ public class MissQueryActivity extends BaseActivity implements OnClickListener,C
 	int missType;
 	Object queryCondition;
 
-
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
@@ -51,21 +51,26 @@ public class MissQueryActivity extends BaseActivity implements OnClickListener,C
 		missQueryService = new HttpMissQueryService(this);
 		httpMissCancelService = new HttpMissCancelService(this);
 		initViews();
+		initEvents();
 		initData();
 	}
-
-	private void initViews() {
-
+	@Override
+	protected void initViews() {
 		title = (TextView) findViewById(R.id.title);
 		myMissList = (ListView) findViewById(R.id.miss_user_list);
 		missQueryAdapter = new MissQueryAdapter(this, mHandler, null);
 		myMissList.setAdapter(missQueryAdapter);
 		refreshableListView = (RefreshableListView) findViewById(R.id.refresh_user);
-		refreshableListView.setOnRefreshListener(this, 0);
-
+	
 	}
 
-	private void initData() {
+	@Override
+	protected void initEvents() {
+		refreshableListView.setOnRefreshListener(this, 0);
+	}
+
+	@Override
+	protected void initData() {
 		page=0;
 		missType = getIntent().getIntExtra(SelfFragment.MISS_KEY, SelfFragment.MY_MISS);
 		queryCondition=getIntent().getSerializableExtra(SelfFragment.CONDITION_KEY);
@@ -272,5 +277,11 @@ public class MissQueryActivity extends BaseActivity implements OnClickListener,C
 	public void onRefresh() {
 		mHandler.sendEmptyMessageDelayed(REFRESH_COMPLETE, 1000);
 	}
+	@Override
+	protected void onDestroy() {
+		super.onDestroy();
+		missQueryAdapter=null;
+	}
 
+	
 }

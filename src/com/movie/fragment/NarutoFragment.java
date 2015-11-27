@@ -22,7 +22,6 @@ public class NarutoFragment extends Fragment implements OnClickListener{
 	String[] titles;
 	PagerSlidingTabStrip tabs;
 	ViewPager pager;
-	DisplayMetrics dm;
 	View view;
 
 	@Override
@@ -39,7 +38,6 @@ public class NarutoFragment extends Fragment implements OnClickListener{
 
 	protected void initView(View view) {
 		titles = new String[]{ getResources().getString(R.string.charm), getResources().getString(R.string.love)};
-		dm = getResources().getDisplayMetrics();
 		pager = (ViewPager)view.findViewById(R.id.pager);
 		tabs = (PagerSlidingTabStrip) view.findViewById(R.id.tabs);
 		pager.setAdapter(new MissAdapter(getChildFragmentManager(),titles));

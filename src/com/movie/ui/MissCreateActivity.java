@@ -16,6 +16,7 @@ import android.widget.TextView;
 import android.widget.TimePicker;
 
 import com.movie.R;
+import com.movie.app.BaseActivity;
 import com.movie.app.Constant;
 import com.movie.client.bean.Movie;
 import com.movie.client.service.CallBackService;
@@ -36,11 +37,11 @@ public class MissCreateActivity extends BaseActivity implements OnClickListener,
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_miss_create);
 		initViews();
+		initEvents();
 		initData();
 	}
-
-	private void initViews() {
-
+	@Override
+	protected void initViews() {
 		title = (TextView) findViewById(R.id.title);
 		right = (TextView) findViewById(R.id.right_text);
 		runTime = (EditText) findViewById(R.id.runTime);
@@ -49,6 +50,12 @@ public class MissCreateActivity extends BaseActivity implements OnClickListener,
 		clear_runTime = (ImageView) findViewById(R.id.clear_runTime);
 		clear_coin = (ImageView) findViewById(R.id.clear_coin);
 		right.setVisibility(View.VISIBLE);
+
+	}
+
+	@Override
+	protected void initEvents() {
+		
 		right.setOnClickListener(this);
 		clear_runTime.setOnClickListener(this);
 		clear_coin.setOnClickListener(this);
@@ -76,9 +83,10 @@ public class MissCreateActivity extends BaseActivity implements OnClickListener,
 
 			}
 		});
+		
 	}
-
-	private void initData() {
+	@Override
+	protected void initData() {
 		movie=(Movie)getIntent().getSerializableExtra("movie");
 		title.setText("创建约会");
 		right.setText("下一步");
@@ -195,5 +203,7 @@ public class MissCreateActivity extends BaseActivity implements OnClickListener,
 		showProgressDialog("提示", "请稍后......");
 
 	}
+
+	
 
 }

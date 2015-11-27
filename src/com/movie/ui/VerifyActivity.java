@@ -11,6 +11,7 @@ import android.widget.EditText;
 import android.widget.TextView;
 
 import com.movie.R;
+import com.movie.app.BaseActivity;
 import com.movie.app.Constant;
 import com.movie.app.Constant.ReturnCode;
 import com.movie.client.service.BaseService;
@@ -37,24 +38,28 @@ public class VerifyActivity extends BaseActivity implements OnClickListener,Call
 		httpVerifyService = new HttpVerifyService(this);
 		httpMoblieCaptchaService = new HttpMobileCaptchaService(this);
 		initViews();
+		initEvents();
 		initData();
 	}
-
-	private void initViews() {
-
+	@Override
+	protected void initViews() {
 		title = (TextView) findViewById(R.id.title);
 		right = (TextView) findViewById(R.id.right_text);
 		verifyCode = (EditText) findViewById(R.id.captcha);
 		codeBtn = (Button) findViewById(R.id.send_captcha);
-	    countTimer= new VerifyCodeCountTimer(codeBtn, 0xfff30008, 0xff969696);
-	    
+	    countTimer= new VerifyCodeCountTimer(codeBtn, 0xfff30008, 0xff969696);	    
 		right.setVisibility(View.VISIBLE);
-		right.setOnClickListener(this);
-		codeBtn.setOnClickListener(this);
 	
 	}
 
-	private void initData() {
+	@Override
+	protected void initEvents() {
+		right.setOnClickListener(this);
+		codeBtn.setOnClickListener(this);
+	}
+
+	@Override
+	protected void initData() {
 		login = getIntent().getStringExtra("login");
 		title.setText("认证");
 		right.setText("下一步");
@@ -135,4 +140,5 @@ public class VerifyActivity extends BaseActivity implements OnClickListener,Call
 		showProgressDialog("提示", "正在提交，请稍后......");
 	}
 
+	
 }

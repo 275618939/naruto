@@ -17,6 +17,7 @@ import com.handmark.pulltorefresh.library.PullToRefreshBase.OnRefreshListener2;
 import com.handmark.pulltorefresh.library.PullToRefreshListView;
 import com.movie.R;
 import com.movie.adapter.MoviesCommentAdapter;
+import com.movie.app.BaseActivity;
 import com.movie.app.Constant;
 import com.movie.app.Constant.Page;
 import com.movie.client.bean.MovieComment;
@@ -41,15 +42,13 @@ public class MovieCommentQueryActivity extends BaseActivity implements OnClickLi
 	public void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_movie_comment_query);
-		
 		httpCommentQueryService = new HttpMovieCommentQueryService(this);
 		initViews();
+		initEvents();
 		initData();
 	}
-
-	private void initViews() {
-
-		
+	@Override
+	protected void initViews() {
 		title = (TextView) findViewById(R.id.title);
 		movieCommentParentLayout= (RelativeLayout)findViewById(R.id.movie_comment_parent_layout);
 		loadView = new LoadView(movieCommentParentLayout);
@@ -57,18 +56,21 @@ public class MovieCommentQueryActivity extends BaseActivity implements OnClickLi
 		commentAdapter = new MoviesCommentAdapter(this, comments);
 		refreshableView.setAdapter(commentAdapter);
 		refreshableView.setMode(Mode.BOTH);
-		refreshableView.setOnRefreshListener(this);
-
 	}
 
-	private void initData() {
+	@Override
+	protected void initEvents() {
+		refreshableView.setOnRefreshListener(this);	
+	}
+
+	@Override
+	protected void initData() {
 		page=0;
 		title.setText("评论信息");
 		loadView.showLoading(this);
 		filmId = getIntent().getExtras().getInt("filmId");
-		loadMovieComment();
+		loadMovieComment();	
 	}
-
 	private void loadMovieComment(){
 		httpCommentQueryService.addParams("filmId", filmId);
 		httpCommentQueryService.addParams("page", page);
@@ -155,6 +157,14 @@ public class MovieCommentQueryActivity extends BaseActivity implements OnClickLi
 		page=1;
 		loadMovieComment();
 	}
+	@Override
+	protected void onDestroy() {
+		super.onDestroy();
+		commentAdapter=null;
+		comments.clear();
+	}
+
+	
 
 	
 

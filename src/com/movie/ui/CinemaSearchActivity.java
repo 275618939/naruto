@@ -1,6 +1,6 @@
 package com.movie.ui;
 
-import android.graphics.drawable.BitmapDrawable;
+import android.graphics.drawable.ColorDrawable;
 import android.os.Bundle;
 import android.text.Editable;
 import android.text.TextWatcher;
@@ -44,10 +44,11 @@ import com.baidu.mapapi.search.sug.SuggestionSearch;
 import com.baidu.mapapi.search.sug.SuggestionSearchOption;
 import com.movie.R;
 import com.movie.adapter.PoiAdapter;
+import com.movie.app.BaseActivity;
 import com.movie.client.bean.Movie;
 
 
-public class CinemaSearchActivity extends NarutoMonitorActivity implements
+public class CinemaSearchActivity extends BaseActivity implements
 	BDLocationListener,OnGetPoiSearchResultListener, OnGetSuggestionResultListener,OnClickListener {
 
 
@@ -84,8 +85,8 @@ public class CinemaSearchActivity extends NarutoMonitorActivity implements
 		initData();
 
 	}
-	private void initViews() {
-
+	@Override
+	protected void initViews() {
 		right = (TextView) findViewById(R.id.right_text);
 		keyWorldsView = (AutoCompleteTextView) findViewById(R.id.searchkey);
 		mPoiSearch = PoiSearch.newInstance();
@@ -96,6 +97,41 @@ public class CinemaSearchActivity extends NarutoMonitorActivity implements
 		sugAdapter = new ArrayAdapter<String>(this,android.R.layout.simple_dropdown_item_1line);
 		keyWorldsView.setThreshold(1);
 		keyWorldsView.setAdapter(sugAdapter);
+		// 开启定位图层
+		mBaiduMap.setMyLocationEnabled(true);
+		// 定位初始化
+		mLocClient = new LocationClient(this);
+		LocationClientOption option = new LocationClientOption();
+		option.setOpenGps(true);// 打开gps
+		option.setCoorType("bd09ll"); // 设置坐标类型
+		option.setScanSpan(1000);
+		option.setIsNeedAddress(true);
+		mLocClient.setLocOption(option);
+		mLocClient.start();
+		mLocClient.registerLocationListener(this);
+	
+		cinemaPop= new PopupWindow(CinemaSearchActivity.this);
+		View view = getLayoutInflater().inflate(R.layout.item_popup_cinema_windows, null);
+		cinemaPop.setWidth(LayoutParams.MATCH_PARENT);
+		cinemaPop.setHeight(LayoutParams.WRAP_CONTENT);
+		cinemaPop.setBackgroundDrawable(new ColorDrawable(0));
+		cinemaPop.setFocusable(true);
+		cinemaPop.setOutsideTouchable(true);
+		cinemaPop.setContentView(view);
+		parent_popup = (RelativeLayout) view.findViewById(R.id.parent);
+		ll_popup = (LinearLayout) view.findViewById(R.id.ll_popup);
+		poiListView = (ListView) ll_popup.findViewById(R.id.poi_listView);	
+		poiListView.setAdapter(poiAdapter);		
+		mLocClient.registerLocationListener(myListener);
+		right.setVisibility(View.VISIBLE);
+	
+		
+	}
+	@Override
+	protected void initEvents() {
+		parent_popup.setOnClickListener(this);
+		poiAdapter =new PoiAdapter(this, null);
+		right.setOnClickListener(this);
 		/**
 		 * 当输入关键字变化时，动态更新建议列表
 		 */
@@ -119,38 +155,9 @@ public class CinemaSearchActivity extends NarutoMonitorActivity implements
 				mSuggestionSearch.requestSuggestion((new SuggestionSearchOption()).keyword(cs.toString()).city(city));
 			}
 		});
-		// 开启定位图层
-		mBaiduMap.setMyLocationEnabled(true);
-		// 定位初始化
-		mLocClient = new LocationClient(this);
-		LocationClientOption option = new LocationClientOption();
-		option.setOpenGps(true);// 打开gps
-		option.setCoorType("bd09ll"); // 设置坐标类型
-		option.setScanSpan(1000);
-		option.setIsNeedAddress(true);
-		mLocClient.setLocOption(option);
-		mLocClient.start();
-		mLocClient.registerLocationListener(this);
-	
-		cinemaPop= new PopupWindow(CinemaSearchActivity.this);
-		View view = getLayoutInflater().inflate(R.layout.item_popup_cinema_windows, null);
-		cinemaPop.setWidth(LayoutParams.MATCH_PARENT);
-		cinemaPop.setHeight(LayoutParams.WRAP_CONTENT);
-		cinemaPop.setBackgroundDrawable(new BitmapDrawable());
-		cinemaPop.setFocusable(true);
-		cinemaPop.setOutsideTouchable(true);
-		cinemaPop.setContentView(view);
-		parent_popup = (RelativeLayout) view.findViewById(R.id.parent);
-		ll_popup = (LinearLayout) view.findViewById(R.id.ll_popup);
-		poiListView = (ListView) ll_popup.findViewById(R.id.poi_listView);
-		poiAdapter =new PoiAdapter(this, null);
-		poiListView.setAdapter(poiAdapter);
-		parent_popup.setOnClickListener(this);
-		mLocClient.registerLocationListener(myListener);
-		right.setVisibility(View.VISIBLE);
-		right.setOnClickListener(this);
 	}
-	private void initData() {
+	@Override
+	protected void initData() {
 		dateTime = getIntent().getStringExtra("dateTime");
 		cointInfo = getIntent().getStringExtra("cointInfo");
 		movie=(Movie)getIntent().getSerializableExtra("movie");
@@ -158,6 +165,7 @@ public class CinemaSearchActivity extends NarutoMonitorActivity implements
 		poiAdapter.setDateTime(dateTime);
 		poiAdapter.setCointInfo(cointInfo);
 		poiAdapter.setMovie(movie);
+
 	}
 	private void searchButtonProcess(View v) {
 		
@@ -336,7 +344,7 @@ public class CinemaSearchActivity extends NarutoMonitorActivity implements
 		super.onBackPressed();
 		overridePendingTransition(R.anim.slide_in_left, R.anim.slide_out_right);
 	}
-
+	
 	
 	
 }

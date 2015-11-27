@@ -1,4 +1,4 @@
-package com.movie.ui;
+package com.movie.app;
 
 
 

@@ -9,6 +9,7 @@ import android.view.View.OnClickListener;
 import android.widget.TextView;
 
 import com.movie.R;
+import com.movie.app.BaseActivity;
 import com.movie.app.Constant;
 import com.movie.client.bean.Movie;
 import com.movie.client.service.BaseService;
@@ -43,11 +44,11 @@ public class MissConfirmActivity extends BaseActivity implements
 		setContentView(R.layout.activity_miss_confirm);
 		httpMissCreateService = new HttpMissCreateService(this);
 		initViews();
+		initEvents();
 		initData();
 	}
-
-	private void initViews() {
-
+	@Override
+	protected void initViews() {
 		title = (TextView) findViewById(R.id.title);
 		right = (TextView) findViewById(R.id.right_text);
 		runTime = (TextView) findViewById(R.id.runTime);
@@ -56,12 +57,15 @@ public class MissConfirmActivity extends BaseActivity implements
 		cinemaNameView = (TextView) findViewById(R.id.cinema_name);
 		cinemaAddressView = (TextView) findViewById(R.id.cinema_address);
 		cinemaPhoneView = (TextView) findViewById(R.id.cinema_phone);
-
 		right.setVisibility(View.VISIBLE);
-		right.setOnClickListener(this);
 	}
 
-	private void initData() {
+	@Override
+	protected void initEvents() {
+		right.setOnClickListener(this);
+	}
+	@Override
+	protected void initData() {
 		title.setText("约会确认");
 		right.setText("提交");
 		dateTime = getIntent().getStringExtra("dateTime");
@@ -79,9 +83,8 @@ public class MissConfirmActivity extends BaseActivity implements
 		cinemaAddressView.setText(cinemaAddress);
 		cinemaPhoneView.setText(cinemaPhoneNum);
 		movieName.setText(movie.getName());
-
+		
 	}
-
 	private void saveMiss() {
 
 		httpMissCreateService.addParams("filmId", movie.getId());
@@ -115,7 +118,6 @@ public class MissConfirmActivity extends BaseActivity implements
 		super.onBackPressed();
 		overridePendingTransition(R.anim.slide_in_left, R.anim.slide_out_right);
 	}
-
 	@Override
 	public void SuccessCallBack(Map<String, Object> map) {
 
@@ -130,20 +132,19 @@ public class MissConfirmActivity extends BaseActivity implements
 			String message = map.get(Constant.ReturnCode.RETURN_MESSAGE).toString();
 			showToask(message);
 		}
-
 	}
-
 	@Override
 	public void ErrorCallBack(Map<String, Object> map) {
 		hideProgressDialog();
 		String message = map.get(Constant.ReturnCode.RETURN_MESSAGE).toString();
 		showToask(message);
 	}
-
 	@Override
 	public void OnRequest() {
 		showProgressDialog("提示", "正在提交，请稍后......");
 
 	}
+
+	
 
 }

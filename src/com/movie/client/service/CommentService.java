@@ -6,11 +6,11 @@ import java.util.Map;
 
 import android.content.Context;
 
-import com.movie.app.SexState;
 import com.movie.client.bean.Dictionary;
 import com.movie.client.dao.BaseDao;
 import com.movie.client.dao.CommentDaoImple;
 import com.movie.client.db.SQLHelper;
+import com.movie.state.SexState;
 
 public class CommentService {
 

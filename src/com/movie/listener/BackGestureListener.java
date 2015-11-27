@@ -3,7 +3,7 @@ package com.movie.listener;
 import android.view.GestureDetector.OnGestureListener;
 import android.view.MotionEvent;
 
-import com.movie.ui.BaseActivity;
+import com.movie.app.BaseActivity;
 /**
  * 返回手势监听接口
  */

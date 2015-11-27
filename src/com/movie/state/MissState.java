@@ -1,4 +1,4 @@
-package com.movie.app;
+package com.movie.state;
 
 public enum MissState {
 

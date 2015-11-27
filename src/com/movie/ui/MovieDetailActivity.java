@@ -28,6 +28,7 @@ import com.handmark.pulltorefresh.library.PullToRefreshScrollView;
 import com.movie.R;
 import com.movie.adapter.MoviesCommentAdapter;
 import com.movie.adapter.WantSeeMovieAdapter;
+import com.movie.app.BaseActivity;
 import com.movie.app.Constant;
 import com.movie.app.Constant.Page;
 import com.movie.app.Constant.ReturnCode;
@@ -54,7 +55,6 @@ import com.nostra13.universalimageloader.core.ImageLoader;
 
 
 public class MovieDetailActivity extends BaseActivity implements OnClickListener, CallBackService , OnRefreshListener2<ListView>,OnRefreshListener<ScrollView>{
-
 
 	protected static int LOADUSERCOMPLETE=1;
 	Movie movie;
@@ -112,10 +112,11 @@ public class MovieDetailActivity extends BaseActivity implements OnClickListener
 		filmTypeService = new FilmTypeService();
 		imageLoaderCache=ImageLoader.getInstance();
 		initViews();
+		initEvents();
 		initData();
 	}
-
-	private void initViews() {
+	@Override
+	protected void initViews() {
 		movieDetailParent = (RelativeLayout) findViewById(R.id.movie_detail_parent);
 		loadView = new LoadView(movieDetailParent);
 		title = (TextView) findViewById(R.id.title);
@@ -151,6 +152,10 @@ public class MovieDetailActivity extends BaseActivity implements OnClickListener
 		refreshableView.setMode(Mode.PULL_FROM_END);
 		refreshableView.setFocusable(false);
 		refreshableScollView.setMode(Mode.PULL_FROM_START);
+	}
+
+	@Override
+	protected void initEvents() {
 		refreshableScollView.setOnRefreshListener(this);
 		refreshableView.setOnRefreshListener(this);
 		loveFilm.setOnClickListener(this);
@@ -173,15 +178,14 @@ public class MovieDetailActivity extends BaseActivity implements OnClickListener
 			}
 		});
 	}
-
-	private void initData() {
+	@Override
+	protected void initData() {
 		filemTypes=filmTypeService.getFilmTypeMap();
 		filmId = getIntent().getIntExtra("filmId",0);
 		loadMovieDetail();
 		loadMovieLove();
 		loadMovieComment();
 	}
-	
 	private void loadMovieDetail(){
 		httpMovieDetailService.addParams("filmId", filmId);
 		httpMovieDetailService.execute(this);
@@ -435,6 +439,16 @@ public class MovieDetailActivity extends BaseActivity implements OnClickListener
 		loadMovieLove();
 		loadMovieComment();
 	}
+	@Override
+	protected void onDestroy() {
+		super.onDestroy();
+		commentAdapter=null;
+		wantSeeMovieAdapter=null;
+		users.clear();
+		comments.clear();
+	}
+
+	
 	
 	
 

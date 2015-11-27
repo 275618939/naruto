@@ -12,6 +12,7 @@ import android.view.animation.AlphaAnimation;
 import android.widget.ImageView;
 
 import com.movie.R;
+import com.movie.app.BaseActivity;
 
 /**
  * 
@@ -45,22 +46,27 @@ public class SplanshActivity extends BaseActivity {
 		AlphaAnimation aa = new AlphaAnimation(0.3f, 1.0f);
 		aa.setDuration(2000);
 		view.startAnimation(aa);
-		initView();
-		init();
-	}
-
+		initViews();
+		initEvents();
+		initData();
 	
-
-	@Override
-	public void onBackPressed() {
-		finish();
-		
 	}
-	private void initView() {
+	@Override
+	protected void initViews() {
 		imageView=(ImageView)findViewById(R.id.welcome);
 		imageView.setImageResource(R.drawable.splash_bg);
 	}
-	private void init() {
+	@Override
+	protected void initEvents() {
+		// TODO Auto-generated method stub
+		
+	}
+
+
+
+	@Override
+	protected void initData() {
+
 		SharedPreferences preferences = getSharedPreferences(SHAREDPREFERENCES_NAME, MODE_PRIVATE);
 		isFirstIn = preferences.getBoolean("isFirstIn", true);
 		if (!isFirstIn) {
@@ -68,9 +74,14 @@ public class SplanshActivity extends BaseActivity {
 		} else {
 			mHandler.sendEmptyMessageDelayed(GO_GUIDE, SPLASH_DELAY_MILLIS);
 		}
-
+		
 	}
 
+	@Override
+	public void onBackPressed() {
+		finish();
+		
+	}
 	private void goHome() {
 		Intent intent = new Intent(SplanshActivity.this, MainActivity.class);
 		SplanshActivity.this.startActivity(intent);
@@ -101,4 +112,6 @@ public class SplanshActivity extends BaseActivity {
 			super.handleMessage(msg);
 		}
 	};
+
+	
 }

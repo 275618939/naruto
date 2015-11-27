@@ -28,12 +28,11 @@ import com.handmark.pulltorefresh.library.PullToRefreshBase.OnRefreshListener;
 import com.handmark.pulltorefresh.library.PullToRefreshScrollView;
 import com.movie.R;
 import com.movie.adapter.EvaluationAdapter;
-import com.movie.app.BackGroundColor;
+import com.movie.app.BaseActivity;
 import com.movie.app.Constant;
 import com.movie.app.Constant.Page;
 import com.movie.app.Constant.ReturnCode;
 import com.movie.app.NarutoApplication;
-import com.movie.app.SexState;
 import com.movie.client.bean.User;
 import com.movie.client.service.BaseService;
 import com.movie.client.service.CallBackService;
@@ -45,6 +44,8 @@ import com.movie.network.HttpUserCommentService;
 import com.movie.network.HttpUserFilmTypeService;
 import com.movie.network.HttpUserLoveService;
 import com.movie.network.HttpUserService;
+import com.movie.state.BackGroundColor;
+import com.movie.state.SexState;
 import com.movie.util.Horoscope;
 import com.movie.util.StringUtil;
 import com.movie.util.UserCharm;
@@ -87,7 +88,7 @@ public class UserDetailActivity extends BaseActivity implements
 	LinearLayout layoutMoviesPre;
 	LinearLayout userDetailTool;
 	RelativeLayout userDetailParent;
-	List<Map<Integer, Integer>> comments;
+	List<Map<Integer, Integer>> comments = new ArrayList<Map<Integer, Integer>>();
 	ImageLoader imageLoaderCache;
 	Map<Integer,String> hobbiesMap;
 	Map<Integer,String> filmTypeMap;
@@ -109,10 +110,11 @@ public class UserDetailActivity extends BaseActivity implements
 		filmTypeService = new FilmTypeService();
 		imageLoaderCache=ImageLoader.getInstance();
 		initViews();
-		loadData();
+		initEvents();
+		initData();
 	}
-
-	private void initViews() {
+	@Override
+	protected void initViews() {
 		userDetailParent = (RelativeLayout) findViewById(R.id.user_detail_parent);
 		loadView = new LoadView(userDetailParent);
 		evaluationAdapter = new EvaluationAdapter(this,comments);
@@ -139,14 +141,19 @@ public class UserDetailActivity extends BaseActivity implements
 		refreshableScollView=(PullToRefreshScrollView) findViewById(R.id.user_detail_view);
 		refreshableScollView.setMode(Mode.PULL_FROM_START);
 		commentsView.setAdapter(evaluationAdapter);
-		commentsView.setSelector(new ColorDrawable(Color.TRANSPARENT));
-		userLove.setOnClickListener(this);
+		commentsView.setSelector(new ColorDrawable(Color.TRANSPARENT));	
 		refreshableScollView.setMode(Mode.PULL_FROM_START);
-		refreshableScollView.setOnRefreshListener(this);
+		
 	}
 
-	
-	private void loadData() {
+	@Override
+	protected void initEvents() {
+		refreshableScollView.setOnRefreshListener(this);
+		userLove.setOnClickListener(this);
+	}
+
+	@Override
+	protected void initData() {
 		memberId = getIntent().getStringExtra("memberId");
 		hobbiesMap= hobbyService.getHobbyMap();
 		filmTypeMap=filmTypeService.getFilmTypeMap();
@@ -154,7 +161,6 @@ public class UserDetailActivity extends BaseActivity implements
 		loginUser = userService.getUserItem();
 		loadUser();
 		loadUserFilmType();
-		//loadUserComments();
 		
 	}
 	@Override
@@ -384,7 +390,6 @@ public class UserDetailActivity extends BaseActivity implements
 		commnetsMore.setOnClickListener(this);
 		Map<Integer, Integer> maps = null;
 		Random random = new Random();
-		comments = new ArrayList<Map<Integer, Integer>>();
 		for (int i = 0; i < Constant.Page.COMMENTS_MAX_SHOW; i++) {
 			maps = new HashMap<Integer, Integer>();
 			maps.put(i+1, random.nextInt(100));
@@ -399,15 +404,14 @@ public class UserDetailActivity extends BaseActivity implements
 		String message = map.get(Constant.ReturnCode.RETURN_MESSAGE).toString();
 		String tag = map.get(Constant.ReturnCode.RETURN_TAG).toString();
 		String code = map.get(Constant.ReturnCode.RETURN_STATE).toString();
-		showToask(message);
 		if(code.equals(ReturnCode.STATE_999)){
 			loadView.hideAllHit(this);
 			return;
 		}
 		if(tag.endsWith(httpUsersService.TAG)){
 			loadView.showLoadFail(this,this);
+			showToask(message);
 		}
-	
 	}
 
 	@Override
@@ -424,5 +428,12 @@ public class UserDetailActivity extends BaseActivity implements
 		loadUser();
 		loadUserFilmType();
 	}
+	@Override
+	protected void onDestroy() {
+		super.onDestroy();
+		evaluationAdapter=null;	
+		comments.clear();
+	}
 
+	
 }

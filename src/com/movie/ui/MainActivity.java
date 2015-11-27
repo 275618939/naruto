@@ -7,7 +7,6 @@ import android.app.AlertDialog;
 import android.content.DialogInterface;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
-import android.support.v4.app.FragmentTabHost;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.View.OnClickListener;
@@ -15,8 +14,8 @@ import android.widget.TabHost.TabSpec;
 import android.widget.TextView;
 
 import com.movie.R;
+import com.movie.app.BaseActivity;
 import com.movie.app.Constant;
-import com.movie.app.ErrorState;
 import com.movie.client.service.BaseService;
 import com.movie.client.service.CallBackService;
 import com.movie.fragment.HomeFragment;
@@ -25,9 +24,9 @@ import com.movie.fragment.MoiveFragment;
 import com.movie.fragment.NarutoFragment;
 import com.movie.fragment.SelfFragment;
 import com.movie.network.HttpLoginAutoService;
+import com.movie.view.FragmentTabHost;
 
-public class MainActivity extends NarutoMonitorActivity implements
-		OnClickListener, CallBackService {
+public class MainActivity extends BaseActivity implements OnClickListener, CallBackService {
 
 	/** 首页底部导航栏文本 */
 	String tabTextviewArray[] = { "今日", "约会", "影片", "会员", "我的" };
@@ -45,32 +44,32 @@ public class MainActivity extends NarutoMonitorActivity implements
 		setContentView(R.layout.activity_main);
 		httpLoginAutoService = new HttpLoginAutoService(this);
 		initViews();
+		initEvents();
 		initData();
 	}
-
 	/**
 	 * 初始化界面
 	 */
-	public void initViews() {
-
+	@Override
+	protected void initViews() {
 		layoutInflater = LayoutInflater.from(this);
 		mTabHost = (FragmentTabHost) findViewById(android.R.id.tabhost);
 		mTabHost.setup(this, getSupportFragmentManager(), R.id.realtabcontent);
-		// 得到fragment的个数
 		int count = fragmentArray.length;
 		for (int i = 0; i < count; i++) {
-			// 为每一个Tab按钮设置图标、文字和内容
-			TabSpec tabSpec = mTabHost.newTabSpec(tabTextviewArray[i])
-					.setIndicator(getTabItemView(i));
-			// 将Tab按钮添加进Tab选项卡中
+			TabSpec tabSpec = mTabHost.newTabSpec(tabTextviewArray[i]).setIndicator(getTabItemView(i));
 			mTabHost.addTab(tabSpec, fragmentArray[i], null);
 		}
 		mTabHost.getTabWidget().setDividerDrawable(null);
-
 	}
 	
-
-	public void initData() {
+	@Override
+	protected void initEvents() {
+		// TODO Auto-generated method stub
+		
+	}
+	@Override
+	protected void initData() {
 		httpLoginAutoService.execute(this);
 	}
 
@@ -101,20 +100,10 @@ public class MainActivity extends NarutoMonitorActivity implements
 
 		switch (v.getId()) {
 
-		/*
-		 * case R.id.user_info: { if (side_drawer.isMenuShowing()) {
-		 * side_drawer.showContent(); } else { side_drawer.showMenu(); } break;
-		 * }
-		 */
-		case R.id.user_image: {
-			/*
-			 * if (side_drawer.isMenuShowing()) { side_drawer.showContent(); }
-			 * else { side_drawer.showMenu(); }
-			 */
-			break;
+		
 		}
 
-		}
+	
 	}
 
 	@Override
@@ -142,12 +131,9 @@ public class MainActivity extends NarutoMonitorActivity implements
 	public void SuccessCallBack(Map<String, Object> map) {
 		hideProgressDialog();
 		String code = map.get(Constant.ReturnCode.RETURN_STATE).toString();
-		String tag = map.get(Constant.ReturnCode.RETURN_TAG).toString();
 		if (Constant.ReturnCode.STATE_1.equals(code)) {
-		}
-		else if (ErrorState.ObjectNotExist.getState() == Integer.parseInt(code)) {
-
-		} else {
+			
+		}else {
 			String desc = map.get(Constant.ReturnCode.RETURN_MESSAGE).toString();
 			showToask(desc);
 		}
@@ -162,7 +148,9 @@ public class MainActivity extends NarutoMonitorActivity implements
 
 	@Override
 	public void OnRequest() {
-		showProgressDialog("提示", "链接服务器...");
+		showProgressDialog("提示", "请求中...");
 	}
 
+	
+	
 }

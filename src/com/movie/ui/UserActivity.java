@@ -23,6 +23,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.movie.R;
+import com.movie.app.BaseActivity;
 import com.movie.app.Constant;
 import com.movie.app.InvokeException;
 import com.movie.app.NarutoApplication;
@@ -32,7 +33,6 @@ import com.movie.client.service.CallBackService;
 import com.movie.network.HttpUserService;
 import com.movie.network.HttpUserUpdateService;
 import com.movie.util.Bimp;
-import com.movie.util.ImageLoaderCache;
 import com.movie.util.PathUtil;
 import com.movie.util.StringUtil;
 import com.movie.util.UploadUtil;
@@ -75,7 +75,6 @@ public class UserActivity extends BaseActivity implements OnClickListener, CallB
 	BaseService httpUserService;
 	Uri photoUri;  
 	List<Integer> userHobbis;
-	Bitmap userImage;
 	String headUrl;
 	String picPath;  
 	Intent lastIntent; 
@@ -89,12 +88,12 @@ public class UserActivity extends BaseActivity implements OnClickListener, CallB
 		httpUserService = new HttpUserService(this);
 		imageLoaderCache=ImageLoader.getInstance();
 		initViews();
+		initEvents();
 		initData();
-		getUser();
+	
 	}
-
-	private void initViews() {
-
+	@Override
+	protected void initViews() {
 		title = (TextView) findViewById(R.id.title);
 		nickName = (TextView) findViewById(R.id.nickName);
 		sex = (TextView) findViewById(R.id.sex);
@@ -110,7 +109,12 @@ public class UserActivity extends BaseActivity implements OnClickListener, CallB
 		layoutEmail= (LinearLayout) findViewById(R.id.layout_email);
 		layoutSign= (LinearLayout) findViewById(R.id.layout_sign);
 		layoutHobby= (LinearLayout) findViewById(R.id.layout_hobby);
-		layoutHead= (LinearLayout) findViewById(R.id.layout_head);
+		layoutHead= (LinearLayout) findViewById(R.id.layout_head);		
+		lastIntent = getIntent();	
+	}
+
+	@Override
+	protected void initEvents() {
 		layoutNick.setOnClickListener(this);
 		layoutSex.setOnClickListener(this);
 		layoutBirthday.setOnClickListener(this);
@@ -118,13 +122,13 @@ public class UserActivity extends BaseActivity implements OnClickListener, CallB
 		layoutEmail.setOnClickListener(this);
 		layoutSign.setOnClickListener(this);
 		layoutHobby.setOnClickListener(this);
-		layoutHead.setOnClickListener(this);
-		lastIntent = getIntent();
-
+		layoutHead.setOnClickListener(this);		
 	}
 
-	private void initData() {
+	@Override
+	protected void initData() {
 		title.setText("编辑信息");
+		getUser();
 	}
 	private void getUser() {
 		httpUserService.execute(this);
@@ -426,5 +430,7 @@ public class UserActivity extends BaseActivity implements OnClickListener, CallB
 		
 		
 	}
+
+	
 	
 }

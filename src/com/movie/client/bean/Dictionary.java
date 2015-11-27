@@ -7,7 +7,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Random;
 
-import com.movie.app.SexState;
+import com.movie.state.SexState;
 
 /**
  * 描述：类型信息</br>

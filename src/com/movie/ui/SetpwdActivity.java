@@ -13,6 +13,7 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.movie.R;
+import com.movie.app.BaseActivity;
 import com.movie.app.Constant;
 import com.movie.client.bean.Login;
 import com.movie.client.service.BaseService;
@@ -42,31 +43,37 @@ public class SetpwdActivity extends BaseActivity implements OnClickListener,Call
 		httpSetPassService = new HttpSetPassService(this);
 		loginService = new LoginService();
 		initViews();
+		initEvents();
 		initData();
 	}
 
-	private void initViews() {
-
+	@Override
+	protected void initViews() {
 		title = (TextView) findViewById(R.id.title);
 		right = (TextView) findViewById(R.id.right_text);
 		pass = (EditText) findViewById(R.id.password);
 		passConfrim = (EditText) findViewById(R.id.password_confirm);
 		passClear = (ImageView) findViewById(R.id.pass_clear);
 		passConfirmClear = (ImageView) findViewById(R.id.pass_confim_clear);
-	
 		right.setVisibility(View.VISIBLE);
+	}
+
+	@Override
+	protected void initEvents() {
 		right.setOnClickListener(this);
 		passClear.setOnClickListener(this);
 		passConfirmClear.setOnClickListener(this);
+		
 	}
 
-	private void initData() {
+	@Override
+	protected void initData() {
 		login = getIntent().getStringExtra("login");
 		token = getIntent().getStringExtra("token");
 		title.setText("设置密码");
 		right.setText("保存");
+		
 	}
-
 	private void modifyPwd() {
 
 		String value = pass.getText().toString();
@@ -153,5 +160,6 @@ public class SetpwdActivity extends BaseActivity implements OnClickListener,Call
 	public void OnRequest() {
 		showProgressDialog("提示", "正在提交，请稍后......");
 	}
+
 
 }

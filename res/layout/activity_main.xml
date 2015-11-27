@@ -16,9 +16,9 @@
         android:layout_height="0dip"
         android:layout_weight="1" />
 
-    <android.support.v4.app.FragmentTabHost
+    <com.movie.view.FragmentTabHost
         android:id="@android:id/tabhost"
         style="@style/bottom_bar_style" >
-    </android.support.v4.app.FragmentTabHost>
+    </com.movie.view.FragmentTabHost>
 
 </LinearLayout>

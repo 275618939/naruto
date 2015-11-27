@@ -11,6 +11,7 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.movie.R;
+import com.movie.app.BaseActivity;
 import com.movie.client.service.CallBackService;
 
 public class EmailActivity extends BaseActivity implements OnClickListener,CallBackService {
@@ -26,26 +27,30 @@ public class EmailActivity extends BaseActivity implements OnClickListener,CallB
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_email);
 		initViews();
+		initEvents();
 		initData();
 	}
-
-	private void initViews() {
-
+	@Override
+	protected void initViews() {
+		
 		title = (TextView) findViewById(R.id.title);
 		right = (TextView) findViewById(R.id.right_text);
 		email = (EditText) findViewById(R.id.email);
 		clear = (ImageView) findViewById(R.id.clear);
-		
-		//clear.setClickable(true);
-		//right.setClickable(true);
 		right.setVisibility(View.VISIBLE);
 		right.setOnClickListener(this);
-		clear.setOnClickListener(this);
+		clear.setOnClickListener(this);		
+	}
+	@Override
+	protected void initEvents() {
+
 	}
 
-	private void initData() {
+	@Override
+	protected void initData() {
 		title.setText("修改邮箱");
 		right.setText("保存");
+		
 	}
 
 	private void modifyUser() {
@@ -87,13 +92,13 @@ public class EmailActivity extends BaseActivity implements OnClickListener,CallB
 	
 	@Override
 	public void SuccessCallBack(Map<String, Object> map) {
-		// TODO Auto-generated method stub
+		
 		
 	}
 
 	@Override
 	public void ErrorCallBack(Map<String, Object> map) {
-		// TODO Auto-generated method stub
+		
 		
 	}
 
@@ -102,6 +107,8 @@ public class EmailActivity extends BaseActivity implements OnClickListener,CallB
 		showProgressDialog("提示", "正在提交，请稍后......");
 		
 	}
+
+
 
 
 

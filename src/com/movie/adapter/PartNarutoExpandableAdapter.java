@@ -24,11 +24,11 @@ import android.widget.TextView;
 
 import com.movie.R;
 import com.movie.app.NarutoApplication;
-import com.movie.app.SelfPartNarutoBtn;
-import com.movie.app.SexState;
 import com.movie.client.bean.Dictionary;
 import com.movie.client.bean.Miss;
 import com.movie.client.bean.User;
+import com.movie.state.SelfPartNarutoBtn;
+import com.movie.state.SexState;
 import com.movie.ui.UserDetailActivity;
 import com.movie.util.StringUtil;
 import com.movie.view.CommentsGridView;

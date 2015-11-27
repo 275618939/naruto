@@ -16,10 +16,10 @@ import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.movie.R;
-import com.movie.app.MissState;
-import com.movie.app.MissStateBackColor;
 import com.movie.app.NarutoApplication;
 import com.movie.client.bean.Miss;
+import com.movie.state.MissState;
+import com.movie.state.MissStateBackColor;
 import com.movie.ui.MissSelfDetailActivity;
 import com.movie.util.StringUtil;
 import com.nostra13.universalimageloader.core.ImageLoader;

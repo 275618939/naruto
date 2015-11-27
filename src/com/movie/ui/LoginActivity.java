@@ -17,6 +17,7 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.movie.R;
+import com.movie.app.BaseActivity;
 import com.movie.app.Constant;
 import com.movie.client.bean.Login;
 import com.movie.client.bean.User;
@@ -31,8 +32,6 @@ import com.movie.view.CustomDialog;
 
 
 public class LoginActivity extends BaseActivity implements OnClickListener, CallBackService {
-
-
 
 	EditText accountEdit;
 	EditText passwordEdit;
@@ -55,31 +54,35 @@ public class LoginActivity extends BaseActivity implements OnClickListener, Call
 		httpCaptchaService=new HttpCaptchaService(this);
 		userService = new UserService();
 		initViews();
+		initEvents();
 		initData();
 	}
-
-	private void initViews() {
-
+	@Override
+	protected void initViews() {		
 		accountEdit = (EditText) this.findViewById(R.id.account);
 		passwordEdit= (EditText) this.findViewById(R.id.password);
 		loginButton = (Button) this.findViewById(R.id.login);
 		forgetButton = (Button) this.findViewById(R.id.forget);
 		accountEdit.setInputType(EditorInfo.TYPE_CLASS_NUMBER);
-		loginButton.setOnClickListener(this);
-		forgetButton.setOnClickListener(this);
 		title = (TextView) findViewById(R.id.title);
 		right_text = (TextView) findViewById(R.id.right_text);
-		right_text.setVisibility(View.VISIBLE);
-		right_text.setClickable(true);
-		right_text.setOnClickListener(this);
-		
+		right_text.setVisibility(View.VISIBLE);	
 	}
 
-	private void initData() {
+	@Override
+	protected void initEvents() {
+		loginButton.setOnClickListener(this);
+		forgetButton.setOnClickListener(this);
+		right_text.setOnClickListener(this);	
+		right_text.setClickable(true);
+	}
+
+	@Override
+	protected void initData() {
 		title.setText("登陆");
 		right_text.setText("注册");
-		
 	}
+
 
 	private void doLogin(String captcha) {
 
@@ -226,6 +229,8 @@ public class LoginActivity extends BaseActivity implements OnClickListener, Call
 	public void OnRequest() {
 		showProgressDialog("提示", "正在登陆，请稍后......");
 	}
+
+	
 
 	
 

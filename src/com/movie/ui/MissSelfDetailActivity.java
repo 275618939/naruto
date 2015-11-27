@@ -16,6 +16,7 @@ import android.widget.TextView;
 
 import com.movie.R;
 import com.movie.adapter.PartNarutoExpandableAdapter;
+import com.movie.app.BaseActivity;
 import com.movie.app.Constant;
 import com.movie.app.Constant.MissBtnStatus;
 import com.movie.app.Constant.ReturnCode;
@@ -62,12 +63,12 @@ public class MissSelfDetailActivity extends BaseActivity implements OnClickListe
 		httpUsersService = new HttpUserService(this);
 		imageLoaderCache=ImageLoader.getInstance();
 		initViews();
+		initEvents();
 		initData();
 		initPartUser();
 	}
-
-	private void initViews() {
-		
+	@Override
+	protected void initViews() {
 		missDetailView = (ScrollView)findViewById(R.id.miss_detail_view);
 		missDetailView.smoothScrollTo(0, 0);
 		title = (TextView) findViewById(R.id.title);
@@ -84,11 +85,15 @@ public class MissSelfDetailActivity extends BaseActivity implements OnClickListe
 		missPartList = (ExpandListViewForScrollView) findViewById(R.id.miss_part_list);
 		partNarutoAdapter = new PartNarutoExpandableAdapter(this,mHandler, null,null);
 		missPartList.setAdapter(partNarutoAdapter);
-		layoutCinemaAddress.setOnClickListener(this);
 	}
 
-	private void initData() {
+	@Override
+	protected void initEvents() {
+		layoutCinemaAddress.setOnClickListener(this);		
+	}
 
+	@Override
+	protected void initData() {
 		miss = (Miss) getIntent().getSerializableExtra("miss");
 		if(null==miss){
 			return;
@@ -231,6 +236,12 @@ public class MissSelfDetailActivity extends BaseActivity implements OnClickListe
 	public void OnRequest() {
 		showProgressDialog("提示", "正在加载，请稍后....");		
 	}
+	@Override
+	protected void onDestroy() {
+		super.onDestroy();
+		partNarutoAdapter=null;
+	}
+	
 	
 	
 

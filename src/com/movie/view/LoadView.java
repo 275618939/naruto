@@ -19,12 +19,18 @@ public class LoadView {
 	LinearLayout loadAfterLayout; 
 	LinearLayout loadingLineFail;
 
-
+	public LoadView() {}
+	
 	public LoadView(View rootView) {
 		this.rootView = rootView;
 		initView();
 	}
+	public void initView(View rootView){
+		this.rootView = rootView;
+		initView();
+	}
 	public void initView(){
+
 		loadingLayout=(LinearLayout)rootView.findViewById(R.id.loading);
 		loadingErrorLayout=(LinearLayout)rootView.findViewById(R.id.loading_error);
 		loadAfterLayout=(LinearLayout)rootView.findViewById(R.id.load_after);

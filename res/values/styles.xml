@@ -583,6 +583,10 @@
         <item name="android:windowEnterAnimation">@anim/slide_left_in</item>
         <item name="android:windowExitAnimation">@anim/slide_right_out</item>
     </style>
+     <style name="Popup_Animation_PushDownUp" parent="@android:style/Animation">
+        <item name="android:windowEnterAnimation">@anim/push_up_in</item>
+        <item name="android:windowExitAnimation">@anim/push_up_out</item>
+    </style>
 
     <style name="subscribe_my_tip_text">
         <item name="android:textSize">16.0sp</item>

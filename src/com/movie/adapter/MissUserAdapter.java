@@ -20,9 +20,9 @@ import android.widget.TextView;
 
 import com.movie.R;
 import com.movie.app.NarutoApplication;
-import com.movie.app.SexState;
 import com.movie.client.bean.Miss;
 import com.movie.client.bean.User;
+import com.movie.state.SexState;
 import com.movie.ui.UserDetailActivity;
 import com.movie.view.MessageDialog;
 import com.nostra13.universalimageloader.core.ImageLoader;

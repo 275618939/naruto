@@ -21,9 +21,11 @@ import com.nostra13.universalimageloader.utils.StorageUtils;
 
 public class NarutoApplication extends Application {
 
+	private static final String PHOTO_CACSHE_DIR = "naruto/cache";
 	private static NarutoApplication mAppApplication;
 	private SQLHelper sqlHelper;
 	public static DisplayImageOptions imageOptions;
+	
 
 	@Override
 	public void onCreate() {
@@ -56,7 +58,7 @@ public class NarutoApplication extends Application {
 
 	/** 初始化ImageLoader */
 	public static void initImageLoader(Context context) {
-		File cacheDir = StorageUtils.getOwnCacheDirectory(context,"naruto/cache");// 获取到缓存的目录地址
+		File cacheDir = StorageUtils.getOwnCacheDirectory(context,PHOTO_CACSHE_DIR);// 获取到缓存的目录地址
 		Log.d("cacheDir", cacheDir.getPath());
 		// 创建配置ImageLoader(所有的选项都是可选的,只使用那些你真的想定制)，这个可以设定在APPLACATION里面，设置为全局的配置参数
 		ImageLoaderConfiguration.Builder config = new ImageLoaderConfiguration.Builder(context);

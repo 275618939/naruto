@@ -19,6 +19,7 @@ import com.handmark.pulltorefresh.library.PullToRefreshBase.OnRefreshListener2;
 import com.handmark.pulltorefresh.library.PullToRefreshListView;
 import com.movie.R;
 import com.movie.adapter.MissSelfQueryAdapter;
+import com.movie.app.BaseActivity;
 import com.movie.app.Constant;
 import com.movie.app.Constant.Page;
 import com.movie.app.Constant.ReturnCode;
@@ -55,28 +56,32 @@ public class MissSelfQueryActivity extends BaseActivity implements OnClickListen
 		missQueryService = new HttpMissQueryService(this);
 		httpMissCancelService = new HttpMissCancelService(this);
 		initViews();
+		initEvents();
 		initData();
 	}
-
-	private void initViews() {
-
+	@Override
+	protected void initViews() {
 		title = (TextView) findViewById(R.id.title);
 		userMissParentLayout= (RelativeLayout)findViewById(R.id.user_miss_parent_layout);
 		loadView = new LoadView(userMissParentLayout);
 		selfQueryAdapter = new MissSelfQueryAdapter(this, mHandler, null);
 		refreshableListView = (PullToRefreshListView) findViewById(R.id.slef_miss_list);
 		refreshableListView.setMode(Mode.BOTH);
-		refreshableListView.setOnRefreshListener(this);
 		refreshableListView.setAdapter(selfQueryAdapter);
-
 	}
 
-	private void initData() {
+	@Override
+	protected void initEvents() {
+		refreshableListView.setOnRefreshListener(this);
+	}
+
+	@Override
+	protected void initData() {
 		page=0;
 		missType=SelfFragment.MY_MISS;
 		loadMissData();		
 	}
-
+	
 	private void loadMissData() {
 		switch (missType) {
 		case SelfFragment.MY_MISS:
@@ -239,5 +244,12 @@ public class MissSelfQueryActivity extends BaseActivity implements OnClickListen
 		loadMissData();
 		
 	}
+	@Override
+	protected void onDestroy() {
+		super.onDestroy();
+		selfQueryAdapter=null;
+	}
+
+	
 
 }

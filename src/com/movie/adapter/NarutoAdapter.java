@@ -21,9 +21,9 @@ import android.widget.Toast;
 
 import com.movie.R;
 import com.movie.app.NarutoApplication;
-import com.movie.app.SexState;
 import com.movie.client.bean.User;
 import com.movie.client.service.UserService;
+import com.movie.state.SexState;
 import com.movie.ui.MovieDetailActivity;
 import com.movie.ui.UserDetailActivity;
 import com.movie.util.Horoscope;

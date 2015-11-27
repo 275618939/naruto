@@ -1,6 +1,5 @@
 package com.movie.ui;
 
-import java.util.List;
 import java.util.Map;
 
 import android.content.Intent;
@@ -13,6 +12,7 @@ import android.widget.TextView;
 
 import com.movie.R;
 import com.movie.adapter.HobbyAdapter;
+import com.movie.app.BaseActivity;
 import com.movie.app.Constant;
 import com.movie.client.bean.User;
 import com.movie.client.service.CallBackService;
@@ -24,7 +24,6 @@ public class UserShowHobbyActivity extends BaseActivity implements OnClickListen
 	TextView title;
 	CommentsGridView gridView;
 	HobbyAdapter hobbyAdapter;
-	List<Map<Integer, Integer>> comments;
 	Map<Integer,String> hobbies;
 	HobbyService hobbyService;
 	User user;
@@ -34,23 +33,30 @@ public class UserShowHobbyActivity extends BaseActivity implements OnClickListen
 		setContentView(R.layout.activity_user_hobbies);
 		hobbyService = new HobbyService();
 		initViews();
+		initEvents();
 		initData();
 	}
-	private void initViews() {
+	@Override
+	protected void initViews() {
 		hobbyAdapter = new HobbyAdapter(this, null,null);
 		title = (TextView) findViewById(R.id.title);
 		gridView = (CommentsGridView) findViewById(R.id.hobbies);
 		gridView.setSelector(new ColorDrawable(Color.TRANSPARENT));
 		gridView.setAdapter(hobbyAdapter);
-	
 	}
-	private void initData() {
+	@Override
+	protected void initEvents() {
+		
+		
+	}
+	@Override
+	protected void initData() {
 		user = (User) getIntent().getSerializableExtra("user");
 		title.setText(user.getNickname()+"的喜好");
 		hobbies= hobbyService.getHobbyMap();
 		hobbyAdapter.updateData(hobbies, user.getHobbies());
+		
 	}
-
 	@Override
 	public void onClick(View v) {
 		switch (v.getId()) {
@@ -85,7 +91,12 @@ public class UserShowHobbyActivity extends BaseActivity implements OnClickListen
 	public void OnRequest() {
 		showProgressDialog("提示", "加载数据....");
 	}
-
+	@Override
+	protected void onDestroy() {
+		super.onDestroy();
+		hobbyAdapter=null;
+	}
+	
 	
 
 }

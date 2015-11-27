@@ -16,9 +16,9 @@ import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.movie.R;
-import com.movie.app.MissStateBackColor;
 import com.movie.app.NarutoApplication;
 import com.movie.client.bean.Miss;
+import com.movie.state.MissStateBackColor;
 import com.movie.ui.MissNarutoDetailActivity;
 import com.nostra13.universalimageloader.core.ImageLoader;
 

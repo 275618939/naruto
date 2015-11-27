@@ -16,6 +16,7 @@ import android.widget.TextView;
 
 import com.movie.R;
 import com.movie.adapter.MoviesAdapter;
+import com.movie.app.BaseActivity;
 import com.movie.app.Constant;
 import com.movie.app.Constant.Page;
 import com.movie.client.bean.Movie;
@@ -45,30 +46,35 @@ public class UserLoveMovieActivity extends BaseActivity implements
 		setContentView(R.layout.activity_user_love_movie);
 		httpUserFilmService = new HttpUserFilmTypeService(this);
 		initViews();
+		initEvents();
 		initData();
 	}
 
-	private void initViews() {
-
+	@Override
+	protected void initViews() {
 		title = (TextView) findViewById(R.id.title);
 		moviesView = (GridView)findViewById(R.id.movies);
 		refreshLayout = (RefreshableView) findViewById(R.id.refresh_movies);
 		moviesAdapter = new MoviesAdapter(this, movies);
-		refreshLayout.setOnRefreshListener(this, 0);
 		moviesView.setAdapter(moviesAdapter);
 		moviesView.setSelector(new ColorDrawable(Color.TRANSPARENT));
-
 	}
 
-	private void initData() {
+	@Override
+	protected void initEvents() {
+		refreshLayout.setOnRefreshListener(this, 0);
+		
+	}
+
+	@Override
+	protected void initData() {
 		page = 0;
 		title.setText("想看电影");
 		user = (User) getIntent().getSerializableExtra("user");
 		if (null != user) {
 			loadMovies();
-		}
+		}	
 		
-
 	}
 
 	private void loadMovies() {
@@ -168,5 +174,13 @@ public class UserLoveMovieActivity extends BaseActivity implements
 		mHandler.sendEmptyMessageDelayed(REFRESH_COMPLETE, 1000);
 
 	}
+	@Override
+	protected void onDestroy() {
+		super.onDestroy();
+		moviesAdapter=null;	
+		movies.clear();
+	}
+
+
 
 }

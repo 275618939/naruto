@@ -19,12 +19,12 @@ import android.util.Log;
 import com.movie.R;
 import com.movie.app.Constant;
 import com.movie.app.Constant.ReturnCode;
-import com.movie.app.ErrorState;
 import com.movie.app.InvokeException;
 import com.movie.client.bean.Session;
 import com.movie.client.dao.BaseDao;
 import com.movie.client.dao.SessionDaoImple;
 import com.movie.client.db.SQLHelper;
+import com.movie.state.ErrorState;
 import com.movie.util.HttpUtils;
 
 public abstract class BaseService  {

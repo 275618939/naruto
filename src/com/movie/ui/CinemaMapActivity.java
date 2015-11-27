@@ -22,6 +22,7 @@ import com.baidu.mapapi.search.geocode.GeoCoder;
 import com.baidu.mapapi.search.geocode.OnGetGeoCoderResultListener;
 import com.baidu.mapapi.search.geocode.ReverseGeoCodeResult;
 import com.movie.R;
+import com.movie.app.BaseActivity;
 import com.movie.app.Constant;
 import com.movie.client.bean.Miss;
 import com.movie.client.service.CallBackService;
@@ -43,11 +44,11 @@ public class CinemaMapActivity extends BaseActivity implements OnClickListener,
 		SDKInitializer.initialize(getApplicationContext());
 		setContentView(R.layout.activity_cinema_map);
 		initViews();
-
+		initEvents();
+		initData();
 	}
-
-	private void initViews() {
-
+	@Override
+	protected void initViews() {
 		title = (TextView) findViewById(R.id.title);
 		right = (TextView) findViewById(R.id.right_text);
 		right.setVisibility(View.VISIBLE);
@@ -55,17 +56,19 @@ public class CinemaMapActivity extends BaseActivity implements OnClickListener,
 		mMapView = (MapView) findViewById(R.id.bmapView);
 		mBaiduMap = mMapView.getMap();
 		mSearch = GeoCoder.newInstance();
+	}
+	@Override
+	protected void initEvents() {
 		mSearch.setOnGetGeoCodeResultListener(this);
 		right.setOnClickListener(this);
-		miss = (Miss) getIntent().getSerializableExtra("miss");
 	}
-
-	private void initData() {
+	@Override
+	protected void initData() {
+		miss = (Miss) getIntent().getSerializableExtra("miss");
 		if (miss != null) {
 			title.setText(miss.getCinameName());
 			if (miss.getCinameAddress() != null && !miss.getCinameAddress().isEmpty()) {
-				mSearch.geocode(new GeoCodeOption().city(miss.getCinameCity())
-						.address(miss.getCinameAddress()));
+				mSearch.geocode(new GeoCodeOption().city(miss.getCinameCity()).address(miss.getCinameAddress()));
 			}
 		}
 	}
@@ -154,13 +157,9 @@ public class CinemaMapActivity extends BaseActivity implements OnClickListener,
 			return;
 		}
 		mBaiduMap.clear();
-		mBaiduMap.addOverlay(new MarkerOptions().position(result.getLocation())
-				.icon(BitmapDescriptorFactory
-						.fromResource(R.drawable.icon_marka)));
-		mBaiduMap.setMapStatus(MapStatusUpdateFactory.newLatLng(result
-				.getLocation()));
-		String strInfo = String.format("纬度：%f 经度：%f",
-				result.getLocation().latitude, result.getLocation().longitude);
+		mBaiduMap.addOverlay(new MarkerOptions().position(result.getLocation()).icon(BitmapDescriptorFactory.fromResource(R.drawable.icon_marka)));
+		mBaiduMap.setMapStatus(MapStatusUpdateFactory.newLatLng(result.getLocation()));
+		String strInfo = String.format("纬度：%f 经度：%f",result.getLocation().latitude, result.getLocation().longitude);
 		Toast.makeText(this, strInfo, Toast.LENGTH_LONG).show();
 	}
 
@@ -171,13 +170,12 @@ public class CinemaMapActivity extends BaseActivity implements OnClickListener,
 			return;
 		}
 		mBaiduMap.clear();
-		mBaiduMap.addOverlay(new MarkerOptions().position(result.getLocation())
-				.icon(BitmapDescriptorFactory
-						.fromResource(R.drawable.icon_marka)));
-		mBaiduMap.setMapStatus(MapStatusUpdateFactory.newLatLng(result
-				.getLocation()));
+		mBaiduMap.addOverlay(new MarkerOptions().position(result.getLocation()).icon(BitmapDescriptorFactory.fromResource(R.drawable.icon_marka)));
+		mBaiduMap.setMapStatus(MapStatusUpdateFactory.newLatLng(result.getLocation()));
 		Toast.makeText(this, result.getAddress(), Toast.LENGTH_LONG).show();
 
 	}
+
+	
 
 }

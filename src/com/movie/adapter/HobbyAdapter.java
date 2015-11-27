@@ -12,9 +12,9 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.movie.R;
-import com.movie.app.BackGroundColor;
 import com.movie.app.Constant;
 import com.movie.client.dao.BaseDao;
+import com.movie.state.BackGroundColor;
 
 public class HobbyAdapter extends BaseAdapter {
 	

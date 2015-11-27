@@ -12,6 +12,7 @@ import android.view.View.OnClickListener;
 import android.widget.TextView;
 
 import com.movie.R;
+import com.movie.app.BaseActivity;
 import com.movie.app.Constant;
 import com.movie.client.bean.User;
 import com.movie.client.service.CallBackService;
@@ -41,20 +42,27 @@ public class UserHobbyActivity extends BaseActivity implements OnClickListener,C
 		hobbyUpdateService = new HttpHobbyUpdateService(this);
 		hobbyService = new HobbyService();
 		initViews();
+		initEvents();
 		initData();
 	}
-
-	private void initViews() {
-
+	@Override
+	protected void initViews() {
 		hobbyView = (HobbyView) findViewById(R.id.hobby_view);
 		title = (TextView) findViewById(R.id.title);
 		right = (TextView) findViewById(R.id.right_text);
 		right.setVisibility(View.VISIBLE);
-		right.setOnClickListener(this);
 
 	}
 
-	private void initData() {
+	@Override
+	protected void initEvents() {
+		right.setOnClickListener(this);
+		
+	}
+
+	@Override
+	protected void initData() {
+
 		go=getIntent().getIntExtra("go",GO_USER);
 		if(go==GO_DETAIL){
 			user = (User) getIntent().getSerializableExtra("user");
@@ -76,6 +84,7 @@ public class UserHobbyActivity extends BaseActivity implements OnClickListener,C
 		hobbyView.init();
 		right.setText("保存");
 		hobbyView.loadMoreHobby();
+
 	}
 
 	private void modifyUser() {
@@ -127,6 +136,7 @@ public class UserHobbyActivity extends BaseActivity implements OnClickListener,C
 		showProgressDialog("提示", "正在提交，请稍后......");
 	}
 
+	
 	
 
 }

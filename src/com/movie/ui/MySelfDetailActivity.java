@@ -25,8 +25,8 @@ import com.movie.adapter.EvaluationAdapter;
 import com.movie.app.Constant;
 import com.movie.app.Constant.Page;
 import com.movie.app.Constant.ReturnCode;
+import com.movie.app.BaseActivity;
 import com.movie.app.NarutoApplication;
-import com.movie.app.SexState;
 import com.movie.client.bean.User;
 import com.movie.client.service.BaseService;
 import com.movie.client.service.CallBackService;
@@ -36,6 +36,7 @@ import com.movie.fragment.SelfFragment;
 import com.movie.network.HttpUserCommentService;
 import com.movie.network.HttpUserFilmTypeService;
 import com.movie.network.HttpUserService;
+import com.movie.state.SexState;
 import com.nostra13.universalimageloader.core.ImageLoader;
 
 public class MySelfDetailActivity extends BaseActivity implements
@@ -63,7 +64,7 @@ public class MySelfDetailActivity extends BaseActivity implements
 	TextView userMiss;
 	LinearLayout hobbiesLayout;
 	LinearLayout commentsLayout;
-	List<Map<Integer, Integer>> comments;
+	List<Map<Integer, Integer>> comments = new ArrayList<Map<Integer, Integer>>();
 	ImageLoader imageLoaderCache;
 	Map<Integer,String> hobbiesMap;
 	Map<Integer,String> filmTypeMap;
@@ -79,10 +80,12 @@ public class MySelfDetailActivity extends BaseActivity implements
 		filmTypeService = new FilmTypeService();
 		imageLoaderCache=ImageLoader.getInstance();
 		initViews();
-		loadData();
+		initEvents();
+		initData();
 	}
 
-	private void initViews() {
+	@Override
+	protected void initViews() {
 		evaluationAdapter = new EvaluationAdapter(this,comments);
 		title = (TextView) findViewById(R.id.title);
 		headView = (ImageView) findViewById(R.id.user_poster);
@@ -99,32 +102,23 @@ public class MySelfDetailActivity extends BaseActivity implements
 		hobbyMore = (RelativeLayout) findViewById(R.id.hobby_arrow);
 		commnetsMore = (TextView) findViewById(R.id.comments_more);
 		commentsView.setAdapter(evaluationAdapter);
-		commentsView.setSelector(new ColorDrawable(Color.TRANSPARENT));
-		commnetsMore.setOnClickListener(this);
-		commentsLayout.setVisibility(View.GONE);
-
-
+		commentsView.setSelector(new ColorDrawable(Color.TRANSPARENT));	
+		commentsLayout.setVisibility(View.GONE);		
 	}
 
+	@Override
+	protected void initEvents() {
+		commnetsMore.setOnClickListener(this);		
+	}
 
-	private void loadData() {
-
+	@Override
+	protected void initData() {
 		hobbiesMap= hobbyService.getHobbyMap();
 		filmTypeMap=filmTypeService.getFilmTypeMap();
 		userMoviesWant.setText(String.format(getResources().getString(R.string.movie_none)));
 		userMiss.setText(String.format(getResources().getString(R.string.miss_none)));
-		loadUser();
-		
-		/*
-		if(user.getFilmType()==null||user.getFilmType().size()<=0){
-			userMoviesPre.setText(getResources().getString(R.string.movie_none));
-		}else{
-			StringUtil.listToStringByMap(user.getFilmType(), filmTypeMap, "/");
-		}*/
-	
-	
+		loadUser();		
 	}
-
 	private void loadUser() {
 		httpUsersService.addParams(httpUsersService.URL_KEY,Constant.User_API_URL);
 		httpUsersService.execute(this);
@@ -284,7 +278,6 @@ public class MySelfDetailActivity extends BaseActivity implements
 		commentsLayout.setVisibility(View.VISIBLE);
 		Map<Integer, Integer> maps = null;
 		Random random = new Random();
-		comments = new ArrayList<Map<Integer, Integer>>();
 		for (int i = 0; i < Constant.Page.COMMENTS_MAX_SHOW; i++) {
 			maps = new HashMap<Integer, Integer>();
 			maps.put(i, random.nextInt(100));
@@ -307,5 +300,12 @@ public class MySelfDetailActivity extends BaseActivity implements
 	public void OnRequest() {
 		showProgressDialog("提示", "请稍后......");
 	}
+	@Override
+	protected void onDestroy() {
+		super.onDestroy();
+		evaluationAdapter=null;
+		comments.clear();
+	}
+
 
 }

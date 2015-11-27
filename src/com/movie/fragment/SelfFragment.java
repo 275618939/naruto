@@ -5,32 +5,29 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import android.app.Activity;
 import android.app.AlertDialog;
+import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
 import android.os.Bundle;
 import android.os.Handler;
-import android.support.v4.app.Fragment;
 import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
-import android.view.View.MeasureSpec;
 import android.view.View.OnClickListener;
 import android.view.ViewGroup;
-import android.view.ViewGroup.LayoutParams;
 import android.widget.GridView;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
-import android.widget.PopupWindow;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.movie.R;
-import com.movie.adapter.SignInAdapter;
 import com.movie.adapter.UserPhotoGridAdapter;
+import com.movie.app.BaseFragment;
 import com.movie.app.Constant;
 import com.movie.app.Constant.ReturnCode;
 import com.movie.app.NarutoApplication;
@@ -40,19 +37,18 @@ import com.movie.client.service.CallBackService;
 import com.movie.network.HttpLoginAutoService;
 import com.movie.network.HttpLogoutService;
 import com.movie.network.HttpUserService;
+import com.movie.pop.SignInPopupWindow;
 import com.movie.ui.LoginActivity;
 import com.movie.ui.MissSelfQueryActivity;
 import com.movie.ui.UserActivity;
 import com.movie.ui.UserDetailActivity;
-import com.movie.view.CommentsGridView;
 import com.nostra13.universalimageloader.core.ImageLoader;
 
-public class SelfFragment extends Fragment implements OnClickListener , CallBackService{
+public class SelfFragment extends BaseFragment implements OnClickListener , CallBackService{
 	
 	public static final int PTHOTO_UPDATE = 0X001;
 	public static final int LOGOUT = 0X110;
 	public static final int MAX_SHOW_USER_PHOTO=4;
-	List<Map<Integer,Integer>> signInList;
 	//我发起的约会
 	public static final int MY_MISS = 0X210;
 	//我参与的约会
@@ -83,14 +79,24 @@ public class SelfFragment extends Fragment implements OnClickListener , CallBack
 	TextView userSignView;
 	TextView userLogoutBtn;
 	ImageView userSignIn;
-	PopupWindow popupWindow;
-	ImageView btnPopClose;
-	View popView;
-	LayoutInflater layoutInflater;
-	CommentsGridView signInGridView;
-	SignInAdapter signInAdapter;
+	SignInPopupWindow signInPopupWindow;
 	UserPhotoGridAdapter photoGridAdapter;
 	GridView photoGridview;
+	public SelfFragment() {
+		super();		
+	}
+	public SelfFragment(Activity activity,Context context) {
+		super(activity, context);
+	}
+	@Override
+	public void onCreate(Bundle savedInstanceState){
+		super.onCreate(savedInstanceState);
+		loaderCache = ImageLoader.getInstance();
+		httpUsersService = new HttpUserService(getActivity());
+		httpLogotService = new HttpLogoutService(getActivity());
+		httpLoginAutoService = new HttpLoginAutoService(getActivity());
+		initPopWindow();
+	}
 	@Override
 	public View onCreateView(LayoutInflater inflater, ViewGroup container,
 			Bundle savedInstanceState) {
@@ -98,50 +104,59 @@ public class SelfFragment extends Fragment implements OnClickListener , CallBack
 		View titleView = getActivity().findViewById(R.id.main_head);
 		if(null!=titleView){
 			titleView.setVisibility(View.GONE);
-		}
-		loaderCache = ImageLoader.getInstance();
-		View view = LayoutInflater.from(getActivity()).inflate(R.layout.fragment_self, null);
-		httpUsersService = new HttpUserService(getActivity());
-		httpLogotService = new HttpLogoutService(getActivity());
-		httpLoginAutoService = new HttpLoginAutoService(getActivity());
-		initView(view);
-		initSignIn();
-		return view;
+		}		
+		if(rootView==null){  
+	        rootView=inflater.inflate(R.layout.fragment_self,container,false);  
+	    }  
+		ViewGroup parent = (ViewGroup) rootView.getParent();  
+	    if (parent != null) {  
+	        parent.removeView(rootView);  
+	    }   
+		loadView.initView(rootView);
+		isVisible=true;
+		isPrepared=true;
+		return super.onCreateView(inflater, container, savedInstanceState);
 	}
+	
 	@Override
-	public void onStart(){
-		initUser();
-		super.onStart();
-	}
-	private void initView(View view){
-		
-		layoutInflater = LayoutInflater.from(getActivity());
-		loginLayout=(RelativeLayout)view.findViewById(R.id.login_layout);
-		logoutLayout=(RelativeLayout)view.findViewById(R.id.logout_layout);
-		myMissLayout=(LinearLayout)view.findViewById(R.id.my_miss_layout);
-		loginAfterLayout=(LinearLayout)view.findViewById(R.id.loginAfter);
-		loginLogo = (ImageView)view.findViewById(R.id.login_logo);
-		userInfoLogo = (ImageView)view.findViewById(R.id.user_info_logo);
-		userEdit = (ImageView)view.findViewById(R.id.user_edit);
-		userNickView = (TextView)view.findViewById(R.id.usernick);
-		userSignView = (TextView)view.findViewById(R.id.usersign);
-		userLogoutBtn = (TextView)view.findViewById(R.id.user_logout_btn);
-		userSignIn = (ImageView)view.findViewById(R.id.user_sign_in);
-		photoGridview = (GridView)view.findViewById(R.id.userPhotoGridview);
+	protected void initViews() {
+		loginLayout=(RelativeLayout)rootView.findViewById(R.id.login_layout);
+		logoutLayout=(RelativeLayout)rootView.findViewById(R.id.logout_layout);
+		myMissLayout=(LinearLayout)rootView.findViewById(R.id.my_miss_layout);
+		loginAfterLayout=(LinearLayout)rootView.findViewById(R.id.loginAfter);
+		loginLogo = (ImageView)rootView.findViewById(R.id.login_logo);
+		userInfoLogo = (ImageView)rootView.findViewById(R.id.user_info_logo);
+		userEdit = (ImageView)rootView.findViewById(R.id.user_edit);
+		userNickView = (TextView)rootView.findViewById(R.id.usernick);
+		userSignView = (TextView)rootView.findViewById(R.id.usersign);
+		userLogoutBtn = (TextView)rootView.findViewById(R.id.user_logout_btn);
+		userSignIn = (ImageView)rootView.findViewById(R.id.user_sign_in);
+		photoGridview = (GridView)rootView.findViewById(R.id.userPhotoGridview);
 		photoGridview.setSelector(new ColorDrawable(Color.TRANSPARENT));
-		photoGridAdapter =new UserPhotoGridAdapter(getActivity(), mHandler,view);
+		photoGridAdapter =new UserPhotoGridAdapter(getActivity(), mHandler,rootView);
 		photoGridAdapter.update();
 		photoGridview.setAdapter(photoGridAdapter);
-		photoGridview.setOnItemClickListener(photoGridAdapter);
+		photoGridview.setOnItemClickListener(photoGridAdapter);	
+		
+	}
+	@Override
+	protected void initEvents() {
 		loginLogo.setOnClickListener(this);
 		userInfoLogo.setOnClickListener(this);
 		userEdit.setOnClickListener(this);
 		userLogoutBtn.setOnClickListener(this);
 		myMissLayout.setOnClickListener(this);
 		userSignIn.setOnClickListener(this);
-		
-		initPopWindow();
 	}
+	@Override
+	protected void lazyLoad() {
+		if (!isVisible||!isPrepared) {
+			return;
+		}		
+		loadUser();
+	}
+	
+	
 	
 	Handler mHandler = new Handler() {
 		public void handleMessage(android.os.Message msg) {
@@ -158,36 +173,9 @@ public class SelfFragment extends Fragment implements OnClickListener , CallBack
 		};
 	};
 	private void initPopWindow() {
-		popView = layoutInflater.inflate(R.layout.sign_in_pop, null);
-		popView.measure(MeasureSpec.UNSPECIFIED, MeasureSpec.UNSPECIFIED);
-		popupWindow = new PopupWindow(popView,LayoutParams.WRAP_CONTENT, LayoutParams.WRAP_CONTENT, true);
-		popupWindow.setBackgroundDrawable(new ColorDrawable(0));
-		//设置popwindow出现和消失动画
-		popupWindow.setAnimationStyle(R.style.PopMenuAnimation);
-		signInGridView = (CommentsGridView) popView.findViewById(R.id.comments);
-		signInAdapter = new SignInAdapter(popView.getContext(),mHandler,null);
-		signInGridView.setAdapter(signInAdapter);
-		btnPopClose = (ImageView) popView.findViewById(R.id.btn_pop_close);
-	}
-	public void showPop(View parent,int x,int y,User user) {
-		
-		signInAdapter.updateData(signInList);
-		popupWindow.showAtLocation(parent,Gravity.CENTER, 0,0);
-		popupWindow.setFocusable(true);
-		popupWindow.setOutsideTouchable(true);
-		popupWindow.update();
-		if (popupWindow.isShowing()) {
-		}
-		btnPopClose.setOnClickListener(new OnClickListener() {
-			public void onClick(View paramView) {
-				popupWindow.dismiss();
-			}
-		});
-		
-	}
-	private void initSignIn(){
-		
-		signInList = new ArrayList<Map<Integer,Integer>>();
+		signInPopupWindow = new SignInPopupWindow(getActivity(), mHandler);
+		/*临时签到数据，正式环境需去除*/
+		List<Map<Integer,Integer>> signInList = new ArrayList<Map<Integer,Integer>>();
 		signInList.add(new HashMap<Integer, Integer>(){{put(100,1);}});
 		signInList.add(new HashMap<Integer, Integer>(){{put(200,1);}});
 		signInList.add(new HashMap<Integer, Integer>(){{put(300,1);}});
@@ -195,9 +183,15 @@ public class SelfFragment extends Fragment implements OnClickListener , CallBack
 		signInList.add(new HashMap<Integer, Integer>(){{put(500,1);}});
 		signInList.add(new HashMap<Integer, Integer>(){{put(600,1);}});
 		signInList.add(new HashMap<Integer, Integer>(){{put(700,1);}});
+		signInPopupWindow.updateData(signInList);
+		signInPopupWindow.setOutsideTouchable(true);
 		
 	}
-	private void initUser() {
+	public void showPop(View parent,int x,int y) {	
+		signInPopupWindow.showAtLocation(parent,Gravity.CENTER, 0,0);
+		signInPopupWindow.setFocusable(true);
+	}
+	private void loadUser() {
 		httpUsersService.addParams(httpUsersService.URL_KEY,Constant.User_API_URL);
 		httpUsersService.execute(this);
 	}
@@ -209,10 +203,7 @@ public class SelfFragment extends Fragment implements OnClickListener , CallBack
 		logoutLayout.setVisibility(View.GONE);
 		loginAfterLayout.setVisibility(View.GONE);
 		httpLogotService.execute(this);
-		
 	}
-
-
 	private void goToMyMissQuery(int type){
 		Intent cinemaPoi = new Intent(getActivity(),MissSelfQueryActivity.class);
 		cinemaPoi.putExtra(MISS_KEY, type);
@@ -226,11 +217,11 @@ public class SelfFragment extends Fragment implements OnClickListener , CallBack
 		    	int[] arrayOfInt = new int[2];
 				//获取点击按钮的坐标
 				v.getLocationOnScreen(arrayOfInt);
-		    	int popupWidth = popView.getMeasuredWidth();
-				int popupHeight =  popView.getMeasuredHeight();
+		    	int popupWidth = signInPopupWindow.getContentView().getMeasuredWidth();
+				int popupHeight =  signInPopupWindow.getContentView().getMeasuredHeight();
 				int x = (arrayOfInt[0]+v.getWidth()/2)-popupWidth/2;
 				int y =  arrayOfInt[1]-popupHeight;
-				showPop(v,x,y, user);
+				showPop(v,x,y);
 		    	break;
 			case R.id.user_logout_btn:
 				AlertDialog.Builder builder = new AlertDialog.Builder(v.getContext());
@@ -252,21 +243,15 @@ public class SelfFragment extends Fragment implements OnClickListener , CallBack
 				break;
 			case R.id.login_logo:
 				Intent loginIntent = new Intent(getActivity(),LoginActivity.class);
-				getActivity().overridePendingTransition(R.anim.slide_in_right, R.anim.slide_out_left);
 				startActivity(loginIntent);
-				getActivity().finish();
-			
 				break;
 			case R.id.user_info_logo:
 				Intent userIntent = new Intent(getActivity(),UserDetailActivity.class);
 				userIntent.putExtra("memberId", user.getMemberId());
-				//Intent userIntent = new Intent(getActivity(),MySelfDetailActivity.class);
-				//getActivity().overridePendingTransition(R.anim.slide_in_right, R.anim.slide_out_left);
 				startActivity(userIntent);
 				break;
 			case R.id.user_edit:
-				Intent userEditIntent = new Intent(getActivity(),UserActivity.class);
-				//getActivity().overridePendingTransition(R.anim.slide_in_right, R.anim.slide_out_left);
+				Intent userEditIntent = new Intent(getActivity(),UserActivity.class);			
 				startActivity(userEditIntent);
 				break;
 			case R.id.my_miss_layout:
@@ -288,7 +273,7 @@ public class SelfFragment extends Fragment implements OnClickListener , CallBack
 
 	@Override
 	public void SuccessCallBack(Map<String, Object> map) {
-	
+		loadView.showLoadAfter(this);
 		String code = map.get(Constant.ReturnCode.RETURN_STATE).toString();
 		if (Constant.ReturnCode.STATE_1.equals(code)) {
 			String tag = map.get(Constant.ReturnCode.RETURN_TAG).toString();
@@ -327,7 +312,7 @@ public class SelfFragment extends Fragment implements OnClickListener , CallBack
 				logoutLayout.setVisibility(View.VISIBLE);
 				loginAfterLayout.setVisibility(View.VISIBLE);
 			}else if(tag.endsWith(httpLoginAutoService.TAG)){
-				initUser();
+				loadUser();
 			}
 		}else if (Constant.ReturnCode.STATE_3.equals(code)) {
 			//自动登陆
@@ -335,34 +320,31 @@ public class SelfFragment extends Fragment implements OnClickListener , CallBack
 			
 		}else {
 			String message = map.get(Constant.ReturnCode.RETURN_MESSAGE).toString();
-			//showToask(message);
+			showToask(message);
 		}
 	}
-
-
 
 	@Override
 	public void ErrorCallBack(Map<String, Object> map) {
 		String message = map.get(Constant.ReturnCode.RETURN_MESSAGE).toString();
-		//showToask(message);
+		String state= map.get(Constant.ReturnCode.RETURN_STATE).toString();
+		if(state.equals(ReturnCode.STATE_999)){
+			loadView.showLoadLineFail(this);
+		}else{
+			loadView.showLoadFail(this, this);
+			showToask(message);
+		}
 	}
-
-	protected void showToask(String hint) {
-		Toast toast = Toast.makeText(getActivity(), hint, Toast.LENGTH_SHORT);
-		toast.show();
-	}
-
 	@Override
 	public void OnRequest() {
-		//showToask("加载个人信息");
+		loadView.showLoading(this);
 	}
 	@Override
 	public void onDestroyView() {
-		// TODO Auto-generated method stub
 		super.onDestroyView();
-		signInAdapter = null;
-		signInList=null;
+		photoGridAdapter=null;
 	}
+	
 
 	
 

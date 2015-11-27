@@ -17,12 +17,12 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.movie.R;
-import com.movie.app.BackGroundColor;
 import com.movie.app.Constant;
 import com.movie.client.bean.Dictionary;
 import com.movie.client.bean.Miss;
 import com.movie.client.bean.User;
 import com.movie.client.service.CommentService;
+import com.movie.state.BackGroundColor;
 
 public class EvaluationAdapter extends BaseAdapter {
 	

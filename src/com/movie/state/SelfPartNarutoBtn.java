@@ -1,13 +1,13 @@
-package com.movie.app;
+package com.movie.state;
 
-public enum SexState {
+public enum SelfPartNarutoBtn {
 
-	MAN(1, "♂男"), WOMAN(0, "♀女");
+	KickedOut(1, "踢出"), InProcess(0, "进行中"), Evaluation(2, "评价");
 
 	private int state;
 	private String message;
 
-	private SexState(int state, String message) {
+	private SelfPartNarutoBtn(int state, String message) {
 		this.state = state;
 		this.message = message;
 	}
@@ -20,19 +20,17 @@ public enum SexState {
 		return message;
 	}
 
-	public static SexState getState(int state) {
+	public static SelfPartNarutoBtn getState(int state) {
 
 		switch (state) {
 		case 0:
-
-			return WOMAN;
+			return InProcess;
 		case 1:
-
-			return MAN;
-	
-
+			return KickedOut;
+		case 2:
+			return Evaluation;
 		default:
-			return WOMAN;
+			return InProcess;
 		}
 
 	}
