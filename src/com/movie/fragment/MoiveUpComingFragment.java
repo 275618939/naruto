@@ -54,10 +54,6 @@ public class MoiveUpComingFragment extends BaseFragment implements CallBackServi
 	@Override
 	public View onCreateView(LayoutInflater inflater, ViewGroup container,Bundle savedInstanceState) {
 		
-		View titleView = getActivity().findViewById(R.id.main_head);
-		if(null!=titleView){
-			titleView.setVisibility(View.GONE);
-		}
 		if(rootView==null){  
 	         rootView=inflater.inflate(R.layout.fragment_movie_upcoming,container,false);  
 	    }  
@@ -82,15 +78,13 @@ public class MoiveUpComingFragment extends BaseFragment implements CallBackServi
 	@Override
 	protected void initEvents() {
 		refreshViewLayout.setOnRefreshListener(this);
-		refreshViewLayout.setRefreshing();
 	}
 	@Override
 	protected void lazyLoad() {
 		if (!isVisible||!isPrepared) {
 			return;
 		}
-		refreshViewLayout.setRefreshing();
-		//loadUpcomingMovie();
+		loadUpcomingMovie();
 	}
 
 	protected void loadUpcomingMovie() {

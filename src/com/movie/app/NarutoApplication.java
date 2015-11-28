@@ -64,13 +64,13 @@ public class NarutoApplication extends Application {
 		ImageLoaderConfiguration.Builder config = new ImageLoaderConfiguration.Builder(context);
 		config.threadPoolSize(2);// 线程池内加载的数量
 		config.threadPriority(Thread.NORM_PRIORITY - 2);
-		config.denyCacheImageMultipleSizesInMemory();
+		//config.denyCacheImageMultipleSizesInMemory();
 		config.diskCacheFileNameGenerator(new Md5FileNameGenerator());// 将保存的时候的URI名称用MD5加密	
-		config.diskCacheSize((int)Runtime.getRuntime().maxMemory() / 4); // 50 MiB 50 * 1024 * 1024 (int)Runtime.getRuntime().maxMemory() / 4
+		config.diskCacheSize(30 * 1024 * 1024); // 50 MiB 50 * 1024 * 1024 (int)Runtime.getRuntime().maxMemory() / 4
 		config.diskCache(new UnlimitedDiskCache(cacheDir));
 		config.memoryCache(new WeakMemoryCache());
 		config.tasksProcessingOrder(QueueProcessingType.LIFO);
-		config.writeDebugLogs(); // Remove for release app
+		//config.writeDebugLogs(); // Remove for release app
 		ImageLoader.getInstance().init(config.build());// 全局初始化此配置
 		/*初始化显示配置*/
 		imageOptions = new DisplayImageOptions.Builder()

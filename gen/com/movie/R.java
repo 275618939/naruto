@@ -1762,7 +1762,7 @@ or to a theme attribute in the form "<code>?[<i>package</i>:][<i>type</i>:]<i>na
         public static final int change=0x7f07001a;
         public static final int charm=0x7f07006f;
         public static final int charm_hint=0x7f07012b;
-        public static final int charm_naruto=0x7f0700c1;
+        public static final int charm_naruto=0x7f0700c2;
         public static final int cinema_address=0x7f07002e;
         public static final int cinema_name=0x7f07002c;
         public static final int cinema_phone=0x7f070030;
@@ -1840,7 +1840,7 @@ or to a theme attribute in the form "<code>?[<i>package</i>:][<i>type</i>:]<i>na
         public static final int ll_pop_favor=0x7f070164;
         public static final int ll_pop_speech=0x7f070161;
         public static final int ll_popup=0x7f0700f7;
-        public static final int loadAfter=0x7f0700bf;
+        public static final int loadAfter=0x7f0700c0;
         public static final int load_after=0x7f070041;
         public static final int loading=0x7f07010a;
         public static final int loading_error=0x7f07010b;
@@ -1856,7 +1856,7 @@ or to a theme attribute in the form "<code>?[<i>package</i>:][<i>type</i>:]<i>na
         public static final int love=0x7f070070;
         public static final int love_film=0x7f070069;
         public static final int love_hint=0x7f07012d;
-        public static final int love_naruto=0x7f0700c2;
+        public static final int love_naruto=0x7f0700c3;
         public static final int mViewPager=0x7f070153;
         public static final int main_head=0x7f070023;
         public static final int main_scroll_view=0x7f0700b9;
@@ -1873,7 +1873,7 @@ or to a theme attribute in the form "<code>?[<i>package</i>:][<i>type</i>:]<i>na
         public static final int miss_btn=0x7f07003f;
         public static final int miss_btn_layout=0x7f070122;
         public static final int miss_cinema_detail_panel=0x7f07003b;
-        public static final int miss_class=0x7f0700c0;
+        public static final int miss_class=0x7f0700c1;
         public static final int miss_coin=0x7f070126;
         public static final int miss_coin_hint=0x7f070125;
         public static final int miss_create_btn=0x7f0700db;
@@ -1893,7 +1893,7 @@ or to a theme attribute in the form "<code>?[<i>package</i>:][<i>type</i>:]<i>na
         public static final int miss_layout_1=0x7f070117;
         public static final int miss_layout_2=0x7f07011a;
         public static final int miss_layout_3=0x7f070127;
-        public static final int miss_list=0x7f0700c3;
+        public static final int miss_list=0x7f0700bf;
         public static final int miss_message=0x7f07012f;
         public static final int miss_more=0x7f0700bc;
         public static final int miss_movie_name=0x7f07003a;

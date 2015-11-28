@@ -53,10 +53,6 @@ public class MoiveCurrentFragment extends BaseFragment implements CallBackServic
 	public View onCreateView(LayoutInflater inflater, ViewGroup container,
 			Bundle savedInstanceState) {
 
-		View titleView = getActivity().findViewById(R.id.main_head);
-		if (null != titleView) {
-			titleView.setVisibility(View.GONE);
-		}
 		if(rootView==null){  
 	        rootView=inflater.inflate(R.layout.fragment_movie_current,container,false);  
 	    }  

@@ -59,7 +59,7 @@ public class HomeFragment extends BaseFragment {
 	@Override
 	protected void initViews() {
 		ViewPager pager = (ViewPager) rootView.findViewById(R.id.pager);
-		pager.setAdapter(new FragmentPagerAdapter(getChildFragmentManager()) {
+		/*pager.setAdapter(new FragmentPagerAdapter(getChildFragmentManager()) {
 			public int getCount() {
 				return 1;
 			}
@@ -67,7 +67,7 @@ public class HomeFragment extends BaseFragment {
 				cycleFragment = new CycleFragment();
 				return cycleFragment;
 			}
-		});
+		});*/
 		mainScrollView = (ScrollView) rootView.findViewById(R.id.main_scroll_view);
 		mainScrollView.smoothScrollTo(0, 0);
 		gridView = (GridView) rootView.findViewById(R.id.miss_grid);
@@ -85,7 +85,7 @@ public class HomeFragment extends BaseFragment {
 			return;
 		}
 		users = User.getTempData();
-		rankingAdapter.updateData(users);
+		//rankingAdapter.updateData(users);
 	}
 	@Override
 	public void onDestroyView() {

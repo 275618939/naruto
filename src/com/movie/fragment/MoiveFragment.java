@@ -44,7 +44,6 @@ public class MoiveFragment extends BaseFragment implements OnClickListener {
 	    if (parent != null) {  
 	        parent.removeView(rootView);  
 	    }   
-	    isVisible=true;
 		return super.onCreateView(inflater, container, savedInstanceState);
 	}
 	@Override

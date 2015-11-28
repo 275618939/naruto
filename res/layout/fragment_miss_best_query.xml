@@ -2,63 +2,17 @@
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="fill_parent"
     android:layout_height="fill_parent"
-     android:background="@color/window_bg"
+    android:background="@color/window_bg"
     android:orientation="vertical" >
 
-    <!--
-    <LinearLayout
-        android:id="@+id/loading"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:layout_marginTop="@dimen/load_top"
-        android:gravity="center" >
-
-        <com.ant.liao.GifView
-            android:id="@+id/loadGif"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content" />
-    </LinearLayout>
-    -->
+    <include layout="@layout/load_item" />
 
     <LinearLayout
-        android:id="@+id/loadAfter"
+        android:id="@+id/load_after"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:orientation="vertical" >
-
-        <RadioGroup
-            android:id="@+id/miss_class"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginLeft="@dimen/layout_left"
-            android:layout_marginRight="@dimen/layout_right"
-            android:layout_marginTop="@dimen/layout_item_top_1"
-            android:gravity="center_horizontal"
-            android:orientation="horizontal" >
-
-            <RadioButton
-                android:id="@+id/charm_naruto"
-                android:layout_width="fill_parent"
-                android:layout_height="wrap_content"
-                android:layout_weight="1"
-                android:background="@drawable/left_common_btn"
-                android:button="@null"
-                android:checked="true"
-                android:gravity="center"
-                android:text="最近"
-                android:textColor="@drawable/common_btn_text_color" />
-
-            <RadioButton
-                android:id="@+id/love_naruto"
-                android:layout_width="fill_parent"
-                android:layout_height="wrap_content"
-                android:layout_weight="1"
-                android:background="@drawable/right_common_btn"
-                android:button="@null"
-                android:gravity="center"
-                android:text="最款"
-                android:textColor="@drawable/common_btn_text_color" />
-        </RadioGroup>
+        android:orientation="vertical"
+        android:visibility="gone" >
 
         <LinearLayout
             android:id="@+id/miss_layout"
@@ -74,7 +28,6 @@
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
                 android:divider="@null" >
-
             </com.handmark.pulltorefresh.library.PullToRefreshListView>
         </LinearLayout>
     </LinearLayout>

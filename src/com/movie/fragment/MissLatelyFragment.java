@@ -5,17 +5,15 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import android.app.Activity;
+import android.content.Context;
 import android.os.Bundle;
 import android.os.Handler;
-import android.support.v4.app.Fragment;
-import android.support.v4.view.ViewPager;
-import android.util.DisplayMetrics;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.view.ViewGroup;
 import android.widget.ListView;
-import android.widget.Toast;
 
 import com.handmark.pulltorefresh.library.PullToRefreshBase;
 import com.handmark.pulltorefresh.library.PullToRefreshBase.Mode;
@@ -23,48 +21,71 @@ import com.handmark.pulltorefresh.library.PullToRefreshBase.OnRefreshListener2;
 import com.handmark.pulltorefresh.library.PullToRefreshListView;
 import com.movie.R;
 import com.movie.adapter.MissNarutoQueryAdapter;
+import com.movie.app.BaseFragment;
 import com.movie.app.Constant;
 import com.movie.app.Constant.Page;
+import com.movie.app.Constant.ReturnCode;
 import com.movie.client.bean.Miss;
 import com.movie.client.service.BaseService;
 import com.movie.client.service.CallBackService;
 import com.movie.network.HttpMissQueryService;
-import com.movie.view.LoadView;
 
-public class MissLatelyFragment extends Fragment implements OnClickListener,
+public class MissLatelyFragment extends BaseFragment implements OnClickListener,
 		CallBackService, OnRefreshListener2<ListView> {
-	public static final int REFRESH_COMPLETE = 0X110;
+
 	BaseService missQueryService;
 	PullToRefreshListView refreshableListView;
 	MissNarutoQueryAdapter missQueryAdapter;
-	LoadView loadView;
 	List<Miss> misses = new ArrayList<Miss>();
 	int page;
-	ViewPager pager;
-	DisplayMetrics dm;
+	public MissLatelyFragment() {
+		super();		
+	}
+	public MissLatelyFragment(Activity activity,Context context) {
+		super(activity, context);
+	}
+	@Override
+	public void onCreate(Bundle savedInstanceState){
+		super.onCreate(savedInstanceState);
+		missQueryService = new HttpMissQueryService(getActivity());
+	}
 	@Override
 	public View onCreateView(LayoutInflater inflater, ViewGroup container,
 			Bundle savedInstanceState) {
 
-		View v= LayoutInflater.from(getActivity()).inflate(R.layout.fragment_miss_lately_query, null);
-		missQueryService = new HttpMissQueryService(getActivity());
-		loadView = new LoadView(v);
-		misses.clear();
-		initView(v);
-		loadMiss();
-		return v;
+		if(rootView==null){  
+	        rootView=inflater.inflate(R.layout.fragment_miss_lately_query,container,false);  
+	    }  
+		ViewGroup parent = (ViewGroup) rootView.getParent();  
+	    if (parent != null) {  
+	        parent.removeView(rootView);  
+	    }   
+		loadView.initView(rootView);
+		isPrepared=true;
+		return super.onCreateView(inflater, container, savedInstanceState);		
 	}
 
-	public void initView(View view) {
-		missQueryAdapter = new MissNarutoQueryAdapter(getActivity(), mHandler, null);
-		refreshableListView = (PullToRefreshListView) view.findViewById(R.id.miss_list);
+	@Override
+	protected void initViews() {
+		missQueryAdapter = new MissNarutoQueryAdapter(getActivity(), mHandler, misses);
+		refreshableListView = (PullToRefreshListView) rootView.findViewById(R.id.miss_list);
 		refreshableListView.setMode(Mode.BOTH);
-		refreshableListView.setOnRefreshListener(this);
 		refreshableListView.setAdapter(missQueryAdapter);
-		
 	}
 
+	@Override
+	protected void initEvents() {
+		refreshableListView.setOnRefreshListener(this);		
+	}
 
+	@Override
+	protected void lazyLoad() {
+		if (!isVisible||!isPrepared) {
+			return;
+		}		
+		loadMiss();
+	}
+	
 	private void loadMiss() {
 		missQueryService.addUrls(Constant.Miss_Query_API_URL);
 		missQueryService.addParams("page", page);
@@ -77,7 +98,8 @@ public class MissLatelyFragment extends Fragment implements OnClickListener,
 		switch (v.getId()) {
 			
 		   case R.id.loading_error:
-			loadMiss();
+			   misses.clear();
+			   loadMiss();
 			break;
 	
 		default:
@@ -89,9 +111,7 @@ public class MissLatelyFragment extends Fragment implements OnClickListener,
 	Handler mHandler = new Handler() {
 		public void handleMessage(android.os.Message msg) {
 			switch (msg.what) {
-			case REFRESH_COMPLETE:
-				loadMiss();
-				break;
+		
 			default:
 				break;
 
@@ -161,17 +181,21 @@ public class MissLatelyFragment extends Fragment implements OnClickListener,
 
 	@Override
 	public void ErrorCallBack(Map<String, Object> map) {
-
+		refreshableListView.onRefreshComplete();
 		String message = map.get(Constant.ReturnCode.RETURN_MESSAGE).toString();
-		showToask(message);
-		tempData();
-		loadView.showLoadFail(this,this);
+		String state= map.get(Constant.ReturnCode.RETURN_STATE).toString();
+		if(state.equals(ReturnCode.STATE_999)){
+			loadView.showLoadLineFail(this);
+		}else{
+			loadView.showLoadFail(this, this);
+			showToask(message);
+		}
 
 	}
 	/* 摧毁视图 */
 	@Override
 	public void onDestroyView() {
-		// TODO Auto-generated method stub
+	
 		super.onDestroyView();
 		missQueryAdapter = null;
 		misses.clear();
@@ -180,18 +204,12 @@ public class MissLatelyFragment extends Fragment implements OnClickListener,
 	public void OnRequest() {
 		loadView.showLoading(this);
 	}
-
-	protected void showToask(String hint) {
-		Toast toast = Toast.makeText(getActivity(), hint, Toast.LENGTH_SHORT);
-		toast.show();
-	}
-
 	// 下拉刷新
 	@Override
 	public void onPullDownToRefresh(PullToRefreshBase<ListView> refreshView) {
 		page = 0;
+		misses.clear();
 		loadMiss();
-		
 	}
 
 	// 上拉Pulling Up
@@ -199,8 +217,8 @@ public class MissLatelyFragment extends Fragment implements OnClickListener,
 	public void onPullUpToRefresh(PullToRefreshBase<ListView> refreshView) {
 		page = 1;
 		loadMiss();
-		
-
 	}
+
+	
 
 }

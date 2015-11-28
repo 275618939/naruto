@@ -5,77 +5,87 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import android.app.Activity;
+import android.content.Context;
 import android.os.Bundle;
 import android.os.Handler;
-import android.support.v4.app.Fragment;
-import android.support.v4.view.ViewPager;
-import android.util.DisplayMetrics;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.view.ViewGroup;
-import android.widget.FrameLayout.LayoutParams;
 import android.widget.ListView;
-import android.widget.Toast;
 
 import com.handmark.pulltorefresh.library.PullToRefreshBase;
+import com.handmark.pulltorefresh.library.PullToRefreshBase.Mode;
 import com.handmark.pulltorefresh.library.PullToRefreshBase.OnRefreshListener2;
 import com.handmark.pulltorefresh.library.PullToRefreshListView;
+import com.movie.R;
 import com.movie.adapter.MissNarutoQueryAdapter;
+import com.movie.app.BaseFragment;
 import com.movie.app.Constant;
 import com.movie.app.Constant.Page;
+import com.movie.app.Constant.ReturnCode;
 import com.movie.client.bean.Miss;
 import com.movie.client.service.BaseService;
 import com.movie.client.service.CallBackService;
 import com.movie.network.HttpMissQueryService;
 
-public class MissBestFragment extends Fragment implements OnClickListener,
+public class MissBestFragment extends BaseFragment implements OnClickListener,
 		CallBackService, OnRefreshListener2<ListView> {
-	public static final int REFRESH_COMPLETE = 0X110;
-	ListView missListView;
+
 	BaseService missQueryService;
 	PullToRefreshListView refreshableListView;
 	MissNarutoQueryAdapter missQueryAdapter;
 	List<Miss> misses = new ArrayList<Miss>();
 	int page;
-	boolean isRefreshing;
-	ViewPager pager;
-	DisplayMetrics dm;
+	public MissBestFragment() {
+		super();		
+	}
+	public MissBestFragment(Activity activity,Context context) {
+		super(activity, context);
+	}
+	@Override
+	public void onCreate(Bundle savedInstanceState){
+		super.onCreate(savedInstanceState);
+		missQueryService = new HttpMissQueryService(getActivity());
+	}
 	@Override
 	public View onCreateView(LayoutInflater inflater, ViewGroup container,
 			Bundle savedInstanceState) {
 
-		LayoutParams params = new LayoutParams(LayoutParams.MATCH_PARENT, LayoutParams.MATCH_PARENT);
-		View v=new View(getActivity());
-		v.setLayoutParams(params);
-		v.setBackgroundResource(android.R.color.white);
-		missQueryService = new HttpMissQueryService(getActivity());
-		misses.clear();
-		initView(v);
-		//loadMiss();
-		return v;
+		if(rootView==null){  
+	        rootView=inflater.inflate(R.layout.fragment_miss_best_query,container,false);  
+	    }  
+		ViewGroup parent = (ViewGroup) rootView.getParent();  
+	    if (parent != null) {  
+	        parent.removeView(rootView);  
+	    }   
+		loadView.initView(rootView);
+		isPrepared=true;
+		return super.onCreateView(inflater, container, savedInstanceState);		
 	}
 
-	public void initView(View view) {
-		
+	@Override
+	protected void initViews() {
+		missQueryAdapter = new MissNarutoQueryAdapter(getActivity(), mHandler, misses);
+		refreshableListView = (PullToRefreshListView) rootView.findViewById(R.id.miss_list);
+		refreshableListView.setMode(Mode.BOTH);
+		refreshableListView.setAdapter(missQueryAdapter);
 	}
 
-	private void loading() {
-		/*
-		 * LinearLayout loading; LinearLayout loadAfter; GifView gifView;
-		 */
-
-		/*
-		 * gifView = (GifView) view.findViewById(R.id.loadGif); loading =
-		 * (LinearLayout) view.findViewById(R.id.loading); loadAfter =
-		 * (LinearLayout) view.findViewById(R.id.loadAfter);
-		 * gifView.setGifImage(R.drawable.loading);
-		 * gifView.setGifImageType(GifImageType.COVER);
-		 * gifView.setShowDimension(300, 300); gifView.showCover();
-		 * gifView.showAnimation();
-		 */
+	@Override
+	protected void initEvents() {
+		refreshableListView.setOnRefreshListener(this);		
 	}
 
+	@Override
+	protected void lazyLoad() {
+		if (!isVisible||!isPrepared) {
+			return;
+		}		
+		loadMiss();
+	}
+	
 	private void loadMiss() {
 		missQueryService.addUrls(Constant.Miss_Query_API_URL);
 		missQueryService.addParams("page", page);
@@ -86,10 +96,12 @@ public class MissBestFragment extends Fragment implements OnClickListener,
 	@Override
 	public void onClick(View v) {
 		switch (v.getId()) {
-		case REFRESH_COMPLETE:
-			loadMiss();
+			
+		   case R.id.loading_error:
+			   misses.clear();
+			   loadMiss();
 			break;
-
+	
 		default:
 			break;
 
@@ -99,9 +111,7 @@ public class MissBestFragment extends Fragment implements OnClickListener,
 	Handler mHandler = new Handler() {
 		public void handleMessage(android.os.Message msg) {
 			switch (msg.what) {
-			case REFRESH_COMPLETE:
-				loadMiss();
-				break;
+		
 			default:
 				break;
 
@@ -111,7 +121,7 @@ public class MissBestFragment extends Fragment implements OnClickListener,
 
 	@Override
 	public void SuccessCallBack(Map<String, Object> map) {
-
+		loadView.showLoadAfter(this);
 		refreshableListView.onRefreshComplete();
 		String code = map.get(Constant.ReturnCode.RETURN_STATE).toString();
 		if (Constant.ReturnCode.STATE_1.equals(code)) {
@@ -171,37 +181,35 @@ public class MissBestFragment extends Fragment implements OnClickListener,
 
 	@Override
 	public void ErrorCallBack(Map<String, Object> map) {
-
+		refreshableListView.onRefreshComplete();
 		String message = map.get(Constant.ReturnCode.RETURN_MESSAGE).toString();
-		showToask(message);
-		tempData();
+		String state= map.get(Constant.ReturnCode.RETURN_STATE).toString();
+		if(state.equals(ReturnCode.STATE_999)){
+			loadView.showLoadLineFail(this);
+		}else{
+			loadView.showLoadFail(this, this);
+			showToask(message);
+		}
 
 	}
 	/* 摧毁视图 */
 	@Override
 	public void onDestroyView() {
-		// TODO Auto-generated method stub
+	
 		super.onDestroyView();
 		missQueryAdapter = null;
 		misses.clear();
 	}
-
 	@Override
 	public void OnRequest() {
-		//showToask("加载约会信息");
+		loadView.showLoading(this);
 	}
-
-	protected void showToask(String hint) {
-		Toast toast = Toast.makeText(getActivity(), hint, Toast.LENGTH_SHORT);
-		toast.show();
-	}
-
 	// 下拉刷新
 	@Override
 	public void onPullDownToRefresh(PullToRefreshBase<ListView> refreshView) {
 		page = 0;
+		misses.clear();
 		loadMiss();
-		
 	}
 
 	// 上拉Pulling Up
@@ -209,8 +217,8 @@ public class MissBestFragment extends Fragment implements OnClickListener,
 	public void onPullUpToRefresh(PullToRefreshBase<ListView> refreshView) {
 		page = 1;
 		loadMiss();
-		
-
 	}
+
+	
 
 }

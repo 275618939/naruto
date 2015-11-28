@@ -21,7 +21,6 @@ import com.movie.client.service.CallBackService;
 import com.movie.fragment.HomeFragment;
 import com.movie.fragment.MissFragment;
 import com.movie.fragment.MoiveFragment;
-import com.movie.fragment.NarutoFragment;
 import com.movie.fragment.SelfFragment;
 import com.movie.network.HttpLoginAutoService;
 import com.movie.view.FragmentTabHost;
@@ -29,9 +28,9 @@ import com.movie.view.FragmentTabHost;
 public class MainActivity extends BaseActivity implements OnClickListener, CallBackService {
 
 	/** 首页底部导航栏文本 */
-	String tabTextviewArray[] = { "今日", "约会", "影片", "会员", "我的" };
+	String tabTextviewArray[] = { "发现", "约会", "影片", "我的" };
 	/** 首页底部导航栏内容 */
-	Class fragmentArray[] = { HomeFragment.class, MissFragment.class,MoiveFragment.class, NarutoFragment.class, SelfFragment.class };
+	Class fragmentArray[] = { HomeFragment.class, MissFragment.class,MoiveFragment.class, SelfFragment.class };
 	ArrayList<Fragment> fragments = new ArrayList<Fragment>();
 	FragmentTabHost mTabHost;
 	LayoutInflater layoutInflater;

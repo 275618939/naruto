@@ -1,67 +1,73 @@
 package com.movie.fragment;
 
+import android.app.Activity;
+import android.content.Context;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentPagerAdapter;
 import android.support.v4.view.ViewPager;
-import android.util.DisplayMetrics;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.ListView;
 
-import com.handmark.pulltorefresh.library.PullToRefreshListView;
 import com.movie.R;
-import com.movie.adapter.MissNarutoQueryAdapter;
-import com.movie.client.service.BaseService;
-import com.movie.network.HttpMissQueryService;
+import com.movie.app.BaseFragment;
 import com.movie.view.PagerSlidingTabStrip;
 
-public class MissFragment extends Fragment {
-	public static final int REFRESH_COMPLETE = 0X110;
-	ListView missListView;
-	BaseService missQueryService;
-	PullToRefreshListView refreshableListView;
-	MissNarutoQueryAdapter missQueryAdapter;
-	int page;
-	boolean isRefreshing;
+public class MissFragment extends BaseFragment {
+	
 	MissBestFragment bestFragment;
 	MissLatelyFragment latelyFragment;
 	String[] titles;
 	PagerSlidingTabStrip tabs;
 	ViewPager pager;
-	DisplayMetrics dm;
-	//View rootView;
+	TabAdapter tabAdapter;
+	public MissFragment() {
+		super();
+	}
+	public MissFragment(Activity activity,Context context) {
+		super(activity, context);
+	}
+	
 	@Override
 	public View onCreateView(LayoutInflater inflater, ViewGroup container,
 			Bundle savedInstanceState) {
-
-
-		View  rootView = LayoutInflater.from(getActivity()).inflate(R.layout.fragment_miss, null);
+		
 		View titleView = getActivity().findViewById(R.id.main_head);
 		if(null!=titleView){
 			titleView.setVisibility(View.GONE);
 		}
+		if(rootView==null){  
+	         rootView=inflater.inflate(R.layout.fragment_miss,container,false);  
+	    }  
+		ViewGroup parent = (ViewGroup) rootView.getParent();  
+	    if (parent != null) {  
+	        parent.removeView(rootView);  
+	    }   
+		return super.onCreateView(inflater, container, savedInstanceState);
+	}
+	@Override
+	protected void initViews() {
+
+		pager = (ViewPager)rootView.findViewById(R.id.pager);
+		tabs = (PagerSlidingTabStrip) rootView.findViewById(R.id.tabs);
 		titles = new String[]{ getResources().getString(R.string.miss_lately), getResources().getString(R.string.miss_best)};
-		missQueryService = new HttpMissQueryService(getActivity());
-		initView(rootView);
-		return rootView;
-	}
-
-	public void initView(View view) {
-
-		dm = getResources().getDisplayMetrics();
-		pager = (ViewPager)view.findViewById(R.id.pager);
-		tabs = (PagerSlidingTabStrip) view.findViewById(R.id.tabs);
-		pager.setAdapter(new MissAdapter(getChildFragmentManager(),titles));
+		tabAdapter = new TabAdapter(getChildFragmentManager(),titles);		
+		pager.setAdapter(tabAdapter);
 		tabs.setViewPager(pager);
-
+	}
+	@Override
+	protected void initEvents() {
+	}
+	@Override
+	protected void lazyLoad() {
+		
 	}
 
-	public class MissAdapter extends FragmentPagerAdapter{
+	public class TabAdapter extends FragmentPagerAdapter{
 		String[] _titles;
-		public MissAdapter(FragmentManager fm,String[] titles) {
+		public TabAdapter(FragmentManager fm,String[] titles) {
 			super(fm);
 			_titles=titles;
 		}
