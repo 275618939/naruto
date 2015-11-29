@@ -82,7 +82,7 @@ public class PoiAdapter extends BaseAdapter {
 		mHolder.poiInfoView.setOnClickListener(new UserSelectAction(position));
 		return view;
 	}
-	static class ViewHolder {
+	class ViewHolder {
 		
 		RelativeLayout poiInfoView;
 		TextView contentText;

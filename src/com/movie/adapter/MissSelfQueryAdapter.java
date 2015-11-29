@@ -109,7 +109,7 @@ public class MissSelfQueryAdapter extends BaseAdapter {
 		return view;
 	}
 
-	static class ViewHolder {
+	class ViewHolder {
 
 		RelativeLayout missItemView;
 		LinearLayout missBtnLayout;

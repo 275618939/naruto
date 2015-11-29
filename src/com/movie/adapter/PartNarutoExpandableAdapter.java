@@ -309,7 +309,7 @@ public class PartNarutoExpandableAdapter extends BaseExpandableListAdapter {
 
 	}
 
-	static class ViewHolder {
+	class ViewHolder {
 
 		LinearLayout userItemView;
 		// 用户LOGO

@@ -32,6 +32,7 @@ public abstract class BaseFragment extends Fragment {
 	protected boolean isPrepared;
 	protected boolean isVisible;
 	protected LoadView loadView;
+	protected int page;
 	public BaseFragment() {
 		super();
 	}
@@ -89,7 +90,7 @@ public abstract class BaseFragment extends Fragment {
 		}
 	}
 	public void showToask(String hint) {
-		Toast toast = Toast.makeText(mContext, hint, Toast.LENGTH_SHORT);
+		Toast toast = Toast.makeText(getActivity(), hint, Toast.LENGTH_SHORT);
 		toast.show();
 	}
 	/** 通过Class跳转界面 **/

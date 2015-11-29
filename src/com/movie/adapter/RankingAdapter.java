@@ -81,7 +81,7 @@ public class RankingAdapter extends BaseAdapter {
 		return view;
 	}
 
-	static class ViewHolder {
+	class ViewHolder {
 		
 		//布局
 		LinearLayout userMissLayout;

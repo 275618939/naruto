@@ -7,7 +7,6 @@
 
     <include
         android:id="@+id/main_head"
-        android:visibility="gone"
         layout="@layout/main_head" />
 
     <FrameLayout

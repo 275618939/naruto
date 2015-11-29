@@ -103,7 +103,7 @@ public class MoviesAdapter extends BaseAdapter {
 		mHolder.movieView.setOnClickListener(new UserSelectAction(position));
 		return view;
 	}
-	static class ViewHolder {
+	class ViewHolder {
 		
 		RelativeLayout movieView;
 		RelativeLayout movieNoneScoreLayout;

@@ -1,32 +1,28 @@
 package com.movie.fragment;
 
-import java.util.ArrayList;
-import java.util.List;
-
 import android.app.Activity;
 import android.content.Context;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
+import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentPagerAdapter;
 import android.support.v4.view.ViewPager;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.GridView;
-import android.widget.ScrollView;
 
 import com.movie.R;
-import com.movie.adapter.RankingAdapter;
 import com.movie.app.BaseFragment;
-import com.movie.client.bean.User;
+import com.movie.view.PagerSlidingTabStrip;
 
 public class HomeFragment extends BaseFragment {
 
-	CycleFragment cycleFragment;
-	RankingAdapter rankingAdapter;
-	ScrollView mainScrollView;
-	GridView gridView;
-	List<User> users = new ArrayList<User>();
+	HomeNearFragment nearFragment;
+	HomeDynamicFragment dynamicFragment;
+	String[] titles;
+	PagerSlidingTabStrip tabs;
+	ViewPager pager;
+	TabAdapter tabAdapter;
     public HomeFragment() {
 		super();
 	}
@@ -41,12 +37,8 @@ public class HomeFragment extends BaseFragment {
 	public View onCreateView(LayoutInflater inflater, ViewGroup container,
 			Bundle savedInstanceState) {
 
-		View titleView = getActivity().findViewById(R.id.main_head);
-		if (null != titleView) {
-			titleView.setVisibility(View.VISIBLE);
-		}
 		if (rootView == null) {
-			rootView = inflater.inflate(R.layout.fragment_main, container,false);
+			rootView = inflater.inflate(R.layout.fragment_home, container,false);
 		}
 		ViewGroup parent = (ViewGroup) rootView.getParent();
 		if (parent != null) {
@@ -58,21 +50,12 @@ public class HomeFragment extends BaseFragment {
 	}
 	@Override
 	protected void initViews() {
-		ViewPager pager = (ViewPager) rootView.findViewById(R.id.pager);
-		/*pager.setAdapter(new FragmentPagerAdapter(getChildFragmentManager()) {
-			public int getCount() {
-				return 1;
-			}
-			public Fragment getItem(int arg0) {
-				cycleFragment = new CycleFragment();
-				return cycleFragment;
-			}
-		});*/
-		mainScrollView = (ScrollView) rootView.findViewById(R.id.main_scroll_view);
-		mainScrollView.smoothScrollTo(0, 0);
-		gridView = (GridView) rootView.findViewById(R.id.miss_grid);
-		rankingAdapter = new RankingAdapter(rootView.getContext(), users);
-		gridView.setAdapter(rankingAdapter);
+		pager = (ViewPager)rootView.findViewById(R.id.pager);
+		tabs = (PagerSlidingTabStrip) rootView.findViewById(R.id.tabs);
+		titles = new String[]{ getResources().getString(R.string.home_dynamic), getResources().getString(R.string.home_near)};
+		tabAdapter = new TabAdapter(getChildFragmentManager(),titles);		
+		pager.setAdapter(tabAdapter);
+		tabs.setViewPager(pager);
 
 	}
 	@Override
@@ -81,17 +64,44 @@ public class HomeFragment extends BaseFragment {
 	}
 	@Override
 	protected void lazyLoad() {
-		if (!isVisible||!isPrepared ) {
-			return;
+		View titleView = getActivity().findViewById(R.id.main_head);
+		if (null != titleView) {
+			titleView.setVisibility(View.VISIBLE);
 		}
-		users = User.getTempData();
-		//rankingAdapter.updateData(users);
 	}
-	@Override
-	public void onDestroyView() {
-		super.onDestroyView();
-		rankingAdapter = null;
-		users.clear();
+	public class TabAdapter extends FragmentPagerAdapter{
+		String[] _titles;
+		public TabAdapter(FragmentManager fm,String[] titles) {
+			super(fm);
+			_titles=titles;
+		}
+		@Override
+		public CharSequence getPageTitle(int position) {
+			return _titles[position];
+		}
+		
+		@Override
+		public int getCount() {
+			return _titles.length;
+		}
+
+		@Override
+		public Fragment getItem(int position) {
+			switch (position) {
+			case 0:
+				if (dynamicFragment == null) {
+					dynamicFragment = new HomeDynamicFragment();
+				}
+				return dynamicFragment;
+			case 1:
+				if (nearFragment == null) {
+					nearFragment = new HomeNearFragment();
+				}
+				return nearFragment;
+			default:
+				return null;
+			}
+		}
 	}
 	
 

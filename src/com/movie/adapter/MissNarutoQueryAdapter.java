@@ -98,7 +98,7 @@ public class MissNarutoQueryAdapter extends BaseAdapter {
 		return view;
 	}
 
-	static class ViewHolder {
+	class ViewHolder {
 
 		RelativeLayout missItemView;
 		LinearLayout missBtnLayout;

@@ -16,7 +16,10 @@ public interface Constant {
 	// 服务端IP地址
 	// public static final String CIM_SERVER_HOST = "192.168.22.25";
 	public static final String CIM_SERVER_HOST = "192.168.1.103";
-
+	// 上报自己位置
+	public final static String Member_Location_API_URL = SERVER_URL+ "/member/location";
+	// 获取附近的会员
+	public final static String Member_Near_API_URL = SERVER_URL+ "/member/near";
 	// Sid api
 	public final static String Session_API_URL = SERVER_URL + "/anonymous";
 	// 用户修改api
@@ -124,6 +127,8 @@ public interface Constant {
 		public final static int COMMENTS_MAX_SHOW = 4;
 		// 电影评论最大显示项
 		public final static int MOVIES_COMMENTS_MAX_SHOW = 3;
+		// 获取附近的会员或动态，与本人的最远距离
+		public final static int MAX_DISTANCE=10;
 
 	}
 

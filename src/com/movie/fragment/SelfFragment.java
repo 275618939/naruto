@@ -101,10 +101,10 @@ public class SelfFragment extends BaseFragment implements OnClickListener , Call
 	public View onCreateView(LayoutInflater inflater, ViewGroup container,
 			Bundle savedInstanceState) {
 
-		View titleView = getActivity().findViewById(R.id.main_head);
-		if(null!=titleView){
-			titleView.setVisibility(View.GONE);
-		}		
+//		View titleView = getActivity().findViewById(R.id.main_head);
+//		if(null!=titleView){
+//			titleView.setVisibility(View.GONE);
+//		}		
 		if(rootView==null){  
 	        rootView=inflater.inflate(R.layout.fragment_self,container,false);  
 	    }  
@@ -112,7 +112,6 @@ public class SelfFragment extends BaseFragment implements OnClickListener , Call
 	    if (parent != null) {  
 	        parent.removeView(rootView);  
 	    }   
-		loadView.initView(rootView);
 		isVisible=true;
 		isPrepared=true;
 		return super.onCreateView(inflater, container, savedInstanceState);
@@ -273,7 +272,7 @@ public class SelfFragment extends BaseFragment implements OnClickListener , Call
 
 	@Override
 	public void SuccessCallBack(Map<String, Object> map) {
-		loadView.showLoadAfter(this);
+		//loadView.showLoadAfter(this);
 		String code = map.get(Constant.ReturnCode.RETURN_STATE).toString();
 		if (Constant.ReturnCode.STATE_1.equals(code)) {
 			String tag = map.get(Constant.ReturnCode.RETURN_TAG).toString();
@@ -311,6 +310,7 @@ public class SelfFragment extends BaseFragment implements OnClickListener , Call
 				loginLayout.setVisibility(View.GONE);
 				logoutLayout.setVisibility(View.VISIBLE);
 				loginAfterLayout.setVisibility(View.VISIBLE);
+				photoGridview.setVisibility(View.VISIBLE);
 			}else if(tag.endsWith(httpLoginAutoService.TAG)){
 				loadUser();
 			}
@@ -328,16 +328,16 @@ public class SelfFragment extends BaseFragment implements OnClickListener , Call
 	public void ErrorCallBack(Map<String, Object> map) {
 		String message = map.get(Constant.ReturnCode.RETURN_MESSAGE).toString();
 		String state= map.get(Constant.ReturnCode.RETURN_STATE).toString();
-		if(state.equals(ReturnCode.STATE_999)){
-			loadView.showLoadLineFail(this);
-		}else{
-			loadView.showLoadFail(this, this);
-			showToask(message);
-		}
+//		if(state.equals(ReturnCode.STATE_999)){
+//			loadView.showLoadLineFail(this);
+//		}else{
+//			loadView.showLoadFail(this, this);
+//			showToask(message);
+//		}
 	}
 	@Override
 	public void OnRequest() {
-		loadView.showLoading(this);
+		//loadView.showLoading(this);
 	}
 	@Override
 	public void onDestroyView() {

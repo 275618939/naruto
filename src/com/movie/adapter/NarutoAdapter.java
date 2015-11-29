@@ -156,7 +156,7 @@ public class NarutoAdapter extends BaseAdapter {
 		return view;
 	}
 
-	static class ViewHolder {
+	class ViewHolder {
 		LinearLayout userMovieTag;
 		LinearLayout movieBreifLayout;
 		LinearLayout userBtnView;

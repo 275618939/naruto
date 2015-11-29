@@ -68,7 +68,7 @@ public class HobbyAdapter extends BaseAdapter {
 		}
 		return view;
 	}
-	static class ViewHolder {
+	class ViewHolder {
 		
 		LinearLayout linearLayout;
 		//用户评价

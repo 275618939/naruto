@@ -86,7 +86,7 @@ public class MoviesCommentAdapter extends BaseAdapter {
 		mHolder.movieCommentItemView.setOnClickListener(new UserSelectAction(position));
 		return view;
 	}
-	static class ViewHolder {
+	class ViewHolder {
 		
 		RelativeLayout movieCommentItemView;
 		RoundImageView imageView;

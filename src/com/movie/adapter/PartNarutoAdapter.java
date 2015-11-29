@@ -98,7 +98,7 @@ public class PartNarutoAdapter extends BaseAdapter {
 		return view;
 	}
 
-	static class ViewHolder {
+	class ViewHolder {
 
 		LinearLayout userItemView;
 		// 用户LOGO

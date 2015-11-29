@@ -79,7 +79,7 @@ public class WantSeeMovieAdapter extends BaseAdapter {
 		mHolder.userImage.setOnClickListener(new UserSelectAction(position));
 		return view;
 	}
-	static class ViewHolder {
+	class ViewHolder {
 		
 		LinearLayout wantSeeView;
 		RoundImageView userImage;

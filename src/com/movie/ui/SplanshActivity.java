@@ -1,5 +1,7 @@
 package com.movie.ui;
 
+import java.util.Map;
+
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
@@ -13,6 +15,10 @@ import android.widget.ImageView;
 
 import com.movie.R;
 import com.movie.app.BaseActivity;
+import com.movie.client.service.BaseService;
+import com.movie.client.service.CallBackService;
+import com.movie.common.service.LocationService;
+import com.movie.network.HttpLocationService;
 
 /**
  * 
@@ -20,7 +26,7 @@ import com.movie.app.BaseActivity;
  * @author liu
  * 
  */
-public class SplanshActivity extends BaseActivity {
+public class SplanshActivity extends BaseActivity implements CallBackService{
 
 	private static final int GO_HOME = 1000;
 	private static final int GO_GUIDE = 1001;
@@ -34,6 +40,8 @@ public class SplanshActivity extends BaseActivity {
 	
 	ImageView imageView;
 
+	BaseService httpLocationService;
+	LocationService locationService;
 	public void onCreate(Bundle savedInstanceState) {
 
 		super.onCreate(savedInstanceState);
@@ -46,6 +54,9 @@ public class SplanshActivity extends BaseActivity {
 		AlphaAnimation aa = new AlphaAnimation(0.3f, 1.0f);
 		aa.setDuration(2000);
 		view.startAnimation(aa);
+		httpLocationService = new HttpLocationService(this);
+		locationService = new LocationService(this);
+		locationService.initLocation();
 		initViews();
 		initEvents();
 		initData();
@@ -74,7 +85,8 @@ public class SplanshActivity extends BaseActivity {
 		} else {
 			mHandler.sendEmptyMessageDelayed(GO_GUIDE, SPLASH_DELAY_MILLIS);
 		}
-		
+		//初始化当前用户位置
+		locationService.start(httpLocationService,this);
 	}
 
 	@Override
@@ -93,7 +105,7 @@ public class SplanshActivity extends BaseActivity {
 		SplanshActivity.this.startActivity(intent);
 		SplanshActivity.this.finish();
 	}
-
+    
 	/**
 	 * Handler:跳转到不同界面
 	 */
@@ -112,6 +124,26 @@ public class SplanshActivity extends BaseActivity {
 			super.handleMessage(msg);
 		}
 	};
-
+	@Override
+	protected void onDestroy() {
+		super.onDestroy();
+		locationService.stop();
+	}
+	@Override
+	public void SuccessCallBack(Map<String, Object> map) {
+		// TODO Auto-generated method stub
+		
+	}
+	@Override
+	public void ErrorCallBack(Map<String, Object> map) {
+		// TODO Auto-generated method stub
+		
+	}
+	@Override
+	public void OnRequest() {
+		// TODO Auto-generated method stub
+		
+	}
+    
 	
 }

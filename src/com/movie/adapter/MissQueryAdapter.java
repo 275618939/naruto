@@ -20,7 +20,6 @@ import com.movie.R;
 import com.movie.client.bean.Miss;
 import com.movie.client.bean.User;
 import com.movie.fragment.SelfFragment;
-import com.movie.state.MissStage;
 import com.movie.state.MissState;
 import com.movie.ui.MissUserQueryActivity;
 import com.movie.view.MessageDialog;
@@ -119,7 +118,7 @@ public class MissQueryAdapter extends BaseAdapter {
 		return view;
 	}
 
-	static class ViewHolder {
+	class ViewHolder {
 
 		RelativeLayout missItemView;
 		LinearLayout missBtnLayout;

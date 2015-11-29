@@ -108,7 +108,7 @@ public class MissUserAdapter extends BaseAdapter {
 		return view;
 	}
 
-	static class ViewHolder {
+	class ViewHolder {
 
 		RelativeLayout missItemView;
 		LinearLayout missBtnLayout;

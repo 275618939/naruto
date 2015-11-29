@@ -88,7 +88,7 @@ public class SignInAdapter extends BaseAdapter {
 		return view;
 	}
 	
-	static class ViewHolder {
+	class ViewHolder {
 		
 		LinearLayout linearLayout;
 		//签到奖励
