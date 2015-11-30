@@ -65,8 +65,8 @@ public class NarutoApplication extends Application {
 		config.threadPoolSize(2);// 线程池内加载的数量
 		config.threadPriority(Thread.NORM_PRIORITY - 2);
 		//config.denyCacheImageMultipleSizesInMemory();
-		config.diskCacheFileNameGenerator(new Md5FileNameGenerator());// 将保存的时候的URI名称用MD5加密	
-		config.diskCacheSize(30 * 1024 * 1024); // 50 MiB 50 * 1024 * 1024 (int)Runtime.getRuntime().maxMemory() / 4
+		//config.diskCacheFileNameGenerator(new Md5FileNameGenerator());// 将保存的时候的URI名称用MD5加密	
+		//config.diskCacheSize(30 * 1024 * 1024); // 50 MiB 50 * 1024 * 1024 (int)Runtime.getRuntime().maxMemory() / 4
 		config.diskCache(new UnlimitedDiskCache(cacheDir));
 		config.memoryCache(new WeakMemoryCache());
 		config.tasksProcessingOrder(QueueProcessingType.LIFO);

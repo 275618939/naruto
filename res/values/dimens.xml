@@ -22,6 +22,7 @@
     <dimen name="panel_item">95dp</dimen>
     <dimen name="input_width_1">180dp</dimen>
     <dimen name="user_ment_height">50.0dip</dimen>
+    <dimen name="naruto_ment_height">40.0dip</dimen>
     <dimen name="slef_back_height">220dp</dimen>
     <dimen name="user_tag_height">35dp</dimen>
     <dimen name="user_round_image_width">60dp</dimen>

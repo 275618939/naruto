@@ -1,5 +1,6 @@
 package com.movie.app;
 
+import android.R.bool;
 import android.app.Activity;
 import android.app.ProgressDialog;
 import android.content.Context;
@@ -31,6 +32,7 @@ public abstract class BaseFragment extends Fragment {
 	// 标志位，标志已经初始化完成。
 	protected boolean isPrepared;
 	protected boolean isVisible;
+	protected boolean isLoad;
 	protected LoadView loadView;
 	protected int page;
 	public BaseFragment() {
@@ -65,7 +67,7 @@ public abstract class BaseFragment extends Fragment {
 	}
 	protected abstract void initViews();
 	protected abstract void initEvents();
-	/**在fragment可见时加载数据*/
+	/**在fragment可见时只初始化加载一次数据*/
 	protected abstract void lazyLoad();
 	@Override
 	public void onHiddenChanged(boolean hidden) {

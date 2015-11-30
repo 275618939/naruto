@@ -1,6 +1,7 @@
 package com.movie.fragment;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -18,27 +19,39 @@ import com.handmark.pulltorefresh.library.PullToRefreshBase.Mode;
 import com.handmark.pulltorefresh.library.PullToRefreshBase.OnRefreshListener2;
 import com.handmark.pulltorefresh.library.PullToRefreshListView;
 import com.movie.R;
-import com.movie.adapter.DynamicAdapter;
+import com.movie.adapter.NarutoAdapter;
 import com.movie.app.BaseFragment;
 import com.movie.app.Constant;
+import com.movie.app.Constant.Page;
 import com.movie.app.Constant.ReturnCode;
-import com.movie.client.bean.Feed;
+import com.movie.client.bean.NearNaruto;
 import com.movie.client.bean.User;
+import com.movie.client.service.BaseService;
 import com.movie.client.service.CallBackService;
+import com.movie.common.service.LocationService;
+import com.movie.network.HttpNearService;
+import com.movie.network.HttpUserLoveService;
 import com.movie.ui.LoginActivity;
 
 public class HomeNearFragment extends BaseFragment implements CallBackService,
 		OnClickListener, OnRefreshListener2<ListView> {
 	
-	DynamicAdapter dynamicAdapter;
+	NarutoAdapter natutoAdapter;
 	PullToRefreshListView refreshViewLayout;
-	List<Feed> feeds = new ArrayList<Feed>();
+	List<NearNaruto> nearNarutos = new ArrayList<NearNaruto>();
+	LocationService locationService;
+	BaseService httpNearService;
+	BaseService httpUserLoveService;
 	public HomeNearFragment() {
 		super();		
 	}
 	@Override
 	public void onCreate(Bundle savedInstanceState){
 		super.onCreate(savedInstanceState);
+		locationService = new LocationService(getActivity());
+		httpNearService = new HttpNearService(getActivity());
+		httpUserLoveService =new HttpUserLoveService(getActivity());
+		locationService.initLocation();
 	}
 	@Override
 	public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -54,15 +67,13 @@ public class HomeNearFragment extends BaseFragment implements CallBackService,
 		loadView.initView(rootView);
 		isPrepared=true;
 		return super.onCreateView(inflater, container, savedInstanceState);
-	
 	}
 	@Override
 	protected void initViews() {
-		dynamicAdapter = new DynamicAdapter(getActivity(),mHandler, feeds);
+		natutoAdapter = new NarutoAdapter(getActivity(),mHandler, nearNarutos);
 		refreshViewLayout = (PullToRefreshListView) rootView.findViewById(R.id.near_list);
 		refreshViewLayout.setMode(Mode.PULL_FROM_START);
-		refreshViewLayout.setAdapter(dynamicAdapter);	
-
+		refreshViewLayout.setAdapter(natutoAdapter);	
 	}
 	@Override
 	protected void initEvents() {
@@ -71,13 +82,15 @@ public class HomeNearFragment extends BaseFragment implements CallBackService,
 	@Override
 	protected void lazyLoad() {
 		
-		if (!isVisible||!isPrepared) {
+		if (!isVisible||!isPrepared||isLoad) {
 			return;
 		}		
-		loadFeeds();
+		loadNearNaruto();
+		isLoad=true;
 	}
-	protected void loadFeeds() {
-		
+	protected void loadNearNaruto() {
+		httpNearService.addParams("distance", Page.MAX_DISTANCE);
+		locationService.start(httpNearService,this);
 	}
 	Handler mHandler = new Handler() {
 		public void handleMessage(android.os.Message msg) {
@@ -97,7 +110,7 @@ public class HomeNearFragment extends BaseFragment implements CallBackService,
 	public void onClick(View v) {
 		switch (v.getId()) {
 		case R.id.loading_error:
-			loadFeeds();
+			loadNearNaruto();
 			break;
 		default:
 			break;
@@ -113,7 +126,59 @@ public class HomeNearFragment extends BaseFragment implements CallBackService,
 		String code = map.get(Constant.ReturnCode.RETURN_STATE).toString();
 		if (Constant.ReturnCode.STATE_1.equals(code)) {
 			String tag = map.get(Constant.ReturnCode.RETURN_TAG).toString();
-			
+			if (tag.equals(httpNearService.TAG)) {
+				List<HashMap<String, Object>> datas = (ArrayList<HashMap<String, Object>>) map.get(Constant.ReturnCode.RETURN_VALUE);
+				NearNaruto user = null;
+				int size = datas.size();
+				HashMap<String, Object> userMap = null;
+				for (int i = 0; i < size; i++) {
+					user = new NearNaruto();
+					userMap = datas.get(i);
+					if (userMap.containsKey("portrait")) {
+						user.setPortrait(Constant.SERVER_ADRESS+userMap.get("portrait").toString());
+					}
+					if (userMap.containsKey("memberId")) {
+						user.setMemberId(userMap.get("memberId").toString());
+					}
+					if (userMap.containsKey("nickname")) {
+						user.setNickname(userMap.get("nickname").toString());
+					}
+					if (userMap.containsKey("birthday")) {
+						user.setBirthday(Integer.parseInt(userMap.get("birthday").toString()));
+					}
+					if (userMap.containsKey("filmId")) {
+						user.setFilmId(Integer.parseInt(userMap.get("filmId").toString()));
+					}
+					if (userMap.containsKey("filmName")) {
+						user.setFilmName(userMap.get("filmName").toString());
+					}	
+					if (userMap.containsKey("filmCnt")) {
+						user.setFilmCnt(Integer.parseInt(userMap.get("filmCnt").toString()));
+					}	
+					if (userMap.containsKey("loveCnt")) {
+						user.setLoveCnt(Integer.valueOf(userMap.get("loveCnt").toString()));
+					}
+					if (userMap.containsKey("sex")) {
+						user.setSex(Integer.valueOf(userMap.get("sex").toString()));
+					}
+					if (userMap.containsKey("tryst")) {
+						user.setTrystCnt(Integer.valueOf(userMap.get("trystCnt").toString()));
+					}
+					if (userMap.containsKey("faceCnt")) {
+						user.setFaceCnt(Integer.valueOf(userMap.get("faceCnt").toString()));
+					}
+					if (userMap.containsKey("face")) {
+						user.setFaceTtl(Long.valueOf(userMap.get("faceTtl").toString()));
+					}
+					nearNarutos.add(user);
+				}
+				natutoAdapter.notifyDataSetChanged();
+				locationService.stop();
+
+			}else if(tag.equals(httpUserLoveService.TAG)){
+				showToask("感谢^_^您的关注!");
+				
+			}
 		} else if (Constant.ReturnCode.STATE_3.equals(code)) {
 			//提示用户登陆
 			Intent loginIntent = new Intent(getActivity(),LoginActivity.class);
@@ -141,27 +206,29 @@ public class HomeNearFragment extends BaseFragment implements CallBackService,
 	}
 	@Override
 	public void onDestroyView() {
-		// TODO Auto-generated method stub
 		super.onDestroyView();
-		dynamicAdapter = null;
-		feeds.clear();
+		natutoAdapter = null;
+		nearNarutos.clear();
+		locationService.stop();
 	}
 	@Override
 	public void OnRequest() {
-		loadView.showLoading(this);
+		if(!isLoad){
+			loadView.showLoading(this);
+		}
 	}
 
 	@Override
 	public void onPullDownToRefresh(PullToRefreshBase<ListView> refreshView) {
 		page = 0;
-		feeds.clear();
-		loadFeeds();
+		nearNarutos.clear();
+		loadNearNaruto();
 	}
 
 	@Override
 	public void onPullUpToRefresh(PullToRefreshBase<ListView> refreshView) {
 		page = 1;
-		loadFeeds();
+		loadNearNaruto();
 	}
 
 

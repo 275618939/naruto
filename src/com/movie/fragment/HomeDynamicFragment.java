@@ -84,7 +84,7 @@ public class HomeDynamicFragment extends BaseFragment implements CallBackService
 		if (!isVisible||!isPrepared) {
 			return;
 		}		
-		loadFeeds();
+		//loadFeeds();
 	}
 	protected void loadFeeds() {
 		httpNearService.addParams("distance", Page.MAX_DISTANCE);

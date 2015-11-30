@@ -1,6 +1,7 @@
 package com.movie.common.service;
 
 import android.content.Context;
+import android.util.Log;
 
 import com.baidu.location.BDLocation;
 import com.baidu.location.BDLocationListener;
@@ -17,6 +18,7 @@ public class LocationService implements BDLocationListener {
 	Context mContext;
 	BaseService mHttpService;
 	CallBackService mCallBackService;
+	boolean isLocaiton;
 	public LocationService(){}
 	public LocationService(Context context){
 		mContext=context;
@@ -40,6 +42,7 @@ public class LocationService implements BDLocationListener {
 	}
 	public void stop(){
 		mLocClient.stop();
+		isLocaiton=false;
 	}
 	
 	@Override
@@ -47,10 +50,15 @@ public class LocationService implements BDLocationListener {
 		
 		double longitude=location.getLongitude();  //纬度
 		double latitude=location.getLatitude();    //经度
+		Log.i("-----location---", "定位中");
+		if(isLocaiton){
+			return;
+		}
 		if(null!=mHttpService){
 			mHttpService.addParams("longitude",(int)(longitude*100000));
 			mHttpService.addParams("latitude",(int) (latitude*100000));
 			mHttpService.execute(mCallBackService);
+			isLocaiton=true;
 		}
 	}
 	

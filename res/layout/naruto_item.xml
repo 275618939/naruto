@@ -9,14 +9,14 @@
         android:id="@+id/user_item_view"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginBottom="@dimen/layout_item_top_1"
+        android:layout_marginTop="@dimen/layout_item_top_1"
         android:background="@drawable/background_with_border_radius"
         android:orientation="vertical" >
 
         <LinearLayout
             android:id="@+id/user_movie_tag"
             android:layout_width="match_parent"
-            android:layout_height="@dimen/user_ment_height"
+            android:layout_height="@dimen/naruto_ment_height"
             android:background="@drawable/bg_ment"
             android:gravity="center_vertical"
             android:orientation="horizontal" >
@@ -141,6 +141,7 @@
             </LinearLayout>
         </LinearLayout>
 
+        <!--
         <LinearLayout
             android:id="@+id/user_btn_view"
             style="@style/naruto_bottom_bar_style"
@@ -194,6 +195,7 @@
                     android:textColor="@color/dot_select_color" />
             </LinearLayout>
         </LinearLayout>
+        -->
     </LinearLayout>
 
 </LinearLayout>
