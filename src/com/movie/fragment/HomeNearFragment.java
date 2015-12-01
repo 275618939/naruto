@@ -30,7 +30,6 @@ import com.movie.client.service.BaseService;
 import com.movie.client.service.CallBackService;
 import com.movie.network.HttpNearService;
 import com.movie.network.HttpUserLoveService;
-import com.movie.system.service.LocationService;
 import com.movie.ui.LoginActivity;
 
 public class HomeNearFragment extends BaseFragment implements CallBackService,
@@ -39,7 +38,6 @@ public class HomeNearFragment extends BaseFragment implements CallBackService,
 	NarutoAdapter natutoAdapter;
 	PullToRefreshListView refreshViewLayout;
 	List<NearNaruto> nearNarutos = new ArrayList<NearNaruto>();
-	LocationService locationService;
 	BaseService httpNearService;
 	BaseService httpUserLoveService;
 	public HomeNearFragment() {
@@ -48,10 +46,8 @@ public class HomeNearFragment extends BaseFragment implements CallBackService,
 	@Override
 	public void onCreate(Bundle savedInstanceState){
 		super.onCreate(savedInstanceState);
-		locationService = new LocationService(getActivity());
 		httpNearService = new HttpNearService(getActivity());
 		httpUserLoveService =new HttpUserLoveService(getActivity());
-		locationService.initLocation();
 	}
 	@Override
 	public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -90,7 +86,6 @@ public class HomeNearFragment extends BaseFragment implements CallBackService,
 	}
 	protected void loadNearNaruto() {
 		httpNearService.addParams("distance", Page.MAX_DISTANCE);
-		locationService.start(httpNearService,this);
 	}
 	Handler mHandler = new Handler() {
 		public void handleMessage(android.os.Message msg) {
@@ -173,7 +168,6 @@ public class HomeNearFragment extends BaseFragment implements CallBackService,
 					nearNarutos.add(user);
 				}
 				natutoAdapter.notifyDataSetChanged();
-				locationService.stop();
 
 			}else if(tag.equals(httpUserLoveService.TAG)){
 				showToask("感谢^_^您的关注!");
@@ -210,7 +204,6 @@ public class HomeNearFragment extends BaseFragment implements CallBackService,
 		super.onDestroyView();
 		natutoAdapter = null;
 		nearNarutos.clear();
-		locationService.stop();
 	}
 	@Override
 	public void OnRequest() {

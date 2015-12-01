@@ -15,10 +15,7 @@ import android.widget.ImageView;
 
 import com.movie.R;
 import com.movie.app.BaseActivity;
-import com.movie.client.service.BaseService;
 import com.movie.client.service.CallBackService;
-import com.movie.network.HttpLocationService;
-import com.movie.system.service.LocationService;
 
 /**
  * 
@@ -39,9 +36,6 @@ public class SplanshActivity extends BaseActivity implements CallBackService{
 	boolean initComplete = false;
 	
 	ImageView imageView;
-
-	BaseService httpLocationService;
-	LocationService locationService;
 	public void onCreate(Bundle savedInstanceState) {
 
 		super.onCreate(savedInstanceState);
@@ -53,10 +47,7 @@ public class SplanshActivity extends BaseActivity implements CallBackService{
 		setContentView(view);
 		AlphaAnimation aa = new AlphaAnimation(0.3f, 1.0f);
 		aa.setDuration(2000);
-		view.startAnimation(aa);
-		httpLocationService = new HttpLocationService(this);
-		locationService = new LocationService(this);
-		locationService.initLocation();
+		view.startAnimation(aa);	
 		initViews();
 		initEvents();
 		initData();
@@ -85,8 +76,6 @@ public class SplanshActivity extends BaseActivity implements CallBackService{
 		} else {
 			mHandler.sendEmptyMessageDelayed(GO_GUIDE, SPLASH_DELAY_MILLIS);
 		}
-		//初始化当前用户位置
-		locationService.start(httpLocationService,this);
 	}
 
 	@Override
@@ -127,7 +116,6 @@ public class SplanshActivity extends BaseActivity implements CallBackService{
 	@Override
 	protected void onDestroy() {
 		super.onDestroy();
-		locationService.stop();
 	}
 	@Override
 	public void SuccessCallBack(Map<String, Object> map) {

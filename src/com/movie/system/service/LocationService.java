@@ -8,21 +8,16 @@ import com.baidu.location.BDLocationListener;
 import com.baidu.location.LocationClient;
 import com.baidu.location.LocationClientOption;
 import com.baidu.location.LocationClientOption.LocationMode;
-import com.movie.client.service.BaseService;
-import com.movie.client.service.CallBackService;
+import com.movie.app.NarutoManager;
 
 public class LocationService implements BDLocationListener {
 
 	LocationClient mLocClient;
 	LocationClientOption option;
 	Context mContext;
-	BaseService mHttpService;
-	CallBackService mCallBackService;
 	boolean isLocaiton;
-	public LocationService(){}
 	public LocationService(Context context){
 		mContext=context;
-		
 	}
 	public void initLocation() {
 		mLocClient=new LocationClient(mContext);
@@ -35,9 +30,7 @@ public class LocationService implements BDLocationListener {
 		mLocClient.setLocOption(option);
 		mLocClient.registerLocationListener(this);
 	}
-	public void start(BaseService httpService,CallBackService callBackService ){
-		mHttpService=httpService;
-		mCallBackService=callBackService;
+	public void start(){
 		mLocClient.start(); 
 	}
 	public void stop(){
@@ -51,15 +44,12 @@ public class LocationService implements BDLocationListener {
 		double longitude=location.getLongitude();  //纬度
 		double latitude=location.getLatitude();    //经度
 		Log.i("-----location---", "定位中");
+		NarutoManager.latitude=(int)(longitude*100000);
+		NarutoManager.latitude=(int)(latitude*100000);
 		if(isLocaiton){
 			return;
 		}
-		if(null!=mHttpService){
-			mHttpService.addParams("longitude",(int)(longitude*100000));
-			mHttpService.addParams("latitude",(int) (latitude*100000));
-			mHttpService.execute(mCallBackService);
-			isLocaiton=true;
-		}
+
 	}
 	
 
