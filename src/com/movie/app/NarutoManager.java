@@ -26,8 +26,7 @@ public class NarutoManager  {
 	 * @param context
 	 */
     public static  void destory(Context context){
-    	
-
+    
     	Intent serviceIntent  = new Intent(context,NarutoService.class);
 		serviceIntent.putExtra(SERVICE_ACTION, ACTION_DESTORY);
 		context.startService(serviceIntent);

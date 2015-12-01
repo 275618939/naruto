@@ -18,12 +18,15 @@ import android.widget.TextView;
 import com.movie.R;
 import com.movie.app.BaseActivity;
 import com.movie.app.Constant;
+import com.movie.app.NarutoApplication;
+import com.movie.app.NarutoManager;
 import com.movie.client.service.BaseService;
 import com.movie.client.service.CallBackService;
 import com.movie.fragment.HomeFragment;
 import com.movie.fragment.MissFragment;
 import com.movie.fragment.MoiveFragment;
 import com.movie.fragment.SelfFragment;
+import com.movie.network.HttpLocationService;
 import com.movie.network.HttpLoginAutoService;
 import com.movie.view.FragmentTabHost;
 
@@ -37,6 +40,7 @@ public class MainActivity extends BaseActivity implements OnClickListener, CallB
 	FragmentTabHost mTabHost;
 	LayoutInflater layoutInflater;
 	BaseService httpLoginAutoService;
+	BaseService httplocationService;
 	TextView textHeapView;
 	String login;
 
@@ -45,6 +49,7 @@ public class MainActivity extends BaseActivity implements OnClickListener, CallB
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_main);
 		httpLoginAutoService = new HttpLoginAutoService(this);
+		httplocationService=new HttpLocationService(this);
 		initViews();
 		initEvents();
 		initData();
@@ -74,7 +79,17 @@ public class MainActivity extends BaseActivity implements OnClickListener, CallB
 	}
 	@Override
 	protected void initData() {
+		loadLogin();
+		uploadLocation();
+	}
+	private void loadLogin(){
+		//自动登录
 		httpLoginAutoService.execute(this);
+	}
+	private void uploadLocation(){
+		httplocationService.addParams("longitude",NarutoApplication.longitude);
+		httplocationService.addParams("latitude", NarutoApplication.latitude);
+		httplocationService.execute(this);
 	}
 
 	@Override

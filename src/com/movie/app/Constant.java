@@ -111,6 +111,7 @@ public interface Constant {
     	public final static int MAX_MISS_CANCEL_HOUR=12;
     	
     }
+    public static final int UPLOAD_LOCATION_TIME=1*60*1000;
 
 	public static class Page {
 		// 首页

@@ -22,6 +22,7 @@ import com.movie.R;
 import com.movie.adapter.NarutoAdapter;
 import com.movie.app.BaseFragment;
 import com.movie.app.Constant;
+import com.movie.app.NarutoManager;
 import com.movie.app.Constant.Page;
 import com.movie.app.Constant.ReturnCode;
 import com.movie.client.bean.NearNaruto;
@@ -86,6 +87,8 @@ public class HomeNearFragment extends BaseFragment implements CallBackService,
 	}
 	protected void loadNearNaruto() {
 		httpNearService.addParams("distance", Page.MAX_DISTANCE);
+		httpNearService.addParams("longitude", NarutoManager.longitude);
+		httpNearService.addParams("latitude", NarutoManager.latitude);
 	}
 	Handler mHandler = new Handler() {
 		public void handleMessage(android.os.Message msg) {

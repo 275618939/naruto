@@ -15,7 +15,9 @@ import android.widget.ImageView;
 
 import com.movie.R;
 import com.movie.app.BaseActivity;
+import com.movie.app.NarutoManager;
 import com.movie.client.service.CallBackService;
+import com.movie.system.service.LocationService;
 
 /**
  * 
@@ -25,8 +27,9 @@ import com.movie.client.service.CallBackService;
  */
 public class SplanshActivity extends BaseActivity implements CallBackService{
 
-	private static final int GO_HOME = 1000;
-	private static final int GO_GUIDE = 1001;
+	
+	private  final int GO_HOME = 1000;
+	private  final int GO_GUIDE = 1001;
 	boolean isFirstIn = false;
 	// 延迟3秒
 	private static final long SPLASH_DELAY_MILLIS = 3000;
@@ -39,6 +42,7 @@ public class SplanshActivity extends BaseActivity implements CallBackService{
 	public void onCreate(Bundle savedInstanceState) {
 
 		super.onCreate(savedInstanceState);
+	
 		// 隐藏标题栏
 		requestWindowFeature(Window.FEATURE_NO_TITLE);
 		// 隐藏状态栏
@@ -51,6 +55,7 @@ public class SplanshActivity extends BaseActivity implements CallBackService{
 		initViews();
 		initEvents();
 		initData();
+		
 	
 	}
 	@Override
@@ -69,6 +74,7 @@ public class SplanshActivity extends BaseActivity implements CallBackService{
 	@Override
 	protected void initData() {
 
+		//NarutoManager.init(this);
 		SharedPreferences preferences = getSharedPreferences(SHAREDPREFERENCES_NAME, MODE_PRIVATE);
 		isFirstIn = preferences.getBoolean("isFirstIn", true);
 		if (!isFirstIn) {
@@ -76,6 +82,7 @@ public class SplanshActivity extends BaseActivity implements CallBackService{
 		} else {
 			mHandler.sendEmptyMessageDelayed(GO_GUIDE, SPLASH_DELAY_MILLIS);
 		}
+		
 	}
 
 	@Override

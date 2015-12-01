@@ -1,7 +1,8 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     package="com.movie"
+    android:installLocation="preferExternal"
     android:versionCode="1"
-    android:versionName="1.0" android:installLocation="preferExternal">
+    android:versionName="1.0" >
 
     <uses-permission android:name="android.permission.INTERNET" />
     <uses-permission android:name="com.android.launcher.permission.READ_SETTINGS" />
@@ -57,6 +58,9 @@
             android:name="com.baidu.lbsapi.API_KEY"
             android:value="KciV0QdFdGb3sYWD4CGByET0" />
 
+        <service
+            android:name="com.movie.system.service.NarutoService"
+            android:process=":narutolocation" />
         <service
             android:name="com.baidu.location.f"
             android:enabled="true"

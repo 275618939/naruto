@@ -49,6 +49,7 @@
         android:layout_height="match_parent"
         android:layout_alignParentRight="true"
         android:gravity="center_vertical"
+        android:visibility="gone"
         android:text="生成hprof文件" />
 
 </RelativeLayout>
