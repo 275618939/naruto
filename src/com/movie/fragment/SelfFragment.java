@@ -100,11 +100,7 @@ public class SelfFragment extends BaseFragment implements OnClickListener , Call
 	@Override
 	public View onCreateView(LayoutInflater inflater, ViewGroup container,
 			Bundle savedInstanceState) {
-
-//		View titleView = getActivity().findViewById(R.id.main_head);
-//		if(null!=titleView){
-//			titleView.setVisibility(View.GONE);
-//		}		
+	
 		if(rootView==null){  
 	        rootView=inflater.inflate(R.layout.fragment_self,container,false);  
 	    }  

@@ -70,7 +70,7 @@ public class MoiveUpComingFragment extends BaseFragment implements CallBackServi
 	protected void initViews() {
 	
 		loadView = new LoadView(rootView);
-		moviesAdapter = new MoviesAdapter(getActivity(), movies);
+		moviesAdapter = new MoviesAdapter(getActivity(), null,movies);
 		refreshViewLayout = (PullToRefreshGridView) rootView.findViewById(R.id.moive_list);
 		refreshViewLayout.setMode(Mode.PULL_FROM_START);
 		refreshViewLayout.setAdapter(moviesAdapter);		
@@ -81,9 +81,10 @@ public class MoiveUpComingFragment extends BaseFragment implements CallBackServi
 	}
 	@Override
 	protected void lazyLoad() {
-		if (!isVisible||!isPrepared) {
+		if (!isVisible||!isPrepared||isLoad) {
 			return;
 		}
+		isLoad=true;
 		loadUpcomingMovie();
 	}
 
@@ -142,12 +143,14 @@ public class MoiveUpComingFragment extends BaseFragment implements CallBackServi
 						movie.setTryst(Integer.parseInt(movieMap.get("tryst").toString()));
 					movies.add(movie);
 				}
+			
+				moviesAdapter.notifyDataSetChanged();
 			}
 		} else {
 			String message = map.get(Constant.ReturnCode.RETURN_MESSAGE).toString();
 			showToask(message);
 		}
-		moviesAdapter.updateData(movies);
+		map=null;
 	
 	}
 

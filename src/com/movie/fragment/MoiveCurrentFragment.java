@@ -66,7 +66,7 @@ public class MoiveCurrentFragment extends BaseFragment implements CallBackServic
 	}
 	@Override
 	protected void initViews() {
-		moviesAdapter = new MoviesAdapter(getActivity(), movies);
+		moviesAdapter = new MoviesAdapter(getActivity(),null, movies);
 		refreshViewLayout = (PullToRefreshGridView) rootView.findViewById(R.id.moive_list);
 		refreshViewLayout.setMode(Mode.PULL_FROM_START);
 		refreshViewLayout.setAdapter(moviesAdapter);	
@@ -79,11 +79,10 @@ public class MoiveCurrentFragment extends BaseFragment implements CallBackServic
 	@Override
 	protected void lazyLoad() {
 		
-		if (!isVisible||!isPrepared) {
+		if (!isVisible||!isPrepared||isLoad) {
 			return;
 		}		
-		//加载缓存数据
-		//加载网络数据
+		isLoad=true;
 		loadPlayingMovie();
 	}
 	protected void loadPlayingMovie() {
@@ -140,13 +139,15 @@ public class MoiveCurrentFragment extends BaseFragment implements CallBackServic
 						movie.setTryst(Integer.parseInt(movieMap.get("tryst").toString()));
 					movies.add(movie);
 				}
-
+				moviesAdapter.notifyDataSetChanged();
+				datas=null;
 			} 
 		} else {
 			String message = map.get(Constant.ReturnCode.RETURN_MESSAGE).toString();
 			showToask(message);
 		}
-		moviesAdapter.updateData(movies);
+		map=null;
+		
 	}
 
 	@Override

@@ -19,7 +19,6 @@ import com.movie.app.BaseObjectListAdapter;
 import com.movie.app.NarutoApplication;
 import com.movie.client.bean.BaseBean;
 import com.movie.client.bean.NearNaruto;
-import com.movie.client.bean.User;
 import com.movie.state.SexState;
 import com.movie.ui.MovieDetailActivity;
 import com.movie.ui.UserDetailActivity;
@@ -29,7 +28,6 @@ import com.movie.util.UserCharm;
 
 public class NarutoAdapter extends BaseObjectListAdapter {
 
-	protected User loginUser;
 	
 	public NarutoAdapter(Context context, Handler mHandler,List<? extends BaseBean> datas) {
 		super(context, mHandler, datas);
@@ -89,13 +87,7 @@ public class NarutoAdapter extends BaseObjectListAdapter {
 			mHolder.userCharmBar.setRating(Float.valueOf(score)/2f);
 			mHolder.userCharm.setText(score);
 		}
-		if(loginUser!=null){
-			if(loginUser.getMemberId().equals(nearNaruto.getMemberId())){
-				mHolder.userBtnView.setVisibility(View.GONE);
-			}else{
-				mHolder.userBtnView.setVisibility(View.VISIBLE);
-			}
-		}
+		
 		mHolder.userBreifLayout.setOnClickListener(new UserSelectAction(position));
 		//mHolder.userBtnLove.setOnClickListener(new UserSelectAction(position));
 		//mHolder.missInvite.setOnClickListener(new UserSelectAction(position));

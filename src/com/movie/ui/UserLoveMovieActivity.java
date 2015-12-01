@@ -55,7 +55,7 @@ public class UserLoveMovieActivity extends BaseActivity implements
 		title = (TextView) findViewById(R.id.title);
 		moviesView = (GridView)findViewById(R.id.movies);
 		refreshLayout = (RefreshableView) findViewById(R.id.refresh_movies);
-		moviesAdapter = new MoviesAdapter(this, movies);
+		moviesAdapter = new MoviesAdapter(this,null, movies);
 		moviesView.setAdapter(moviesAdapter);
 		moviesView.setSelector(new ColorDrawable(Color.TRANSPARENT));
 	}
@@ -142,7 +142,7 @@ public class UserLoveMovieActivity extends BaseActivity implements
 						movie.setTryst(Integer.parseInt(movieMap.get("tryst").toString()));
 					movies.add(movie);
 				}
-			
+				moviesAdapter.notifyDataSetChanged();
 				if (size >= Page.DEFAULT_SIZE) {
 					page++;
 				}
@@ -152,7 +152,7 @@ public class UserLoveMovieActivity extends BaseActivity implements
 			String message = map.get(Constant.ReturnCode.RETURN_MESSAGE).toString();
 			showToask(message);
 		}
-		moviesAdapter.updateData(movies);
+
 	}
 
 	@Override

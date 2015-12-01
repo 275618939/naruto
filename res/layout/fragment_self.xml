@@ -38,15 +38,12 @@
                     android:layout_height="wrap_content"
                     android:layout_marginTop="@dimen/layout_item_top" >
 
-                    <com.movie.view.RoundImageView
+                    <ImageView
                         android:id="@+id/login_logo"
                         android:layout_width="@dimen/user_logo_image_width"
                         android:layout_height="@dimen/user_logo_image_height"
                         android:layout_centerHorizontal="true"
-                        android:src="@drawable/default_portrait"
-                        imagecontrol:border_inside_color="#fff7f2e9"
-                        imagecontrol:border_outside_color="#ffd5d1c8"
-                        imagecontrol:border_thickness="2dp" />
+                        android:src="@drawable/default_portrait" />
 
                     <TextView
                         android:id="@+id/user_nickname"
@@ -115,7 +112,6 @@
             <GridView
                 android:id="@+id/userPhotoGridview"
                 android:layout_width="match_parent"
-                android:visibility="gone"
                 android:layout_height="@dimen/user_select_image_height"
                 android:layout_gravity="bottom"
                 android:layout_marginBottom="@dimen/layout_item_bottom_1"
@@ -123,7 +119,8 @@
                 android:horizontalSpacing="3dp"
                 android:numColumns="4"
                 android:scrollbars="none"
-                android:verticalSpacing="5dp" >
+                android:verticalSpacing="5dp"
+                android:visibility="gone" >
             </GridView>
         </FrameLayout>
 

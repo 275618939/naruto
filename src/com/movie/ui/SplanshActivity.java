@@ -17,8 +17,8 @@ import com.movie.R;
 import com.movie.app.BaseActivity;
 import com.movie.client.service.BaseService;
 import com.movie.client.service.CallBackService;
-import com.movie.common.service.LocationService;
 import com.movie.network.HttpLocationService;
+import com.movie.system.service.LocationService;
 
 /**
  * 

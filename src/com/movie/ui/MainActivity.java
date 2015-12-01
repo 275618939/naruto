@@ -1,11 +1,13 @@
 package com.movie.ui;
 
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Map;
 
 import android.app.AlertDialog;
 import android.content.DialogInterface;
 import android.os.Bundle;
+import android.os.Debug;
 import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -35,6 +37,7 @@ public class MainActivity extends BaseActivity implements OnClickListener, CallB
 	FragmentTabHost mTabHost;
 	LayoutInflater layoutInflater;
 	BaseService httpLoginAutoService;
+	TextView textHeapView;
 	String login;
 
 	@Override
@@ -60,6 +63,8 @@ public class MainActivity extends BaseActivity implements OnClickListener, CallB
 			mTabHost.addTab(tabSpec, fragmentArray[i], null);
 		}
 		mTabHost.getTabWidget().setDividerDrawable(null);
+		textHeapView=(TextView)findViewById(R.id.text_heap);
+		textHeapView.setOnClickListener(this);
 	}
 	
 	@Override
@@ -98,7 +103,16 @@ public class MainActivity extends BaseActivity implements OnClickListener, CallB
 	public void onClick(View v) {
 
 		switch (v.getId()) {
-
+			case R.id.text_heap:
+			try {
+				Debug.dumpHprofData("/naruto/naruto.hprof");
+			} catch (IOException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+				break;
+			default:
+				break;
 		
 		}
 

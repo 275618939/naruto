@@ -27,8 +27,8 @@ import com.movie.client.bean.Feed;
 import com.movie.client.bean.User;
 import com.movie.client.service.BaseService;
 import com.movie.client.service.CallBackService;
-import com.movie.common.service.LocationService;
 import com.movie.network.HttpNearService;
+import com.movie.system.service.LocationService;
 import com.movie.ui.LoginActivity;
 
 public class HomeDynamicFragment extends BaseFragment implements CallBackService,

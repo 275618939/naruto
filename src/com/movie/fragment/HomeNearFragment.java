@@ -28,9 +28,9 @@ import com.movie.client.bean.NearNaruto;
 import com.movie.client.bean.User;
 import com.movie.client.service.BaseService;
 import com.movie.client.service.CallBackService;
-import com.movie.common.service.LocationService;
 import com.movie.network.HttpNearService;
 import com.movie.network.HttpUserLoveService;
+import com.movie.system.service.LocationService;
 import com.movie.ui.LoginActivity;
 
 public class HomeNearFragment extends BaseFragment implements CallBackService,
@@ -188,6 +188,7 @@ public class HomeNearFragment extends BaseFragment implements CallBackService,
 			String message = map.get(Constant.ReturnCode.RETURN_MESSAGE).toString();
 			showToask(message);
 		}
+		map=null;
 	}
 
 	@Override

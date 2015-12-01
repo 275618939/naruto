@@ -17,12 +17,12 @@ import com.movie.adapter.ViewPagerAdapter;
 import com.movie.app.BaseActivity;
 import com.movie.client.service.BaseService;
 import com.movie.client.service.CallBackService;
-import com.movie.common.service.LocationService;
 import com.movie.network.HttpCommentService;
 import com.movie.network.HttpFilmTypeService;
 import com.movie.network.HttpHobbyService;
 import com.movie.network.HttpLocationService;
 import com.movie.state.SexState;
+import com.movie.system.service.LocationService;
 
 /**
  * 引导界面

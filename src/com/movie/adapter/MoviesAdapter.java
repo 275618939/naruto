@@ -4,70 +4,37 @@ import java.util.List;
 
 import android.content.Context;
 import android.content.Intent;
+import android.os.Handler;
 import android.text.Html;
-import android.view.LayoutInflater;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.view.ViewGroup;
-import android.widget.BaseAdapter;
 import android.widget.ImageView;
 import android.widget.RatingBar;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.movie.R;
+import com.movie.app.BaseObjectListAdapter;
 import com.movie.app.Constant.NameShow;
 import com.movie.app.NarutoApplication;
+import com.movie.client.bean.BaseBean;
 import com.movie.client.bean.Movie;
 import com.movie.ui.MovieDetailActivity;
 import com.movie.util.MovieScore;
-import com.nostra13.universalimageloader.core.ImageLoader;
 
-public class MoviesAdapter extends BaseAdapter {
+public class MoviesAdapter extends BaseObjectListAdapter {
 	
-
-	List<Movie> movies;
-	Context context;
-	LayoutInflater inflater;
-	ImageLoader imageLoaderCache;
-	
-	public MoviesAdapter(Context context,List<Movie> movies) {
-		this.context = context;
-		this.movies = movies;
-		imageLoaderCache=ImageLoader.getInstance();
-		inflater = LayoutInflater.from(context);
-		initData();
+	public MoviesAdapter(Context context, Handler mHandler,List<? extends BaseBean> datas) {
+		super(context, mHandler, datas);
 	}
-	protected void initData(){
-		
-	}
-	@Override
-	public int getCount() {
-		// TODO Auto-generated method stub
-		return movies == null ? 0 : movies.size();
-	}
-	@Override
-	public Movie getItem(int position) {
-		// TODO Auto-generated method stub
-		if (movies != null && movies.size() != 0) {
-			return movies.get(position);
-		}
-		return null;
-	}
-
-	@Override
-	public long getItemId(int position) {
-		// TODO Auto-generated method stub
-		return position;
-	}
-
 	@Override
 	public View getView(int position, View convertView, ViewGroup parent) {
-		// TODO Auto-generated method stub
+
 		ViewHolder mHolder;
 		View view = convertView;
 		if (view == null) {
-			view = inflater.inflate(R.layout.movie_item, null);
+			view = mInflater.inflate(R.layout.movie_item, null);
 			mHolder = new ViewHolder();
 			mHolder.movieView=(RelativeLayout)view.findViewById(R.id.movie_view);
 			mHolder.movieNoneScoreLayout=(RelativeLayout)view.findViewById(R.id.movie_none_score_layout);
@@ -82,14 +49,14 @@ public class MoviesAdapter extends BaseAdapter {
 			mHolder = (ViewHolder) view.getTag();
 		}
 		//获取position对应的数据
-		Movie movie = getItem(position);
+		Movie movie = (Movie)getItem(position);
 		if(movie!=null){
 			String score=MovieScore.GetScore(movie.getScore(), movie.getScoreCnt());
 			if(score.equals("NaN")){
 				mHolder.movieNoneScoreLayout.setVisibility(View.VISIBLE);
 				mHolder.movieHaveScoreLayout.setVisibility(View.GONE);
 			}
-			imageLoaderCache.displayImage(movie.getIcon(), mHolder.movieImage,NarutoApplication.imageOptions);
+			imageLoader.displayImage(movie.getIcon(), mHolder.movieImage,NarutoApplication.imageOptions);
 			if(movie.getName().length()>NameShow.MOVIENAME_MAX){
 				mHolder.titleText.setText(movie.getName().substring(0, NameShow.MOVIENAME_MAX));
 			}else{
@@ -97,7 +64,7 @@ public class MoviesAdapter extends BaseAdapter {
 			}
 			mHolder.startBar.setRating(Float.valueOf(score)/2f);
 			mHolder.scoreText.setText(score);
-			mHolder.movieMent.setText(Html.fromHtml(String.format(context.getResources().getString(R.string.movie_miss_tryst), movie.getTryst())));
+			mHolder.movieMent.setText(Html.fromHtml(String.format(mContext.getResources().getString(R.string.movie_miss_tryst), movie.getTryst())));
 			
 		}
 		mHolder.movieView.setOnClickListener(new UserSelectAction(position));
@@ -116,11 +83,6 @@ public class MoviesAdapter extends BaseAdapter {
 		
 		
 	}
-	public void updateData(List<Movie> movies) {
-		this.movies=movies;
-		this.notifyDataSetChanged();
-		
-	}
 	protected class UserSelectAction implements OnClickListener{
 
 		int position;
@@ -131,11 +93,11 @@ public class MoviesAdapter extends BaseAdapter {
 		@Override
 		public void onClick(View v) {
 			
-			Movie movie=movies.get(position);
-			Intent intent=new Intent(context,MovieDetailActivity.class);
+			Movie movie=(Movie)getItem(position);
+			Intent intent=new Intent(mContext,MovieDetailActivity.class);
 			intent.putExtra("filmId", movie.getId());
-			context.startActivity(intent);
-			
+			mContext.startActivity(intent);
+
 		}
 		
 	}

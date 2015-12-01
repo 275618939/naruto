@@ -1,4 +1,4 @@
-package com.movie.common.service;
+package com.movie.system.service;
 
 import android.content.Context;
 import android.util.Log;

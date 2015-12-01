@@ -42,6 +42,7 @@ public abstract class BaseService  {
 	protected static final int MAXREQUEST=2;
 	protected static final int REQUESTDEFUALCOUNT=1;
 	protected int requestCount;
+	protected BaseDao sesssionDao;
 	protected CallBackService callBackService;
 	protected Context context; 
     private static BlockingQueue<Runnable> queue = new LinkedBlockingQueue<Runnable>();
@@ -49,6 +50,7 @@ public abstract class BaseService  {
 	public abstract void requestServer(CallBackService callbackService);
 
 	public BaseService(){
+		sesssionDao =new SessionDaoImple();
 		initService();
 	}
 	
@@ -101,7 +103,6 @@ public abstract class BaseService  {
 	 * @throws InvokeException
 	 */
 	public String getSid() throws InvokeException {
-		BaseDao sesssionDao = new SessionDaoImple();
 		Map<String, String> map = sesssionDao.viewData(null, null);
 		if (null != map&&map.size()>0) {
 			String sid= map.get(SQLHelper.SID);
@@ -134,8 +135,6 @@ public abstract class BaseService  {
 	 * @throws InvokeException
 	 */
 	public String updateSid() throws InvokeException {
-		
-		BaseDao sesssionDao = new SessionDaoImple();
 		//记录SID
 		String sid = requestSid();
 		sesssionDao.deleteData(null, null);
