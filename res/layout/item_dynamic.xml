@@ -77,19 +77,20 @@
                 android:textColor="@color/font_attribute"
                 android:textSize="15sp" />
 
-            <LinearLayout
-                android:id="@+id/feed_item_content_images"
+            <HorizontalScrollView
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_below="@+id/feed_item_etv_content" >
+                android:layout_height="@dimen/dynamic_image_horizontal_height"
+                android:layout_below="@+id/feed_item_etv_content"
+                android:layout_gravity="center_vertical"
+                android:scrollbars="none" >
 
-                <ImageView
-                    android:id="@+id/feed_item_iv_content"
-                    android:layout_width="@dimen/dynamic_image_content_width"
-                    android:layout_height="@dimen/dynamic_image_content_height"
-                    android:layout_marginTop="3dip"
-                    android:scaleType="centerCrop" />
-            </LinearLayout>
+                <LinearLayout
+                    android:id="@+id/feed_item_content_images"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal" >
+                </LinearLayout>
+            </HorizontalScrollView>
         </RelativeLayout>
 
         <RelativeLayout
