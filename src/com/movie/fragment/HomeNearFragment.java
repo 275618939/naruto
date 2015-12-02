@@ -69,26 +69,30 @@ public class HomeNearFragment extends BaseFragment implements CallBackService,
 	protected void initViews() {
 		natutoAdapter = new NarutoAdapter(getActivity(),mHandler, nearNarutos);
 		refreshViewLayout = (PullToRefreshListView) rootView.findViewById(R.id.near_list);
-		refreshViewLayout.setMode(Mode.PULL_FROM_START);
+		refreshViewLayout.setMode(Mode.BOTH);
 		refreshViewLayout.setAdapter(natutoAdapter);	
+		refreshViewLayout.setEmptyView(rootView.findViewById(R.id.empty));
+	
 	}
 	@Override
 	protected void initEvents() {
 		refreshViewLayout.setOnRefreshListener(this);
+		refreshViewLayout.setRefreshing(true);
+		
+		
 	}
 	@Override
 	protected void lazyLoad() {
-		
 		if (!isVisible||!isPrepared||isLoad) {
 			return;
 		}		
-		loadNearNaruto();
-		isLoad=true;
+		//loadNearNaruto();
 	}
 	protected void loadNearNaruto() {
 		httpNearService.addParams("distance", Page.MAX_DISTANCE);
 		httpNearService.addParams("longitude", NarutoManager.longitude);
 		httpNearService.addParams("latitude", NarutoManager.latitude);
+		httpNearService.execute(this);
 	}
 	Handler mHandler = new Handler() {
 		public void handleMessage(android.os.Message msg) {
@@ -212,7 +216,9 @@ public class HomeNearFragment extends BaseFragment implements CallBackService,
 	public void OnRequest() {
 		if(!isLoad){
 			loadView.showLoading(this);
+			isLoad=true;
 		}
+		
 	}
 
 	@Override

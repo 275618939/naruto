@@ -8,6 +8,14 @@ import android.os.Parcelable;
 
 public class Feed extends BaseBean implements Parcelable {
 
+	public static final String TIME = "time";
+	public static final String NAME = "name";
+	public static final String PORTRAIT = "avatar";
+	public static final String CONTENT = "content";
+	public static final String CONTENT_IMAGE = "content_image";
+	public static final String SITE = "site";
+	public static final String COMMENT_COUNT = "comment_count";
+	
 	private String name;
 	private String portrait;
 	private String time;

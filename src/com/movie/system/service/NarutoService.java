@@ -1,12 +1,13 @@
 package com.movie.system.service;
 
-import com.movie.app.NarutoManager;
-
 import android.app.Service;
 import android.content.Intent;
 import android.os.Binder;
 import android.os.IBinder;
 import android.util.Log;
+
+import com.movie.app.Constant;
+import com.movie.app.NarutoManager;
 
 public class NarutoService extends Service {
 
@@ -24,7 +25,7 @@ public class NarutoService extends Service {
 	@Override
 	public void onCreate() {
 		locationService = new LocationService(this.getApplicationContext());
-		locationService.initLocation();
+		locationService.initLocation(Constant.UPLOAD_LOCATION_TIME);
 	}
 
 	@Override

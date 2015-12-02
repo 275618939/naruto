@@ -21,6 +21,7 @@ import com.movie.R;
 import com.movie.adapter.DynamicAdapter;
 import com.movie.app.BaseFragment;
 import com.movie.app.Constant;
+import com.movie.app.NarutoManager;
 import com.movie.app.Constant.Page;
 import com.movie.app.Constant.ReturnCode;
 import com.movie.client.bean.Feed;
@@ -29,6 +30,7 @@ import com.movie.client.service.BaseService;
 import com.movie.client.service.CallBackService;
 import com.movie.network.HttpNearService;
 import com.movie.ui.LoginActivity;
+import com.movie.util.JsonResolveUtils;
 
 public class HomeDynamicFragment extends BaseFragment implements CallBackService,
 		OnClickListener, OnRefreshListener2<ListView>  {
@@ -57,6 +59,7 @@ public class HomeDynamicFragment extends BaseFragment implements CallBackService
 	        parent.removeView(rootView);  
 	    }   
 		loadView.initView(rootView);
+		
 		isPrepared=true;
 		return super.onCreateView(inflater, container, savedInstanceState);
 	
@@ -65,25 +68,30 @@ public class HomeDynamicFragment extends BaseFragment implements CallBackService
 	protected void initViews() {
 		dynamicAdapter = new DynamicAdapter(getActivity(),mHandler, feeds);
 		refreshViewLayout = (PullToRefreshListView) rootView.findViewById(R.id.dynamic_list);
-		refreshViewLayout.setMode(Mode.PULL_FROM_START);
+		refreshViewLayout.setMode(Mode.BOTH);
 		refreshViewLayout.setAdapter(dynamicAdapter);	
-
+		refreshViewLayout.setEmptyView(rootView.findViewById(R.id.empty));
 	}
 	@Override
 	protected void initEvents() {
 		refreshViewLayout.setOnRefreshListener(this);
-		
+		refreshViewLayout.setRefreshing(true);
 	}
 	@Override
 	protected void lazyLoad() {
-		
-		if (!isVisible||!isPrepared) {
+	
+		if (!isVisible||!isPrepared||isLoad) {
 			return;
-		}		
-		//loadFeeds();
+		}			
+	
 	}
 	protected void loadFeeds() {
 		httpNearService.addParams("distance", Page.MAX_DISTANCE);
+		httpNearService.addParams("longitude", NarutoManager.longitude);
+		httpNearService.addParams("latitude", NarutoManager.latitude);
+		httpNearService.execute(this);
+		
+		
 	}
 	Handler mHandler = new Handler() {
 		public void handleMessage(android.os.Message msg) {
@@ -119,8 +127,11 @@ public class HomeDynamicFragment extends BaseFragment implements CallBackService
 		String code = map.get(Constant.ReturnCode.RETURN_STATE).toString();
 		if (Constant.ReturnCode.STATE_1.equals(code)) {
 			String tag = map.get(Constant.ReturnCode.RETURN_TAG).toString();
-			if(tag.equals(httpNearService.TAG)){
-				
+			if (tag.equals(httpNearService.TAG)) {
+				//初始化临时数据
+				refreshViewLayout.onRefreshComplete();
+				JsonResolveUtils.resolveNearbyStatus(getActivity(), feeds,"momo_p_001");
+				dynamicAdapter.notifyDataSetChanged();
 			}
 			
 		} else if (Constant.ReturnCode.STATE_3.equals(code)) {
@@ -157,7 +168,11 @@ public class HomeDynamicFragment extends BaseFragment implements CallBackService
 	}
 	@Override
 	public void OnRequest() {
-		loadView.showLoading(this);
+		if(!isLoad){
+			loadView.showLoading(this);
+			isLoad=true;
+		}
+		
 	}
 
 	@Override

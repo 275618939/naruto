@@ -20,9 +20,7 @@ import com.movie.client.service.CallBackService;
 import com.movie.network.HttpCommentService;
 import com.movie.network.HttpFilmTypeService;
 import com.movie.network.HttpHobbyService;
-import com.movie.network.HttpLocationService;
 import com.movie.state.SexState;
-import com.movie.system.service.LocationService;
 
 /**
  * 引导界面

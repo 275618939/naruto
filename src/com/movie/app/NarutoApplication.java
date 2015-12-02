@@ -9,7 +9,6 @@ import android.util.Log;
 
 import com.movie.R;
 import com.movie.client.db.SQLHelper;
-import com.movie.system.service.LocationService;
 import com.nostra13.universalimageloader.cache.disc.impl.UnlimitedDiskCache;
 import com.nostra13.universalimageloader.cache.memory.impl.WeakMemoryCache;
 import com.nostra13.universalimageloader.core.DisplayImageOptions;
@@ -27,17 +26,14 @@ public class NarutoApplication extends Application {
 	private static NarutoApplication mAppApplication;
 	private SQLHelper sqlHelper;
 	public static DisplayImageOptions imageOptions;
-	private LocationService locationService;
-	
+
 
 	@Override
 	public void onCreate() {
 		super.onCreate();
 		initImageLoader(getApplicationContext());
 		mAppApplication = this;
-		locationService =new LocationService(getApplicationContext());
-		locationService.initLocation();
-		locationService.start();
+		
 	}
 
 	/** 获取Application */

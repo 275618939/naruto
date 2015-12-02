@@ -10,6 +10,7 @@ import android.widget.AdapterView;
 import android.widget.AdapterView.OnItemClickListener;
 import android.widget.ImageButton;
 import android.widget.ImageView;
+import android.widget.ImageView.ScaleType;
 import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
@@ -37,6 +38,7 @@ public class DynamicAdapter extends BaseObjectListAdapter implements
 			convertView = mInflater.inflate(R.layout.item_dynamic, null);
 			holder = new ViewHolder();
 			holder.root = (RelativeLayout) convertView.findViewById(R.id.feed_item_layout_root);
+			holder.contentImages=(LinearLayout) convertView.findViewById(R.id.feed_item_content_images);
 			holder.avatar = (ImageView) convertView.findViewById(R.id.feed_item_iv_avatar);
 			holder.time = (HandyTextView) convertView.findViewById(R.id.feed_item_htv_time);
 			holder.name = (HandyTextView) convertView.findViewById(R.id.feed_item_htv_name);
@@ -56,11 +58,20 @@ public class DynamicAdapter extends BaseObjectListAdapter implements
 		holder.time.setText(feed.getTime());
 		holder.content.setText(feed.getContent());
 		if (feed.getContentImage() == null) {
-			holder.contentImage.setVisibility(View.GONE);
+			holder.contentImages.setVisibility(View.GONE);
 		} else {
-			holder.contentImage.setVisibility(View.VISIBLE);
-			imageLoader.displayImage(feed.getPortrait(), holder.contentImage);
-		
+			//holder.contentImages.removeView(view)
+			for(String image:feed.getContentImage()){
+				ImageView imageView=new ImageView(mContext);
+				LinearLayout.LayoutParams params=new LinearLayout.LayoutParams(R.dimen.dynamic_image_content_width, R.dimen.dynamic_image_content_height);
+				params.setMargins(0, 3, 3, 0);
+				imageView.setLayoutParams(params);
+				imageView.setScaleType(ScaleType.CENTER_CROP);
+				imageLoader.displayImage(image, imageView);
+				holder.contentImages.addView(imageView);
+				//imageView=null;
+				//params=null;
+			}
 		}
 		holder.site.setText(feed.getSite());
 		holder.commentCount.setText(feed.getCommentCount() + "");
@@ -70,6 +81,7 @@ public class DynamicAdapter extends BaseObjectListAdapter implements
 
 	class ViewHolder {
 		RelativeLayout root;
+		LinearLayout contentImages;
 		ImageView avatar;
 		HandyTextView time;
 		HandyTextView name;

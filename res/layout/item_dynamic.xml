@@ -1,15 +1,13 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="fill_parent"
-    android:layout_height="wrap_content"
-    android:paddingBottom="10dip"
-    android:paddingLeft="6dip"
-    android:paddingRight="6dip" >
+    android:layout_height="wrap_content" >
 
     <RelativeLayout
         android:id="@+id/feed_item_layout_root"
         android:layout_width="fill_parent"
         android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/layout_item_top_1"
         android:background="@drawable/bg_card"
         android:clickable="true" >
 
@@ -79,13 +77,19 @@
                 android:textColor="@color/font_attribute"
                 android:textSize="15sp" />
 
-            <ImageView
-                android:id="@+id/feed_item_iv_content"
-                android:layout_width="80dip"
-                android:layout_height="80dip"
-                android:layout_below="@+id/feed_item_etv_content"
-                android:layout_marginTop="3dip"
-                android:scaleType="centerCrop" />
+            <LinearLayout
+                android:id="@+id/feed_item_content_images"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_below="@+id/feed_item_etv_content" >
+
+                <ImageView
+                    android:id="@+id/feed_item_iv_content"
+                    android:layout_width="@dimen/dynamic_image_content_width"
+                    android:layout_height="@dimen/dynamic_image_content_height"
+                    android:layout_marginTop="3dip"
+                    android:scaleType="centerCrop" />
+            </LinearLayout>
         </RelativeLayout>
 
         <RelativeLayout

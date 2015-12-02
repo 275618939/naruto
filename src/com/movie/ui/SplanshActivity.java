@@ -15,7 +15,7 @@ import android.widget.ImageView;
 
 import com.movie.R;
 import com.movie.app.BaseActivity;
-import com.movie.app.NarutoManager;
+import com.movie.app.Constant;
 import com.movie.client.service.CallBackService;
 import com.movie.system.service.LocationService;
 
@@ -33,16 +33,14 @@ public class SplanshActivity extends BaseActivity implements CallBackService{
 	boolean isFirstIn = false;
 	// 延迟3秒
 	private static final long SPLASH_DELAY_MILLIS = 3000;
-
 	private static final String SHAREDPREFERENCES_NAME = "first_pref";
-
 	boolean initComplete = false;
-	
+	LocationService locationService;
 	ImageView imageView;
 	public void onCreate(Bundle savedInstanceState) {
 
 		super.onCreate(savedInstanceState);
-	
+		locationService = new LocationService(this);
 		// 隐藏标题栏
 		requestWindowFeature(Window.FEATURE_NO_TITLE);
 		// 隐藏状态栏
@@ -62,10 +60,10 @@ public class SplanshActivity extends BaseActivity implements CallBackService{
 	protected void initViews() {
 		imageView=(ImageView)findViewById(R.id.welcome);
 		imageView.setImageResource(R.drawable.splash_bg);
+		locationService.initLocation(Constant.UPLOAD_SCANSPAN);
 	}
 	@Override
 	protected void initEvents() {
-		// TODO Auto-generated method stub
 		
 	}
 
@@ -74,7 +72,7 @@ public class SplanshActivity extends BaseActivity implements CallBackService{
 	@Override
 	protected void initData() {
 
-		//NarutoManager.init(this);
+		locationService.start(true);
 		SharedPreferences preferences = getSharedPreferences(SHAREDPREFERENCES_NAME, MODE_PRIVATE);
 		isFirstIn = preferences.getBoolean("isFirstIn", true);
 		if (!isFirstIn) {
@@ -123,6 +121,8 @@ public class SplanshActivity extends BaseActivity implements CallBackService{
 	@Override
 	protected void onDestroy() {
 		super.onDestroy();
+		locationService.stop();
+		locationService=null;
 	}
 	@Override
 	public void SuccessCallBack(Map<String, Object> map) {

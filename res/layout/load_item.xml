@@ -63,4 +63,30 @@
             android:text="@string/linefail_hint" />
     </LinearLayout>
 
+    <ScrollView
+        android:id="@+id/empty"
+        android:layout_width="fill_parent"
+        android:layout_height="fill_parent"
+        android:visibility="gone"
+        android:fillViewport="true" >
+
+        <LinearLayout
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical" >
+
+            <TextView
+                android:id="@+id/emptyText"
+                style="@style/content_text_style"
+                android:layout_width="fill_parent"
+                android:layout_height="fill_parent"
+                android:gravity="center"
+                android:lineSpacingMultiplier="0.92"
+                android:paddingLeft="10dip"
+                android:paddingRight="10dip"
+                android:paddingTop="10dip"
+                android:text="@string/noText" />
+        </LinearLayout>
+    </ScrollView>
+
 </LinearLayout>

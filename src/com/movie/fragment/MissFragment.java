@@ -58,7 +58,10 @@ public class MissFragment extends BaseFragment {
 	}
 	@Override
 	protected void lazyLoad() {
-		
+		View titleView = getActivity().findViewById(R.id.main_head);
+		if(null!=titleView){
+			titleView.setVisibility(View.VISIBLE);
+		}
 	}
 
 	public class TabAdapter extends FragmentPagerAdapter{

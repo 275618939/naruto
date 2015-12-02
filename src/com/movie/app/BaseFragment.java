@@ -67,7 +67,7 @@ public abstract class BaseFragment extends Fragment {
 	}
 	protected abstract void initViews();
 	protected abstract void initEvents();
-	/**在fragment可见时只初始化加载一次数据*/
+	/**在fragment可见时加载数据*/
 	protected abstract void lazyLoad();
 	@Override
 	public void onHiddenChanged(boolean hidden) {

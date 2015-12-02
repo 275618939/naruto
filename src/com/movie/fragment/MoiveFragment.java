@@ -58,7 +58,10 @@ public class MoiveFragment extends BaseFragment implements OnClickListener {
 	}
 	@Override
 	protected void lazyLoad() {
-		
+		View titleView = getActivity().findViewById(R.id.main_head);
+		if(null!=titleView){
+			titleView.setVisibility(View.VISIBLE);
+		}
 	}
 	@Override
 	public void onClick(View v) {

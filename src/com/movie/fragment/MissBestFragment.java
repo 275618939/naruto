@@ -71,11 +71,13 @@ public class MissBestFragment extends BaseFragment implements OnClickListener,
 		refreshableListView = (PullToRefreshListView) rootView.findViewById(R.id.miss_list);
 		refreshableListView.setMode(Mode.BOTH);
 		refreshableListView.setAdapter(missQueryAdapter);
+		refreshableListView.setEmptyView(rootView.findViewById(R.id.empty));
 	}
 
 	@Override
 	protected void initEvents() {
 		refreshableListView.setOnRefreshListener(this);		
+		refreshableListView.setRefreshing(true);
 	}
 
 	@Override
@@ -83,7 +85,7 @@ public class MissBestFragment extends BaseFragment implements OnClickListener,
 		if (!isVisible||!isPrepared) {
 			return;
 		}		
-		loadMiss();
+		//loadMiss();
 	}
 	
 	private void loadMiss() {
@@ -160,7 +162,7 @@ public class MissBestFragment extends BaseFragment implements OnClickListener,
 					page++;
 				}
 
-				missQueryAdapter.updateData(misses);
+				missQueryAdapter.notifyDataSetChanged();
 				if (size <= 0) {
 					tempData();
 				}
@@ -176,7 +178,7 @@ public class MissBestFragment extends BaseFragment implements OnClickListener,
 
 	private void tempData() {
 		misses=Miss.getTempData();
-		missQueryAdapter.updateData(misses);
+		missQueryAdapter.notifyDataSetChanged();
 	}
 
 	@Override
@@ -202,7 +204,11 @@ public class MissBestFragment extends BaseFragment implements OnClickListener,
 	}
 	@Override
 	public void OnRequest() {
-		loadView.showLoading(this);
+		if(!isLoad){
+			loadView.showLoading(this);
+			isLoad=true;
+		}
+		
 	}
 	// 下拉刷新
 	@Override

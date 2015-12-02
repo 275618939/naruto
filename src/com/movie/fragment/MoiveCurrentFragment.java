@@ -16,8 +16,7 @@ import android.view.ViewGroup;
 import android.widget.GridView;
 
 import com.handmark.pulltorefresh.library.PullToRefreshBase;
-import com.handmark.pulltorefresh.library.PullToRefreshBase.Mode;
-import com.handmark.pulltorefresh.library.PullToRefreshBase.OnRefreshListener2;
+import com.handmark.pulltorefresh.library.PullToRefreshBase.OnRefreshListener;
 import com.handmark.pulltorefresh.library.PullToRefreshGridView;
 import com.movie.R;
 import com.movie.adapter.MoviesAdapter;
@@ -30,9 +29,8 @@ import com.movie.client.service.CallBackService;
 import com.movie.network.HttpPlayMovieService;
 
 public class MoiveCurrentFragment extends BaseFragment implements CallBackService,
-		OnClickListener, OnRefreshListener2<GridView> {
+		OnClickListener, OnRefreshListener<GridView> {
 
-	static final int REFRESH_COMPLETE = 0X110;
 	MoviesAdapter moviesAdapter;
 	BaseService playMovieService;
 	PullToRefreshGridView refreshViewLayout;
@@ -68,8 +66,8 @@ public class MoiveCurrentFragment extends BaseFragment implements CallBackServic
 	protected void initViews() {
 		moviesAdapter = new MoviesAdapter(getActivity(),null, movies);
 		refreshViewLayout = (PullToRefreshGridView) rootView.findViewById(R.id.moive_list);
-		refreshViewLayout.setMode(Mode.PULL_FROM_START);
-		refreshViewLayout.setAdapter(moviesAdapter);	
+		refreshViewLayout.setAdapter(moviesAdapter);
+		refreshViewLayout.setEmptyView(rootView.findViewById(R.id.empty));
 
 	}
 	@Override
@@ -82,7 +80,6 @@ public class MoiveCurrentFragment extends BaseFragment implements CallBackServic
 		if (!isVisible||!isPrepared||isLoad) {
 			return;
 		}		
-		isLoad=true;
 		loadPlayingMovie();
 	}
 	protected void loadPlayingMovie() {
@@ -92,9 +89,7 @@ public class MoiveCurrentFragment extends BaseFragment implements CallBackServic
 	Handler mHandler = new Handler() {
 		public void handleMessage(android.os.Message msg) {
 			switch (msg.what) {
-			case REFRESH_COMPLETE:
-				loadPlayingMovie();
-				break;
+			
 			default:
 				break;
 			}
@@ -165,7 +160,10 @@ public class MoiveCurrentFragment extends BaseFragment implements CallBackServic
 	}
 	@Override
 	public void OnRequest() {
-		loadView.showLoading(this);
+		if(!isLoad){
+			loadView.showLoading(this);
+			isLoad=true;
+		}
 	}
 	@Override
 	public void onDestroyView() {
@@ -173,15 +171,10 @@ public class MoiveCurrentFragment extends BaseFragment implements CallBackServic
 		moviesAdapter = null;
 		movies.clear();
 	}
-	@Override
-	public void onPullDownToRefresh(PullToRefreshBase<GridView> refreshView) {
-		
-		loadPlayingMovie();
-	}
 
 	@Override
-	public void onPullUpToRefresh(PullToRefreshBase<GridView> refreshView) {
-		
+	public void onRefresh(PullToRefreshBase<GridView> refreshView) {
+		loadPlayingMovie();
 		
 	}
 

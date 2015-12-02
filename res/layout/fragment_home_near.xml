@@ -32,7 +32,6 @@
                 android:stretchMode="columnWidth" >
             </com.handmark.pulltorefresh.library.PullToRefreshListView>
         </LinearLayout>
-
     </LinearLayout>
 
 </RelativeLayout>

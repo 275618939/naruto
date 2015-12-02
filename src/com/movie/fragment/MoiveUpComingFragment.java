@@ -17,7 +17,7 @@ import android.widget.GridView;
 
 import com.handmark.pulltorefresh.library.PullToRefreshBase;
 import com.handmark.pulltorefresh.library.PullToRefreshBase.Mode;
-import com.handmark.pulltorefresh.library.PullToRefreshBase.OnRefreshListener2;
+import com.handmark.pulltorefresh.library.PullToRefreshBase.OnRefreshListener;
 import com.handmark.pulltorefresh.library.PullToRefreshGridView;
 import com.movie.R;
 import com.movie.adapter.MoviesAdapter;
@@ -28,12 +28,10 @@ import com.movie.client.bean.Movie;
 import com.movie.client.service.BaseService;
 import com.movie.client.service.CallBackService;
 import com.movie.network.HttpUPComingMovieService;
-import com.movie.view.LoadView;
 
 public class MoiveUpComingFragment extends BaseFragment implements CallBackService,
-		OnClickListener, OnRefreshListener2<GridView>  {
+		OnClickListener, OnRefreshListener<GridView>  {
 
-	static final int REFRESH_COMPLETE = 0X110;
 	MoviesAdapter moviesAdapter;
 	BaseService upComingMovieService;
 	PullToRefreshGridView refreshViewLayout;
@@ -62,18 +60,17 @@ public class MoiveUpComingFragment extends BaseFragment implements CallBackServi
 	        parent.removeView(rootView);  
 	    }   
 	    loadView.initView(rootView);
-	    isVisible=true;
+		isPrepared=true;
 		return super.onCreateView(inflater, container, savedInstanceState);
 		
 	}
 	@Override
 	protected void initViews() {
 	
-		loadView = new LoadView(rootView);
 		moviesAdapter = new MoviesAdapter(getActivity(), null,movies);
 		refreshViewLayout = (PullToRefreshGridView) rootView.findViewById(R.id.moive_list);
-		refreshViewLayout.setMode(Mode.PULL_FROM_START);
-		refreshViewLayout.setAdapter(moviesAdapter);		
+		refreshViewLayout.setAdapter(moviesAdapter);	
+		refreshViewLayout.setEmptyView(rootView.findViewById(R.id.empty));
 	}
 	@Override
 	protected void initEvents() {
@@ -84,7 +81,6 @@ public class MoiveUpComingFragment extends BaseFragment implements CallBackServi
 		if (!isVisible||!isPrepared||isLoad) {
 			return;
 		}
-		isLoad=true;
 		loadUpcomingMovie();
 	}
 
@@ -96,9 +92,7 @@ public class MoiveUpComingFragment extends BaseFragment implements CallBackServi
 	Handler mHandler = new Handler() {
 		public void handleMessage(android.os.Message msg) {
 			switch (msg.what) {
-			case REFRESH_COMPLETE:
-				loadUpcomingMovie();
-				break;
+			
 			default:
 				break;
 			}
@@ -174,15 +168,14 @@ public class MoiveUpComingFragment extends BaseFragment implements CallBackServi
 	}
 	@Override
 	public void OnRequest() {
-		loadView.showLoading(this);
+		if(!isLoad){
+			loadView.showLoading(this);
+			isLoad=true;
+		}
 	}
 	@Override
-	public void onPullDownToRefresh(PullToRefreshBase<GridView> refreshView) {
+	public void onRefresh(PullToRefreshBase<GridView> refreshView) {
 		loadUpcomingMovie();
-	}
-	@Override
-	public void onPullUpToRefresh(PullToRefreshBase<GridView> refreshView) {
-		
 		
 	}
 

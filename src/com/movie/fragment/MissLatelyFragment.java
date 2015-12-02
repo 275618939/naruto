@@ -71,11 +71,14 @@ public class MissLatelyFragment extends BaseFragment implements OnClickListener,
 		refreshableListView = (PullToRefreshListView) rootView.findViewById(R.id.miss_list);
 		refreshableListView.setMode(Mode.BOTH);
 		refreshableListView.setAdapter(missQueryAdapter);
+		refreshableListView.setEmptyView(rootView.findViewById(R.id.empty));
+		
 	}
 
 	@Override
 	protected void initEvents() {
 		refreshableListView.setOnRefreshListener(this);		
+		refreshableListView.setRefreshing(true);
 	}
 
 	@Override
@@ -83,7 +86,7 @@ public class MissLatelyFragment extends BaseFragment implements OnClickListener,
 		if (!isVisible||!isPrepared) {
 			return;
 		}		
-		loadMiss();
+		//loadMiss();
 	}
 	
 	private void loadMiss() {
@@ -159,11 +162,8 @@ public class MissLatelyFragment extends BaseFragment implements OnClickListener,
 				if (size >= Page.DEFAULT_SIZE) {
 					page++;
 				}
-
-				missQueryAdapter.updateData(misses);
-				if (size <= 0) {
-					tempData();
-				}
+				missQueryAdapter.notifyDataSetChanged();
+				
 
 			}
 		} else {
@@ -176,7 +176,7 @@ public class MissLatelyFragment extends BaseFragment implements OnClickListener,
 
 	private void tempData() {
 		misses=Miss.getTempData();
-		missQueryAdapter.updateData(misses);
+		missQueryAdapter.notifyDataSetChanged();
 	}
 
 	@Override
@@ -202,7 +202,11 @@ public class MissLatelyFragment extends BaseFragment implements OnClickListener,
 	}
 	@Override
 	public void OnRequest() {
-		loadView.showLoading(this);
+		if(!isLoad){
+			loadView.showLoading(this);
+			isLoad=true;
+		}
+		
 	}
 	// 下拉刷新
 	@Override

@@ -20,6 +20,7 @@
             android:layout_height="fill_parent"
             android:layout_marginLeft="@dimen/layout_left"
             android:layout_marginRight="@dimen/layout_right"
+            android:layout_marginBottom="@dimen/layout_item_bottom"
             android:orientation="vertical" >
 
             <com.handmark.pulltorefresh.library.PullToRefreshGridView

@@ -18,6 +18,7 @@
             android:id="@+id/moive_layout"
             android:layout_width="fill_parent"
             android:layout_height="fill_parent"
+            android:layout_marginBottom="@dimen/layout_item_bottom"
             android:layout_marginLeft="@dimen/layout_left"
             android:layout_marginRight="@dimen/layout_right"
             android:orientation="vertical" >

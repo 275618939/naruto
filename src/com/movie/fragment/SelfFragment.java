@@ -101,6 +101,7 @@ public class SelfFragment extends BaseFragment implements OnClickListener , Call
 	public View onCreateView(LayoutInflater inflater, ViewGroup container,
 			Bundle savedInstanceState) {
 	
+		
 		if(rootView==null){  
 	        rootView=inflater.inflate(R.layout.fragment_self,container,false);  
 	    }  
@@ -145,6 +146,10 @@ public class SelfFragment extends BaseFragment implements OnClickListener , Call
 	}
 	@Override
 	protected void lazyLoad() {
+		View titleView = getActivity().findViewById(R.id.main_head);
+		if(null!=titleView){
+			titleView.setVisibility(View.GONE);
+		}
 		if (!isVisible||!isPrepared) {
 			return;
 		}		
