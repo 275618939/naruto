@@ -1,6 +1,12 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
 
+    <string-array name="reportfeed_items">
+        <item>骚扰信息</item>
+        <item>虚假身份</item>
+        <item>广告欺诈</item>
+        <item>不当发言</item>
+    </string-array>
     <string-array name="emoticos">
         <item>f_static_000</item>
         <item>f_static_001</item>
@@ -110,8 +116,6 @@
         <item>f_static_105</item>
         <item>f_static_106</item>
     </string-array>
-
-    
     <string-array name="emoticoKeys">
         <item>000</item>
         <item>001</item>
@@ -221,5 +225,5 @@
         <item>105</item>
         <item>106</item>
     </string-array>
-    
+
 </resources>

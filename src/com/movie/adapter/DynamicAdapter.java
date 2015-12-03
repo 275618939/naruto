@@ -2,17 +2,17 @@ package com.movie.adapter;
 
 import java.util.List;
 
+import android.content.ClipData;
+import android.content.ClipboardManager;
 import android.content.Context;
 import android.os.Handler;
 import android.util.TypedValue;
 import android.view.Gravity;
 import android.view.View;
+import android.view.View.OnClickListener;
 import android.view.ViewGroup;
-import android.widget.AdapterView;
-import android.widget.AdapterView.OnItemClickListener;
 import android.widget.ImageButton;
 import android.widget.ImageView;
-import android.widget.ImageView.ScaleType;
 import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
@@ -23,14 +23,16 @@ import com.movie.client.bean.BaseBean;
 import com.movie.client.bean.Feed;
 import com.movie.pop.OtherFeedListPopupWindow;
 import com.movie.pop.OtherFeedListPopupWindow.onOtherFeedListPopupItemClickListner;
+import com.movie.pop.SimpleListDialog;
+import com.movie.pop.SimpleListDialog.onSimpleListItemClickListener;
 import com.movie.view.HandyTextView;
 
-public class DynamicAdapter extends BaseObjectListAdapter implements
-		OnItemClickListener , onOtherFeedListPopupItemClickListner{
+public class DynamicAdapter extends BaseObjectListAdapter implements onSimpleListItemClickListener, onOtherFeedListPopupItemClickListner{
 	
 	private OtherFeedListPopupWindow mPopupWindow;
 	private int mWidthAndHeight;
 	private int mPosition;
+	private SimpleListDialog mDialog;
 	
 
 	public DynamicAdapter(Context context, Handler mHandler,
@@ -43,7 +45,7 @@ public class DynamicAdapter extends BaseObjectListAdapter implements
 	}
 
 	@Override
-	public View getView(int position, View convertView, ViewGroup parent) {
+	public View getView(final int position, View convertView, ViewGroup parent) {
 
 		ViewHolder holder;
 		if (convertView == null) {
@@ -86,6 +88,16 @@ public class DynamicAdapter extends BaseObjectListAdapter implements
 		}
 		holder.site.setText(feed.getSite());
 		holder.commentCount.setText(feed.getCommentCount() + "");
+		holder.more.setOnClickListener(new OnClickListener() {			
+			@Override
+			public void onClick(View v) {
+				mPosition = position;
+				int[] location = new int[2];
+				v.getLocationOnScreen(location);
+				mPopupWindow.showAtLocation(v, Gravity.NO_GRAVITY,location[0], location[1] - mWidthAndHeight + 30);
+				
+			}
+		});
 
 		return convertView;
 	}
@@ -105,31 +117,41 @@ public class DynamicAdapter extends BaseObjectListAdapter implements
 
 	}
 
-	@Override
-	public void onItemClick(AdapterView<?> parent, View view, int position,long id) {
-		switch (view.getId()) {
-		    case R.id.feed_item_ib_more:
-		    	mPosition = position;
-				int[] location = new int[2];
-				view.getLocationOnScreen(location);
-				mPopupWindow.showAtLocation(view, Gravity.NO_GRAVITY,location[0], location[1] - mWidthAndHeight + 30);
-		    	break;
-
-		default:
-			break;
-		}
-		
-	}
 
 	@Override
 	public void onCopy(View v) {
-		// TODO Auto-generated method stub
-		
+		Feed feed = (Feed) getItem(mPosition);
+		String text = feed.getContent();
+		ClipboardManager  m = (ClipboardManager ) mContext.getSystemService(Context.CLIPBOARD_SERVICE);
+		m.setPrimaryClip(ClipData.newPlainText(null, text));
+		showCustomToast("已复制到剪切板");
 	}
 
 	@Override
 	public void onReport(View v) {
-		// TODO Auto-generated method stub
+		String[] codes = mContext.getResources().getStringArray(R.array.reportfeed_items);
+		mDialog = new SimpleListDialog(mContext);
+		mDialog.setTitle("举报留言");
+		mDialog.setTitleLineVisibility(View.GONE);
+		mDialog.setAdapter(new SimpleListDialogAdapter(mContext, codes));
+		mDialog.setOnSimpleListItemClickListener(this);
+		mDialog.show();
+		
+	}
+
+	@Override
+	public void onItemClick(int position) {
+
+		showProgressDialog("提示", "正在提交,请稍后...");
+		new Handler().postDelayed(new Runnable() {
+
+			@Override
+			public void run() {
+				hideProgressDialog();
+				showCustomToast("举报的信息已提交");
+			}
+		}, 1500);
+	
 		
 	}
 

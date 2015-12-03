@@ -3,6 +3,7 @@ package com.movie.app;
 import java.util.ArrayList;
 import java.util.List;
 
+import android.app.ProgressDialog;
 import android.content.Context;
 import android.os.Handler;
 import android.view.LayoutInflater;
@@ -22,6 +23,7 @@ public class BaseObjectListAdapter extends BaseAdapter {
 	protected Handler mHandler;
 	protected LayoutInflater mInflater;
 	protected ImageLoader imageLoader=ImageLoader.getInstance();
+	protected ProgressDialog progressDialog;
 	protected List<? extends BaseBean> mDatas = new ArrayList<BaseBean>();
 
 	public BaseObjectListAdapter(Context context,
@@ -75,6 +77,23 @@ public class BaseObjectListAdapter extends BaseAdapter {
 
 	public List<? extends BaseBean> getDatas() {
 		return mDatas;
+	}
+	public void showProgressDialog(String title, String message) {
+		if (progressDialog == null) {
+			progressDialog = ProgressDialog.show(mContext, title, message, true,true);
+		} else if (progressDialog.isShowing()) {
+			progressDialog.setTitle(title);
+			progressDialog.setMessage(message);
+		}
+		progressDialog.show();
+	}
+
+	public void hideProgressDialog() {
+
+		if (progressDialog != null && progressDialog.isShowing()) {
+			progressDialog.dismiss();
+		}
+
 	}
 
 	protected void showCustomToast(String text) {
