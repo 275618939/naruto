@@ -10,6 +10,7 @@ import org.json.JSONObject;
 import android.content.Context;
 
 import com.movie.client.bean.Feed;
+import com.movie.client.bean.FeedComment;
 
 /**
  * @fileName JsonResolveUtils.java
@@ -81,6 +82,37 @@ public class JsonResolveUtils {
 		}
 		return false;
 	}
-
+	/**
+	 * 解析状态评论
+	 * 
+	 * @param context
+	 * @param comments
+	 * @return
+	 */
+	public static boolean resoleFeedComment(Context context,
+			List<FeedComment> comments) {
+		String json = TextUtils.getJson(context, FEEDCOMMENT);
+		if (json != null) {
+			try {
+				JSONArray array = new JSONArray(json);
+				FeedComment comment = null;
+				for (int i = 0; i < array.length(); i++) {
+					JSONObject object = array.getJSONObject(i);
+					String name = object.getString(FeedComment.NAME);
+					String avatar = object.getString(FeedComment.AVATAR);
+					String content = object.getString(FeedComment.CONTENT);
+					String time = object.getString(FeedComment.TIME);
+					comment = new FeedComment(name, avatar, content, time);
+					comments.add(comment);
+				}
+			} catch (JSONException e) {
+				e.printStackTrace();
+				comments = null;
+				return false;
+			}
+			return true;
+		}
+		return false;
+	}
 
 }

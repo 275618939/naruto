@@ -1,9 +1,14 @@
 package com.movie.app;
 
+import java.util.ArrayList;
+import java.util.Iterator;
+import java.util.List;
+
 import android.app.AlertDialog;
 import android.app.ProgressDialog;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.v4.app.FragmentActivity;
 import android.util.Log;
@@ -15,19 +20,21 @@ import com.movie.client.bean.Login;
 import com.movie.client.service.LoginService;
 import com.movie.ui.LoginActivity;
 import com.movie.util.NetWorkUtils;
+import com.nostra13.universalimageloader.core.ImageLoader;
 
 public abstract class BaseActivity extends FragmentActivity {
 	
 	protected ProgressDialog progressDialog;
 	protected NetWorkUtils mNetWorkUtils;
 	protected LoginService loginService;
+	protected ImageLoader imageLoader=ImageLoader.getInstance();
 	/**
 	 * 屏幕的宽度、高度、密度
 	 */
 	protected int mScreenWidth;
 	protected int mScreenHeight;
 	protected float mDensity;
-
+	protected List<AsyncTask<Void, Void, Boolean>> mAsyncTasks = new ArrayList<AsyncTask<Void, Void, Boolean>>();
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
@@ -42,7 +49,20 @@ public abstract class BaseActivity extends FragmentActivity {
 	
 	/** 初始化数据 **/
 	protected abstract void initData();
-
+	protected void putAsyncTask(AsyncTask<Void, Void, Boolean> asyncTask) {
+		mAsyncTasks.add(asyncTask.execute());
+	}
+	protected void clearAsyncTask() {
+		Iterator<AsyncTask<Void, Void, Boolean>> iterator = mAsyncTasks
+				.iterator();
+		while (iterator.hasNext()) {
+			AsyncTask<Void, Void, Boolean> asyncTask = iterator.next();
+			if (asyncTask != null && !asyncTask.isCancelled()) {
+				asyncTask.cancel(true);
+			}
+		}
+		mAsyncTasks.clear();
+	}
 	
 	protected Login getLogin(){
 		Login login=loginService.getLogin();

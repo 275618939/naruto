@@ -1,6 +1,5 @@
 package com.movie.app;
 
-import android.R.bool;
 import android.app.Activity;
 import android.app.ProgressDialog;
 import android.content.Context;

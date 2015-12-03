@@ -2,6 +2,10 @@ package com.movie.client.bean;
 
 public class FeedComment extends BaseBean {
 
+	public static final String NAME = "name";
+	public static final String AVATAR = "avatar";
+	public static final String CONTENT = "content";
+	public static final String TIME = "time";
 	private String name;
 	private String avatar;
 	private String content;

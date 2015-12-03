@@ -3,13 +3,13 @@ package com.movie.ui;
 import java.util.ArrayList;
 import java.util.List;
 
+import android.content.ClipData;
 import android.content.ClipboardManager;
 import android.content.Context;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.os.Handler;
 import android.text.TextUtils;
-import android.text.format.DateUtils;
 import android.util.TypedValue;
 import android.view.Gravity;
 import android.view.LayoutInflater;
@@ -33,33 +33,34 @@ import com.movie.R;
 import com.movie.adapter.FeedProfileCommentsAdapter;
 import com.movie.adapter.SimpleListDialogAdapter;
 import com.movie.app.BaseActivity;
+import com.movie.app.NarutoApplication;
 import com.movie.client.bean.Feed;
 import com.movie.client.bean.FeedComment;
+import com.movie.client.bean.NearPeople;
 import com.movie.pop.OtherFeedListPopupWindow;
 import com.movie.pop.OtherFeedListPopupWindow.onOtherFeedListPopupItemClickListner;
 import com.movie.pop.SimpleListDialog;
 import com.movie.pop.SimpleListDialog.onSimpleListItemClickListener;
+import com.movie.util.DateUtils;
 import com.movie.util.JsonResolveUtils;
-import com.movie.util.PhotoUtils;
 import com.movie.view.EmoteInputView;
 import com.movie.view.EmoticonsEditText;
 import com.movie.view.EmoticonsTextView;
 import com.movie.view.HandyTextView;
-import com.movie.view.HeaderLayout;
 import com.movie.view.HeaderLayout.onRightImageButtonClickListener;
 
-@SuppressWarnings("deprecation")
+
 public class FeedProfileActivity extends BaseActivity implements
 		OnItemClickListener, onRightImageButtonClickListener,
 		onOtherFeedListPopupItemClickListner, OnClickListener, OnTouchListener {
 
-	private HeaderLayout mHeaderLayout;
+
 	private ListView mLvList;
 	private EmoticonsTextView mEtvEditerTitle;
 	private ImageView mIvEmote;
 	private Button mBtnSend;
 	private EmoticonsEditText mEetEditer;
-
+	private TextView title;
 	private View mHeaderView;
 	private ImageView mIvAvatar;
 	private TextView mTvTime;
@@ -67,15 +68,6 @@ public class FeedProfileActivity extends BaseActivity implements
 	private LinearLayout mLayoutGender;
 	private ImageView mIvGender;
 	private HandyTextView mHtvAge;
-	private ImageView mIvVip;
-	private ImageView mIvGroupRole;
-	private ImageView mIvIndustry;
-	private ImageView mIvWeibo;
-	private ImageView mIvTxWeibo;
-	private ImageView mIvRenRen;
-	private ImageView mIvDevice;
-	private ImageView mIvRelation;
-	private ImageView mIvMultipic;
 	private EmoticonsTextView mEtvContent;
 	private ImageView mIvContent;
 	private LinearLayout mLayoutComment;
@@ -88,8 +80,7 @@ public class FeedProfileActivity extends BaseActivity implements
 
 	private FeedProfileCommentsAdapter mAdapter;
 
-	private NearByPeopleProfile mProfile;
-	private NearByPeople mPeople;
+	private NearPeople people;
 	private Feed mFeed;
 	private OtherFeedListPopupWindow mPopupWindow;
 	private int mWidthAndHeight;
@@ -120,63 +111,15 @@ public class FeedProfileActivity extends BaseActivity implements
 
 	@Override
 	protected void initViews() {
-		mHeaderLayout = (HeaderLayout) findViewById(R.id.feedprofile_header);
-		mHeaderLayout.init(HeaderStyle.TITLE_RIGHT_IMAGEBUTTON);
-		mHeaderLayout.setTitleRightImageButton("留言内容", null,R.drawable.ic_topbar_more, this);
+		title = (TextView) findViewById(R.id.title);
+		title.setText("留言内容");
 		mLvList = (ListView) findViewById(R.id.feedprofile_lv_list);
 		mEtvEditerTitle = (EmoticonsTextView) findViewById(R.id.feedprofile_etv_editertitle);
 		mIvEmote = (ImageView) findViewById(R.id.feedprofile_iv_emote);
 		mBtnSend = (Button) findViewById(R.id.feedprofile_btn_send);
 		mEetEditer = (EmoticonsEditText) findViewById(R.id.feedprofile_eet_editer);
 		mInputView = (EmoteInputView) findViewById(R.id.feedprofile_eiv_input);
-
-		mHeaderView = LayoutInflater.from(FeedProfileActivity.this).inflate(
-				R.layout.header_feed, null);
-		mIvAvatar = (ImageView) mHeaderView
-				.findViewById(R.id.header_feed_iv_avatar);
-		mTvTime = (TextView) mHeaderView.findViewById(R.id.header_feed_tv_time);
-		mEtvName = (EmoticonsTextView) mHeaderView
-				.findViewById(R.id.header_feed_etv_name);
-		mLayoutGender = (LinearLayout) mHeaderView
-				.findViewById(R.id.header_feed_layout_gender);
-		mIvGender = (ImageView) mHeaderView
-				.findViewById(R.id.header_feed_iv_gender);
-		mHtvAge = (HandyTextView) mHeaderView
-				.findViewById(R.id.header_feed_htv_age);
-		mIvVip = (ImageView) mHeaderView
-				.findViewById(R.id.user_item_iv_icon_vip);
-		mIvGroupRole = (ImageView) mHeaderView
-				.findViewById(R.id.user_item_iv_icon_group_role);
-		mIvIndustry = (ImageView) mHeaderView
-				.findViewById(R.id.user_item_iv_icon_industry);
-		mIvWeibo = (ImageView) mHeaderView
-				.findViewById(R.id.user_item_iv_icon_weibo);
-		mIvTxWeibo = (ImageView) mHeaderView
-				.findViewById(R.id.user_item_iv_icon_txweibo);
-		mIvRenRen = (ImageView) mHeaderView
-				.findViewById(R.id.user_item_iv_icon_renren);
-		mIvDevice = (ImageView) mHeaderView
-				.findViewById(R.id.user_item_iv_icon_device);
-		mIvRelation = (ImageView) mHeaderView
-				.findViewById(R.id.user_item_iv_icon_relation);
-		mIvMultipic = (ImageView) mHeaderView
-				.findViewById(R.id.user_item_iv_icon_multipic);
-		mEtvContent = (EmoticonsTextView) mHeaderView
-				.findViewById(R.id.header_feed_etv_content);
-		mIvContent = (ImageView) mHeaderView
-				.findViewById(R.id.header_feed_iv_content);
-		mLayoutComment = (LinearLayout) mHeaderView
-				.findViewById(R.id.header_feed_layout_comment);
-		mTvCommentCount = (TextView) mHeaderView
-				.findViewById(R.id.header_feed_tv_commentcount);
-		mTvDistance = (TextView) mHeaderView
-				.findViewById(R.id.header_feed_tv_distance);
-		mLayoutLoading = (RelativeLayout) mHeaderView
-				.findViewById(R.id.header_feed_layout_loading);
-		mTvLoading = (TextView) mHeaderView
-				.findViewById(R.id.header_feed_tv_loading);
-		mIvLoading = (ImageView) mHeaderView
-				.findViewById(R.id.header_feed_iv_loading);
+	
 	}
 
 	@Override
@@ -189,123 +132,60 @@ public class FeedProfileActivity extends BaseActivity implements
 	}
 
 	private void init() {
-		mProfile = getIntent().getParcelableExtra("entity_profile");
-		mPeople = getIntent().getParcelableExtra("entity_people");
 		mFeed = getIntent().getParcelableExtra("entity_feed");
 		initPopupWindow();
 		initHeaderView();
 		mInputView.setEditText(mEetEditer);
 		mLvList.addHeaderView(mHeaderView);
-		mAdapter = new FeedProfileCommentsAdapter(mApplication,
-				FeedProfileActivity.this, mComments);
+		mAdapter = new FeedProfileCommentsAdapter(FeedProfileActivity.this,mHandler,mComments);
 		mLvList.setAdapter(mAdapter);
 		getComments();
 	}
 	@Override
 	protected void initData() {
-		// TODO Auto-generated method stub
+	
 		
 	}
 
 	private void initPopupWindow() {
-		mWidthAndHeight = (int) TypedValue.applyDimension(
-				TypedValue.COMPLEX_UNIT_DIP, 120, getResources()
-						.getDisplayMetrics());
-		mHeaderHeight = (int) TypedValue.applyDimension(
-				TypedValue.COMPLEX_UNIT_DIP, 48, getResources()
-						.getDisplayMetrics());
-		mPopupWindow = new OtherFeedListPopupWindow(this, mWidthAndHeight,
-				mWidthAndHeight);
+		mWidthAndHeight = (int) TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, 120, getResources().getDisplayMetrics());
+		mHeaderHeight = (int) TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, 48, getResources().getDisplayMetrics());
+		mPopupWindow = new OtherFeedListPopupWindow(this, mWidthAndHeight,mWidthAndHeight);
 		mPopupWindow.setOnOtherFeedListPopupItemClickListner(this);
 	}
 
 	private void initHeaderView() {
-		mIvAvatar.setImageBitmap(mApplication.getAvatar(mProfile.getAvatar()));
-		mEtvName.setText(mProfile.getName());
+		mHeaderView = LayoutInflater.from(FeedProfileActivity.this).inflate(R.layout.header_feed, null);
+		imageLoader.displayImage(mFeed.getPortrait(), mIvAvatar,NarutoApplication.imageOptions);
+		mEtvName.setText(mFeed.getName());
 		mTvTime.setText(mFeed.getTime());
-		mLayoutGender.setBackgroundResource(mProfile.getGenderBgId());
-		mIvGender.setImageResource(mProfile.getGenderId());
-		mHtvAge.setText(mProfile.getAge() + "");
-		if (mPeople.getIsVip() != 0) {
-			mIvVip.setVisibility(View.VISIBLE);
-		} else {
-			mIvVip.setVisibility(View.GONE);
-		}
-		if (mPeople.getIsGroupRole() != 0) {
-			mIvGroupRole.setVisibility(View.VISIBLE);
-			if (mPeople.getIsGroupRole() == 1) {
-				mIvGroupRole
-						.setImageResource(R.drawable.ic_userinfo_groupowner);
-			}
-		} else {
-			mIvIndustry.setVisibility(View.GONE);
-		}
-		if (!android.text.TextUtils.isEmpty(mPeople.getIndustry())) {
-			mIvIndustry.setVisibility(View.VISIBLE);
-			mIvIndustry.setImageBitmap(PhotoUtils.getIndustry(
-					FeedProfileActivity.this, mPeople.getIndustry()));
-		} else {
-			mIvIndustry.setVisibility(View.GONE);
-		}
-		if (mPeople.getIsbindWeibo() != 0) {
-			mIvWeibo.setVisibility(View.VISIBLE);
-			if (mPeople.getIsbindWeibo() == 1) {
-				mIvWeibo.setImageResource(R.drawable.ic_userinfo_weibov);
-			}
-		} else {
-			mIvWeibo.setVisibility(View.GONE);
-		}
-		if (mPeople.getIsbindTxWeibo() != 0) {
-			mIvTxWeibo.setVisibility(View.VISIBLE);
-			if (mPeople.getIsbindTxWeibo() == 1) {
-				mIvTxWeibo.setImageResource(R.drawable.ic_userinfo_tweibov);
-			}
-		} else {
-			mIvTxWeibo.setVisibility(View.GONE);
-		}
-
-		if (mPeople.getIsbindRenRen() != 0) {
-			mIvRenRen.setVisibility(View.VISIBLE);
-		} else {
-			mIvRenRen.setVisibility(View.GONE);
-		}
-		if (mPeople.getDevice() != 0) {
-			mIvDevice.setVisibility(View.VISIBLE);
-			if (mPeople.getDevice() == 1) {
-				mIvDevice.setImageResource(R.drawable.ic_userinfo_android);
-			}
-			if (mPeople.getDevice() == 2) {
-				mIvDevice.setImageResource(R.drawable.ic_userinfo_apple);
-			}
-		} else {
-			mIvDevice.setVisibility(View.GONE);
-		}
-		if (mPeople.getIsRelation() != 0) {
-			mIvRelation.setVisibility(View.VISIBLE);
-		} else {
-			mIvRelation.setVisibility(View.GONE);
-		}
-		if (mPeople.getIsMultipic() != 0) {
-			mIvMultipic.setVisibility(View.VISIBLE);
-		} else {
-			mIvMultipic.setVisibility(View.GONE);
-		}
+		mLayoutGender.setBackgroundResource(people.getGenderBgId());
+		mIvGender.setImageResource(people.getGenderId());
+		mHtvAge.setText(people.getAge() + "");		
 		mEtvContent.setText(mFeed.getContent());
 		if (mFeed.getContentImage() == null) {
 			mIvContent.setVisibility(View.GONE);
 		} else {
 			mIvContent.setVisibility(View.VISIBLE);
-			mIvContent.setImageBitmap(mApplication.getStatusPhoto(mFeed
-					.getContentImage()));
+			//mIvContent.setImageBitmap(mApplication.getStatusPhoto(mFeed.getContentImage()));
 		}
 		mTvDistance.setText(mFeed.getSite());
 		mTvCommentCount.setText(mFeed.getCommentCount() + "");
 	}
+	Handler mHandler = new Handler() {
+		public void handleMessage(android.os.Message msg) {
+			switch (msg.what) {
+			
+			default:
+				break;
+
+			}
+		};
+	};
 
 	@Override
 	public void onClick() {
-		mPopupWindow.showAtLocation(mHeaderLayout, Gravity.RIGHT | Gravity.TOP,
-				-10, mHeaderHeight + 10);
+		mPopupWindow.showAtLocation(title, Gravity.RIGHT | Gravity.TOP,-10, mHeaderHeight + 10);
 	}
 
 	@Override
@@ -356,7 +236,7 @@ public class FeedProfileActivity extends BaseActivity implements
 		case R.id.feedprofile_btn_send:
 			String content = mEetEditer.getText().toString().trim();
 			if (TextUtils.isEmpty(content)) {
-				showCustomToast("请输入评论内容");
+				showToask("请输入评论内容");
 				mEetEditer.requestFocus();
 			} else {
 				String reply = null;
@@ -364,10 +244,7 @@ public class FeedProfileActivity extends BaseActivity implements
 					reply = mEtvEditerTitle.getText().toString().trim();
 				}
 				content = TextUtils.isEmpty(reply) ? content : reply + content;
-				FeedComment comment = new FeedComment("测试用户",
-						"nearby_people_other", content, DateUtils.formatDate(
-								FeedProfileActivity.this,
-								System.currentTimeMillis()));
+				FeedComment comment = new FeedComment("测试用户","nearby_people_other", content, DateUtils.formatDate(FeedProfileActivity.this,System.currentTimeMillis()));
 				mComments.add(0, comment);
 				mAdapter.notifyDataSetChanged();
 			}
@@ -391,8 +268,8 @@ public class FeedProfileActivity extends BaseActivity implements
 
 	private void copy(String text) {
 		ClipboardManager m = (ClipboardManager) getSystemService(Context.CLIPBOARD_SERVICE);
-		m.setText(text);
-		showCustomToast("已成功复制文本");
+		m.setPrimaryClip(ClipData.newPlainText(null, text));
+		showToask("已成功复制文本");
 		mEetEditer.requestFocus();
 	}
 
@@ -463,8 +340,7 @@ public class FeedProfileActivity extends BaseActivity implements
 		if (mIvLoading != null) {
 			mIvLoading.setVisibility(View.VISIBLE);
 			mTvLoading.setText("评论加载中");
-			mLoadingAnimation = AnimationUtils.loadAnimation(
-					FeedProfileActivity.this, R.anim.loading);
+			mLoadingAnimation = AnimationUtils.loadAnimation(FeedProfileActivity.this, R.anim.loading);
 			mIvLoading.startAnimation(mLoadingAnimation);
 		}
 	}
@@ -513,15 +389,14 @@ public class FeedProfileActivity extends BaseActivity implements
 				} catch (InterruptedException e) {
 					e.printStackTrace();
 				}
-				return JsonResolveUtils.resoleFeedComment(
-						FeedProfileActivity.this, mComments);
+				return JsonResolveUtils.resoleFeedComment(FeedProfileActivity.this, mComments);
 			}
 
 			@Override
 			protected void onPostExecute(Boolean result) {
 				super.onPostExecute(result);
 				if (!result) {
-					showCustomToast("数据加载失败...");
+					showToask("数据加载失败...");
 					mLayoutLoading.setVisibility(View.GONE);
 					mIvLoading.clearAnimation();
 				} else {
