@@ -2,7 +2,7 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="fill_parent"
     android:layout_height="wrap_content"
-    android:background="@color/background_undercard"
+    android:background="@color/window_bg"
     android:orientation="vertical"
     android:paddingTop="10dip" >
 
@@ -65,7 +65,7 @@
                         android:minHeight="36dip"
                         android:orientation="vertical" >
 
-                        <com.immomo.momo.android.view.EmoticonsTextView
+                        <com.movie.view.EmoticonsTextView
                             android:id="@+id/header_feed_etv_name"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
@@ -97,7 +97,7 @@
                                     android:layout_height="8dip"
                                     android:scaleType="fitXY" />
 
-                                <com.immomo.momo.android.view.HandyTextView
+                                <com.movie.view.HandyTextView
                                     android:id="@+id/header_feed_htv_age"
                                     android:layout_width="wrap_content"
                                     android:layout_height="wrap_content"
@@ -110,7 +110,7 @@
                     </LinearLayout>
                 </RelativeLayout>
 
-                <com.immomo.momo.android.view.EmoticonsTextView
+                <com.movie.view.EmoticonsTextView
                     android:id="@+id/header_feed_etv_content"
                     android:layout_width="fill_parent"
                     android:layout_height="wrap_content"
@@ -119,15 +119,20 @@
                     android:textColor="@color/font_attribute"
                     android:textSize="15sp" />
 
-                <ImageView
-                    android:id="@+id/header_feed_iv_content"
-                    android:layout_width="80dip"
-                    android:layout_height="80dip"
+                <HorizontalScrollView
+                    android:layout_width="match_parent"
+                    android:layout_height="@dimen/dynamic_image_horizontal_height"
                     android:layout_below="@+id/header_feed_etv_content"
-                    android:layout_marginTop="3dip"
-                    android:clickable="true"
-                    android:scaleType="centerCrop"
-                    android:visibility="gone" />
+                    android:layout_gravity="center_vertical"
+                    android:scrollbars="none" >
+
+                    <LinearLayout
+                        android:id="@+id/feed_item_content_images"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:orientation="horizontal" >
+                    </LinearLayout>
+                </HorizontalScrollView>
             </RelativeLayout>
 
             <RelativeLayout

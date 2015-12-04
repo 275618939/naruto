@@ -1,7 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
-    android:layout_height="match_parent" >
+    android:layout_height="match_parent"
+    android:background="@color/window_bg" >
 
     <include
         android:id="@+id/title_bar"
@@ -62,7 +63,7 @@
                 android:layout_width="50dip"
                 android:layout_height="46dip"
                 android:layout_alignParentRight="true"
-                android:background="@drawable/btn_chatbtn3"
+                android:background="@drawable/btn_chatbtn4"
                 android:text="评论"
                 android:textColor="@color/white" />
 

@@ -69,7 +69,6 @@ public class FeedProfileActivity extends BaseActivity implements
 	private ImageView mIvGender;
 	private HandyTextView mHtvAge;
 	private EmoticonsTextView mEtvContent;
-	private ImageView mIvContent;
 	private LinearLayout mLayoutComment;
 	private TextView mTvCommentCount;
 	private TextView mTvDistance;
@@ -77,7 +76,7 @@ public class FeedProfileActivity extends BaseActivity implements
 	private TextView mTvLoading;
 	private ImageView mIvLoading;
 	private EmoteInputView mInputView;
-
+    private LinearLayout contentImages;
 	private FeedProfileCommentsAdapter mAdapter;
 
 	private NearPeople people;
@@ -119,7 +118,21 @@ public class FeedProfileActivity extends BaseActivity implements
 		mBtnSend = (Button) findViewById(R.id.feedprofile_btn_send);
 		mEetEditer = (EmoticonsEditText) findViewById(R.id.feedprofile_eet_editer);
 		mInputView = (EmoteInputView) findViewById(R.id.feedprofile_eiv_input);
-	
+		mHeaderView = LayoutInflater.from(FeedProfileActivity.this).inflate(R.layout.header_feed, null);
+		mIvAvatar = (ImageView) mHeaderView.findViewById(R.id.header_feed_iv_avatar);
+		mTvTime = (TextView) mHeaderView.findViewById(R.id.header_feed_tv_time);
+		mEtvName = (EmoticonsTextView) mHeaderView.findViewById(R.id.header_feed_etv_name);
+		mLayoutGender = (LinearLayout) mHeaderView.findViewById(R.id.header_feed_layout_gender);
+		mIvGender = (ImageView) mHeaderView.findViewById(R.id.header_feed_iv_gender);
+		mHtvAge = (HandyTextView) mHeaderView.findViewById(R.id.header_feed_htv_age);
+		mEtvContent = (EmoticonsTextView) mHeaderView.findViewById(R.id.header_feed_etv_content);
+		contentImages = (LinearLayout) mHeaderView.findViewById(R.id.feed_item_content_images);
+		mLayoutComment = (LinearLayout) mHeaderView.findViewById(R.id.header_feed_layout_comment);
+		mTvCommentCount = (TextView) mHeaderView.findViewById(R.id.header_feed_tv_commentcount);
+		mTvDistance = (TextView) mHeaderView.findViewById(R.id.header_feed_tv_distance);
+		mLayoutLoading = (RelativeLayout) mHeaderView.findViewById(R.id.header_feed_layout_loading);
+		mTvLoading = (TextView) mHeaderView.findViewById(R.id.header_feed_tv_loading);
+		mIvLoading = (ImageView) mHeaderView.findViewById(R.id.header_feed_iv_loading);
 	}
 
 	@Override
@@ -155,7 +168,10 @@ public class FeedProfileActivity extends BaseActivity implements
 	}
 
 	private void initHeaderView() {
-		mHeaderView = LayoutInflater.from(FeedProfileActivity.this).inflate(R.layout.header_feed, null);
+		people = new NearPeople();
+		/*临时人员信息*/
+		people.setGender(0);
+		people.setAge(18);
 		imageLoader.displayImage(mFeed.getPortrait(), mIvAvatar,NarutoApplication.imageOptions);
 		mEtvName.setText(mFeed.getName());
 		mTvTime.setText(mFeed.getTime());
@@ -163,11 +179,18 @@ public class FeedProfileActivity extends BaseActivity implements
 		mIvGender.setImageResource(people.getGenderId());
 		mHtvAge.setText(people.getAge() + "");		
 		mEtvContent.setText(mFeed.getContent());
-		if (mFeed.getContentImage() == null) {
-			mIvContent.setVisibility(View.GONE);
-		} else {
-			mIvContent.setVisibility(View.VISIBLE);
-			//mIvContent.setImageBitmap(mApplication.getStatusPhoto(mFeed.getContentImage()));
+		if (mFeed.getContentImage() != null) {
+			contentImages.removeAllViews();
+			LinearLayout dynamicLayout=null;
+			ImageView dynamicImageView=null;
+			for(String image:mFeed.getContentImage()){
+				dynamicLayout=(LinearLayout)getLayoutInflater().inflate(R.layout.dynamic_content_image, null);
+				dynamicImageView= (ImageView)dynamicLayout.getChildAt(0);
+				imageLoader.displayImage(image, dynamicImageView);
+				contentImages.addView(dynamicLayout);
+			}
+			dynamicLayout=null;
+			dynamicImageView=null;
 		}
 		mTvDistance.setText(mFeed.getSite());
 		mTvCommentCount.setText(mFeed.getCommentCount() + "");

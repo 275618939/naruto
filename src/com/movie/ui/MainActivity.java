@@ -1,34 +1,33 @@
 package com.movie.ui;
 
-import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Map;
 
 import android.app.AlertDialog;
 import android.content.DialogInterface;
+import android.content.Intent;
 import android.os.Bundle;
-import android.os.Debug;
 import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.View.OnClickListener;
+import android.widget.ImageView;
 import android.widget.TabHost.TabSpec;
 import android.widget.TextView;
 
 import com.movie.R;
 import com.movie.app.BaseActivity;
 import com.movie.app.Constant;
-import com.movie.client.service.BaseService;
 import com.movie.client.service.CallBackService;
 import com.movie.fragment.HomeFragment;
 import com.movie.fragment.MissFragment;
 import com.movie.fragment.MoiveFragment;
 import com.movie.fragment.SelfFragment;
-import com.movie.network.HttpLoginAutoService;
 import com.movie.system.service.LocationService;
 import com.movie.view.FragmentTabHost;
 
-public class MainActivity extends BaseActivity implements OnClickListener, CallBackService {
+public class MainActivity extends BaseActivity implements OnClickListener,
+		CallBackService {
 
 	/** 首页底部导航栏文本 */
 	String tabTextviewArray[] = { "发现", "约会", "影片", "我的" };
@@ -37,59 +36,54 @@ public class MainActivity extends BaseActivity implements OnClickListener, CallB
 	ArrayList<Fragment> fragments = new ArrayList<Fragment>();
 	FragmentTabHost mTabHost;
 	LayoutInflater layoutInflater;
-	BaseService httpLoginAutoService;
 	LocationService locationService;
-	TextView textHeapView;
 	String login;
+	ImageView addDynamic;
 
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_main);
-		httpLoginAutoService = new HttpLoginAutoService(this);
 		locationService = new LocationService(this);
 		initViews();
 		initEvents();
 		initData();
 	}
+
 	/**
 	 * 初始化界面
 	 */
 	@Override
 	protected void initViews() {
+		addDynamic=(ImageView)findViewById(R.id.add_dynamic);
 		locationService.initLocation(Constant.UPLOAD_LOCATION_TIME);
 		layoutInflater = LayoutInflater.from(this);
 		mTabHost = (FragmentTabHost) findViewById(android.R.id.tabhost);
 		mTabHost.setup(this, getSupportFragmentManager(), R.id.realtabcontent);
 		int count = fragmentArray.length;
 		for (int i = 0; i < count; i++) {
-			TabSpec tabSpec = mTabHost.newTabSpec(tabTextviewArray[i]).setIndicator(getTabItemView(i));
+			TabSpec tabSpec = mTabHost.newTabSpec(tabTextviewArray[i])
+					.setIndicator(getTabItemView(i));
 			mTabHost.addTab(tabSpec, fragmentArray[i], null);
 		}
 		mTabHost.getTabWidget().setDividerDrawable(null);
-	
-		textHeapView=(TextView)findViewById(R.id.text_heap);
-		textHeapView.setOnClickListener(this);
-	}
-	
-	@Override
-	protected void initEvents() {
-		// TODO Auto-generated method stub
-		
-	}
-	@Override
-	protected void initData() {
-		loadLogin();
-		locationService.start(false);
-	}
-	private void loadLogin(){
-		//自动登录
-		httpLoginAutoService.execute(this);
-	}
-	private void uploadLocation(){
-		
+
+		// textHeapView=(TextView)findViewById(R.id.text_heap);
+		// textHeapView.setOnClickListener(this);
 	}
 
+	@Override
+	protected void initEvents() {
+		addDynamic.setOnClickListener(this);
+
+	}
+
+	@Override
+	protected void initData() {
+		locationService.start(false);
+	}
+	
+	
 	@Override
 	protected void onDestroy() {
 		super.onDestroy();
@@ -116,20 +110,23 @@ public class MainActivity extends BaseActivity implements OnClickListener, CallB
 	public void onClick(View v) {
 
 		switch (v.getId()) {
-			case R.id.text_heap:
+		case R.id.add_dynamic:
+		   Intent dynamicIntent=new Intent(this, DynamicCreateActivity.class);
+		   startActivity(dynamicIntent);
+		break;
+		/*case R.id.text_heap:
 			try {
 				Debug.dumpHprofData("/naruto/naruto.hprof");
 			} catch (IOException e) {
 				// TODO Auto-generated catch block
 				e.printStackTrace();
 			}
-				break;
-			default:
-				break;
-		
+			break;*/
+		default:
+			break;
+
 		}
 
-	
 	}
 
 	@Override
@@ -147,7 +144,7 @@ public class MainActivity extends BaseActivity implements OnClickListener, CallB
 			public void onClick(DialogInterface diaCustomDialoglog, int which) {
 				MainActivity.this.finish();
 				locationService.stop();
-				locationService=null;
+				locationService = null;
 			}
 		});
 		AlertDialog dialog = builder.create();
@@ -160,8 +157,8 @@ public class MainActivity extends BaseActivity implements OnClickListener, CallB
 		hideProgressDialog();
 		String code = map.get(Constant.ReturnCode.RETURN_STATE).toString();
 		if (Constant.ReturnCode.STATE_1.equals(code)) {
-			
-		}else {
+
+		} else {
 			String desc = map.get(Constant.ReturnCode.RETURN_MESSAGE).toString();
 			showToask(desc);
 		}
@@ -179,6 +176,4 @@ public class MainActivity extends BaseActivity implements OnClickListener, CallB
 		showProgressDialog("提示", "请求中...");
 	}
 
-	
-	
 }

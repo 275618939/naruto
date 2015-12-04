@@ -67,7 +67,7 @@
                 </LinearLayout>
             </RelativeLayout>
 
-            <TextView
+            <com.movie.view.EmoticonsTextView
                 android:id="@+id/feed_item_etv_content"
                 android:layout_width="fill_parent"
                 android:layout_height="wrap_content"

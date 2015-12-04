@@ -29,6 +29,8 @@ public class NearPeople extends BaseBean implements Parcelable {
 	private String distance;// 距离
 	private String time;// 时间
 	private String sign;// 签名
+	
+	public NearPeople(){}
 
 	public NearPeople(String uid, String avatar, int isVip, int isGroupRole,
 			String industry, int isbindWeibo, int isbindTxWeibo,

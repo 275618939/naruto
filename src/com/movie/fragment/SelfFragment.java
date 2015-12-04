@@ -46,6 +46,7 @@ import com.nostra13.universalimageloader.core.ImageLoader;
 
 public class SelfFragment extends BaseFragment implements OnClickListener , CallBackService{
 	
+	public static final int RELOAGIN = 0X101;
 	public static final int PTHOTO_UPDATE = 0X001;
 	public static final int LOGOUT = 0X110;
 	public static final int MAX_SHOW_USER_PHOTO=4;
@@ -209,6 +210,18 @@ public class SelfFragment extends BaseFragment implements OnClickListener , Call
 		cinemaPoi.putExtra(MISS_KEY, type);
 		startActivity(cinemaPoi);
 	}
+	@Override
+	public void onActivityResult(int requestCode, int resultCode, Intent data) {
+		switch (resultCode) { 
+		   case RELOAGIN:
+		    //Bundle b=data.getExtras(); 
+		    //String str=b.getString("str1");
+		    loadUser();
+		    break;
+		default:
+		    break;
+		    }
+		}
 
 	@Override
 	public void onClick(View v) {
@@ -277,7 +290,7 @@ public class SelfFragment extends BaseFragment implements OnClickListener , Call
 		String code = map.get(Constant.ReturnCode.RETURN_STATE).toString();
 		if (Constant.ReturnCode.STATE_1.equals(code)) {
 			String tag = map.get(Constant.ReturnCode.RETURN_TAG).toString();
-			if (tag.endsWith(httpUsersService.TAG)) {
+			if (tag.equals(httpUsersService.TAG)) {
 				user = new User();			
 				Map<String, Object> values = (Map<String, Object>) map.get(ReturnCode.RETURN_VALUE);
 				user.setMemberId(values.get("memberId").toString());
@@ -312,13 +325,18 @@ public class SelfFragment extends BaseFragment implements OnClickListener , Call
 				logoutLayout.setVisibility(View.VISIBLE);
 				loginAfterLayout.setVisibility(View.VISIBLE);
 				photoGridview.setVisibility(View.VISIBLE);
-			}else if(tag.endsWith(httpLoginAutoService.TAG)){
+			}else if(tag.equals(httpLoginAutoService.TAG)){
 				loadUser();
+			}else if(tag.equals(httpLogotService.TAG)){
+				photoGridview.setVisibility(View.GONE);
 			}
 		}else if (Constant.ReturnCode.STATE_3.equals(code)) {
-			//自动登陆
-			autoLogin();
-			
+			//提示用户登入
+			//autoLogin();
+			Intent loginIntent = new Intent(getActivity(),LoginActivity.class);
+			getActivity().overridePendingTransition(R.anim.slide_in_right, R.anim.slide_out_left);
+			//startActivity(loginIntent);
+			startActivityForResult(loginIntent, RELOAGIN);
 		}else {
 			String message = map.get(Constant.ReturnCode.RETURN_MESSAGE).toString();
 			showToask(message);

@@ -5,17 +5,6 @@
     android:id="@+id/title_bar"
     style="@style/title_bar_style" >
 
-    <!--
-         <ImageView
-        android:id="@+id/user_info"
-        android:layout_width="@dimen/head_size"
-        android:layout_height="@dimen/head_size"
-        android:layout_centerVertical="true"
-        android:layout_marginLeft="2dp"
-        android:background="@drawable/center"
-        android:padding="3dp" />
-    -->
-
     <ImageView
         android:id="@+id/user_image"
         android:layout_width="40dp"
@@ -42,14 +31,15 @@
             android:text="@string/app_name" />
     </LinearLayout>
 
-    <TextView
-        android:id="@+id/text_heap"
-        style="@style/title_text_style"
-        android:layout_width="wrap_content"
-        android:layout_height="match_parent"
+    <ImageView
+        android:id="@+id/add_dynamic"
+        android:layout_width="35dp"
+        android:layout_height="35dp"
         android:layout_alignParentRight="true"
-        android:gravity="center_vertical"
-        android:visibility="gone"
-        android:text="生成hprof文件" />
+        android:layout_centerVertical="true"
+        android:clickable="true"
+        android:layout_marginRight="@dimen/layout_right"
+        android:background="@drawable/adddynamic"
+        android:scaleType="centerCrop" />
 
 </RelativeLayout>

@@ -38,7 +38,7 @@
                     android:layout_height="wrap_content"
                     android:layout_marginTop="@dimen/layout_item_top" >
 
-                    <ImageView
+                    <com.movie.view.RoundImageView
                         android:id="@+id/login_logo"
                         android:layout_width="@dimen/user_logo_image_width"
                         android:layout_height="@dimen/user_logo_image_height"
@@ -217,21 +217,6 @@
                         android:background="@drawable/qian" />
                 </LinearLayout>
             </LinearLayout>
-
-            <TextView
-                android:id="@+id/miss_create_btn"
-                style="@style/common_content_white_hint"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginBottom="@dimen/btn_margin_bttom"
-                android:layout_marginLeft="@dimen/btn_margin_left_40"
-                android:layout_marginRight="@dimen/btn_margin_right_40"
-                android:layout_marginTop="@dimen/btn_margin_top"
-                android:background="@drawable/background_with_border_radius_btn"
-                android:gravity="center"
-                android:paddingBottom="@dimen/item_padding_bottom"
-                android:paddingTop="@dimen/item_padding_top"
-                android:text="@string/miss_create" />
 
             <LinearLayout
                 android:id="@+id/my_miss_layout"

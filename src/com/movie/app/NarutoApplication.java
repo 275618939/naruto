@@ -9,7 +9,9 @@ import java.util.Map;
 import android.app.Application;
 import android.content.Context;
 import android.graphics.Bitmap;
+import android.util.DisplayMetrics;
 import android.util.Log;
+import android.view.WindowManager;
 
 import com.movie.R;
 import com.movie.client.db.SQLHelper;
@@ -34,12 +36,19 @@ public class NarutoApplication extends Application {
 	public static Map<String, Integer> mEmoticonsId = new HashMap<String, Integer>();
 	public static List<String> mEmoticons_Zem = new ArrayList<String>();
 	public static List<String> mEmoticons_Zemoji = new ArrayList<String>();
-
+	/**
+	 * 屏幕的宽度、高度、密度
+	 */
+	protected int mScreenWidth;
+	protected int mScreenHeight;
+	protected float mDensity;
 	@Override
 	public void onCreate() {
 		super.onCreate();
 		initImageLoader(getApplicationContext());
 		mAppApplication = this;
+		showMetrices();
+		initZEM();
 		
 	}
 
@@ -53,6 +62,18 @@ public class NarutoApplication extends Application {
 		if (sqlHelper == null)
 			sqlHelper = new SQLHelper(mAppApplication);
 		return sqlHelper;
+	}
+	private void showMetrices(){
+		WindowManager wm = (WindowManager)getApplicationContext().getSystemService(Context.WINDOW_SERVICE);
+		DisplayMetrics metric = new DisplayMetrics();
+		wm.getDefaultDisplay().getMetrics(metric);
+		mScreenWidth = metric.widthPixels;
+		mScreenHeight = metric.heightPixels;
+		mDensity = metric.density;
+		Log.i("屏幕宽度","------------>>>>>"+mScreenWidth);
+		Log.i("屏幕高度","------------>>>>>"+mScreenHeight);
+		Log.i("屏幕密度","------------>>>>>"+ mDensity+"");
+		
 	}
 
 	@Override

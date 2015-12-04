@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="fill_parent"
+    android:layout_height="fill_parent"
+    android:background="@color/window_bg"
+    android:orientation="vertical" >
+
+    <include
+        android:id="@+id/title_bar"
+        layout="@layout/common_head" />
+
+    <EditText
+        android:id="@+id/dynamic_content"
+        android:layout_width="match_parent"
+        android:layout_height="100dp"
+        android:layout_margin="8dp"
+        android:background="@null"
+        android:gravity="left|top"
+        android:hint="@string/dynamic_create_hint"
+        android:inputType="textMultiLine"
+        android:maxLength="100"
+        android:minLines="4"
+        android:singleLine="false" >
+    </EditText>
+
+    <GridView
+        android:id="@+id/userPhotoGridview"
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/dynamic_image_height"
+        android:layout_marginLeft="@dimen/layout_left_0"
+        android:horizontalSpacing="3dp"
+        android:numColumns="4"
+        android:scrollbars="none"
+        android:verticalSpacing="5dp" >
+    </GridView>
+
+</LinearLayout>

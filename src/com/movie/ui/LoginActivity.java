@@ -25,6 +25,7 @@ import com.movie.client.service.BaseService;
 import com.movie.client.service.CallBackService;
 import com.movie.client.service.LoginService;
 import com.movie.client.service.UserService;
+import com.movie.fragment.SelfFragment;
 import com.movie.network.HttpCaptchaService;
 import com.movie.network.HttpLoginService;
 import com.movie.util.BytesUtils;
@@ -138,12 +139,12 @@ public class LoginActivity extends BaseActivity implements OnClickListener, Call
 
 	@Override
 	public void onBackPressed() {
-		super.onBackPressed();
 		//overridePendingTransition(R.anim.slide_in_left, R.anim.slide_out_right);
-		Intent intent = new Intent(this, MainActivity.class);
-		this.startActivity(intent);
+		//Intent intent = new Intent(this, MainActivity.class);
+		//this.startActivity(intent);
+		setResult(SelfFragment.RELOAGIN);
+		super.onBackPressed();
 		this.finish();
-		
 	}
 
 	

@@ -5,6 +5,7 @@ import java.util.List;
 import android.content.ClipData;
 import android.content.ClipboardManager;
 import android.content.Context;
+import android.content.Intent;
 import android.os.Handler;
 import android.util.TypedValue;
 import android.view.Gravity;
@@ -25,6 +26,7 @@ import com.movie.pop.OtherFeedListPopupWindow;
 import com.movie.pop.OtherFeedListPopupWindow.onOtherFeedListPopupItemClickListner;
 import com.movie.pop.SimpleListDialog;
 import com.movie.pop.SimpleListDialog.onSimpleListItemClickListener;
+import com.movie.ui.FeedProfileActivity;
 import com.movie.view.HandyTextView;
 
 public class DynamicAdapter extends BaseObjectListAdapter implements onSimpleListItemClickListener, onOtherFeedListPopupItemClickListner{
@@ -48,6 +50,7 @@ public class DynamicAdapter extends BaseObjectListAdapter implements onSimpleLis
 	public View getView(final int position, View convertView, ViewGroup parent) {
 
 		ViewHolder holder;
+		
 		if (convertView == null) {
 			convertView = mInflater.inflate(R.layout.item_dynamic, null);
 			holder = new ViewHolder();
@@ -96,6 +99,24 @@ public class DynamicAdapter extends BaseObjectListAdapter implements onSimpleLis
 				v.getLocationOnScreen(location);
 				mPopupWindow.showAtLocation(v, Gravity.NO_GRAVITY,location[0], location[1] - mWidthAndHeight + 30);
 				
+			}
+		});
+		holder.root.setOnClickListener(new OnClickListener() {
+			@Override
+			public void onClick(View v) {
+				mPosition = position;
+				Intent intent = new Intent(mContext, FeedProfileActivity.class);
+				intent.putExtra("entity_feed", (Feed) getItem(mPosition));
+				mContext.startActivity(intent);
+			}
+		});
+		holder.contentImages.setOnClickListener(new OnClickListener() {
+			@Override
+			public void onClick(View v) {
+				mPosition = position;
+				Intent intent = new Intent(mContext, FeedProfileActivity.class);
+				intent.putExtra("entity_feed", (Feed) getItem(mPosition));
+				mContext.startActivity(intent);
 			}
 		});
 

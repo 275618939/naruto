@@ -99,6 +99,16 @@
             </intent-filter>
         </activity>
         <activity
+            android:name=".ui.DynamicCreateActivity"
+            android:alwaysRetainTaskState="true"
+            android:launchMode="singleTop"
+            android:screenOrientation="portrait" />
+        <activity
+            android:name=".ui.FeedProfileActivity"
+            android:alwaysRetainTaskState="true"
+            android:launchMode="singleTop"
+            android:screenOrientation="portrait" />
+        <activity
             android:name=".ui.LoginActivity"
             android:alwaysRetainTaskState="true"
             android:launchMode="singleTop"

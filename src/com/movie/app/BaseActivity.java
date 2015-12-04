@@ -11,6 +11,7 @@ import android.content.Intent;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.v4.app.FragmentActivity;
+import android.util.DisplayMetrics;
 import android.util.Log;
 import android.view.View;
 import android.widget.Toast;
@@ -28,18 +29,11 @@ public abstract class BaseActivity extends FragmentActivity {
 	protected NetWorkUtils mNetWorkUtils;
 	protected LoginService loginService;
 	protected ImageLoader imageLoader=ImageLoader.getInstance();
-	/**
-	 * 屏幕的宽度、高度、密度
-	 */
-	protected int mScreenWidth;
-	protected int mScreenHeight;
-	protected float mDensity;
 	protected List<AsyncTask<Void, Void, Boolean>> mAsyncTasks = new ArrayList<AsyncTask<Void, Void, Boolean>>();
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
-		loginService=new LoginService();
-		
+		loginService=new LoginService();	
 	}
 	/** 初始化视图 **/
 	protected abstract void initViews();
