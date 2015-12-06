@@ -352,7 +352,7 @@ public class MovieDetailActivity extends BaseActivity implements OnClickListener
 				    	filmLoveMore.setVisibility(View.VISIBLE);
 				    }
 				    if(values.size()>0){
-				        wantSeeMovieAdapter.updateData(users);
+				        wantSeeMovieAdapter.notifyDataSetChanged();
 				    	filmLoveLayout.setVisibility(View.VISIBLE);
 				    }
 				}else if(tag.equals(httpFilmLoveUpdateService.TAG)) { 
@@ -376,7 +376,7 @@ public class MovieDetailActivity extends BaseActivity implements OnClickListener
 					    comments.add(movieComment);
 					    size++;
 					}
-					commentAdapter.updateData(comments);
+					commentAdapter.notifyDataSetChanged();
 				
 				
 				}

@@ -5,70 +5,30 @@ import java.util.List;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Handler;
-import android.view.LayoutInflater;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.view.ViewGroup;
-import android.widget.BaseAdapter;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.movie.R;
+import com.movie.app.BaseObjectListAdapter;
 import com.movie.app.NarutoApplication;
+import com.movie.client.bean.BaseBean;
 import com.movie.client.bean.Miss;
 import com.movie.state.MissState;
 import com.movie.state.MissStateBackColor;
 import com.movie.ui.MissSelfDetailActivity;
 import com.movie.util.StringUtil;
-import com.nostra13.universalimageloader.core.ImageLoader;
 
-public class MissSelfQueryAdapter extends BaseAdapter {
+public class MissSelfQueryAdapter extends BaseObjectListAdapter {
 
 	
-	
-	
-	List<Miss> misses;
-	Context context;
-	LayoutInflater inflater;
-	ImageLoader imageLoaderCache;
-	Handler handler;
 	int missType;
-
-	public MissSelfQueryAdapter(Context context, List<Miss> misses) {
-		this.context = context;
-		this.misses = misses;
-		inflater = LayoutInflater.from(context);
-		imageLoaderCache=ImageLoader.getInstance();
-
-	}
-	public MissSelfQueryAdapter(Context context,Handler handler, List<Miss> misses) {
-		this.context = context;
-		this.misses = misses;
-		this.handler=handler;
-		inflater = LayoutInflater.from(context);
-		imageLoaderCache=ImageLoader.getInstance();
-
-	}
-
-	@Override
-	public int getCount() {
-		return misses == null ? 0 : misses.size();
-	}
-
-	@Override
-	public Miss getItem(int position) {
-		if (misses != null && misses.size() != 0) {
-			return misses.get(position);
-		}
-		return null;
-	}
-
-	@Override
-	public long getItemId(int position) {
-		// TODO Auto-generated method stub
-		return position;
+	public MissSelfQueryAdapter(Context context, Handler mHandler,List<? extends BaseBean> datas) {
+		super(context, mHandler, datas);
 	}
 
 	@Override
@@ -77,7 +37,7 @@ public class MissSelfQueryAdapter extends BaseAdapter {
 		ViewHolder mHolder;
 		View view = convertView;
 		if (view == null) {
-			view = inflater.inflate(R.layout.miss_slef_item, null);
+			view = mInflater.inflate(R.layout.miss_slef_item, null);
 			mHolder = new ViewHolder();
 			mHolder.missItemView = (RelativeLayout) view.findViewById(R.id.miss_item_view);
 			mHolder.missIcon = (ImageView) view.findViewById(R.id.miss_icon);
@@ -93,18 +53,25 @@ public class MissSelfQueryAdapter extends BaseAdapter {
 			mHolder = (ViewHolder) view.getTag();
 		}
 		// 获取position对应的数据
-		Miss miss = getItem(position);
-		imageLoaderCache.displayImage(miss.getIcon(),mHolder.missIcon,NarutoApplication.imageOptions);
+		final Miss miss = (Miss)getItem(position);
+		imageLoader.displayImage(miss.getIcon(),mHolder.missIcon,NarutoApplication.imageOptions);
 		//mHolder.missUser.setText(miss.getMemberId());
 		mHolder.missDate.setText(StringUtil.getShortStrBySym(miss.getRunTime(),":"));
 		mHolder.missName.setText(miss.getCinameName());
 		//mHolder.missAddress.setText(miss.getCinameAddress());
 		int sourceId = MissStateBackColor.getState(miss.getStatus()).getSourceId();
 		mHolder.missItemView.setBackgroundResource(sourceId);
-		mHolder.missItemView.setOnClickListener(new UserSelectAction(position));
+		mHolder.missItemView.setOnClickListener(new OnClickListener() {
+			@Override
+			public void onClick(View v) {
+				Intent intent = new Intent(mContext, MissSelfDetailActivity.class);
+				intent.putExtra("miss", miss);
+				mContext.startActivity(intent);
+			}
+		});
 		if(miss.getStatus().intValue()==MissState.Completed.getState()){
 			mHolder.missBtnLayout.setVisibility(View.VISIBLE);
-			mHolder.missBtn.setText(context.getResources().getString(R.string.branch_coin));
+			mHolder.missBtn.setText(mContext.getResources().getString(R.string.branch_coin));
 		}
 		return view;
 	}
@@ -127,42 +94,8 @@ public class MissSelfQueryAdapter extends BaseAdapter {
 		// 约会操作
 		TextView missBtn;
 
-
-
 	}
 
-	public void updateData(List<Miss> misses) {
-		this.misses = misses;
-		this.notifyDataSetChanged();
-
-	}
-	
-
-	protected class UserSelectAction implements OnClickListener {
-
-		int position;
-
-		public UserSelectAction(int position) {
-			this.position = position;
-		}
-
-		@Override
-		public void onClick(final View v) {
-
-			switch (v.getId()) {
-			case R.id.miss_item_view:
-				Miss miss = misses.get(position);
-				Intent intent = new Intent(context, MissSelfDetailActivity.class);
-				intent.putExtra("miss", miss);
-				context.startActivity(intent);
-				break;
-			default:
-				break;
-			}
-			
-		}
-
-	}
 
 	public void setMissType(int missType) {
 		this.missType = missType;

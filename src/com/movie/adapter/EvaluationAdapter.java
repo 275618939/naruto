@@ -114,8 +114,19 @@ public class EvaluationAdapter extends BaseAdapter {
 			}
 		}
 		if(user!=null) {
-			mHolder.dictionary.setOnClickListener(new UserSelectAction(position));
+			mHolder.dictionary.setOnClickListener(new OnClickListener() {
+				@Override
+				public void onClick(View v) {
+					Message message = new Message();
+					message.what = Miss.EVLATOIN_USER;
+					Bundle bundle = new Bundle();
+					bundle.putSerializable("user", user);
+					message.setData(bundle);
+					handler.sendMessage(message);
+				}
+			});
 		}
+	
 		return view;
 	}
 	
@@ -126,34 +137,7 @@ public class EvaluationAdapter extends BaseAdapter {
 		TextView dictionary;
 		
 	}
-	protected class UserSelectAction implements OnClickListener {
-
-		int position;
-
-		public UserSelectAction(int position) {
-			this.position = position;
-		}
-
-		@Override
-		public void onClick(final View v) {
-
-			switch (v.getId()) {
-			case R.id.comment:
-				Message message = new Message();
-				message.what = Miss.EVLATOIN_USER;
-				Bundle bundle = new Bundle();
-				bundle.putSerializable("user", user);
-				message.setData(bundle);
-				handler.sendMessage(message);
-				break;
-			
-			default:
-				break;
-			}
-			
-		}
-
-	}
+	
 	public void updateData(boolean showCount ,int sex,List<Map<Integer,Integer>> dictionarys) {
 		this.sex=sex;
 		this.showCount=showCount;

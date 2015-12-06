@@ -97,14 +97,21 @@ public class FeedProfileActivity extends BaseActivity implements
 		initEvents();
 		init();
 	}
-
+    
 	@Override
 	public void onBackPressed() {
 		if (mInputView.isShown()) {
 			mInputView.setVisibility(View.GONE);
 		} else {
-			finish();
+			
 		}
+		finish();
+	}
+	@Override
+	protected void onDestroy() {
+		super.onDestroy();
+		mComments.clear();
+		mAdapter=null;
 	}
 	
 

@@ -6,17 +6,17 @@ import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Handler;
-import android.view.LayoutInflater;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.view.ViewGroup;
-import android.widget.BaseAdapter;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.movie.R;
+import com.movie.app.BaseObjectListAdapter;
+import com.movie.client.bean.BaseBean;
 import com.movie.client.bean.Miss;
 import com.movie.client.bean.User;
 import com.movie.fragment.SelfFragment;
@@ -24,55 +24,20 @@ import com.movie.state.MissState;
 import com.movie.ui.MissUserQueryActivity;
 import com.movie.view.MessageDialog;
 
-public class MissQueryAdapter extends BaseAdapter {
-
+public class MissQueryAdapter extends BaseObjectListAdapter {
 	
 	
-	
-	List<Miss> misses;
-	Context context;
-	LayoutInflater inflater;
-	Handler handler;
+	public MissQueryAdapter(Context context, Handler mHandler,List<? extends BaseBean> datas) {
+		super(context, mHandler, datas);
+	}
 	int missType;
-
-	public MissQueryAdapter(Context context, List<Miss> misses) {
-		this.context = context;
-		this.misses = misses;
-		inflater = LayoutInflater.from(context);
-	}
-	public MissQueryAdapter(Context context,Handler handler, List<Miss> misses) {
-		this.context = context;
-		this.misses = misses;
-		this.handler=handler;
-		inflater = LayoutInflater.from(context);
-	}
-
-	@Override
-	public int getCount() {
-		return misses == null ? 0 : misses.size();
-	}
-
-	@Override
-	public Miss getItem(int position) {
-		if (misses != null && misses.size() != 0) {
-			return misses.get(position);
-		}
-		return null;
-	}
-
-	@Override
-	public long getItemId(int position) {
-		// TODO Auto-generated method stub
-		return position;
-	}
-
 	@Override
 	public View getView(int position, View convertView, ViewGroup parent) {
 		// TODO Auto-generated method stub
 		ViewHolder mHolder;
 		View view = convertView;
 		if (view == null) {
-			view = inflater.inflate(R.layout.miss_item, null);
+			view = mInflater.inflate(R.layout.miss_item, null);
 			mHolder = new ViewHolder();
 			mHolder.missItemView = (RelativeLayout) view.findViewById(R.id.miss_item_view);
 			mHolder.missIcon = (ImageView) view.findViewById(R.id.miss_icon);
@@ -91,22 +56,42 @@ public class MissQueryAdapter extends BaseAdapter {
 			mHolder = (ViewHolder) view.getTag();
 		}
 		// 获取position对应的数据
-		Miss miss = getItem(position);
+		final Miss miss =(Miss)getItem(position);
 		List<User> users = miss.getAttend();
-		// imageLoaderCache.DisplayImage();
-		// mHolder.missIcon.setText(user.getSignature());
 		mHolder.missUser.setText(miss.getMemberId());
 		mHolder.missDate.setText(miss.getRunTime());
 		mHolder.missName.setText(miss.getCinameName());
-		//mHolder.missAddress.setText(miss.getCinameAddress());
-		//mHolder.missState.setText(miss.getStatus());
 		if (null != users) {
 			mHolder.missPart.setText(String.valueOf(users.size()));
 		}
 		if (miss.getStatus().equals(MissState.HaveInHand.getMessage())) {
 			mHolder.missBtnLayout.setVisibility(View.VISIBLE);
-			mHolder.missBtnLayout.setOnClickListener(new UserSelectAction(position));
 			mHolder.missBtn.setText("撤销");
+			mHolder.missBtnLayout.setOnClickListener(new OnClickListener() {
+				@Override
+				public void onClick(final View v) {
+					final MessageDialog.Builder builder = new MessageDialog.Builder(v.getContext());
+					builder.setTitle(R.string.cancel_miss);
+					builder.setMessage("您确定要取消约会么?");
+					builder.setPositiveButton("取消",
+							new DialogInterface.OnClickListener() {
+								public void onClick(DialogInterface dialog, int which) {
+									dialog.dismiss();
+								}
+							});
+					builder.setNegativeButton("确定",
+							new android.content.DialogInterface.OnClickListener() {
+								public void onClick(DialogInterface dialog, int which) {
+									dialog.dismiss();
+									v.setVisibility(View.GONE);
+									mHandler.sendEmptyMessage(Miss.CANCLE_MISS);
+								}
+							});
+
+					builder.create().show();
+					
+				}
+			});
 		}
 		if(missType>SelfFragment.MY_MISS){
 			if(null!=miss.getStage()){
@@ -114,7 +99,19 @@ public class MissQueryAdapter extends BaseAdapter {
 				//mHolder.missStage.setText(MissStage.getState(miss.getStage()).getMessage());
 			}
 		}
-		mHolder.missItemView.setOnClickListener(new UserSelectAction(position));
+		mHolder.missItemView.setOnClickListener(new OnClickListener() {
+			@Override
+			public void onClick(View v) {
+				List<User> users = miss.getAttend();
+				if(null==users||users.size()<=0) {
+					return;
+				}
+				Intent intent = new Intent(mContext, MissUserQueryActivity.class);
+				intent.putExtra("miss", miss);
+				mContext.startActivity(intent);
+				
+			}
+		});
 		return view;
 	}
 
@@ -143,65 +140,6 @@ public class MissQueryAdapter extends BaseAdapter {
 		TextView missBtn;
 
 	}
-
-	public void updateData(List<Miss> misses) {
-		this.misses = misses;
-		this.notifyDataSetChanged();
-
-	}
-	
-
-	protected class UserSelectAction implements OnClickListener {
-
-		int position;
-
-		public UserSelectAction(int position) {
-			this.position = position;
-		}
-
-		@Override
-		public void onClick(final View v) {
-
-			switch (v.getId()) {
-			case R.id.miss_item_view:
-				Miss miss = misses.get(position);
-				List<User> users = miss.getAttend();
-				if(null==users||users.size()<=0) {
-					return;
-				}
-				Intent intent = new Intent(context, MissUserQueryActivity.class);
-				intent.putExtra("miss", miss);
-				context.startActivity(intent);
-				break;
-			case R.id.miss_btn_layout:
-				final MessageDialog.Builder builder = new MessageDialog.Builder(v.getContext());
-				builder.setTitle(R.string.cancel_miss);
-				builder.setMessage("您确定要取消约会么?");
-				builder.setPositiveButton("取消",
-						new DialogInterface.OnClickListener() {
-							public void onClick(DialogInterface dialog, int which) {
-								dialog.dismiss();
-							}
-						});
-				builder.setNegativeButton("确定",
-						new android.content.DialogInterface.OnClickListener() {
-							public void onClick(DialogInterface dialog, int which) {
-								dialog.dismiss();
-								v.setVisibility(View.GONE);
-								handler.sendEmptyMessage(Miss.CANCLE_MISS);
-							}
-						});
-
-				builder.create().show();
-				break;
-			default:
-				break;
-			}
-			
-		}
-
-	}
-
 	public void setMissType(int missType) {
 		this.missType = missType;
 	}

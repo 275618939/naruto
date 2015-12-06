@@ -115,6 +115,12 @@ public class SignActivity extends BaseActivity implements OnClickListener,CallBa
 	public void OnRequest() {
 		showProgressDialog("提示", "正在提交，请稍后......");
 	}
+	@Override
+	protected void onDestroy() {
+		httpUserDateService=null;
+		super.onDestroy();
+	}
+
 
 	
 

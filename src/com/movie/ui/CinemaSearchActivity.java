@@ -190,6 +190,8 @@ public class CinemaSearchActivity extends BaseActivity implements
 		mBaiduMap.setMyLocationEnabled(false);
 		mPoiSearch.destroy();
 		mSuggestionSearch.destroy();
+		cinemaPop=null;
+		sugAdapter=null;
 		super.onDestroy();
 	}
 
@@ -343,6 +345,7 @@ public class CinemaSearchActivity extends BaseActivity implements
 	public void onBackPressed() {
 		super.onBackPressed();
 		overridePendingTransition(R.anim.slide_in_left, R.anim.slide_out_right);
+		this.finish();
 	}
 	
 	

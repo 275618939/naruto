@@ -70,7 +70,7 @@ public class MissUserQueryActivity extends BaseActivity implements
 		title.setText("参与会员");
 		miss = (Miss) getIntent().getSerializableExtra("miss");
 		if (null != miss) {
-			userAdapter.updateData(miss.getAttend());
+			//userAdapter.updateData(miss.getAttend());
 		}
 		loadUser();		
 	}
@@ -177,9 +177,7 @@ public class MissUserQueryActivity extends BaseActivity implements
 				if (size >= Page.DEFAULT_SIZE) {
 					page++;
 				}
-
-				userAdapter.updateData(users);
-
+				userAdapter.notifyDataSetChanged();
 			}
 
 		} else {

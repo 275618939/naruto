@@ -217,18 +217,27 @@ public class LoginActivity extends BaseActivity implements OnClickListener, Call
 			String message=map.get(Constant.ReturnCode.RETURN_MESSAGE).toString();
 			showToask(message);
 		}
-		
+		map=null;
 	}
 	@Override
 	public void ErrorCallBack(Map<String, Object> map) {
 		hideProgressDialog();
 		String message=map.get(Constant.ReturnCode.RETURN_MESSAGE).toString();
 		showToask(message);
+		map=null;
 	}
 
 	@Override
 	public void OnRequest() {
 		showProgressDialog("提示", "正在登陆，请稍后......");
+	}
+	@Override
+	protected void onDestroy() {
+		loginService=null;
+		userService=null;
+		httpLoginService=null;
+		httpCaptchaService=null;
+		super.onDestroy();
 	}
 
 	

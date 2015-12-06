@@ -8,77 +8,36 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
-import android.view.LayoutInflater;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.view.ViewGroup;
-import android.widget.BaseAdapter;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.movie.R;
+import com.movie.app.BaseObjectListAdapter;
 import com.movie.app.NarutoApplication;
+import com.movie.client.bean.BaseBean;
 import com.movie.client.bean.Miss;
 import com.movie.client.bean.User;
 import com.movie.state.SexState;
 import com.movie.ui.UserDetailActivity;
 import com.movie.view.MessageDialog;
-import com.nostra13.universalimageloader.core.ImageLoader;
 
-public class MissUserAdapter extends BaseAdapter {
+public class MissUserAdapter extends BaseObjectListAdapter {
 
-	List<User> userList;
-	Context context;
-	LayoutInflater inflater;
-	ImageLoader imageLoaderCache;
-	Handler handler;
-
-	public MissUserAdapter(Context context, List<User> users) {
-		this.context = context;
-		this.userList = users;
-		inflater = LayoutInflater.from(context);
-		imageLoaderCache=ImageLoader.getInstance();
-
+	public MissUserAdapter(Context context, Handler mHandler,List<? extends BaseBean> datas) {
+		super(context, mHandler, datas);
 	}
-
-	public MissUserAdapter(Context context, Handler handler,List<User> users) {
-		this.context = context;
-		this.userList = users;
-		inflater = LayoutInflater.from(context);
-		imageLoaderCache=ImageLoader.getInstance();
-		this.handler = handler;
-	}
-
-	@Override
-	public int getCount() {
-		// TODO Auto-generated method stub
-		return userList == null ? 0 : userList.size();
-	}
-
-	@Override
-	public User getItem(int position) {
-		// TODO Auto-generated method stub
-		if (userList != null && userList.size() != 0) {
-			return userList.get(position);
-		}
-		return null;
-	}
-
-	@Override
-	public long getItemId(int position) {
-		// TODO Auto-generated method stub
-		return position;
-	}
-
 	@Override
 	public View getView(int position, View convertView, ViewGroup parent) {
 		// TODO Auto-generated method stub
 		ViewHolder mHolder;
 		View view = convertView;
 		if (view == null) {
-			view = inflater.inflate(R.layout.miss_user_item, null);
+			view = mInflater.inflate(R.layout.miss_user_item, null);
 			mHolder = new ViewHolder();
 			mHolder.missItemView = (RelativeLayout) view.findViewById(R.id.miss_user_item_view);
 			mHolder.missIcon = (ImageView) view.findViewById(R.id.miss_user_icon);
@@ -93,17 +52,53 @@ public class MissUserAdapter extends BaseAdapter {
 			mHolder = (ViewHolder) view.getTag();
 		}
 		// 获取position对应的数据
-		User user = getItem(position);
-
-		imageLoaderCache.displayImage(user.getPortrait(), mHolder.missIcon,NarutoApplication.imageOptions);
+		final User user = (User)getItem(position);
+		imageLoader.displayImage(user.getPortrait(), mHolder.missIcon,NarutoApplication.imageOptions);
 		mHolder.missUserName.setText(user.getNickname());
 		mHolder.missUserSex.setText(SexState.getState(user.getSex()).getMessage());
 		mHolder.missUserCharm.setText(user.getCharm().toString());
 		mHolder.missUserLove.setText(user.getLove().toString());
 		mHolder.missBtnLayout.setVisibility(View.VISIBLE);
 		mHolder.missBtn.setText("同意约会");
-		mHolder.missBtnLayout.setOnClickListener(new UserSelectAction(position));
-		mHolder.missItemView.setOnClickListener(new UserSelectAction(position));
+		mHolder.missBtnLayout.setOnClickListener(new OnClickListener() {
+			@Override
+			public void onClick(final View v) {
+				final MessageDialog.Builder builder = new MessageDialog.Builder(v.getContext());
+				builder.setTitle(R.string.cancel_miss);
+				builder.setMessage("您确定要同意此申请么?");
+				builder.setPositiveButton("取消",
+						new DialogInterface.OnClickListener() {
+							public void onClick(DialogInterface dialog, int which) {
+								dialog.dismiss();
+							}
+						});
+				builder.setNegativeButton("确定",
+						new android.content.DialogInterface.OnClickListener() {
+							public void onClick(DialogInterface dialog, int which) {
+								dialog.dismiss();
+								v.setVisibility(View.GONE);
+								Message message=new Message();
+								message.what=Miss.AGREE_MISS;
+								Bundle bundle=new Bundle();
+								bundle.putSerializable("user", user);
+								message.setData(bundle);
+								mHandler.sendMessage(message);
+							}
+						});
+
+				builder.create().show();
+				
+			}
+		});
+		mHolder.missItemView.setOnClickListener(new OnClickListener() {
+			
+			@Override
+			public void onClick(View v) {
+				Intent intent = new Intent(mContext, UserDetailActivity.class);
+				intent.putExtra("user", user);
+				mContext.startActivity(intent);
+			}
+		});
 
 		return view;
 	}
@@ -127,61 +122,6 @@ public class MissUserAdapter extends BaseAdapter {
 
 	}
 
-	public void updateData(List<User> userList) {
-		this.userList = userList;
-		this.notifyDataSetChanged();
 
-	}
-
-	protected class UserSelectAction implements OnClickListener {
-
-		int position;
-
-		public UserSelectAction(int position) {
-			this.position = position;
-		}
-
-		@Override
-		public void onClick(final View v) {
-			final User user = userList.get(position);
-			switch (v.getId()) {
-			case R.id.miss_user_item_view:
-			
-				Intent intent = new Intent(context, UserDetailActivity.class);
-				intent.putExtra("user", user);
-				context.startActivity(intent);
-				break;
-			case R.id.miss_btn_layout:
-				final MessageDialog.Builder builder = new MessageDialog.Builder(v.getContext());
-				builder.setTitle(R.string.cancel_miss);
-				builder.setMessage("您确定要同意此申请么?");
-				builder.setPositiveButton("取消",
-						new DialogInterface.OnClickListener() {
-							public void onClick(DialogInterface dialog, int which) {
-								dialog.dismiss();
-							}
-						});
-				builder.setNegativeButton("确定",
-						new android.content.DialogInterface.OnClickListener() {
-							public void onClick(DialogInterface dialog, int which) {
-								dialog.dismiss();
-								v.setVisibility(View.GONE);
-								Message message=new Message();
-								message.what=Miss.AGREE_MISS;
-								Bundle bundle=new Bundle();
-								bundle.putSerializable("user", user);
-								message.setData(bundle);
-								handler.sendMessage(message);
-							}
-						});
-
-				builder.create().show();
-				break;
-			default:
-				break;
-			}
-		}
-
-	}
 
 }

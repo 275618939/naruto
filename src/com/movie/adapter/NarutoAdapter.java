@@ -63,7 +63,7 @@ public class NarutoAdapter extends BaseObjectListAdapter {
 		} else {
 			mHolder = (ViewHolder) view.getTag();
 		}
-		NearNaruto nearNaruto = (NearNaruto)getItem(position);
+		final NearNaruto nearNaruto = (NearNaruto)getItem(position);
 		imageLoader.displayImage(nearNaruto.getPortrait(), mHolder.userIcon,NarutoApplication.imageOptions);
 		mHolder.userName.setText(nearNaruto.getNickname());
 		mHolder.userSex.setText(SexState.getState(nearNaruto.getSex()).getMessage());
@@ -72,7 +72,7 @@ public class NarutoAdapter extends BaseObjectListAdapter {
 			int [] date=StringUtil.strConvertInts(String.valueOf(nearNaruto.getBirthday()));
 			mHolder.userConstell.setText(Horoscope.getHoroscope((byte)date[1],(byte)date[2]).getCnName());
 		}
-		mHolder.userItemView.setOnClickListener(new UserSelectAction(position));
+	
 		if(nearNaruto.getFilmName()!=null&&!nearNaruto.getFilmName().isEmpty()){
 			mHolder.userMovieTag.setVisibility(View.VISIBLE);
 		   mHolder.userMovieLove.setText(Html.fromHtml(String.format(mContext.getResources().getString(R.string.user_love_movie), nearNaruto.getFilmName(),nearNaruto.getFilmCnt())));
@@ -88,11 +88,27 @@ public class NarutoAdapter extends BaseObjectListAdapter {
 			mHolder.userCharm.setText(score);
 		}
 		
-		mHolder.userBreifLayout.setOnClickListener(new UserSelectAction(position));
-		//mHolder.userBtnLove.setOnClickListener(new UserSelectAction(position));
-		//mHolder.missInvite.setOnClickListener(new UserSelectAction(position));
-		//mHolder.userBtnMessage.setOnClickListener(new UserSelectAction(position));
-		mHolder.movieBreifLayout.setOnClickListener(new UserSelectAction(position));
+		mHolder.userBreifLayout.setOnClickListener(new OnClickListener() {
+			
+			@Override
+			public void onClick(View v) {
+				Intent movieDetailIntent = new Intent(mContext, MovieDetailActivity.class);
+				movieDetailIntent.putExtra("filmId", nearNaruto.getFilmId());
+				mContext.startActivity(movieDetailIntent);
+				
+			}
+		});
+		mHolder.userItemView.setOnClickListener(new OnClickListener() {
+			
+			@Override
+			public void onClick(View v) {
+				Intent userDetailIntent = new Intent(mContext, UserDetailActivity.class);
+				userDetailIntent.putExtra("memberId", nearNaruto.getMemberId());
+				mContext.startActivity(userDetailIntent);
+				
+			}
+		});
+
 		return view;
 	}
 
@@ -124,34 +140,6 @@ public class NarutoAdapter extends BaseObjectListAdapter {
 	    //TextView userBtnLove;
 	    // 用户邀请
 	    //TextView missInvite;
-
-	}
-	protected class UserSelectAction implements OnClickListener {
-
-		int position;
-
-		public UserSelectAction(int position) {
-			this.position = position;
-		}
-
-		@Override
-		public void onClick(final View v) {
-			final NearNaruto nearNaruto = (NearNaruto)getItem(position);
-			switch (v.getId()) {
-			case R.id.movie_breif_layout:
-				Intent movieDetailIntent = new Intent(mContext, MovieDetailActivity.class);
-				movieDetailIntent.putExtra("filmId", nearNaruto.getFilmId());
-				mContext.startActivity(movieDetailIntent);
-				break;
-			case R.id.user_breif_layout:
-				Intent userDetailIntent = new Intent(mContext, UserDetailActivity.class);
-				userDetailIntent.putExtra("memberId", nearNaruto.getMemberId());
-				mContext.startActivity(userDetailIntent);
-				break;
-			default:
-				break;
-			}
-		}
 
 	}
 

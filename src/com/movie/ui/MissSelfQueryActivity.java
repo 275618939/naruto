@@ -164,6 +164,7 @@ public class MissSelfQueryActivity extends BaseActivity implements OnClickListen
 	public void onBackPressed() {
 		super.onBackPressed();
 		overridePendingTransition(R.anim.slide_in_left, R.anim.slide_out_right);
+		this.finish();
 	}
 
 	@Override
@@ -203,7 +204,7 @@ public class MissSelfQueryActivity extends BaseActivity implements OnClickListen
 					miss.setIcon("http://101.200.176.217/test.jpg");
 					misses.add(miss);
 				}
-				selfQueryAdapter.updateData(misses);
+				selfQueryAdapter.notifyDataSetChanged();
 			}
 		} else {
 			String message = map.get(Constant.ReturnCode.RETURN_MESSAGE).toString();

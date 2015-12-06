@@ -4,66 +4,34 @@ import java.util.List;
 
 import android.content.Context;
 import android.content.Intent;
-import android.view.LayoutInflater;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.view.ViewGroup;
-import android.widget.BaseAdapter;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.movie.R;
+import com.movie.app.BaseObjectListAdapter;
 import com.movie.app.NarutoApplication;
+import com.movie.client.bean.BaseBean;
 import com.movie.client.bean.User;
 import com.movie.ui.UserDetailActivity;
 import com.movie.util.StringUtil;
 import com.movie.view.RoundImageView;
-import com.nostra13.universalimageloader.core.ImageLoader;
 
-public class WantSeeMovieAdapter extends BaseAdapter {
+public class WantSeeMovieAdapter extends BaseObjectListAdapter {
 	
 
-	List<User> users;
-	Context context;
-	LayoutInflater inflater;
-	ImageLoader imageLoaderCache;
-	
-	
-	public WantSeeMovieAdapter(Context context,List<User> users) {
-		this.context = context;
-		this.users = users;
-		imageLoaderCache=ImageLoader.getInstance();
-		inflater = LayoutInflater.from(context);
-		
+	public WantSeeMovieAdapter(Context context,List<? extends BaseBean> datas) {
+		super(context, datas);
 	}
-	
-	@Override
-	public int getCount() {
-		// TODO Auto-generated method stub
-		return users == null ? 0 : users.size();
-	}
-	@Override
-	public User getItem(int position) {
-		// TODO Auto-generated method stub
-		if (users != null && users.size() != 0) {
-			return users.get(position);
-		}
-		return null;
-	}
-
-	@Override
-	public long getItemId(int position) {
-		// TODO Auto-generated method stub
-		return position;
-	}
-
 	@Override
 	public View getView(int position, View convertView, ViewGroup parent) {
 		// TODO Auto-generated method stub
 		ViewHolder mHolder;
 		View view = convertView;
 		if (view == null) {
-			view = inflater.inflate(R.layout.want_see_user_item, null);
+			view = mInflater.inflate(R.layout.want_see_user_item, null);
 			mHolder = new ViewHolder();
 			mHolder.wantSeeView=(LinearLayout)view.findViewById(R.id.want_see_view);
 			mHolder.userImage= (RoundImageView)view.findViewById(R.id.user_image);
@@ -73,10 +41,17 @@ public class WantSeeMovieAdapter extends BaseAdapter {
 			mHolder = (ViewHolder) view.getTag();
 		}
 		//获取position对应的数据
-		User user = getItem(position);
-		imageLoaderCache.displayImage(user.getPortrait(), mHolder.userImage,NarutoApplication.imageOptions);
+		final User user = (User)getItem(position);
+		imageLoader.displayImage(user.getPortrait(), mHolder.userImage,NarutoApplication.imageOptions);
 		mHolder.userNick.setText(StringUtil.getShortStr(user.getNickname(), 3));
-		mHolder.userImage.setOnClickListener(new UserSelectAction(position));
+		mHolder.userImage.setOnClickListener(new OnClickListener() {
+			@Override
+			public void onClick(View v) {
+				Intent intent=new Intent(mContext,UserDetailActivity.class);
+				intent.putExtra("memberId", user.getMemberId());
+				mContext.startActivity(intent);
+			}
+		});
 		return view;
 	}
 	class ViewHolder {
@@ -87,44 +62,5 @@ public class WantSeeMovieAdapter extends BaseAdapter {
 		
 		
 	}
-	public void updateData(List<User> users) {
-		this.users=users;
-		this.notifyDataSetChanged();
-		
-	}
-	protected class UserSelectAction implements OnClickListener{
-
-		int position;
-		
-		public UserSelectAction(int position){
-			this.position=position;
-		}
-		@Override
-		public void onClick(View v) {
-			
-			User user=users.get(position);
-			Intent intent=new Intent(context,UserDetailActivity.class);
-			intent.putExtra("memberId", user.getMemberId());
-			context.startActivity(intent);
-			
-		}
-		
-	}
-	
-	
-	
-
-	
-	
-
-	
-
-
-
-
-	
-
-
-
 	
 }

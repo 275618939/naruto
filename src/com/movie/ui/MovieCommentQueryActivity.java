@@ -120,7 +120,7 @@ public class MovieCommentQueryActivity extends BaseActivity implements OnClickLi
 						movieComment.setScore(Integer.parseInt(value.get("score").toString()));
 					    comments.add(movieComment);
 					}
-					commentAdapter.updateData(comments);
+					commentAdapter.notifyDataSetChanged();
 				}
 		   } catch (Exception e) {
 			   showToask(e.getMessage());

@@ -116,7 +116,15 @@ public class GuideActivity extends BaseActivity implements OnPageChangeListener 
 
 		currentIndex = position;
 	}
-
+	@Override
+	protected void onDestroy() {
+		super.onDestroy();
+		vpAdapter=null;
+		views=null;;
+		httpHobbyService=null;
+		httpCommentService=null;
+		httpFilmTypeService=null;
+	}
 	// 当滑动状态改变时调用
 	@Override
 	public void onPageScrollStateChanged(int arg0) {

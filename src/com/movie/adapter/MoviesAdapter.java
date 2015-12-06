@@ -49,7 +49,7 @@ public class MoviesAdapter extends BaseObjectListAdapter {
 			mHolder = (ViewHolder) view.getTag();
 		}
 		//获取position对应的数据
-		Movie movie = (Movie)getItem(position);
+		final Movie movie = (Movie)getItem(position);
 		if(movie!=null){
 			String score=MovieScore.GetScore(movie.getScore(), movie.getScoreCnt());
 			if(score.equals("NaN")){
@@ -67,7 +67,15 @@ public class MoviesAdapter extends BaseObjectListAdapter {
 			mHolder.movieMent.setText(Html.fromHtml(String.format(mContext.getResources().getString(R.string.movie_miss_tryst), movie.getTryst())));
 			
 		}
-		mHolder.movieView.setOnClickListener(new UserSelectAction(position));
+		mHolder.movieView.setOnClickListener(new OnClickListener() {
+			@Override
+			public void onClick(View v) {
+				Intent intent=new Intent(mContext,MovieDetailActivity.class);
+				intent.putExtra("filmId", movie.getId());
+				mContext.startActivity(intent);
+				
+			}
+		});
 		return view;
 	}
 	class ViewHolder {
@@ -83,39 +91,5 @@ public class MoviesAdapter extends BaseObjectListAdapter {
 		
 		
 	}
-	protected class UserSelectAction implements OnClickListener{
-
-		int position;
-		
-		public UserSelectAction(int position){
-			this.position=position;
-		}
-		@Override
-		public void onClick(View v) {
-			
-			Movie movie=(Movie)getItem(position);
-			Intent intent=new Intent(mContext,MovieDetailActivity.class);
-			intent.putExtra("filmId", movie.getId());
-			mContext.startActivity(intent);
-
-		}
-		
-	}
-	
-	
-	
-
-	
-	
-
-	
-
-
-
-
-	
-
-
-
-	
 }
+	

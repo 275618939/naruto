@@ -5,65 +5,29 @@ import java.util.List;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Handler;
-import android.view.LayoutInflater;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.view.ViewGroup;
-import android.widget.BaseAdapter;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.movie.R;
+import com.movie.app.BaseObjectListAdapter;
 import com.movie.app.NarutoApplication;
+import com.movie.client.bean.BaseBean;
 import com.movie.client.bean.User;
 import com.movie.state.SexState;
 import com.movie.ui.UserDetailActivity;
-import com.nostra13.universalimageloader.core.ImageLoader;
 
-public class PartNarutoAdapter extends BaseAdapter {
+public class PartNarutoAdapter extends BaseObjectListAdapter {
 
-	List<User> userList;
-	Context context;
-	LayoutInflater inflater;
-	ImageLoader imageLoaderCache;
-	Handler handler;
-
-	public PartNarutoAdapter(Context context, List<User> users) {
-		this.context = context;
-		this.userList = users;
-		inflater = LayoutInflater.from(context);
-		imageLoaderCache=ImageLoader.getInstance();
-
+	public PartNarutoAdapter(Context context,List<? extends BaseBean> datas) {
+		super(context, datas);
 	}
-
-	public PartNarutoAdapter(Context context, Handler handler,List<User> users) {
-		this.context = context;
-		this.userList = users;
-		inflater = LayoutInflater.from(context);
-		imageLoaderCache=ImageLoader.getInstance();
-		this.handler = handler;
-	}
-
-	@Override
-	public int getCount() {
-		// TODO Auto-generated method stub
-		return userList == null ? 0 : userList.size();
-	}
-
-	@Override
-	public User getItem(int position) {
-		// TODO Auto-generated method stub
-		if (userList != null && userList.size() != 0) {
-			return userList.get(position);
-		}
-		return null;
-	}
-
-	@Override
-	public long getItemId(int position) {
-		// TODO Auto-generated method stub
-		return position;
+	
+	public PartNarutoAdapter(Context context, Handler mHandler,List<? extends BaseBean> datas) {
+		super(context, mHandler, datas);
 	}
 
 	@Override
@@ -72,7 +36,7 @@ public class PartNarutoAdapter extends BaseAdapter {
 		ViewHolder mHolder;
 		View view = convertView;
 		if (view == null) {
-			view = inflater.inflate(R.layout.part_naruto_item, null);
+			view = mInflater.inflate(R.layout.part_naruto_item, null);
 			mHolder = new ViewHolder();
 			mHolder.userItemView = (LinearLayout) view.findViewById(R.id.part_user_item_view);
 			mHolder.userIcon = (ImageView) view.findViewById(R.id.part_user_icon);
@@ -86,14 +50,22 @@ public class PartNarutoAdapter extends BaseAdapter {
 			mHolder = (ViewHolder) view.getTag();
 		}
 		// 获取position对应的数据
-		User user = getItem(position);
-		imageLoaderCache.displayImage(user.getPortrait(), mHolder.userIcon,NarutoApplication.imageOptions);
+		final User user = (User)getItem(position);
+		imageLoader.displayImage(user.getPortrait(), mHolder.userIcon,NarutoApplication.imageOptions);
 		mHolder.missUserName.setText(user.getNickname());
 		mHolder.missUserSex.setText(SexState.getState(user.getSex()).getMessage());
 		mHolder.missUserCharm.setText(user.getCharm().toString());
 		mHolder.userConstell.setText(user.getConstell());
-		mHolder.missUserLove.setText(String.format(context.getResources().getString(R.string.user_love_count), user.getLove().toString()));
-		mHolder.userItemView.setOnClickListener(new UserSelectAction(position));
+		mHolder.missUserLove.setText(String.format(mContext.getResources().getString(R.string.user_love_count), user.getLove().toString()));
+		mHolder.userItemView.setOnClickListener(new OnClickListener() {
+			@Override
+			public void onClick(View v) {
+				Intent intent = new Intent(mContext, UserDetailActivity.class);
+				intent.putExtra("user", user);
+				mContext.startActivity(intent);
+				
+			}
+		});
 
 		return view;
 	}
@@ -114,37 +86,6 @@ public class PartNarutoAdapter extends BaseAdapter {
 		// 用户心动数
 		TextView missUserLove;
 
-
-	}
-
-	public void updateData(List<User> userList) {
-		this.userList = userList;
-		this.notifyDataSetChanged();
-
-	}
-
-	protected class UserSelectAction implements OnClickListener {
-
-		int position;
-
-		public UserSelectAction(int position) {
-			this.position = position;
-		}
-
-		@Override
-		public void onClick(final View v) {
-			final User user = userList.get(position);
-			switch (v.getId()) {
-			case R.id.part_user_item_view:
-				Intent intent = new Intent(context, UserDetailActivity.class);
-				intent.putExtra("user", user);
-				context.startActivity(intent);
-				break;
-
-			default:
-				break;
-			}
-		}
 
 	}
 

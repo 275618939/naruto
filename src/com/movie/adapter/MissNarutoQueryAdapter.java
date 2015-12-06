@@ -55,7 +55,15 @@ public class MissNarutoQueryAdapter extends BaseObjectListAdapter {
 		mHolder.missCoin.setText(miss.getCoin()==null?"0":miss.getCoin().toString());
 		int sourceId = MissStateBackColor.getState(miss.getStatus()).getSourceId();
 		mHolder.missItemView.setBackgroundResource(sourceId);
-		mHolder.missItemView.setOnClickListener(new UserSelectAction(position));
+		mHolder.missItemView.setOnClickListener(new OnClickListener() {
+			@Override
+			public void onClick(View v) {
+				/*Miss miss = misses.get(position);
+				Intent intent = new Intent(context, MissNarutoDetailActivity.class);
+				intent.putExtra("miss", miss);
+				context.startActivity(intent);*/
+			}
+		});
 		return view;
 	}
 
@@ -78,35 +86,5 @@ public class MissNarutoQueryAdapter extends BaseObjectListAdapter {
 		TextView missAddress;
 	}
 
-	
-
-	protected class UserSelectAction implements OnClickListener {
-
-		int position;
-
-		public UserSelectAction(int position) {
-			this.position = position;
-		}
-
-		@Override
-		public void onClick(final View v) {
-
-			switch (v.getId()) {
-			case R.id.miss_item_view:
-				/*Miss miss = misses.get(position);
-				Intent intent = new Intent(context, MissNarutoDetailActivity.class);
-				intent.putExtra("miss", miss);
-				context.startActivity(intent);*/
-				break;
-			default:
-				break;
-			}
-			
-		}
-
-	}
-
-	
-	
 
 }

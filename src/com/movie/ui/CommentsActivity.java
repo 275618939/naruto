@@ -71,6 +71,7 @@ public class CommentsActivity extends BaseActivity implements OnClickListener,Ca
 	@Override
 	protected void onDestroy() {
 		super.onDestroy();
+		comments.clear();
 		evaluationAdapter=null;
 	}
 	@Override
@@ -80,8 +81,6 @@ public class CommentsActivity extends BaseActivity implements OnClickListener,Ca
 	}
 	@Override
 	public void onBackPressed() {
-		comments.clear();
-		evaluationAdapter=null;
 		Intent intent = new Intent(this, UserDetailActivity.class);
 		startActivity(intent);
 		finish();

@@ -169,6 +169,12 @@ public class ForgetActivity extends BaseActivity implements OnClickListener,Call
 		showProgressDialog("提示", "请稍后......");
 
 	}
-
+	@Override
+	protected void onDestroy() {
+		super.onDestroy();
+		 captchaImage=null;
+		 httpCaptchaService=null;
+		 httpForgetService=null;
+	}
 	
 }

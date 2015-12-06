@@ -163,6 +163,7 @@ public class MissQueryActivity extends BaseActivity implements OnClickListener,C
 	public void onBackPressed() {
 		super.onBackPressed();
 		overridePendingTransition(R.anim.slide_in_left, R.anim.slide_out_right);
+		this.finish();
 	}
 
 	@Override
@@ -205,7 +206,7 @@ public class MissQueryActivity extends BaseActivity implements OnClickListener,C
 					page++;
 				}
 
-				missQueryAdapter.updateData(misses);
+				missQueryAdapter.notifyDataSetChanged();
 				if (size <= 0) {
 					tempData();
 				}
@@ -270,7 +271,7 @@ public class MissQueryActivity extends BaseActivity implements OnClickListener,C
 		}
 		miss.setAttend(users);
 		misses.add(miss);
-		missQueryAdapter.updateData(misses);
+		missQueryAdapter.notifyDataSetChanged();
 	}
 
 	@Override

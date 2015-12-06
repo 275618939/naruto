@@ -123,6 +123,7 @@ public class CinemaMapActivity extends BaseActivity implements OnClickListener,
 	protected void onDestroy() {
 		mMapView.onDestroy();
 		mSearch.destroy();
+		mBaiduMap=null;
 		super.onDestroy();
 	}
 
@@ -130,6 +131,7 @@ public class CinemaMapActivity extends BaseActivity implements OnClickListener,
 	public void onBackPressed() {
 		super.onBackPressed();
 		overridePendingTransition(R.anim.slide_in_left, R.anim.slide_out_right);
+		this.finish();
 	}
 
 	@Override
@@ -175,6 +177,7 @@ public class CinemaMapActivity extends BaseActivity implements OnClickListener,
 		Toast.makeText(this, result.getAddress(), Toast.LENGTH_LONG).show();
 
 	}
+	
 
 	
 
