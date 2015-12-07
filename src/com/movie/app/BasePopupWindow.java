@@ -11,6 +11,7 @@ public abstract class BasePopupWindow extends PopupWindow {
 
 	protected View mContentView;
 	protected onSubmitClickListener mOnSubmitClickListener;
+	protected Context mContext;
 
 	public BasePopupWindow() {
 		super();
@@ -19,18 +20,22 @@ public abstract class BasePopupWindow extends PopupWindow {
 	public BasePopupWindow(Context context, AttributeSet attrs,
 			int defStyleAttr, int defStyleRes) {
 		super(context, attrs, defStyleAttr, defStyleRes);
+		mContext=context;
 	}
 
 	public BasePopupWindow(Context context, AttributeSet attrs, int defStyle) {
 		super(context, attrs, defStyle);
+		mContext=context;
 	}
 
 	public BasePopupWindow(Context context, AttributeSet attrs) {
 		super(context, attrs);
+		mContext=context;
 	}
 
 	public BasePopupWindow(Context context) {
 		super(context);
+		mContext=context;
 	}
 
 	public BasePopupWindow(int width, int height) {

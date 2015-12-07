@@ -99,7 +99,7 @@
     <!--
     <style name="loadAnimStyle" parent="@android:style/Widget.ProgressBar.Large">
         <item name="android:indeterminateDrawable">@anim/load</item>
-    </style>
+    </style>
     -->
     <style name="loadAnimStyle" parent="@android:style/Widget.ProgressBar.Horizontal">
         <item name="android:indeterminateDrawable">@anim/load</item>
@@ -203,13 +203,13 @@
     </style>
     <!--
         Base application theme, dependent on API level. This theme is replaced
-        by AppBaseTheme from res/values-vXX/styles.xml on newer devices.
+        by AppBaseTheme from res/values-vXX/styles.xml on newer devices.
     -->
     <style name="AppBaseTheme" parent="android:Theme.Light">
         <!--
             Theme customizations available in newer API levels can go in
             res/values-vXX/styles.xml, while customizations related to
-            backward-compatibility can go here.
+            backward-compatibility can go here.
         -->
     </style>
 
@@ -247,7 +247,10 @@
         <item name="android:divider">@color/input_item_line</item>
         <item name="android:dividerHeight">0.5dip</item>
     </style>
-
+    <style name="photo_Popup_Animation_Alpha" parent="@android:style/Animation">
+        <item name="android:windowEnterAnimation">@anim/activity_translate_in</item>
+        <item name="android:windowExitAnimation">@anim/activity_translate_out</item>
+    </style>
     <style name="Popup_Animation_Alpha" parent="@android:style/Animation">
         <item name="android:windowEnterAnimation">@anim/layout_alpha_in</item>
         <item name="android:windowExitAnimation">@anim/layout_alpha_out</item>

@@ -49,7 +49,7 @@ public class SelfFragment extends BaseFragment implements OnClickListener , Call
 	public static final int RELOAGIN = 0X101;
 	public static final int PTHOTO_UPDATE = 0X001;
 	public static final int LOGOUT = 0X110;
-	public static final int MAX_SHOW_USER_PHOTO=4;
+	
 	//我发起的约会
 	public static final int MY_MISS = 0X210;
 	//我参与的约会
@@ -130,8 +130,7 @@ public class SelfFragment extends BaseFragment implements OnClickListener , Call
 		userSignIn = (ImageView)rootView.findViewById(R.id.user_sign_in);
 		photoGridview = (GridView)rootView.findViewById(R.id.userPhotoGridview);
 		photoGridview.setSelector(new ColorDrawable(Color.TRANSPARENT));
-		photoGridAdapter =new UserPhotoGridAdapter(getActivity(), mHandler,rootView);
-		photoGridAdapter.update();
+		photoGridAdapter =new UserPhotoGridAdapter(getActivity(), mHandler,null);
 		photoGridview.setAdapter(photoGridAdapter);
 		photoGridview.setOnItemClickListener(photoGridAdapter);	
 		

@@ -3,10 +3,12 @@ package com.movie.util;
 import java.io.IOException;
 import java.io.Serializable;
 
+import com.movie.client.bean.BaseBean;
+
 import android.graphics.Bitmap;
 
 
-public class ImageItem implements Serializable {
+public class ImageItem extends BaseBean implements Serializable {
 	public String imageId;
 	public String thumbnailPath;
 	public String imagePath;

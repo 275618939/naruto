@@ -40,7 +40,6 @@ import com.movie.view.BirthdayDialog;
 import com.movie.view.HeadDialog;
 import com.movie.view.RoundImageView;
 import com.movie.view.SexDialog;
-import com.nostra13.universalimageloader.core.ImageLoader;
 
 
 public class UserActivity extends BaseActivity implements OnClickListener, CallBackService {
@@ -285,15 +284,17 @@ public class UserActivity extends BaseActivity implements OnClickListener, CallB
 				photoUri = Uri.parse(MediaStore.Images.Media.insertImage(getContentResolver(), image, null,null));
 				doPhoto(TAKE_PICTURE,data);
 		        upload();
+		        image=null;
 			}
 			break;
 		case TAKE_PICTURE:
 			try {
-				Bitmap bm = (Bitmap)  data.getExtras().get("data");
-				headImage.setImageBitmap(bm);
-				photoUri = Uri.parse(MediaStore.Images.Media.insertImage(getContentResolver(), bm, null,null));
+				Bitmap image = (Bitmap)  data.getExtras().get("data");
+				headImage.setImageBitmap(image);
+				photoUri = Uri.parse(MediaStore.Images.Media.insertImage(getContentResolver(), image, null,null));
 				doPhoto(TAKE_PICTURE,data);
 				upload();
+				image=null;
 				break;
 			} catch (NullPointerException e) {
 				
@@ -324,13 +325,13 @@ public class UserActivity extends BaseActivity implements OnClickListener, CallB
         {  
             if(data == null)  
             {  
-                Toast.makeText(this, "选择图片文件出错", Toast.LENGTH_LONG).show();  
+                //Toast.makeText(this, "选择图片文件出错", Toast.LENGTH_LONG).show();  
                 return;  
             }  
             photoUri = data.getData();  
             if(photoUri == null )  
             {  
-                Toast.makeText(this, "选择图片文件出错", Toast.LENGTH_LONG).show();  
+                //Toast.makeText(this, "选择图片文件出错", Toast.LENGTH_LONG).show();  
                 return;  
             }  
         }  

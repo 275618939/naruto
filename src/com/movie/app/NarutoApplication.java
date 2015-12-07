@@ -39,9 +39,9 @@ public class NarutoApplication extends Application {
 	/**
 	 * 屏幕的宽度、高度、密度
 	 */
-	protected int mScreenWidth;
-	protected int mScreenHeight;
-	protected float mDensity;
+	public int mScreenWidth;
+	public int mScreenHeight;
+	public float mDensity;
 	@Override
 	public void onCreate() {
 		super.onCreate();

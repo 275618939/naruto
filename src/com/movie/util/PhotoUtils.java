@@ -27,15 +27,13 @@ import android.os.Bundle;
 import android.os.Environment;
 import android.provider.MediaStore;
 import android.util.DisplayMetrics;
+import android.util.Log;
 import android.util.TypedValue;
 
 
 public class PhotoUtils {
 	// 图片在SD卡中的缓存路径
-	private static final String IMAGE_PATH = Environment
-			.getExternalStorageDirectory().toString()
-			+ File.separator
-			+ "naruto" + File.separator + "Images" + File.separator;
+	private static final String IMAGE_PATH = Environment.getExternalStorageDirectory().toString()+ File.separator+ "naruto" + File.separator + "Images" + File.separator;
 	// 相册的RequestCode
 	public static final int INTENT_REQUEST_CODE_ALBUM = 0;
 	// 照相的RequestCode
@@ -45,6 +43,42 @@ public class PhotoUtils {
 	// 滤镜图片的RequestCode
 	public static final int INTENT_REQUEST_CODE_FLITER = 3;
 
+	public static boolean IsImage(String picPath){
+		if(picPath != null && ( picPath.endsWith(".png") || picPath.endsWith(".PNG") ||picPath.endsWith(".jpg") ||picPath.endsWith(".JPG")  )) {           
+			return true;
+		}else{  
+            return false;  
+        }  
+	}
+	
+	/**  
+     * 选择图片后，获取图片的路径  
+     * @param requestCode  
+     * @param data  
+     */  
+	public static boolean doPhoto(Context context,int requestCode,Intent data,Uri photoUri,String picPath,String message){  
+        if(requestCode == INTENT_REQUEST_CODE_ALBUM ){  
+            if(data == null)  {  
+            	message="图片不存在";
+                return false;  
+            }  
+            photoUri = data.getData();  
+            if(photoUri == null )  {  
+            	message="图片不存在";
+                return false;  
+            }  
+        }  
+        picPath=PathUtil.getPath(context,photoUri);
+        Log.i("User ui", "imagePath = "+picPath);  
+        if(picPath != null && ( picPath.endsWith(".png") || picPath.endsWith(".PNG") ||picPath.endsWith(".jpg") ||picPath.endsWith(".JPG")  )) {           
+        }else{  
+        	message="选择图片文件不正确";
+            return false;  
+        }  
+        return true;
+    }  
+
+	
 	/**
 	 * 通过手机相册获取图片
 	 * 
@@ -66,7 +100,8 @@ public class PhotoUtils {
 	public static String takePicture(Activity activity) {
 		FileUtils.createDirFile(IMAGE_PATH);
 		Intent intent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
-		String path = IMAGE_PATH + UUID.randomUUID().toString() + "jpg";
+		String path = IMAGE_PATH + UUID.randomUUID().toString() + ".jpg";
+		FileUtils.createNewFile(path);
 		File file = FileUtils.createNewFile(path);
 		if (file != null) {
 			intent.putExtra(MediaStore.EXTRA_OUTPUT, Uri.fromFile(file));

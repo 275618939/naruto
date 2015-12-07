@@ -133,7 +133,8 @@ public interface Constant {
 		public final static int MAX_DISTANCE=10;
 		// 动态图片最大显示数
 		public final static int MAX_DYNAMIC=4;
-
+		// 用户最大上传个人照片
+		public final static int MAX_SHOW_USER_PHOTO=4;
 	}
 
 	public static class Sex {
