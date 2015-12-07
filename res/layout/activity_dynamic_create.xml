@@ -42,15 +42,15 @@
 
         <ImageView
             android:id="@+id/addPic"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
+            android:layout_width="@dimen/user_image_select_width"
+            android:layout_height="@dimen/user_image_select_height"
             android:layout_marginLeft="@dimen/layout_left_0"
             android:src="@drawable/icon_addpic" />
 
         <ImageView
             android:id="@+id/addEmote"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
+            android:layout_width="@dimen/user_image_select_width"
+            android:layout_height="@dimen/user_image_select_height"
             android:layout_marginLeft="@dimen/layout_left_0"
             android:src="@drawable/icon_addemote" />
     </LinearLayout>

@@ -7,6 +7,7 @@
     <string name="main_title">未登录</string>
     <string name="dynamic_create_hint">说点什么吧...</string>
     <string name="integer_default">0</string>
+     <string name="delete">C</string>
     <string name="noText">暂没有数据</string>
     <string name="loadfail_hint">加载失败,请点击重试</string>
     <string name="linefail_hint">加载失败,请检查网络</string>

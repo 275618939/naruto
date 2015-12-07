@@ -29,6 +29,8 @@
     <dimen name="naruto_ment_height">40.0dip</dimen>
     <dimen name="slef_back_height">220dp</dimen>
     <dimen name="user_tag_height">35dp</dimen>
+    <dimen name="user_image_select_width">60dp</dimen>
+    <dimen name="user_image_select_height">60dp</dimen>
     <dimen name="user_round_image_width">60dp</dimen>
     <dimen name="user_round_image_height">60dp</dimen>
     <dimen name="user_select_image_width">68dp</dimen>

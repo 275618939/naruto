@@ -150,6 +150,10 @@ public interface Constant {
 
 		public static final int HEADWIDTH = 550;
 		public static final int HEADHEIGTH = 550;
+		
+		public static final int DYNAMIC_HEIGHT=80;
+		public static final int DYNAMIC_WIDTH=80;
+		
 	}
 	public static class NameShow{
 		public static final int MOVIENAME_MAX=8;

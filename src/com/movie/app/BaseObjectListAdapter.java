@@ -69,6 +69,10 @@ public class BaseObjectListAdapter extends BaseAdapter {
 	public long getItemId(int position) {
 		return position;
 	}
+	
+	protected void removeItem(int position) {
+		mDatas.remove(position);
+	}
 
 	@Override
 	public View getView(int position, View convertView, ViewGroup parent) {

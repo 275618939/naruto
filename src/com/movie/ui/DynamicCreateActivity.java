@@ -25,7 +25,7 @@ import com.movie.R;
 import com.movie.adapter.DynamicPhotoGridAdapter;
 import com.movie.app.BaseActivity;
 import com.movie.app.Constant;
-import com.movie.app.NarutoApplication;
+import com.movie.app.Constant.ImageSize;
 import com.movie.app.Constant.Page;
 import com.movie.client.service.CallBackService;
 import com.movie.pop.UserPhotoPopupWindow;
@@ -37,6 +37,7 @@ import com.movie.util.PhotoUtils;
 public class DynamicCreateActivity extends BaseActivity implements
 		OnClickListener, CallBackService {
 
+	public static final int DELETE_IMAGE = 0X001; //  删除图片
 	TextView title;
 	TextView right;
 	TextView content;
@@ -132,14 +133,16 @@ public class DynamicCreateActivity extends BaseActivity implements
 							return;
 						}
 						//压缩图片
-						Bitmap bitmap = PhotoUtils.createBitmap(path,R.dimen.dynamic_image_content_width,R.dimen.dynamic_image_content_height);
+						Bitmap bitmap = PhotoUtils.createBitmap(path,ImageSize.DYNAMIC_WIDTH,ImageSize.DYNAMIC_HEIGHT);
 						imageItem= new ImageItem();
 						imageItem.setImagePath(path);
 						imageItem.setBitmap(bitmap);
 						imageItems.add(imageItem);
+						//bitmap.recycle();
 						bitmap=null;
 						imageItem=null;
 						photoGridAdapter.notifyDataSetChanged();
+						System.gc();
 					}
 				}
 				cursor.close();
@@ -152,16 +155,17 @@ public class DynamicCreateActivity extends BaseActivity implements
 			if (resultCode == RESULT_OK) {
 				String path=userPhotoPopupWindow.getTakeImagePath();
 				if (path != null) {
-				   //按比例缩放图片
-				   path = PhotoUtils.savePhotoToSDCard(PhotoUtils.CompressionPhoto(NarutoApplication.getApp().mScreenWidth, path, 2));					
-				   Bitmap bitmap = PhotoUtils.getBitmapFromFile(path);
+				   //按比例缩放图片				
+				   Bitmap bitmap = PhotoUtils.createBitmap(path,ImageSize.DYNAMIC_WIDTH,ImageSize.DYNAMIC_HEIGHT);
 				   imageItem= new ImageItem();
 				   imageItem.setImagePath(path);
 				   imageItem.setBitmap(bitmap);
 				   imageItems.add(imageItem);
+				   //itmap.recycle();
 				   bitmap=null;
 				   imageItem=null;
 				   photoGridAdapter.notifyDataSetChanged();
+				   System.gc();
 				}
 			}
 			break;
@@ -177,7 +181,13 @@ public class DynamicCreateActivity extends BaseActivity implements
 	Handler mHandler = new Handler() {
 		public void handleMessage(android.os.Message msg) {
 			switch (msg.what) {
-
+			case DELETE_IMAGE:
+				int position= msg.getData().getInt("position");
+				imageItems.get(position).getBitmap().recycle();
+				imageItems.remove(position);
+				photoGridAdapter.notifyDataSetChanged();
+				break;
+			
 			default:
 				break;
 
@@ -224,6 +234,7 @@ public class DynamicCreateActivity extends BaseActivity implements
 		imageItems.clear();
 		photoGridAdapter=null;
 		photoGridview=null;
+		System.gc();
 	}
 
 }
