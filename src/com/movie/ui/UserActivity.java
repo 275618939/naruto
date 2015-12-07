@@ -78,7 +78,6 @@ public class UserActivity extends BaseActivity implements OnClickListener, CallB
 	String headUrl;
 	String picPath;  
 	Intent lastIntent; 
-	ImageLoader imageLoaderCache;
 	User user;
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
@@ -86,7 +85,6 @@ public class UserActivity extends BaseActivity implements OnClickListener, CallB
 		setContentView(R.layout.activity_user);
 		httpUserUpdateService = new HttpUserUpdateService(this);
 		httpUserService = new HttpUserService(this);
-		imageLoaderCache=ImageLoader.getInstance();
 		initViews();
 		initEvents();
 		initData();
@@ -160,6 +158,7 @@ public class UserActivity extends BaseActivity implements OnClickListener, CallB
 			Intent intentHobby = new Intent(this, HobbyActivity.class);
 			intentHobby.putExtra("user", user);
 			startActivity(intentHobby);
+			this.finish();
 			break;
 		case R.id.layout_head:
 			final HeadDialog.Builder headBuilder=new HeadDialog.Builder(this);
@@ -399,7 +398,7 @@ public class UserActivity extends BaseActivity implements OnClickListener, CallB
 					if(value.containsKey("portrait")){
 						headUrl=Constant.SERVER_ADRESS+value.get("portrait").toString();
 						user.setPortrait(headUrl);
-						imageLoaderCache.displayImage(headUrl, headImage,NarutoApplication.imageOptions);
+						imageLoader.displayImage(headUrl, headImage,NarutoApplication.imageOptions);
 					}
 					if (value.containsKey("hobbies")) {
 						user.setHobbies((List<Integer>)value.get("hobbies"));
@@ -415,7 +414,7 @@ public class UserActivity extends BaseActivity implements OnClickListener, CallB
 			String message=map.get(Constant.ReturnCode.RETURN_MESSAGE).toString();
 			showToask(message);
 		}
-		
+		map=null;
 	}
 
 	@Override
@@ -430,7 +429,14 @@ public class UserActivity extends BaseActivity implements OnClickListener, CallB
 		
 		
 	}
-
+	@Override
+	protected void onDestroy() {
+		super.onDestroy();
+		httpUserUpdateService=null;
+		httpUserService=null;
+		photoUri=null;  
+		userHobbis=null;
+	}
 	
 	
 }

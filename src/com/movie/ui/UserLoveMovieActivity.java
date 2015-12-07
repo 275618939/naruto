@@ -113,6 +113,7 @@ public class UserLoveMovieActivity extends BaseActivity implements
 	public void onBackPressed() {
 		super.onBackPressed();
 		overridePendingTransition(R.anim.slide_in_left, R.anim.slide_out_right);
+		this.finish();
 	}
 
 	@Override
@@ -152,7 +153,7 @@ public class UserLoveMovieActivity extends BaseActivity implements
 			String message = map.get(Constant.ReturnCode.RETURN_MESSAGE).toString();
 			showToask(message);
 		}
-
+		map=null;
 	}
 
 	@Override
@@ -161,6 +162,7 @@ public class UserLoveMovieActivity extends BaseActivity implements
 		hideProgressDialog();
 		String message = map.get(Constant.ReturnCode.RETURN_MESSAGE).toString();
 		showToask(message);
+		map=null;
 	}
 
 	@Override
@@ -177,6 +179,9 @@ public class UserLoveMovieActivity extends BaseActivity implements
 	@Override
 	protected void onDestroy() {
 		super.onDestroy();
+		moviesView=null;
+		refreshLayout=null;
+		httpUserFilmService=null;
 		moviesAdapter=null;	
 		movies.clear();
 	}

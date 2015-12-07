@@ -89,7 +89,6 @@ public class UserDetailActivity extends BaseActivity implements
 	LinearLayout userDetailTool;
 	RelativeLayout userDetailParent;
 	List<Map<Integer, Integer>> comments = new ArrayList<Map<Integer, Integer>>();
-	ImageLoader imageLoaderCache;
 	Map<Integer,String> hobbiesMap;
 	Map<Integer,String> filmTypeMap;
 	boolean isLove;
@@ -108,7 +107,6 @@ public class UserDetailActivity extends BaseActivity implements
 		hobbyService = new HobbyService();
 		userService = new UserService();
 		filmTypeService = new FilmTypeService();
-		imageLoaderCache=ImageLoader.getInstance();
 		initViews();
 		initEvents();
 		initData();
@@ -245,6 +243,7 @@ public class UserDetailActivity extends BaseActivity implements
 	public void onBackPressed() {
 		super.onBackPressed();
 		overridePendingTransition(R.anim.slide_in_left, R.anim.slide_out_right);
+		this.finish();
 	}
 
 	@Override
@@ -261,7 +260,7 @@ public class UserDetailActivity extends BaseActivity implements
 				Map<String, Object> values = (Map<String, Object>) map.get(ReturnCode.RETURN_VALUE);
 				if (values.containsKey("portrait")) {
 					user.setPortrait(Constant.SERVER_ADRESS+values.get("portrait").toString());
-					imageLoaderCache.displayImage(user.getPortrait(),headView,NarutoApplication.imageOptions);
+					imageLoader.displayImage(user.getPortrait(),headView,NarutoApplication.imageOptions);
 				}
 				if (values.containsKey("sex")) {
 					user.setSex(Integer.parseInt(values.get("sex").toString()));
@@ -382,7 +381,7 @@ public class UserDetailActivity extends BaseActivity implements
 			String message = map.get(Constant.ReturnCode.RETURN_MESSAGE).toString();
 			showToask(message);
 		}
-
+		map=null;
 	}
 	private void initTempComments(){
 		commentsLayout.setVisibility(View.VISIBLE);
@@ -404,6 +403,7 @@ public class UserDetailActivity extends BaseActivity implements
 		String message = map.get(Constant.ReturnCode.RETURN_MESSAGE).toString();
 		String tag = map.get(Constant.ReturnCode.RETURN_TAG).toString();
 		String code = map.get(Constant.ReturnCode.RETURN_STATE).toString();
+		map=null;
 		if(code.equals(ReturnCode.STATE_999)){
 			loadView.hideAllHit(this);
 			return;
@@ -412,6 +412,7 @@ public class UserDetailActivity extends BaseActivity implements
 			loadView.showLoadFail(this,this);
 			showToask(message);
 		}
+		
 	}
 
 	@Override
@@ -432,6 +433,15 @@ public class UserDetailActivity extends BaseActivity implements
 	protected void onDestroy() {
 		super.onDestroy();
 		evaluationAdapter=null;	
+		httpUsersService=null;
+		httpUserCommentService=null;
+		httpUserFilmTyService=null;
+		httpUserLoveService=null;
+		userService=null;
+		hobbyService=null;
+	    filmTypeService=null;
+	    hobbiesMap=null;
+		filmTypeMap=null;
 		comments.clear();
 	}
 

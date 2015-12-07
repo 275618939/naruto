@@ -272,6 +272,7 @@ public class MySelfDetailActivity extends BaseActivity implements
 			String message = map.get(Constant.ReturnCode.RETURN_MESSAGE).toString();
 			showToask(message);
 		}
+		map=null;
 
 	}
 	private void initTempComments(){
@@ -305,6 +306,9 @@ public class MySelfDetailActivity extends BaseActivity implements
 		super.onDestroy();
 		evaluationAdapter=null;
 		comments.clear();
+		httpUsersService=null;
+		httpUserCommentService=null;
+		httpUserFilmTyService=null;
 	}
 
 

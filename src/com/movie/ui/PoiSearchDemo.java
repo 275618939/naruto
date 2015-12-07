@@ -108,6 +108,7 @@ public class PoiSearchDemo extends FragmentActivity implements OnGetPoiSearchRes
 	protected void onDestroy() {
 		mPoiSearch.destroy();
 		mSuggestionSearch.destroy();
+		sugAdapter=null;
 		super.onDestroy();
 	}
 

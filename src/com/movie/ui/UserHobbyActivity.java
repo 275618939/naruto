@@ -112,7 +112,7 @@ public class UserHobbyActivity extends BaseActivity implements OnClickListener,C
 			Intent intent = new Intent(this, UserDetailActivity.class);
 			intent.putExtra("user", user);
 			startActivity(intent);
-			//this.finish();
+			this.finish();
 		}
 	}
 
@@ -120,6 +120,7 @@ public class UserHobbyActivity extends BaseActivity implements OnClickListener,C
 
 	@Override
 	public void SuccessCallBack(Map<String, Object> map) {
+		map=null;
 		hideProgressDialog();
 		onBackPressed();
 	}
@@ -129,6 +130,7 @@ public class UserHobbyActivity extends BaseActivity implements OnClickListener,C
 		hideProgressDialog();
 		String message=map.get(Constant.ReturnCode.RETURN_MESSAGE).toString();
 		showToask(message);
+		map=null;
 	}
 
 	@Override
@@ -136,7 +138,14 @@ public class UserHobbyActivity extends BaseActivity implements OnClickListener,C
 		showProgressDialog("提示", "正在提交，请稍后......");
 	}
 
-	
+	@Override
+	protected void onDestroy() {
+		super.onDestroy();
+		hobbyUpdateService=null;
+		hobbyService=null;
+		hobbies=null;
+		userHobbys.clear();
+	}
 	
 
 }

@@ -1,6 +1,5 @@
 package com.movie.ui;
 
-import java.util.HashMap;
 import java.util.Map;
 
 import android.content.Intent;
@@ -23,7 +22,6 @@ import com.movie.network.HttpUserUpdateService;
 public class RegsiterGuideActivity extends BaseActivity implements OnClickListener,
 		CallBackService {
 
-	public HashMap<String, Object> apiParams = new HashMap<String, Object>();
 	TextView title;
 	TextView right;
 	EditText nickName;
@@ -130,6 +128,11 @@ public class RegsiterGuideActivity extends BaseActivity implements OnClickListen
 	@Override
 	public void OnRequest() {
 		showProgressDialog("提示", "正在提交，请稍后......");		
+	}
+	@Override
+	protected void onDestroy() {
+		super.onDestroy();
+		httpUserDateService=null;
 	}
 
 	

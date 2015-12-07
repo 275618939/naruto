@@ -117,8 +117,9 @@ public class SignActivity extends BaseActivity implements OnClickListener,CallBa
 	}
 	@Override
 	protected void onDestroy() {
-		httpUserDateService=null;
 		super.onDestroy();
+		httpUserDateService=null;
+		
 	}
 
 

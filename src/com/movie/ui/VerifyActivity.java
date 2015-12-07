@@ -104,7 +104,7 @@ public class VerifyActivity extends BaseActivity implements OnClickListener,Call
 	public void onBackPressed() {
 		Intent intent = new Intent(this, ForgetActivity.class);
 		this.startActivity(intent);
-		//this.finish();
+		this.finish();
 	}
 	@Override
 	public void SuccessCallBack(Map<String, Object> map) {
@@ -125,6 +125,7 @@ public class VerifyActivity extends BaseActivity implements OnClickListener,Call
 			String desc = map.get(Constant.ReturnCode.RETURN_MESSAGE).toString();
 			showToask(desc);
 		}
+	    map=null;
 	}
 
 	@Override
@@ -132,6 +133,7 @@ public class VerifyActivity extends BaseActivity implements OnClickListener,Call
 		hideProgressDialog();
 		String message=map.get(Constant.ReturnCode.RETURN_MESSAGE).toString();
 		showToask(message);
+		map=null;
 	}
 
 	@Override
@@ -139,6 +141,11 @@ public class VerifyActivity extends BaseActivity implements OnClickListener,Call
 	
 		showProgressDialog("提示", "正在提交，请稍后......");
 	}
-
+	@Override
+	protected void onDestroy() {
+		super.onDestroy();
+		httpMoblieCaptchaService=null;
+		httpVerifyService=null;
+	}
 	
 }

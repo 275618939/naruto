@@ -160,6 +160,12 @@ public class SetpwdActivity extends BaseActivity implements OnClickListener,Call
 	public void OnRequest() {
 		showProgressDialog("提示", "正在提交，请稍后......");
 	}
+	@Override
+	protected void onDestroy() {
+		super.onDestroy();
+		httpSetPassService=null;
+		loginService=null;
+	}
 
 
 }

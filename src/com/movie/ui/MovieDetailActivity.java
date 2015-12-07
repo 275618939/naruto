@@ -280,6 +280,7 @@ public class MovieDetailActivity extends BaseActivity implements OnClickListener
 	public void onBackPressed() {
 		super.onBackPressed();
 		overridePendingTransition(R.anim.slide_in_left, R.anim.slide_out_right);
+		this.finish();
 	}
 	@Override
 	@SuppressWarnings("unchecked")
@@ -397,6 +398,7 @@ public class MovieDetailActivity extends BaseActivity implements OnClickListener
 			String message=map.get(Constant.ReturnCode.RETURN_MESSAGE).toString();
 			showToask(message);
 		}
+		map=null;
 	}
 
 	@Override
@@ -446,6 +448,12 @@ public class MovieDetailActivity extends BaseActivity implements OnClickListener
 		wantSeeMovieAdapter=null;
 		users.clear();
 		comments.clear();
+		httpFileLoveService=null;
+		httpMovieDetailService=null;
+		httpFilmLoveUpdateService=null;
+		httpCommentCreateService=null;
+		httpCommentQueryService=null;
+		filmTypeService=null;
 	}
 
 	

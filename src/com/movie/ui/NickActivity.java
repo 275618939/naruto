@@ -102,6 +102,7 @@ public class NickActivity extends BaseActivity implements OnClickListener,
 			String message=map.get(Constant.ReturnCode.RETURN_MESSAGE).toString();
 			showToask(message);
 		}
+		map=null;
 	}
 
 	@Override
@@ -113,6 +114,11 @@ public class NickActivity extends BaseActivity implements OnClickListener,
 	@Override
 	public void OnRequest() {
 		showProgressDialog("提示", "正在提交，请稍后......");		
+	}
+	@Override
+	protected void onDestroy() {
+		super.onDestroy();
+		httpUserDateService=null;
 	}
 
 }

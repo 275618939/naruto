@@ -208,6 +208,13 @@ public class RegisterActivity extends BaseActivity implements OnClickListener, C
 	public void OnRequest() {
 		showProgressDialog("提示", "请稍后......");
 	}
+	@Override
+	protected void onDestroy() {
+		super.onDestroy();
+		httpMobileCaptchaService=null;
+		httpRegisterService=null;
+	}
+
 
 	
 }

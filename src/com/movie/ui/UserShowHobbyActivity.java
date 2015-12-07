@@ -81,6 +81,7 @@ public class UserShowHobbyActivity extends BaseActivity implements OnClickListen
 			String desc = map.get(Constant.ReturnCode.RETURN_MESSAGE).toString();
 			showToask(desc);
 		}
+	    map=null;
 	}
 	@Override
 	public void ErrorCallBack(Map<String, Object> map) {
@@ -95,6 +96,9 @@ public class UserShowHobbyActivity extends BaseActivity implements OnClickListen
 	protected void onDestroy() {
 		super.onDestroy();
 		hobbyAdapter=null;
+		gridView=null;
+		hobbies=null;
+		hobbyService=null;
 	}
 	
 	
