@@ -47,6 +47,7 @@ import com.movie.network.HttpMovieCommentCreateService;
 import com.movie.network.HttpMovieCommentQueryService;
 import com.movie.network.HttpMovieDetailService;
 import com.movie.util.MovieScore;
+import com.movie.util.SharedPreferencesUtils;
 import com.movie.util.StringUtil;
 import com.movie.view.HorizontalListView;
 import com.movie.view.LoadView;
@@ -265,9 +266,11 @@ public class MovieDetailActivity extends BaseActivity implements OnClickListener
 				startActivity(movieIntent);
 				break;
 			case R.id.create_miss:
+				SharedPreferencesUtils.setParam(this, "filmId", filmId);
+				SharedPreferencesUtils.setParam(this, "filmName", movie.getName());
 				Intent missCreate = new Intent(this, MissCreateActivity.class);
-				missCreate.putExtra("movie", movie);
 				startActivity(missCreate);
+				this.finish();
 				break;	
 			case R.id.filmLove_more:
 				

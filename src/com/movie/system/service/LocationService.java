@@ -57,6 +57,8 @@ public class LocationService implements BDLocationListener,CallBackService {
 		
 		double longitude=location.getLongitude();  //纬度
 		double latitude=location.getLatitude();    //经度
+		NarutoApplication.city=location.getCity();
+		NarutoApplication.address=location.getAddrStr();
 		NarutoApplication.longitude=(int)(longitude*100000);
 		NarutoApplication.latitude=(int)(latitude*100000);
 		Log.i("-location-", "定位:"+"["+NarutoApplication.longitude+","+NarutoApplication.latitude+"]");

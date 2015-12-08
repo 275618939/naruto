@@ -15,6 +15,7 @@ import com.movie.client.bean.Movie;
 import com.movie.client.service.BaseService;
 import com.movie.client.service.CallBackService;
 import com.movie.network.HttpMissCreateService;
+import com.movie.util.SharedPreferencesUtils;
 
 public class MissConfirmActivity extends BaseActivity implements
 		OnClickListener, CallBackService {
@@ -35,7 +36,7 @@ public class MissConfirmActivity extends BaseActivity implements
 	String cinameUid;
 	double latitude;
 	double longitude;
-	Movie movie;
+	Integer filmId;
 	BaseService httpMissCreateService;
 
 	@Override
@@ -76,18 +77,18 @@ public class MissConfirmActivity extends BaseActivity implements
 		cinameUid = getIntent().getStringExtra("cinameUid");
 		latitude = getIntent().getDoubleExtra("latitude", 0);
 		longitude = getIntent().getDoubleExtra("longitude", 0);
-		movie=(Movie)getIntent().getSerializableExtra("movie");
 		runTime.setText(dateTime);
 		coin.setText(String.valueOf(cointInfo));
 		cinemaNameView.setText(cinemaName);
 		cinemaAddressView.setText(cinemaAddress);
 		cinemaPhoneView.setText(cinemaPhoneNum);
-		movieName.setText(movie.getName());
+		filmId=(Integer)SharedPreferencesUtils.getParam(this,"filmId", 0);
+		movieName.setText((String)SharedPreferencesUtils.getParam(this,"filmName", ""));
 		
 	}
 	private void saveMiss() {
 
-		httpMissCreateService.addParams("filmId", movie.getId());
+		httpMissCreateService.addParams("filmId", filmId.intValue());
 		httpMissCreateService.addParams("runTime", dateTime);
 		httpMissCreateService.addParams("coin", cointInfo);
 		httpMissCreateService.addParams("cinemaId", "016fc79c22d5b3fc");
@@ -117,14 +118,15 @@ public class MissConfirmActivity extends BaseActivity implements
 	public void onBackPressed() {
 		super.onBackPressed();
 		overridePendingTransition(R.anim.slide_in_left, R.anim.slide_out_right);
+		this.finish();
 	}
 	@Override
 	public void SuccessCallBack(Map<String, Object> map) {
 
 		hideProgressDialog();
 		String code = map.get(Constant.ReturnCode.RETURN_STATE).toString();
+		//String tag = map.get(Constant.ReturnCode.RETURN_TAG).toString();
 		if (Constant.ReturnCode.STATE_1.equals(code)) {
-			String tag = map.get(Constant.ReturnCode.RETURN_TAG).toString();
 			Intent intent = new Intent(this, MainActivity.class);
 			startActivity(intent);
 			finish();

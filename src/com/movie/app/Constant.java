@@ -129,6 +129,8 @@ public interface Constant {
 		public final static int COMMENTS_MAX_SHOW = 4;
 		// 电影评论最大显示项
 		public final static int MOVIES_COMMENTS_MAX_SHOW = 3;
+		//附近的会员或动态，与本人的最小距离
+		public final static int MIN_DISTANCE=2;
 		// 获取附近的会员或动态，与本人的最远距离
 		public final static int MAX_DISTANCE=10;
 		// 动态图片最大显示数

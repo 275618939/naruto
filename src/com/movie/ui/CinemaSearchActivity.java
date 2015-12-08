@@ -2,6 +2,7 @@ package com.movie.ui;
 
 import android.graphics.drawable.ColorDrawable;
 import android.os.Bundle;
+import android.os.Handler;
 import android.text.Editable;
 import android.text.TextWatcher;
 import android.view.Gravity;
@@ -19,8 +20,6 @@ import android.widget.TextView;
 
 import com.baidu.location.BDLocation;
 import com.baidu.location.BDLocationListener;
-import com.baidu.location.LocationClient;
-import com.baidu.location.LocationClientOption;
 import com.baidu.mapapi.SDKInitializer;
 import com.baidu.mapapi.map.BaiduMap;
 import com.baidu.mapapi.map.MapStatusUpdate;
@@ -45,28 +44,24 @@ import com.baidu.mapapi.search.sug.SuggestionSearchOption;
 import com.movie.R;
 import com.movie.adapter.PoiAdapter;
 import com.movie.app.BaseActivity;
-import com.movie.client.bean.Movie;
+import com.movie.app.NarutoApplication;
 
 
 public class CinemaSearchActivity extends BaseActivity implements
-	BDLocationListener,OnGetPoiSearchResultListener, OnGetSuggestionResultListener,OnClickListener {
+	OnGetPoiSearchResultListener, OnGetSuggestionResultListener,OnClickListener {
 
-
+	final int InitSerach=0x01;
 	final static String DefaultSearchKey="影院";
 	PoiSearch mPoiSearch = null;
 	SuggestionSearch mSuggestionSearch = null;
 	BaiduMap mBaiduMap = null;
-	LocationClient mLocClient=null;
 	PopupWindow cinemaPop = null;
 	AutoCompleteTextView keyWorldsView = null;
 	ArrayAdapter<String> sugAdapter = null;
 	boolean isFirstLoc = true;// 是否首次定位
 	int load_Index = 0;
-	String city;
-	String address;
 	String dateTime;
 	String cointInfo;
-	Movie movie;
     View parentView;
 	TextView right;
 	LinearLayout ll_popup;
@@ -82,6 +77,7 @@ public class CinemaSearchActivity extends BaseActivity implements
 		parentView = getLayoutInflater().inflate(R.layout.activity_cinema_search, null);
 		setContentView(parentView);
 		initViews();
+		initEvents();
 		initData();
 
 	}
@@ -99,17 +95,8 @@ public class CinemaSearchActivity extends BaseActivity implements
 		keyWorldsView.setAdapter(sugAdapter);
 		// 开启定位图层
 		mBaiduMap.setMyLocationEnabled(true);
-		// 定位初始化
-		mLocClient = new LocationClient(this);
-		LocationClientOption option = new LocationClientOption();
-		option.setOpenGps(true);// 打开gps
-		option.setCoorType("bd09ll"); // 设置坐标类型
-		option.setScanSpan(1000);
-		option.setIsNeedAddress(true);
-		mLocClient.setLocOption(option);
-		mLocClient.start();
-		mLocClient.registerLocationListener(this);
-	
+
+		poiAdapter =new PoiAdapter(this, null);
 		cinemaPop= new PopupWindow(CinemaSearchActivity.this);
 		View view = getLayoutInflater().inflate(R.layout.item_popup_cinema_windows, null);
 		cinemaPop.setWidth(LayoutParams.MATCH_PARENT);
@@ -122,7 +109,6 @@ public class CinemaSearchActivity extends BaseActivity implements
 		ll_popup = (LinearLayout) view.findViewById(R.id.ll_popup);
 		poiListView = (ListView) ll_popup.findViewById(R.id.poi_listView);	
 		poiListView.setAdapter(poiAdapter);		
-		mLocClient.registerLocationListener(myListener);
 		right.setVisibility(View.VISIBLE);
 	
 		
@@ -130,7 +116,6 @@ public class CinemaSearchActivity extends BaseActivity implements
 	@Override
 	protected void initEvents() {
 		parent_popup.setOnClickListener(this);
-		poiAdapter =new PoiAdapter(this, null);
 		right.setOnClickListener(this);
 		/**
 		 * 当输入关键字变化时，动态更新建议列表
@@ -152,7 +137,7 @@ public class CinemaSearchActivity extends BaseActivity implements
 				/**
 				 * 使用建议搜索服务获取建议列表，结果在onSuggestionResult()中更新
 				 */
-				mSuggestionSearch.requestSuggestion((new SuggestionSearchOption()).keyword(cs.toString()).city(city));
+				mSuggestionSearch.requestSuggestion((new SuggestionSearchOption()).keyword(cs.toString()).city(NarutoApplication.city));
 			}
 		});
 	}
@@ -160,16 +145,30 @@ public class CinemaSearchActivity extends BaseActivity implements
 	protected void initData() {
 		dateTime = getIntent().getStringExtra("dateTime");
 		cointInfo = getIntent().getStringExtra("cointInfo");
-		movie=(Movie)getIntent().getSerializableExtra("movie");
 		right.setText("搜索");
 		poiAdapter.setDateTime(dateTime);
 		poiAdapter.setCointInfo(cointInfo);
-		poiAdapter.setMovie(movie);
-
+		keyWorldsView.setText(DefaultSearchKey);
+		mHandler.postDelayed(new Runnable(){    
+		    public void run() {
+		    	searchButtonProcess(null);
+		    }},1000);
 	}
+	Handler mHandler = new Handler() {
+		public void handleMessage(android.os.Message msg) {
+			switch (msg.what) {
+			case InitSerach:
+				searchButtonProcess(null);
+				break;
+			default:
+				break;
+
+			}
+		};
+	};
 	private void searchButtonProcess(View v) {
 		
-		mPoiSearch.searchInCity((new PoiCitySearchOption()).city(city).keyword(keyWorldsView.getText().toString()).pageNum(load_Index));
+		mPoiSearch.searchInCity((new PoiCitySearchOption()).city(NarutoApplication.city).keyword(keyWorldsView.getText().toString()).pageNum(load_Index));
 	}
 
 	@Override
@@ -184,8 +183,6 @@ public class CinemaSearchActivity extends BaseActivity implements
 
 	@Override
 	protected void onDestroy() {
-		// 退出时销毁定位
-		mLocClient.stop();
 		// 关闭定位图层
 		mBaiduMap.setMyLocationEnabled(false);
 		mPoiSearch.destroy();
@@ -249,10 +246,7 @@ public class CinemaSearchActivity extends BaseActivity implements
 
 			ll_popup.startAnimation(AnimationUtils.loadAnimation(CinemaSearchActivity.this,R.anim.activity_translate_in));
 			cinemaPop.showAtLocation(parentView, Gravity.BOTTOM, 0, 0);
-			poiAdapter.clearData();
-			poiAdapter.updateData(result.getAllPoi());
-			poiAdapter.notifyDataSetChanged();
-			
+			poiAdapter.updateData(result.getAllPoi());	
 			return;
 		}
 		if (result.error == SearchResult.ERRORNO.AMBIGUOUS_KEYWORD) {
@@ -333,13 +327,6 @@ public class CinemaSearchActivity extends BaseActivity implements
 			// }
 			return true;
 		}
-	}
-	@Override
-	public void onReceiveLocation(BDLocation location) {
-		city = location.getCity();
-		address = location.getAddrStr();
-		keyWorldsView.setText(DefaultSearchKey);
-		searchButtonProcess(null);
 	}
 	@Override
 	public void onBackPressed() {

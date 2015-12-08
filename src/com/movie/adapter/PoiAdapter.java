@@ -1,5 +1,6 @@
 package com.movie.adapter;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import android.content.Context;
@@ -14,18 +15,16 @@ import android.widget.TextView;
 
 import com.baidu.mapapi.search.core.PoiInfo;
 import com.movie.R;
-import com.movie.client.bean.Movie;
 import com.movie.ui.MissConfirmActivity;
 
 public class PoiAdapter extends BaseAdapter {
 	
 
-	List<PoiInfo> poiInfos;
+	List<PoiInfo> poiInfos=new ArrayList<PoiInfo>();
 	Context context;
 	LayoutInflater inflater;
 	String dateTime;
 	String cointInfo;
-	Movie movie;
 	
 	
 	public PoiAdapter(Context context,List<PoiInfo> poiInfos) {
@@ -33,10 +32,6 @@ public class PoiAdapter extends BaseAdapter {
 		this.context = context;
 		this.poiInfos = poiInfos;
 		inflater = LayoutInflater.from(context);
-		initData();
-	}
-	protected void initData(){
-		
 	}
 	@Override
 	public int getCount() {
@@ -94,9 +89,7 @@ public class PoiAdapter extends BaseAdapter {
 		this.notifyDataSetChanged();
 	}
 	public void clearData() {
-		if(poiInfos!=null){
-			poiInfos.clear();
-		}
+		poiInfos.clear();
 	}
 	protected class UserSelectAction implements OnClickListener{
 
@@ -118,36 +111,22 @@ public class PoiAdapter extends BaseAdapter {
 			intent.putExtra("cinameUid", poiInfo.uid);
 			intent.putExtra("latitude", poiInfo.location.latitude);
 			intent.putExtra("longitude", poiInfo.location.longitude);
-			intent.putExtra("movie", movie);
 			context.startActivity(intent);
 			
 		}
 		
 	}
-	public List<PoiInfo> getPoiInfos() {
-		return poiInfos;
-	}
 	public void setPoiInfos(List<PoiInfo> poiInfos) {
 		this.poiInfos = poiInfos;
-	}
-	public String getDateTime() {
-		return dateTime;
 	}
 	public void setDateTime(String dateTime) {
 		this.dateTime = dateTime;
 	}
-	public String getCointInfo() {
-		return cointInfo;
-	}
 	public void setCointInfo(String cointInfo) {
 		this.cointInfo = cointInfo;
 	}
-	public Movie getMovie() {
-		return movie;
-	}
-	public void setMovie(Movie movie) {
-		this.movie = movie;
-	}
+	
+	
 	
 	
 	

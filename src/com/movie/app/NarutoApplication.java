@@ -29,6 +29,8 @@ public class NarutoApplication extends Application {
 	private static final String PHOTO_CACSHE_DIR = "naruto/cache";
 	public static int longitude; 								     //经度
 	public static int latitude; 								     //纬度
+	public static String city;										 //所在城市
+	public static String address;									 //详细地址
 	private static NarutoApplication mAppApplication;
 	private SQLHelper sqlHelper;
 	public static DisplayImageOptions imageOptions;

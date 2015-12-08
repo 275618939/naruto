@@ -18,7 +18,6 @@ import android.widget.TimePicker;
 import com.movie.R;
 import com.movie.app.BaseActivity;
 import com.movie.app.Constant;
-import com.movie.client.bean.Movie;
 import com.movie.client.service.CallBackService;
 import com.movie.util.StringUtil;
 import com.movie.view.MissDateDialog;
@@ -31,7 +30,6 @@ public class MissCreateActivity extends BaseActivity implements OnClickListener,
 	EditText coin;
 	ImageView clear_runTime;
 	ImageView clear_coin;
-	Movie movie;
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
@@ -87,7 +85,6 @@ public class MissCreateActivity extends BaseActivity implements OnClickListener,
 	}
 	@Override
 	protected void initData() {
-		movie=(Movie)getIntent().getSerializableExtra("movie");
 		title.setText("创建约会");
 		right.setText("下一步");
 		coin.setText("0");
@@ -140,8 +137,8 @@ public class MissCreateActivity extends BaseActivity implements OnClickListener,
 		Intent cinemaPoi = new Intent(this, CinemaSearchActivity.class);
 		cinemaPoi.putExtra("dateTime", dateTime);
 		cinemaPoi.putExtra("cointInfo", cointInfo);
-		cinemaPoi.putExtra("movie", movie);
 		startActivity(cinemaPoi);
+		
 
 	}
 
