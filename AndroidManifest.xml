@@ -109,6 +109,11 @@
             android:launchMode="singleTop"
             android:screenOrientation="portrait" />
         <activity
+            android:name=".ui.ImageBrowserActivity"
+            android:alwaysRetainTaskState="true"
+            android:launchMode="singleTop"
+            android:screenOrientation="portrait" />
+        <activity
             android:name=".ui.LoginActivity"
             android:alwaysRetainTaskState="true"
             android:launchMode="singleTop"

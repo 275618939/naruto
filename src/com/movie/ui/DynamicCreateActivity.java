@@ -1,9 +1,8 @@
 package com.movie.ui;
 
-import java.util.ArrayList;
-import java.util.List;
 import java.util.Map;
 
+import android.annotation.SuppressLint;
 import android.content.Intent;
 import android.database.Cursor;
 import android.graphics.Bitmap;
@@ -14,9 +13,12 @@ import android.os.Bundle;
 import android.os.Handler;
 import android.provider.MediaStore;
 import android.view.Gravity;
+import android.view.MotionEvent;
 import android.view.View;
 import android.view.View.OnClickListener;
+import android.view.View.OnTouchListener;
 import android.view.ViewGroup.LayoutParams;
+import android.view.inputmethod.InputMethodManager;
 import android.widget.GridView;
 import android.widget.ImageView;
 import android.widget.TextView;
@@ -25,22 +27,27 @@ import com.movie.R;
 import com.movie.adapter.DynamicPhotoGridAdapter;
 import com.movie.app.BaseActivity;
 import com.movie.app.Constant;
-import com.movie.app.Constant.ImageSize;
 import com.movie.app.Constant.Page;
+import com.movie.app.NarutoApplication;
 import com.movie.client.service.CallBackService;
 import com.movie.pop.UserPhotoPopupWindow;
 import com.movie.util.Bimp;
 import com.movie.util.FileUtils;
 import com.movie.util.ImageItem;
 import com.movie.util.PhotoUtils;
+import com.movie.view.EmoteInputView;
+import com.movie.view.EmoticonsEditText;
 
+@SuppressLint("ClickableViewAccessibility")
 public class DynamicCreateActivity extends BaseActivity implements
-		OnClickListener, CallBackService {
+		OnClickListener, CallBackService, OnTouchListener {
 
+	
 	public static final int DELETE_IMAGE = 0X001; //  删除图片
 	TextView title;
 	TextView right;
-	TextView content;
+	EmoticonsEditText content;
+	EmoteInputView mInputView;
 	GridView photoGridview;
 	View rootView;
 	ImageItem imageItem;
@@ -48,7 +55,7 @@ public class DynamicCreateActivity extends BaseActivity implements
 	ImageView addEmoteView;
 	DynamicPhotoGridAdapter photoGridAdapter;
 	UserPhotoPopupWindow userPhotoPopupWindow;
-	List<ImageItem> imageItems=new ArrayList<ImageItem>();
+	
 
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
@@ -68,19 +75,22 @@ public class DynamicCreateActivity extends BaseActivity implements
 	protected void initViews() {
 		title = (TextView) findViewById(R.id.title);
 		right = (TextView) findViewById(R.id.right_text);
-		content = (TextView) findViewById(R.id.dynamic_content);
+		content = (EmoticonsEditText) findViewById(R.id.dynamic_content);
 		addPicView = (ImageView) findViewById(R.id.addPic);
+		mInputView = (EmoteInputView) findViewById(R.id.feedprofile_eiv_input);
 		addEmoteView = (ImageView) findViewById(R.id.addEmote);
 		photoGridview = (GridView) findViewById(R.id.userPhotoGridview);
 		photoGridview.setSelector(new ColorDrawable(Color.TRANSPARENT));
-		photoGridAdapter = new DynamicPhotoGridAdapter(this, mHandler, imageItems);
+		photoGridAdapter = new DynamicPhotoGridAdapter(this, mHandler, Bimp.tempSelectBitmap);
 		photoGridview.setAdapter(photoGridAdapter);
 		right.setVisibility(View.VISIBLE);
+		mInputView.setEditText(content);
 		
 	}
 
 	@Override
 	protected void initEvents() {
+		content.setOnTouchListener(this);
 		right.setOnClickListener(this);
 		addPicView.setOnClickListener(this);
 		addEmoteView.setOnClickListener(this);
@@ -92,17 +102,46 @@ public class DynamicCreateActivity extends BaseActivity implements
 		right.setText("发送");
 		Bimp.tempSelectBitmap.clear();
 	}
+	@Override
+	public boolean onTouch(View v, MotionEvent event) {
 
+		if (v.getId() == R.id.dynamic_content) {
+			showKeyBoard();
+		}
+		return false;
+	}
 	@Override
 	public void onClick(View v) {
 		switch (v.getId()) {
 			case R.id.addPic:
 				userPhotoPopupWindow.showAtLocation(v, Gravity.BOTTOM, 0, 0);
 				break;
+			case R.id.addEmote:
+				content.requestFocus();
+				if (mInputView.isShown()) {
+					showKeyBoard();
+				} else {
+					hideKeyBoard();
+					mInputView.setVisibility(View.VISIBLE);
+				}
+				break;
 			default:
 				break;
 		}
 
+	}
+	private void showKeyBoard() {
+		if (mInputView.isShown()) {
+			mInputView.setVisibility(View.GONE);
+		}
+		((InputMethodManager) getSystemService(INPUT_METHOD_SERVICE)).showSoftInput(content, 0);
+	}
+
+	private void hideKeyBoard() {
+		((InputMethodManager) getSystemService(INPUT_METHOD_SERVICE))
+				.hideSoftInputFromWindow(DynamicCreateActivity.this
+						.getCurrentFocus().getWindowToken(),
+						InputMethodManager.HIDE_NOT_ALWAYS);
 	}
 	protected void onActivityResult(int requestCode, int resultCode, Intent data) {
 		super.onActivityResult(requestCode, resultCode, data);
@@ -133,12 +172,11 @@ public class DynamicCreateActivity extends BaseActivity implements
 							return;
 						}
 						//压缩图片
-						Bitmap bitmap = PhotoUtils.createBitmap(path,ImageSize.DYNAMIC_WIDTH,ImageSize.DYNAMIC_HEIGHT);
+						Bitmap bitmap = PhotoUtils.createBitmap(path,NarutoApplication.getApp().mScreenWidth/2,NarutoApplication.getApp().mScreenHeight/2);
 						imageItem= new ImageItem();
 						imageItem.setImagePath(path);
 						imageItem.setBitmap(bitmap);
-						imageItems.add(imageItem);
-						//bitmap.recycle();
+						Bimp.tempSelectBitmap.add(imageItem);
 						bitmap=null;
 						imageItem=null;
 						photoGridAdapter.notifyDataSetChanged();
@@ -156,12 +194,11 @@ public class DynamicCreateActivity extends BaseActivity implements
 				String path=userPhotoPopupWindow.getTakeImagePath();
 				if (path != null) {
 				   //按比例缩放图片				
-				   Bitmap bitmap = PhotoUtils.createBitmap(path,ImageSize.DYNAMIC_WIDTH,ImageSize.DYNAMIC_HEIGHT);
+				   Bitmap bitmap = PhotoUtils.createBitmap(path,NarutoApplication.getApp().mScreenWidth/2,NarutoApplication.getApp().mScreenHeight/2);
 				   imageItem= new ImageItem();
 				   imageItem.setImagePath(path);
 				   imageItem.setBitmap(bitmap);
-				   imageItems.add(imageItem);
-				   //itmap.recycle();
+				   Bimp.tempSelectBitmap.add(imageItem);
 				   bitmap=null;
 				   imageItem=null;
 				   photoGridAdapter.notifyDataSetChanged();
@@ -173,7 +210,7 @@ public class DynamicCreateActivity extends BaseActivity implements
 			break;
 			
 		}
-		if(imageItems.size()==Page.MAX_SHOW_USER_PHOTO){
+		if(Bimp.tempSelectBitmap.size()==Page.MAX_SHOW_USER_PHOTO){
 			addPicView.setVisibility(View.GONE);
 		}
 	}
@@ -183,9 +220,12 @@ public class DynamicCreateActivity extends BaseActivity implements
 			switch (msg.what) {
 			case DELETE_IMAGE:
 				int position= msg.getData().getInt("position");
-				imageItems.get(position).getBitmap().recycle();
-				imageItems.remove(position);
+				Bimp.tempSelectBitmap.get(position).getBitmap().recycle();
+				Bimp.tempSelectBitmap.remove(position);
 				photoGridAdapter.notifyDataSetChanged();
+				if(Bimp.tempSelectBitmap.size()<Page.MAX_SHOW_USER_PHOTO){
+					addPicView.setVisibility(View.VISIBLE);
+				}
 				break;
 			
 			default:
@@ -197,6 +237,11 @@ public class DynamicCreateActivity extends BaseActivity implements
 
 	@Override
 	public void onBackPressed() {
+		if (mInputView.isShown()) {
+			mInputView.setVisibility(View.GONE);
+		} else {
+			
+		}
 		super.onBackPressed();
 		overridePendingTransition(R.anim.slide_in_left, R.anim.slide_out_right);
 		this.finish();
@@ -231,7 +276,7 @@ public class DynamicCreateActivity extends BaseActivity implements
 	@Override
 	protected void onDestroy() {
 		super.onDestroy();
-		imageItems.clear();
+		Bimp.tempSelectBitmap.clear();
 		photoGridAdapter=null;
 		photoGridview=null;
 		System.gc();

@@ -9,19 +9,21 @@
         android:id="@+id/title_bar"
         layout="@layout/common_head" />
 
-    <EditText
+    <com.movie.view.EmoticonsEditText
         android:id="@+id/dynamic_content"
         android:layout_width="match_parent"
         android:layout_height="100dp"
         android:layout_margin="8dp"
         android:background="@null"
+        android:cursorVisible="true"
+        android:focusable="true"
         android:gravity="left|top"
         android:hint="@string/dynamic_create_hint"
         android:inputType="textMultiLine"
         android:maxLength="100"
         android:minLines="4"
         android:singleLine="false" >
-    </EditText>
+    </com.movie.view.EmoticonsEditText>
 
     <GridView
         android:id="@+id/userPhotoGridview"
@@ -54,5 +56,24 @@
             android:layout_marginLeft="@dimen/layout_left_0"
             android:src="@drawable/icon_addemote" />
     </LinearLayout>
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent" >
+
+        <LinearLayout
+            android:id="@+id/feedprofile_layout_emote"
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:layout_alignParentBottom="true"
+            android:background="@color/msg_editor_backgroud" >
+
+            <com.movie.view.EmoteInputView
+                android:id="@+id/feedprofile_eiv_input"
+                android:layout_width="fill_parent"
+                android:layout_height="wrap_content"
+                android:visibility="gone" />
+        </LinearLayout>
+    </RelativeLayout>
 
 </LinearLayout>
