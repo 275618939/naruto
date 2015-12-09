@@ -19,8 +19,8 @@ import com.movie.R;
 import com.movie.app.BaseActivity;
 import com.movie.app.Constant;
 import com.movie.client.service.CallBackService;
+import com.movie.dialog.MissDateDialog;
 import com.movie.util.StringUtil;
-import com.movie.view.MissDateDialog;
 
 public class MissCreateActivity extends BaseActivity implements OnClickListener,CallBackService {
 
@@ -30,6 +30,7 @@ public class MissCreateActivity extends BaseActivity implements OnClickListener,
 	EditText coin;
 	ImageView clear_runTime;
 	ImageView clear_coin;
+	MissDateDialog missDialog;
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
@@ -40,6 +41,7 @@ public class MissCreateActivity extends BaseActivity implements OnClickListener,
 	}
 	@Override
 	protected void initViews() {
+		missDialog =new MissDateDialog(this);
 		title = (TextView) findViewById(R.id.title);
 		right = (TextView) findViewById(R.id.right_text);
 		runTime = (EditText) findViewById(R.id.runTime);
@@ -48,6 +50,7 @@ public class MissCreateActivity extends BaseActivity implements OnClickListener,
 		clear_runTime = (ImageView) findViewById(R.id.clear_runTime);
 		clear_coin = (ImageView) findViewById(R.id.clear_coin);
 		right.setVisibility(View.VISIBLE);
+		
 
 	}
 
@@ -88,22 +91,22 @@ public class MissCreateActivity extends BaseActivity implements OnClickListener,
 		title.setText("创建约会");
 		right.setText("下一步");
 		coin.setText("0");
+		missDialog.setTitle("选择约会时间");
 	}
 	private void showDateDiog(View view){
-		final MissDateDialog.Builder build=new MissDateDialog.Builder(view.getContext());
-		build.setTitle(R.string.missdate_hint);
-		build.setPositiveButton("取消",
+		missDialog.setButton("取消",
 				new DialogInterface.OnClickListener() {
+					@Override
 					public void onClick(DialogInterface dialog, int which) {
-						dialog.dismiss();
+						missDialog.cancel();
 					}
-				});
-		build.setNegativeButton("确定",
-				new android.content.DialogInterface.OnClickListener() {
+				}, "确认", new DialogInterface.OnClickListener() {
+
+					@Override
 					public void onClick(DialogInterface dialog, int which) {
-						dialog.dismiss();
-						DatePicker datePicker=build.getMissDate();
-						TimePicker timePicker=build.getMissTime();
+						missDialog.dismiss();
+						DatePicker datePicker=missDialog.getMissDate();
+						TimePicker timePicker=missDialog.getMissTime();
 						int year= datePicker.getYear();
 						int month=datePicker.getMonth();
 						int data=datePicker.getDayOfMonth();
@@ -113,12 +116,11 @@ public class MissCreateActivity extends BaseActivity implements OnClickListener,
 						StringBuilder currentDateTime=new StringBuilder(StringUtil.strChangeDate(value));
 						currentDateTime.append(" ").append(h<10?"0"+h:h).append(":").append(m<10?"0"+m:m).append(":").append("00");
 						runTime.setText(currentDateTime.toString());
-						
 					}
 				});
-
-		build.create().show();
+		missDialog.show();
 	}
+		
 
 	
 

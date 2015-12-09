@@ -23,7 +23,6 @@ import com.movie.client.bean.Movie;
 import com.movie.client.bean.User;
 import com.movie.client.service.BaseService;
 import com.movie.client.service.CallBackService;
-import com.movie.fragment.SelfFragment;
 import com.movie.network.HttpMissCancelService;
 import com.movie.network.HttpMissQueryService;
 import com.movie.util.Images;
@@ -72,36 +71,36 @@ public class MissQueryActivity extends BaseActivity implements OnClickListener,C
 	@Override
 	protected void initData() {
 		page=0;
-		missType = getIntent().getIntExtra(SelfFragment.MISS_KEY, SelfFragment.MY_MISS);
-		queryCondition=getIntent().getSerializableExtra(SelfFragment.CONDITION_KEY);
+		missType = getIntent().getIntExtra(Miss.MISS_KEY, Miss.MY_MISS);
+		queryCondition=getIntent().getSerializableExtra(Miss.CONDITION_KEY);
 		missQueryAdapter.setMissType(missType);
 		loadMissData();
 	}
 
 	private void loadMissData() {
 		switch (missType) {
-		case SelfFragment.MY_MISS:
+		case Miss.MY_MISS:
 			title.setText("发起的约会");
 			missQueryService.addUrls(Constant.Miss_Query_API_URL);
 			missQueryService.addParams("page", page);
 			missQueryService.addParams("size", Page.DEFAULT_SIZE);
 			missQueryService.execute(this);
 			break;
-		case SelfFragment.MY_PART:
+		case Miss.MY_PART:
 			title.setText("参与的约会");
 			missQueryService.addUrls(Constant.Miss_Touch_Query_API_URL);
 			missQueryService.addParams("page", page);
 			missQueryService.addParams("size", Page.DEFAULT_SIZE);
 			missQueryService.execute(this);
 			break;
-		case SelfFragment.MY_INVITATION:
+		case Miss.MY_INVITATION:
 			title.setText("应邀的约会");
 			missQueryService.addUrls(Constant.Miss_Attend_Query_API_URL);
 			missQueryService.addParams("page", page);
 			missQueryService.addParams("size", Page.DEFAULT_SIZE);
 			missQueryService.execute(this);
 			break;
-		case SelfFragment.USER_INVITATION:
+		case Miss.USER_INVITATION:
 			if(null!=queryCondition){
 				User user=(User)queryCondition;
 				title.setText(user.getNickname()+"正在进行的约会");
@@ -112,7 +111,7 @@ public class MissQueryActivity extends BaseActivity implements OnClickListener,C
 				missQueryService.execute(this);
 			}
 			break;
-		case SelfFragment.MOVIE_INVITATION:
+		case Miss.MOVIE_INVITATION:
 			if(null!=queryCondition){
 				Movie movie=(Movie)queryCondition;
 				title.setText(movie.getName()+"正在进行的约会");

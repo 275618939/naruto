@@ -20,6 +20,7 @@ import com.movie.client.bean.Login;
 import com.movie.client.service.LoginService;
 import com.movie.ui.LoginActivity;
 import com.movie.util.NetWorkUtils;
+import com.movie.view.LoadView;
 import com.nostra13.universalimageloader.core.ImageLoader;
 
 public abstract class BaseActivity extends FragmentActivity {
@@ -33,6 +34,7 @@ public abstract class BaseActivity extends FragmentActivity {
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		loginService=new LoginService();	
+		
 	}
 	/** 初始化视图 **/
 	protected abstract void initViews();

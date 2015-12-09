@@ -60,12 +60,11 @@ public class DynamicCreateActivity extends BaseActivity implements
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
-		setContentView(R.layout.activity_dynamic_create);
 		if(rootView==null){  
 	        rootView=getLayoutInflater().inflate(R.layout.activity_dynamic_create,null);  
 	    }  
-		userPhotoPopupWindow = new UserPhotoPopupWindow(this,LayoutParams.MATCH_PARENT,LayoutParams.WRAP_CONTENT);
 		setContentView(rootView);
+		userPhotoPopupWindow = new UserPhotoPopupWindow(this,LayoutParams.MATCH_PARENT,LayoutParams.WRAP_CONTENT);
 		initViews();
 		initEvents();
 		initData();

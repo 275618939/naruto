@@ -2,7 +2,7 @@ package com.movie.state;
 
 public enum MissState {
 
-	HaveInHand(1, "正在进行"), Expired(2, "已到期"), Completed(3, "已完成");
+	HaveInHand(1, "正在进行"), Expired(2, "已到期"), Completed(3, "已送影币");
 
 	private int state;
 	private String message;

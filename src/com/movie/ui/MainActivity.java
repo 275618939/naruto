@@ -1,7 +1,6 @@
 package com.movie.ui;
 
 import java.util.ArrayList;
-import java.util.Map;
 
 import android.app.AlertDialog;
 import android.content.DialogInterface;
@@ -18,7 +17,6 @@ import android.widget.TextView;
 import com.movie.R;
 import com.movie.app.BaseActivity;
 import com.movie.app.Constant;
-import com.movie.client.service.CallBackService;
 import com.movie.fragment.HomeFragment;
 import com.movie.fragment.MissFragment;
 import com.movie.fragment.MoiveFragment;
@@ -26,8 +24,7 @@ import com.movie.fragment.SelfFragment;
 import com.movie.system.service.LocationService;
 import com.movie.view.FragmentTabHost;
 
-public class MainActivity extends BaseActivity implements OnClickListener,
-		CallBackService {
+public class MainActivity extends BaseActivity implements OnClickListener{
 
 	/** 首页底部导航栏文本 */
 	String tabTextviewArray[] = { "发现", "约会", "影片", "我的" };
@@ -152,28 +149,6 @@ public class MainActivity extends BaseActivity implements OnClickListener,
 
 	}
 
-	@Override
-	public void SuccessCallBack(Map<String, Object> map) {
-		hideProgressDialog();
-		String code = map.get(Constant.ReturnCode.RETURN_STATE).toString();
-		if (Constant.ReturnCode.STATE_1.equals(code)) {
-
-		} else {
-			String desc = map.get(Constant.ReturnCode.RETURN_MESSAGE).toString();
-			showToask(desc);
-		}
-	}
-
-	@Override
-	public void ErrorCallBack(Map<String, Object> map) {
-		hideProgressDialog();
-		String message = map.get(Constant.ReturnCode.RETURN_MESSAGE).toString();
-		// showToask(message);
-	}
-
-	@Override
-	public void OnRequest() {
-		showProgressDialog("提示", "请求中...");
-	}
-
+	
+	
 }

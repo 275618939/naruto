@@ -134,21 +134,17 @@ public class LoginActivity extends BaseActivity implements OnClickListener, Call
 			this.finish();
 			break;
 		}
-
 	}
-
 	@Override
 	public void onBackPressed() {
-		//overridePendingTransition(R.anim.slide_in_left, R.anim.slide_out_right);
-		//Intent intent = new Intent(this, MainActivity.class);
-		//this.startActivity(intent);
-		setResult(SelfFragment.RELOAGIN);
-		super.onBackPressed();
-		this.finish();
+		 //super.onBackPressed();
+		 //overridePendingTransition(R.anim.slide_in_left, R.anim.slide_out_right);
+		 Intent intent = new Intent(this, MainActivity.class);
+		 //startActivity(intent);
+		 setResult(SelfFragment.RELOAGIN,intent);
+		 this.finish();
 	}
 
-	
-    
 	@Override
 	public void SuccessCallBack(Map<String, Object> map) {
 		hideProgressDialog();

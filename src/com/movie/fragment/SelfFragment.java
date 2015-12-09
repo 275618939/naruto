@@ -31,6 +31,7 @@ import com.movie.app.BaseFragment;
 import com.movie.app.Constant;
 import com.movie.app.Constant.ReturnCode;
 import com.movie.app.NarutoApplication;
+import com.movie.client.bean.Miss;
 import com.movie.client.bean.User;
 import com.movie.client.service.BaseService;
 import com.movie.client.service.CallBackService;
@@ -42,6 +43,7 @@ import com.movie.ui.LoginActivity;
 import com.movie.ui.MissSelfQueryActivity;
 import com.movie.ui.UserActivity;
 import com.movie.ui.UserDetailActivity;
+import com.movie.util.UserCharm;
 import com.nostra13.universalimageloader.core.ImageLoader;
 
 public class SelfFragment extends BaseFragment implements OnClickListener , CallBackService{
@@ -49,21 +51,6 @@ public class SelfFragment extends BaseFragment implements OnClickListener , Call
 	public static final int RELOAGIN = 0X101;
 	public static final int PTHOTO_UPDATE = 0X001;
 	public static final int LOGOUT = 0X110;
-	
-	//我发起的约会
-	public static final int MY_MISS = 0X210;
-	//我参与的约会
-	public static final int MY_PART = 0X211;
-	//我应邀的约会
-	public static final int MY_INVITATION = 0X212;
-	//用户参与的约会
-	public static final int USER_INVITATION = 0X213;
-	//电影下的约会
-	public static final int MOVIE_INVITATION = 0X214;
-	//约会类型
-	public static final String MISS_KEY = "miss_type";
-	//电影下的约会
-	public static final String CONDITION_KEY = "miss_query_key";
 	User user;
 	BaseService httpLoginAutoService;
 	BaseService httpUsersService;
@@ -79,10 +66,14 @@ public class SelfFragment extends BaseFragment implements OnClickListener , Call
 	TextView userNickView;
 	TextView userSignView;
 	TextView userLogoutBtn;
+	TextView selfCharmView;
+	TextView selfLoveView;
+	TextView trystCntView;
 	ImageView userSignIn;
 	SignInPopupWindow signInPopupWindow;
 	UserPhotoGridAdapter photoGridAdapter;
 	GridView photoGridview;
+	boolean isLoad;
 	public SelfFragment() {
 		super();		
 	}
@@ -127,6 +118,9 @@ public class SelfFragment extends BaseFragment implements OnClickListener , Call
 		userNickView = (TextView)rootView.findViewById(R.id.usernick);
 		userSignView = (TextView)rootView.findViewById(R.id.usersign);
 		userLogoutBtn = (TextView)rootView.findViewById(R.id.user_logout_btn);
+		selfCharmView = (TextView)rootView.findViewById(R.id.self_charm);
+		selfLoveView = (TextView)rootView.findViewById(R.id.self_love);
+		trystCntView = (TextView)rootView.findViewById(R.id.trystCnt);
 		userSignIn = (ImageView)rootView.findViewById(R.id.user_sign_in);
 		photoGridview = (GridView)rootView.findViewById(R.id.userPhotoGridview);
 		photoGridview.setSelector(new ColorDrawable(Color.TRANSPARENT));
@@ -154,6 +148,9 @@ public class SelfFragment extends BaseFragment implements OnClickListener , Call
 			return;
 		}		
 		loadUser();
+		if(!isLoad){
+			autoLogin();
+		}
 	}
 	
 	
@@ -204,9 +201,9 @@ public class SelfFragment extends BaseFragment implements OnClickListener , Call
 		loginAfterLayout.setVisibility(View.GONE);
 		httpLogotService.execute(this);
 	}
-	private void goToMyMissQuery(int type){
+	private void missQuery(int type){
 		Intent cinemaPoi = new Intent(getActivity(),MissSelfQueryActivity.class);
-		cinemaPoi.putExtra(MISS_KEY, type);
+		cinemaPoi.putExtra(Miss.MISS_KEY, type);
 		startActivity(cinemaPoi);
 	}
 	@Override
@@ -255,7 +252,8 @@ public class SelfFragment extends BaseFragment implements OnClickListener , Call
 				break;
 			case R.id.login_logo:
 				Intent loginIntent = new Intent(getActivity(),LoginActivity.class);
-				startActivity(loginIntent);
+				//startActivity(loginIntent);
+				startActivityForResult(loginIntent, RELOAGIN);
 				break;
 			case R.id.user_info_logo:
 				Intent userIntent = new Intent(getActivity(),UserDetailActivity.class);
@@ -267,10 +265,10 @@ public class SelfFragment extends BaseFragment implements OnClickListener , Call
 				startActivity(userEditIntent);
 				break;
 			case R.id.my_miss_layout:
-				goToMyMissQuery(MY_MISS);
+				missQuery(Miss.MY_MISS);
 				break;
 			case R.id.my_invitation_layout:
-				goToMyMissQuery(MY_INVITATION);
+				missQuery(Miss.MY_INVITATION);
 				break;
 	
 			default:
@@ -290,6 +288,7 @@ public class SelfFragment extends BaseFragment implements OnClickListener , Call
 		if (Constant.ReturnCode.STATE_1.equals(code)) {
 			String tag = map.get(Constant.ReturnCode.RETURN_TAG).toString();
 			if (tag.equals(httpUsersService.TAG)) {
+				isLoad=true;				
 				user = new User();			
 				Map<String, Object> values = (Map<String, Object>) map.get(ReturnCode.RETURN_VALUE);
 				user.setMemberId(values.get("memberId").toString());
@@ -310,31 +309,44 @@ public class SelfFragment extends BaseFragment implements OnClickListener , Call
 				}else{
 					userSignView.setText(getResources().getString(R.string.user_none_sign));
 				}
-				if (values.containsKey("love")) {
-					user.setLove(Integer.parseInt(values.get("love").toString()));
+				if (values.containsKey("loveCnt")) {
+					user.setLove(Integer.parseInt(values.get("loveCnt").toString()));
+					selfLoveView.setText(values.get("loveCnt").toString());
 				}
-				if (values.containsKey("charm")) {
-					user.setLove(Integer.parseInt(values.get("charm").toString()));				
+				if(values.containsKey("faceTtl")){
+					user.setFace(Integer.parseInt(values.get("faceTtl").toString()));
 				}
-				if(values.containsKey("tryst")){
-					int tryst=Integer.parseInt(values.get("tryst").toString());
+				if(values.containsKey("faceCnt")){
+					user.setFaceCnt(Integer.parseInt(values.get("faceCnt").toString()));
+				}
+				if(values.containsKey("trystCnt")){
+					int tryst=Integer.parseInt(values.get("trystCnt").toString());
 					user.setTryst(tryst);
+					trystCntView.setText(String.format(getResources().getString(R.string.miss_have),tryst));
+				}
+				if(values.containsKey("filmCnt")){
+					int filmCnt=Integer.parseInt(values.get("filmCnt").toString());
+					user.setFilmCnt(filmCnt);
+				}
+				String score=UserCharm.GetScore(user.getFace(), user.getFaceCnt()<=0?1:user.getFaceCnt());
+				if(!score.equals("NaN")){
+					selfCharmView.setText(score);
 				}
 				loginLayout.setVisibility(View.GONE);
 				logoutLayout.setVisibility(View.VISIBLE);
 				loginAfterLayout.setVisibility(View.VISIBLE);
-				photoGridview.setVisibility(View.VISIBLE);
+				
 			}else if(tag.equals(httpLoginAutoService.TAG)){
+				isLoad=true;
 				loadUser();
 			}else if(tag.equals(httpLogotService.TAG)){
-				photoGridview.setVisibility(View.GONE);
+				
 			}
 		}else if (Constant.ReturnCode.STATE_3.equals(code)) {
 			//提示用户登入
 			//autoLogin();
 			Intent loginIntent = new Intent(getActivity(),LoginActivity.class);
 			getActivity().overridePendingTransition(R.anim.slide_in_right, R.anim.slide_out_left);
-			//startActivity(loginIntent);
 			startActivityForResult(loginIntent, RELOAGIN);
 		}else {
 			String message = map.get(Constant.ReturnCode.RETURN_MESSAGE).toString();

@@ -17,11 +17,27 @@ public class Miss extends BaseBean implements Serializable {
 	public static final int CANCLE_MISS = 0X112; // 取消约会
 	public static final int KICKED_OUT = 0X113; // 踢出约会
 	public static final int EVLATOIN_USER = 0X114; // 评价用户
+	//我发起的约会
+	public static final int MY_MISS = 0X210;
+	//我参与的约会
+	public static final int MY_PART = 0X211;
+	//我应邀的约会
+	public static final int MY_INVITATION = 0X212;
+	//用户参与的约会
+	public static final int USER_INVITATION = 0X213;
+	//电影下的约会
+	public static final int MOVIE_INVITATION = 0X214;
+	//约会类型
+	public static final String MISS_KEY = "miss_type";
+	//电影下的约会
+	public static final String CONDITION_KEY = "miss_query_key";
 	private String trystId;
 	private String memberId;
 	private Integer filmId;
+	private String filmName;
 	private String runTime;
 	private Integer coin;
+	private String nickName;
 	private String cinemaId;
 	private String cinameName;
 	private String cinameAddress;
@@ -291,6 +307,24 @@ public class Miss extends BaseBean implements Serializable {
 	public void setCinameCity(String cinameCity) {
 		this.cinameCity = cinameCity;
 	}
+
+	public String getNickName() {
+		return nickName;
+	}
+
+	public void setNickName(String nickName) {
+		this.nickName = nickName;
+	}
+
+	public String getFilmName() {
+		return filmName;
+	}
+
+	public void setFilmName(String filmName) {
+		this.filmName = filmName;
+	}
+	
+	
 	
 
 }

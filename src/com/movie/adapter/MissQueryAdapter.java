@@ -19,7 +19,6 @@ import com.movie.app.BaseObjectListAdapter;
 import com.movie.client.bean.BaseBean;
 import com.movie.client.bean.Miss;
 import com.movie.client.bean.User;
-import com.movie.fragment.SelfFragment;
 import com.movie.state.MissState;
 import com.movie.ui.MissUserQueryActivity;
 import com.movie.view.MessageDialog;
@@ -93,7 +92,7 @@ public class MissQueryAdapter extends BaseObjectListAdapter {
 				}
 			});
 		}
-		if(missType>SelfFragment.MY_MISS){
+		if(missType>Miss.MY_MISS){
 			if(null!=miss.getStage()){
 				mHolder.missStageLayout.setVisibility(View.VISIBLE);
 				//mHolder.missStage.setText(MissStage.getState(miss.getStage()).getMessage());

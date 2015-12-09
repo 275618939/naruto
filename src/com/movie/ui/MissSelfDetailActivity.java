@@ -11,6 +11,7 @@ import android.view.View;
 import android.view.View.OnClickListener;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
+import android.widget.RatingBar;
 import android.widget.ScrollView;
 import android.widget.TextView;
 
@@ -26,17 +27,19 @@ import com.movie.client.bean.Miss;
 import com.movie.client.bean.User;
 import com.movie.client.service.BaseService;
 import com.movie.client.service.CallBackService;
-import com.movie.network.HttpUserService;
+import com.movie.network.HttpMissDetailService;
+import com.movie.state.SexState;
+import com.movie.util.Horoscope;
 import com.movie.util.StringUtil;
+import com.movie.util.UserCharm;
 import com.movie.view.ExpandListViewForScrollView;
-import com.nostra13.universalimageloader.core.ImageLoader;
+import com.movie.view.LoadView;
 
 
 public class MissSelfDetailActivity extends BaseActivity implements OnClickListener, CallBackService {
 
 
 	protected static int LOADUSERCOMPLETE=1;
-	Miss miss;
 	TextView title;
 	ImageView missIcon;
 	TextView missCreateUser;
@@ -46,22 +49,32 @@ public class MissSelfDetailActivity extends BaseActivity implements OnClickListe
 	TextView cinemaAddress;
 	TextView cinemaPhone;
 	TextView missBtn;
+	TextView userSex;
+	TextView loveView;
+	TextView charmView;
+	TextView userLove;
+	TextView userConstell;
 	LinearLayout layoutCinemaAddress;
 	LinearLayout missBottomBar;
+	RatingBar userCharmBar;
 	ScrollView missDetailView;
-	BaseService httpUsersService;
+	BaseService httpMissDetailService;
 	ExpandListViewForScrollView missPartList;
 	PartNarutoExpandableAdapter partNarutoAdapter;
-	ImageLoader imageLoaderCache;
 	List<Dictionary> parents=new ArrayList<Dictionary>();
     List<List<User>> childs = new ArrayList<List<User>>();
-    User user;
+    LoadView loadView;
+    View rootView;
+    Miss miss;
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
-		setContentView(R.layout.activity_miss_self_detail);
-		httpUsersService = new HttpUserService(this);
-		imageLoaderCache=ImageLoader.getInstance();
+		if(rootView==null){  
+	        rootView=getLayoutInflater().inflate(R.layout.activity_miss_self_detail,null);  
+	    }  
+		loadView=new LoadView();
+		setContentView(rootView);
+		httpMissDetailService = new HttpMissDetailService(this);
 		initViews();
 		initEvents();
 		initData();
@@ -72,6 +85,12 @@ public class MissSelfDetailActivity extends BaseActivity implements OnClickListe
 		missDetailView = (ScrollView)findViewById(R.id.miss_detail_view);
 		missDetailView.smoothScrollTo(0, 0);
 		title = (TextView) findViewById(R.id.title);
+		userLove = (TextView) findViewById(R.id.userLove);
+		loveView = (TextView) findViewById(R.id.love);
+		userSex = (TextView) findViewById(R.id.user_sex);
+		charmView = (TextView) findViewById(R.id.charm);
+		userConstell = (TextView) findViewById(R.id.user_constell);
+		userCharmBar = (RatingBar) findViewById(R.id.user_charm_bar);
 		missIcon = (ImageView) findViewById(R.id.miss_icon);
 		missCreateUser = (TextView) findViewById(R.id.miss_create_user);
 		missDate = (TextView) findViewById(R.id.miss_date);
@@ -85,6 +104,7 @@ public class MissSelfDetailActivity extends BaseActivity implements OnClickListe
 		missPartList = (ExpandListViewForScrollView) findViewById(R.id.miss_part_list);
 		partNarutoAdapter = new PartNarutoExpandableAdapter(this,mHandler, null,null);
 		missPartList.setAdapter(partNarutoAdapter);
+		loadView.initView(rootView);
 	}
 
 	@Override
@@ -98,19 +118,19 @@ public class MissSelfDetailActivity extends BaseActivity implements OnClickListe
 		if(null==miss){
 			return;
 		}
-		title.setText(miss.getMovieName());
-		imageLoaderCache.displayImage(miss.getIcon(), missIcon,NarutoApplication.imageOptions);
+		title.setText(miss.getNickName());
+		imageLoader.displayImage(miss.getIcon(), missIcon,NarutoApplication.imageOptions);
 		missCreateUser.setText(miss.getCreateUserName());
 		missDate.setText(StringUtil.getShortStrBySym(miss.getRunTime(),":"));
-		missMovieName.setText(miss.getMovieName());
+		missMovieName.setText(miss.getFilmName());
 		cinemaName.setText(miss.getCinameName());
 		cinemaAddress.setText(miss.getCinameAddress());
 		cinemaPhone.setText(miss.getCinemaPhone());
 		partNarutoAdapter.setMiss(miss);
 		/*初始化操作按钮*/
 		initMissBtn();
-		/*初始化用不信息*/
-		loadUser();
+		/*初始化约会详情信息*/
+		loadMissDetail();
 	}
 	private void initMissBtn(){
 		//验证是否可以撤销
@@ -130,9 +150,9 @@ public class MissSelfDetailActivity extends BaseActivity implements OnClickListe
 		
 		
 	}
-	private void loadUser() {
-		httpUsersService.addParams(httpUsersService.URL_KEY,Constant.User_API_URL);
-		httpUsersService.execute(this);
+	private void loadMissDetail() {
+		httpMissDetailService.addParams("trystId",miss.getTrystId());
+		httpMissDetailService.execute(this);
 	}
 	private void initPartUser(){
 		parents.clear();
@@ -181,9 +201,6 @@ public class MissSelfDetailActivity extends BaseActivity implements OnClickListe
 				break;
 		
 		}
-		
-	
-
 	}
 
 	@Override
@@ -193,29 +210,35 @@ public class MissSelfDetailActivity extends BaseActivity implements OnClickListe
 	}
 	@Override
 	public void SuccessCallBack(Map<String, Object> map) {
-		hideProgressDialog();
+		//hideProgressDialog();
+		loadView.showLoadAfter(this);
 		String code=map.get(Constant.ReturnCode.RETURN_STATE).toString();
 		if (Constant.ReturnCode.STATE_1.equals(code)) {
 			String tag=map.get(Constant.ReturnCode.RETURN_TAG).toString();
-			if (tag.endsWith(httpUsersService.TAG)) {
-				user = new User();
+			int faceTtl=0,faceCnt=0;
+			if (tag.endsWith(httpMissDetailService.TAG)) {
 				Map<String, Object> values = (Map<String, Object>) map.get(ReturnCode.RETURN_VALUE);
-				user.setMemberId(values.get("memberId").toString());
-				if (values.containsKey("portrait"))
-					user.setPortrait(values.get("portrait").toString());
-				if (values.containsKey("sex"))
-					user.setSex(Integer.parseInt(values.get("sex").toString()));
-				if (values.containsKey("nickname"))
-					user.setNickname(values.get("nickname").toString());
-					title.setText(values.get("nickname").toString());
-				if (values.containsKey("signature"))
-					user.setSignature(values.get("signature").toString());
-				if (values.containsKey("love"))
-					user.setLove(Integer.parseInt(values.get("love").toString()));		
-				if (values.containsKey("charm"))
-					user.setLove(Integer.parseInt(values.get("charm").toString()));
-				if(values.containsKey("tryst"))
-					user.setTryst(Integer.parseInt(values.get("tryst").toString()));
+				if (values.containsKey("sex")) {
+					userSex.setText(SexState.getState(Integer.parseInt(values.get("sex").toString())).getMessage());
+				}
+				if (values.containsKey("birthday")){
+					int [] ds=StringUtil.strConvertInts(values.get("birthday").toString());
+					userConstell.setText(Horoscope.getHoroscope((byte)ds[1],(byte)ds[2]).getCnName());
+				}
+				if (values.containsKey("loveCnt")) {
+					loveView.setText(String.format(getResources().getString(R.string.user_love_count), values.get("loveCnt").toString()));
+				}
+				if(values.containsKey("faceTtl")){
+					faceTtl=Integer.parseInt(values.get("faceTtl").toString());
+				}
+				if(values.containsKey("faceCnt")){
+					faceCnt=Integer.parseInt(values.get("faceCnt").toString());
+				}
+				String score=UserCharm.GetScore(faceTtl,faceCnt<=0?1:faceCnt);
+				if(!score.equals("NaN")){
+					userCharmBar.setRating(Float.valueOf(score)/2f);
+					charmView.setText(score);
+				}			
 			}
 			
 		}else{
@@ -227,14 +250,21 @@ public class MissSelfDetailActivity extends BaseActivity implements OnClickListe
 	@Override
 	public void ErrorCallBack(Map<String, Object> map) {
 		hideProgressDialog();
-		String message=map.get(Constant.ReturnCode.RETURN_MESSAGE).toString();
-		showToask(message);
+		String message = map.get(Constant.ReturnCode.RETURN_MESSAGE).toString();
+		String state= map.get(Constant.ReturnCode.RETURN_STATE).toString();
+		if(state.equals(ReturnCode.STATE_999)){
+			loadView.showLoadLineFail(this);
+		}else{
+			loadView.showLoadFail(this, this);
+			showToask(message);
+		}
 		
 	}
 
 	@Override
 	public void OnRequest() {
-		showProgressDialog("提示", "正在加载，请稍后....");		
+		//showProgressDialog("提示", "正在加载，请稍后....");	
+		loadView.showLoading(this);
 	}
 	@Override
 	protected void onDestroy() {

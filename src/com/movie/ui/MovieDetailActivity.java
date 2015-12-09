@@ -34,13 +34,13 @@ import com.movie.app.Constant.Page;
 import com.movie.app.Constant.ReturnCode;
 import com.movie.app.NarutoApplication;
 import com.movie.client.bean.Login;
+import com.movie.client.bean.Miss;
 import com.movie.client.bean.Movie;
 import com.movie.client.bean.MovieComment;
 import com.movie.client.bean.User;
 import com.movie.client.service.BaseService;
 import com.movie.client.service.CallBackService;
 import com.movie.client.service.FilmTypeService;
-import com.movie.fragment.SelfFragment;
 import com.movie.network.HttpFilmLoveService;
 import com.movie.network.HttpFilmLoveUpdateService;
 import com.movie.network.HttpMovieCommentCreateService;
@@ -261,8 +261,8 @@ public class MovieDetailActivity extends BaseActivity implements OnClickListener
 				break;
 			case R.id.movie_miss_info:
 				Intent movieIntent = new Intent(this, MissQueryActivity.class);
-				movieIntent.putExtra(SelfFragment.MISS_KEY, SelfFragment.MOVIE_INVITATION);
-				movieIntent.putExtra(SelfFragment.CONDITION_KEY, movie);
+				movieIntent.putExtra(Miss.MISS_KEY, Miss.MOVIE_INVITATION);
+				movieIntent.putExtra(Miss.CONDITION_KEY, movie);
 				startActivity(movieIntent);
 				break;
 			case R.id.create_miss:
@@ -391,10 +391,10 @@ public class MovieDetailActivity extends BaseActivity implements OnClickListener
 		}else if (Constant.ReturnCode.STATE_3.equals(code)) {
 			//提示用户登陆
 			//if(tag.equals(httpFilmLoveUpdateService.TAG)){
-				Intent loginIntent = new Intent(this,LoginActivity.class);
+				/*Intent loginIntent = new Intent(this,LoginActivity.class);
 				this.overridePendingTransition(R.anim.slide_in_right, R.anim.slide_out_left);
 				startActivity(loginIntent);
-				this.finish();
+				this.finish();*/
 			//}
 			
 		}else{

@@ -33,7 +33,6 @@ public class MissSelfQueryAdapter extends BaseObjectListAdapter {
 
 	@Override
 	public View getView(int position, View convertView, ViewGroup parent) {
-		// TODO Auto-generated method stub
 		ViewHolder mHolder;
 		View view = convertView;
 		if (view == null) {
@@ -41,11 +40,10 @@ public class MissSelfQueryAdapter extends BaseObjectListAdapter {
 			mHolder = new ViewHolder();
 			mHolder.missItemView = (RelativeLayout) view.findViewById(R.id.miss_item_view);
 			mHolder.missIcon = (ImageView) view.findViewById(R.id.miss_icon);
-			//mHolder.missUser = (TextView) view.findViewById(R.id.miss_user);
 			mHolder.missDate = (TextView) view.findViewById(R.id.miss_date);
 			mHolder.missName = (TextView) view.findViewById(R.id.miss_name);
-			//mHolder.missAddress = (TextView) view.findViewById(R.id.miss_address);
 			mHolder.missBtn = (TextView) view.findViewById(R.id.miss_btn);
+			mHolder.missCoin = (TextView) view.findViewById(R.id.miss_coin);
 			mHolder.missBtnLayout = (LinearLayout) view.findViewById(R.id.miss_btn_layout);
 			mHolder.missStageLayout = (LinearLayout) view.findViewById(R.id.miss_stage_layout);
 			view.setTag(mHolder);
@@ -55,10 +53,9 @@ public class MissSelfQueryAdapter extends BaseObjectListAdapter {
 		// 获取position对应的数据
 		final Miss miss = (Miss)getItem(position);
 		imageLoader.displayImage(miss.getIcon(),mHolder.missIcon,NarutoApplication.imageOptions);
-		//mHolder.missUser.setText(miss.getMemberId());
 		mHolder.missDate.setText(StringUtil.getShortStrBySym(miss.getRunTime(),":"));
-		mHolder.missName.setText(miss.getCinameName());
-		//mHolder.missAddress.setText(miss.getCinameAddress());
+		mHolder.missName.setText(miss.getFilmName());
+		mHolder.missCoin.setText(miss.getCoin()==null?"0":miss.getCoin().toString());
 		int sourceId = MissStateBackColor.getState(miss.getStatus()).getSourceId();
 		mHolder.missItemView.setBackgroundResource(sourceId);
 		mHolder.missItemView.setOnClickListener(new OnClickListener() {
@@ -69,10 +66,18 @@ public class MissSelfQueryAdapter extends BaseObjectListAdapter {
 				mContext.startActivity(intent);
 			}
 		});
-		if(miss.getStatus().intValue()==MissState.Completed.getState()){
+		if(miss.getStatus().intValue()==MissState.Expired.getState()){
 			mHolder.missBtnLayout.setVisibility(View.VISIBLE);
 			mHolder.missBtn.setText(mContext.getResources().getString(R.string.branch_coin));
 		}
+		int result=StringUtil.dateCompareByCurrent(miss.getRunTime());
+		if(result<0){
+			mHolder.missItemView.setBackgroundResource(MissStateBackColor.Expired.getSourceId());
+			mHolder.missBtnLayout.setVisibility(View.VISIBLE);
+			mHolder.missBtn.setText(mContext.getResources().getString(R.string.branch_coin));
+		}
+		
+		
 		return view;
 	}
 
@@ -93,6 +98,8 @@ public class MissSelfQueryAdapter extends BaseObjectListAdapter {
 		TextView missAddress;
 		// 约会操作
 		TextView missBtn;
+		// 悬赏影币
+		TextView missCoin;
 
 	}
 

@@ -33,13 +33,13 @@ import com.movie.app.Constant;
 import com.movie.app.Constant.Page;
 import com.movie.app.Constant.ReturnCode;
 import com.movie.app.NarutoApplication;
+import com.movie.client.bean.Miss;
 import com.movie.client.bean.User;
 import com.movie.client.service.BaseService;
 import com.movie.client.service.CallBackService;
 import com.movie.client.service.FilmTypeService;
 import com.movie.client.service.HobbyService;
 import com.movie.client.service.UserService;
-import com.movie.fragment.SelfFragment;
 import com.movie.network.HttpUserCommentService;
 import com.movie.network.HttpUserFilmTypeService;
 import com.movie.network.HttpUserLoveService;
@@ -50,7 +50,6 @@ import com.movie.util.Horoscope;
 import com.movie.util.StringUtil;
 import com.movie.util.UserCharm;
 import com.movie.view.LoadView;
-import com.nostra13.universalimageloader.core.ImageLoader;
 
 public class UserDetailActivity extends BaseActivity implements
 		OnClickListener, CallBackService,OnRefreshListener<ScrollView> {
@@ -216,8 +215,8 @@ public class UserDetailActivity extends BaseActivity implements
 			break;
 		case R.id.user_miss:
 			Intent missIntent = new Intent(this, MissQueryActivity.class);
-			missIntent.putExtra(SelfFragment.MISS_KEY, SelfFragment.USER_INVITATION);
-			missIntent.putExtra(SelfFragment.CONDITION_KEY, user);
+			missIntent.putExtra(Miss.MISS_KEY, Miss.USER_INVITATION);
+			missIntent.putExtra(Miss.CONDITION_KEY, user);
 			startActivity(missIntent);
 			break;
 		case R.id.loading_error:

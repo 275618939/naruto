@@ -82,6 +82,7 @@ public abstract class BaseService  {
 	public void clearReqeustParams() {
 		headers.clear();
 		params.clear();
+		requestCount=0;
 	}
 	/** 
      * 检测网络是否连接 

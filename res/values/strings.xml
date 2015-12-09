@@ -47,7 +47,8 @@
     <string name="cinema_phone">影院电话</string>
     <string name="miss_lately">最近</string>
     <string name="miss_best">最款</string>
-    <string name="miss_have">%1$s 个约会,点击查看更多&gt;</string>
+    <!-- &gt; -->
+    <string name="miss_have">%1$s 个约会,点击查看更多</string>
     <string name="miss_none">暂时没有约会</string>
     <string name="movie_interval">片长%1$s分钟</string>
     <string name="movie_start">首映时间%1$s</string>

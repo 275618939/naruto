@@ -28,7 +28,6 @@ import com.movie.client.bean.Movie;
 import com.movie.client.bean.User;
 import com.movie.client.service.BaseService;
 import com.movie.client.service.CallBackService;
-import com.movie.fragment.SelfFragment;
 import com.movie.network.HttpMissCancelService;
 import com.movie.network.HttpMissQueryService;
 import com.movie.view.LoadView;
@@ -47,65 +46,72 @@ public class MissSelfQueryActivity extends BaseActivity implements OnClickListen
 	int page;
 	int missType;
 	Object queryCondition;
-
+	View rootView;
 
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
-		setContentView(R.layout.activity_miss_self_query);
+		if(rootView==null){  
+	        rootView=getLayoutInflater().inflate(R.layout.activity_miss_self_query,null);  
+	    }  
+		loadView=new LoadView();
+		setContentView(rootView);
 		missQueryService = new HttpMissQueryService(this);
 		httpMissCancelService = new HttpMissCancelService(this);
+		initData();
 		initViews();
 		initEvents();
-		initData();
+		
 	}
 	@Override
 	protected void initViews() {
+		loadView.initView(rootView);
 		title = (TextView) findViewById(R.id.title);
 		userMissParentLayout= (RelativeLayout)findViewById(R.id.user_miss_parent_layout);
-		loadView = new LoadView(userMissParentLayout);
-		selfQueryAdapter = new MissSelfQueryAdapter(this, mHandler, null);
+		selfQueryAdapter = new MissSelfQueryAdapter(this, mHandler, misses);
 		refreshableListView = (PullToRefreshListView) findViewById(R.id.slef_miss_list);
 		refreshableListView.setMode(Mode.BOTH);
 		refreshableListView.setAdapter(selfQueryAdapter);
+		refreshableListView.setEmptyView(rootView.findViewById(R.id.empty));
 	}
 
 	@Override
 	protected void initEvents() {
 		refreshableListView.setOnRefreshListener(this);
+		refreshableListView.setRefreshing(true);
 	}
 
 	@Override
 	protected void initData() {
-		page=0;
-		missType=SelfFragment.MY_MISS;
-		loadMissData();		
+		missType=getIntent().getIntExtra(Miss.MISS_KEY, 0);
+		//page=0;
+		//loadMissData();		
 	}
 	
 	private void loadMissData() {
 		switch (missType) {
-		case SelfFragment.MY_MISS:
+		case Miss.MY_MISS:
 			title.setText(getResources().getString(R.string.my_miss));
 			missQueryService.addUrls(Constant.Miss_Query_API_URL);
 			missQueryService.addParams("page", page);
 			missQueryService.addParams("size", Page.DEFAULT_SIZE);
 			missQueryService.execute(this);
 			break;
-		case SelfFragment.MY_PART:
+		case Miss.MY_PART:
 			title.setText("参与的约会");
 			missQueryService.addUrls(Constant.Miss_Touch_Query_API_URL);
 			missQueryService.addParams("page", page);
 			missQueryService.addParams("size", Page.DEFAULT_SIZE);
 			missQueryService.execute(this);
 			break;
-		case SelfFragment.MY_INVITATION:
+		case Miss.MY_INVITATION:
 			title.setText("应邀的约会");
 			missQueryService.addUrls(Constant.Miss_Attend_Query_API_URL);
 			missQueryService.addParams("page", page);
 			missQueryService.addParams("size", Page.DEFAULT_SIZE);
 			missQueryService.execute(this);
 			break;
-		case SelfFragment.USER_INVITATION:
+		case Miss.USER_INVITATION:
 			if(null!=queryCondition){
 				User user=(User)queryCondition;
 				title.setText(user.getNickname()+"正在进行的约会");
@@ -116,7 +122,7 @@ public class MissSelfQueryActivity extends BaseActivity implements OnClickListen
 				missQueryService.execute(this);
 			}
 			break;
-		case SelfFragment.MOVIE_INVITATION:
+		case Miss.MOVIE_INVITATION:
 			if(null!=queryCondition){
 				Movie movie=(Movie)queryCondition;
 				title.setText(movie.getName()+"正在进行的约会");
@@ -186,22 +192,27 @@ public class MissSelfQueryActivity extends BaseActivity implements OnClickListen
 						miss.setTrystId(missMap.get("trystId").toString());
 					if (missMap.containsKey("memberId"))
 						miss.setMemberId(missMap.get("memberId").toString());
+					if (missMap.containsKey("portrait"))
+						miss.setIcon(Constant.SERVER_ADRESS+missMap.get("portrait").toString());
+					if (missMap.containsKey("nickname"))
+						miss.setNickName(missMap.get("nickname").toString());
 					if (missMap.containsKey("filmId"))
 						miss.setFilmId(Integer.parseInt(missMap.get("filmId").toString()));
+					if (missMap.containsKey("filmName"))
+						miss.setFilmName(missMap.get("filmName")==null?"":missMap.get("filmName").toString());
 					if (missMap.containsKey("runTime"))
 						miss.setRunTime(missMap.get("runTime").toString());
 					if (missMap.containsKey("coin"))
 						miss.setCoin(Integer.parseInt(missMap.get("coin").toString()));
 					if (missMap.containsKey("cinemaId")) {
-
+						miss.setCinemaId(missMap.get("cinemaId").toString());
 					}
-					if (missMap.containsKey("attend")) {
-
+					if (missMap.containsKey("cinemaName")) {
+						miss.setCinameName(missMap.get("cinemaName")==null?"":missMap.get("cinemaName").toString());
 					}
 					if (missMap.containsKey("status")) {
 						miss.setStatus(Integer.parseInt(missMap.get("status").toString()));
 					}
-					miss.setIcon("http://101.200.176.217/test.jpg");
 					misses.add(miss);
 				}
 				selfQueryAdapter.notifyDataSetChanged();
@@ -249,6 +260,8 @@ public class MissSelfQueryActivity extends BaseActivity implements OnClickListen
 	protected void onDestroy() {
 		super.onDestroy();
 		selfQueryAdapter=null;
+		misses.clear();
+		System.gc();
 	}
 
 	

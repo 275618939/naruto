@@ -1,6 +1,5 @@
 package com.movie.ui;
 
-import android.graphics.drawable.ColorDrawable;
 import android.os.Bundle;
 import android.os.Handler;
 import android.text.Editable;
@@ -9,13 +8,8 @@ import android.view.Gravity;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.view.ViewGroup.LayoutParams;
-import android.view.animation.AnimationUtils;
 import android.widget.ArrayAdapter;
 import android.widget.AutoCompleteTextView;
-import android.widget.LinearLayout;
-import android.widget.ListView;
-import android.widget.PopupWindow;
-import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.baidu.location.BDLocation;
@@ -45,6 +39,7 @@ import com.movie.R;
 import com.movie.adapter.PoiAdapter;
 import com.movie.app.BaseActivity;
 import com.movie.app.NarutoApplication;
+import com.movie.pop.AddressPopupWindow;
 
 
 public class CinemaSearchActivity extends BaseActivity implements
@@ -52,22 +47,19 @@ public class CinemaSearchActivity extends BaseActivity implements
 
 	final int InitSerach=0x01;
 	final static String DefaultSearchKey="影院";
-	PoiSearch mPoiSearch = null;
-	SuggestionSearch mSuggestionSearch = null;
-	BaiduMap mBaiduMap = null;
-	PopupWindow cinemaPop = null;
-	AutoCompleteTextView keyWorldsView = null;
-	ArrayAdapter<String> sugAdapter = null;
+	PoiSearch mPoiSearch;
+	SuggestionSearch mSuggestionSearch;
+	BaiduMap mBaiduMap;
+	AutoCompleteTextView keyWorldsView;
+	ArrayAdapter<String> sugAdapter;
 	boolean isFirstLoc = true;// 是否首次定位
 	int load_Index = 0;
 	String dateTime;
 	String cointInfo;
     View parentView;
 	TextView right;
-	LinearLayout ll_popup;
-	RelativeLayout parent_popup;
-	ListView poiListView;
 	PoiAdapter poiAdapter;
+	AddressPopupWindow addressPopupWindow;
 	
 	MyLocationListenner myListener = new MyLocationListenner();
 	@Override
@@ -75,6 +67,7 @@ public class CinemaSearchActivity extends BaseActivity implements
 		SDKInitializer.initialize(getApplicationContext());
 		super.onCreate(savedInstanceState);
 		parentView = getLayoutInflater().inflate(R.layout.activity_cinema_search, null);
+		addressPopupWindow=new AddressPopupWindow(this,LayoutParams.MATCH_PARENT,LayoutParams.WRAP_CONTENT);
 		setContentView(parentView);
 		initViews();
 		initEvents();
@@ -95,27 +88,14 @@ public class CinemaSearchActivity extends BaseActivity implements
 		keyWorldsView.setAdapter(sugAdapter);
 		// 开启定位图层
 		mBaiduMap.setMyLocationEnabled(true);
-
-		poiAdapter =new PoiAdapter(this, null);
-		cinemaPop= new PopupWindow(CinemaSearchActivity.this);
-		View view = getLayoutInflater().inflate(R.layout.item_popup_cinema_windows, null);
-		cinemaPop.setWidth(LayoutParams.MATCH_PARENT);
-		cinemaPop.setHeight(LayoutParams.WRAP_CONTENT);
-		cinemaPop.setBackgroundDrawable(new ColorDrawable(0));
-		cinemaPop.setFocusable(true);
-		cinemaPop.setOutsideTouchable(true);
-		cinemaPop.setContentView(view);
-		parent_popup = (RelativeLayout) view.findViewById(R.id.parent);
-		ll_popup = (LinearLayout) view.findViewById(R.id.ll_popup);
-		poiListView = (ListView) ll_popup.findViewById(R.id.poi_listView);	
-		poiListView.setAdapter(poiAdapter);		
+		poiAdapter =new PoiAdapter(this, null);	
+		addressPopupWindow.setAdapter(poiAdapter);
 		right.setVisibility(View.VISIBLE);
 	
 		
 	}
 	@Override
 	protected void initEvents() {
-		parent_popup.setOnClickListener(this);
 		right.setOnClickListener(this);
 		/**
 		 * 当输入关键字变化时，动态更新建议列表
@@ -166,30 +146,17 @@ public class CinemaSearchActivity extends BaseActivity implements
 			}
 		};
 	};
-	private void searchButtonProcess(View v) {
-		
+	private void searchButtonProcess(View v) {	
 		mPoiSearch.searchInCity((new PoiCitySearchOption()).city(NarutoApplication.city).keyword(keyWorldsView.getText().toString()).pageNum(load_Index));
 	}
-
-	@Override
-	protected void onPause() {
-		super.onPause();
-	}
-
-	@Override
-	protected void onResume() {
-		super.onResume();
-	}
-
 	@Override
 	protected void onDestroy() {
 		// 关闭定位图层
+		super.onDestroy();
 		mBaiduMap.setMyLocationEnabled(false);
 		mPoiSearch.destroy();
 		mSuggestionSearch.destroy();
-		cinemaPop=null;
 		sugAdapter=null;
-		super.onDestroy();
 	}
 
 	@Override
@@ -243,9 +210,7 @@ public class CinemaSearchActivity extends BaseActivity implements
 			overlay.setData(result);
 			overlay.addToMap();
 			overlay.zoomToSpan();
-
-			ll_popup.startAnimation(AnimationUtils.loadAnimation(CinemaSearchActivity.this,R.anim.activity_translate_in));
-			cinemaPop.showAtLocation(parentView, Gravity.BOTTOM, 0, 0);
+			addressPopupWindow.showAtLocation(parentView, Gravity.BOTTOM, 0, 0);
 			poiAdapter.updateData(result.getAllPoi());	
 			return;
 		}
@@ -263,10 +228,6 @@ public class CinemaSearchActivity extends BaseActivity implements
 		
 	
 	}
-	private void clearAnimation() {
-		ll_popup.clearAnimation();
-		cinemaPop.dismiss();
-	}
 	@Override
 	public void onClick(View v) {
 		switch (v.getId()) {
@@ -274,7 +235,7 @@ public class CinemaSearchActivity extends BaseActivity implements
 				searchButtonProcess(v);
 				break;		
 			case R.id.parent:
-				clearAnimation();
+				addressPopupWindow.dismiss();
 				break;		
 			default:
 				break;
