@@ -83,7 +83,7 @@ public interface Constant {
 	public final static String Miss_Query_API_URL = SERVER_URL+ "/tryst/query";
 	// 查询会员参与的约会
 	public final static String Miss_Touch_Query_API_URL = SERVER_URL+ "/tryst/touch";
-	// 查询会员应约的约会
+	// 查询约会应约的会员
 	public final static String Miss_Attend_Query_API_URL = SERVER_URL+ "/tryst/attend";
 	// 查询约会参与的会员
 	public final static String Miss_Hope_Query_API_URL = SERVER_URL+ "/tryst/hope";

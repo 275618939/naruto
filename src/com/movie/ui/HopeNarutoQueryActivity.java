@@ -32,7 +32,7 @@ import com.movie.network.HttpMissCancelService;
 import com.movie.network.HttpMissQueryService;
 import com.movie.view.LoadView;
 
-public class MissSelfQueryActivity extends BaseActivity implements OnClickListener,CallBackService, OnRefreshListener2<ListView> {
+public class HopeNarutoQueryActivity extends BaseActivity implements OnClickListener,CallBackService, OnRefreshListener2<ListView> {
 
 	LoadView loadView;
 	TextView title;

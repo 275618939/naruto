@@ -27,12 +27,17 @@
     <string name="cancel_miss">取消约会</string>
     <string name="miss_coin_hint">悬赏影币</string>
     <string name="miss_invite">应邀人%1$s个</string>
-    <string name="miss_user">发\u0020\u0020起 \u0020人</string>
-    <string name="miss_date">约会时间</string>
+    <!-- \u0020\u0020 -->
+    <string name="miss_user">发起</string>
+    <string name="miss_date">时间</string>
     <string name="miss_state">状态</string>
     <string name="miss_stage">参与状态</string>
     <string name="miss_part_list">应约人</string>
     <string name="miss_take_list">参与人</string>
+    <string name="attend_have">%1$s 个应约人</string>
+    <string name="attend_none">暂时没有应约人</string>
+    <string name="hope_have">点击查看参与人</string>
+    <string name="hope_none">暂时没有参与人</string>
     <string name="branch_coin">派发影币</string>
     <string name="my_miss">我的约会</string>
     <string name="my_participate">我的邀请</string>
@@ -66,7 +71,7 @@
     <string name="movie_comment_have">%1$s人评论,点击查看更多&gt;</string>
     <string name="movie_miss">观影约会</string>
     <string name="movie_intro">影片简介</string>
-    <string name="movie_name">影片名称</string>
+    <string name="movie_name">影片</string>
     <string name="movie_miss_tryst"><Data><![CDATA[共<font color="#ff6434"><b>%1$s</b></font>个约会]]></Data></string>
     <string name="user_movie_pre">电影喜好</string>
     <string name="user_movies">想看的电影</string>
@@ -122,7 +127,7 @@
     <string name="edit_sex">保密</string>
     <string name="birthday">生日</string>
     <string name="birthday_hint">修改生日</string>
-    <string name="missdate">约会时间</string>
+    <string name="missdate">时间</string>
     <string name="missdate_hint">选择约会时间</string>
     <string name="edit_birthday">1980-01-01</string>
     <string name="email">邮箱</string>

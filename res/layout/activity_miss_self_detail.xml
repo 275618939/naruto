@@ -43,7 +43,7 @@
 
                         <LinearLayout
                             android:layout_width="wrap_content"
-                            android:layout_height="wrap_content">
+                            android:layout_height="wrap_content" >
 
                             <ImageView
                                 android:id="@+id/miss_icon"
@@ -63,6 +63,7 @@
                                 android:layout_width="match_parent"
                                 android:layout_height="wrap_content"
                                 android:orientation="horizontal" >
+
                                 <TextView
                                     style="@style/common_content_text_style"
                                     android:layout_width="wrap_content"
@@ -129,13 +130,16 @@
                             <LinearLayout
                                 android:layout_width="match_parent"
                                 android:layout_height="wrap_content"
+                                android:layout_marginLeft="@dimen/text_left"
                                 android:orientation="horizontal" >
 
-                                <TextView
+                                <!--
+                                     <TextView
                                     style="@style/common_content_text_style"
                                     android:layout_width="wrap_content"
                                     android:layout_height="wrap_content"
                                     android:text="@string/love_hint" />
+                                -->
 
                                 <TextView
                                     android:id="@+id/love"
@@ -298,6 +302,7 @@
                         style="@style/input_item_line"
                         android:layout_marginTop="@dimen/layout_item_top_1" />
 
+                    <!--
                     <com.movie.view.ExpandListViewForScrollView
                         android:id="@+id/miss_part_list"
                         android:layout_width="match_parent"
@@ -308,7 +313,77 @@
                         android:groupIndicator="@null"
                         android:listSelector="@color/window_bg" >
                     </com.movie.view.ExpandListViewForScrollView>
+                    -->
                 </LinearLayout>
+                <!-- 约会影院信息 end -->
+
+                <ImageView
+                    style="@style/input_item_line"
+                    android:layout_marginLeft="@dimen/layout_left"
+                    android:layout_marginRight="@dimen/layout_right"
+                    android:layout_marginTop="@dimen/layout_item_top_1" />
+
+                <RelativeLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginLeft="@dimen/layout_left"
+                    android:layout_marginRight="@dimen/layout_right"
+                    android:layout_marginTop="@dimen/layout_item_top_1"
+                    android:orientation="horizontal" >
+
+                    <TextView
+                        style="@style/common_title"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_alignParentLeft="true"
+                        android:text="@string/miss_take_list" />
+
+                    <TextView
+                        android:id="@+id/hope_user"
+                        style="@style/content_text_style"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_alignParentRight="true" />
+                </RelativeLayout>
+
+                <RelativeLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginLeft="@dimen/layout_left"
+                    android:layout_marginRight="@dimen/layout_right"
+                    android:layout_marginTop="@dimen/layout_item_top_1"
+                    android:orientation="horizontal" >
+
+                    <TextView
+                        style="@style/common_title"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_alignParentLeft="true"
+                        android:text="@string/miss_part_list" />
+
+                    <TextView
+                        android:id="@+id/attend_user"
+                        style="@style/content_text_style"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_alignParentRight="true" />
+                </RelativeLayout>
+
+                <ImageView
+                    style="@style/input_item_line"
+                    android:layout_marginLeft="@dimen/layout_left"
+                    android:layout_marginRight="@dimen/layout_right"
+                    android:layout_marginTop="@dimen/layout_item_top_1" />
+
+                <com.handmark.pulltorefresh.library.PullToRefreshListView
+                    android:id="@+id/attend_user_list"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:layout_marginLeft="@dimen/layout_left"
+                    android:layout_marginRight="@dimen/layout_right"
+                    android:layout_marginTop="@dimen/layout_item_top_1"
+                    android:divider="@null" >
+                </com.handmark.pulltorefresh.library.PullToRefreshListView>
             </LinearLayout>
         </ScrollView>
     </LinearLayout>
