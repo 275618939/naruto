@@ -18,8 +18,8 @@ import android.widget.ScrollView;
 import android.widget.TextView;
 
 import com.handmark.pulltorefresh.library.PullToRefreshBase;
-import com.handmark.pulltorefresh.library.PullToRefreshListView;
 import com.handmark.pulltorefresh.library.PullToRefreshBase.OnRefreshListener;
+import com.handmark.pulltorefresh.library.PullToRefreshListView;
 import com.movie.R;
 import com.movie.adapter.MissNarutoAdapter;
 import com.movie.app.BaseActivity;
@@ -32,10 +32,11 @@ import com.movie.client.bean.MissNaruto;
 import com.movie.client.bean.User;
 import com.movie.client.service.BaseService;
 import com.movie.client.service.CallBackService;
-import com.movie.network.HttpMissAgreeService;
 import com.movie.network.HttpMissApplyService;
 import com.movie.network.HttpMissDetailService;
 import com.movie.network.HttpMissQueryService;
+import com.movie.state.MissState;
+import com.movie.state.MissStateBackColor;
 import com.movie.state.SexState;
 import com.movie.util.Horoscope;
 import com.movie.util.StringUtil;
@@ -262,7 +263,21 @@ public class MissNarutoDetailActivity extends BaseActivity implements OnClickLis
 				if(!score.equals("NaN")){
 					userCharmBar.setRating(Float.valueOf(score)/2f);
 					charmView.setText(score);
-				}			
+				}	
+				if(values.containsKey("faceCnt")){
+					faceCnt=Integer.parseInt(values.get("faceCnt").toString());
+				}
+				if(values.containsKey("status")){
+					MissState missState = MissState.getState(Integer.parseInt(values.get("status").toString()));
+					if(missState.getState()!=MissState.HaveInHand.getState()){
+						missBottomBar.setVisibility(View.VISIBLE);
+						missBtn.setText(missState.getMessage());
+						missBtn.setOnClickListener(null);
+						int sourceId = MissStateBackColor.getState(miss.getStatus()).getSourceId();
+						missBtn.setBackgroundResource(sourceId);
+					}
+				}
+				
 			}else if(tag.endsWith(httpMissQueryService.TAG)){
 				List<HashMap<String, Object>> datas = (ArrayList<HashMap<String, Object>>) map.get(Constant.ReturnCode.RETURN_VALUE);
 				MissNaruto missNaruto = null;

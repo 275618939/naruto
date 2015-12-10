@@ -69,6 +69,8 @@ public class SelfFragment extends BaseFragment implements OnClickListener , Call
 	TextView selfCharmView;
 	TextView selfLoveView;
 	TextView trystCntView;
+	TextView applyCntView;
+	TextView inviteCntView;
 	ImageView userSignIn;
 	SignInPopupWindow signInPopupWindow;
 	UserPhotoGridAdapter photoGridAdapter;
@@ -121,6 +123,8 @@ public class SelfFragment extends BaseFragment implements OnClickListener , Call
 		selfCharmView = (TextView)rootView.findViewById(R.id.self_charm);
 		selfLoveView = (TextView)rootView.findViewById(R.id.self_love);
 		trystCntView = (TextView)rootView.findViewById(R.id.trystCnt);
+		applyCntView= (TextView)rootView.findViewById(R.id.applyCnt);
+		inviteCntView= (TextView)rootView.findViewById(R.id.inviteCnt);
 		userSignIn = (ImageView)rootView.findViewById(R.id.user_sign_in);
 		photoGridview = (GridView)rootView.findViewById(R.id.userPhotoGridview);
 		photoGridview.setSelector(new ColorDrawable(Color.TRANSPARENT));
@@ -327,6 +331,16 @@ public class SelfFragment extends BaseFragment implements OnClickListener , Call
 				if(values.containsKey("filmCnt")){
 					int filmCnt=Integer.parseInt(values.get("filmCnt").toString());
 					user.setFilmCnt(filmCnt);
+				}
+				if(values.containsKey("applyCnt")){
+					user.setApplyCnt(Integer.parseInt(values.get("applyCnt").toString()));
+					applyCntView.setText(String.format(getResources().getString(R.string.apply_miss_have),user.getApplyCnt()));
+					applyCntView.setOnClickListener(this);
+				}
+				if(values.containsKey("inviteCnt")){
+					user.setInviteCnt(Integer.parseInt(values.get("inviteCnt").toString()));
+					inviteCntView.setText(String.format(getResources().getString(R.string.invite_miss_have),user.getInviteCnt()));
+					inviteCntView.setOnClickListener(this);
 				}
 				String score=UserCharm.GetScore(user.getFace(), user.getFaceCnt()<=0?1:user.getFaceCnt());
 				if(!score.equals("NaN")){

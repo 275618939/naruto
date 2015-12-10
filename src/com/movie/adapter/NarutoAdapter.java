@@ -88,7 +88,7 @@ public class NarutoAdapter extends BaseObjectListAdapter {
 			mHolder.userCharm.setText(score);
 		}
 		
-		mHolder.userBreifLayout.setOnClickListener(new OnClickListener() {
+		mHolder.movieBreifLayout.setOnClickListener(new OnClickListener() {
 			
 			@Override
 			public void onClick(View v) {

@@ -33,7 +33,9 @@ public class User extends BaseBean implements Serializable {
 	private String filmName;
 	private int filmCnt;
 	private long face;
-	private int faceCnt; 
+	private int faceCnt;
+	private int applyCnt;
+	private int inviteCnt;
 
 	public User() {
 	}
@@ -73,8 +75,9 @@ public class User extends BaseBean implements Serializable {
 		hobbies.add(1);
 		hobbies.add(2);
 		hobbies.add(3);
-		int sexs[]=new int[]{0,1};
-		String[] nickName = new String[] { "鸣人", "佐助", "大蛇丸", "小樱", "纲手", "三代","小李", "天天", "夏洛特", "烦恼" };
+		int sexs[] = new int[] { 0, 1 };
+		String[] nickName = new String[] { "鸣人", "佐助", "大蛇丸", "小樱", "纲手", "三代",
+				"小李", "天天", "夏洛特", "烦恼" };
 		for (int i = 0; i < size; i++) {
 			user = new User();
 			user.setNickname(nickName[i]);
@@ -84,7 +87,7 @@ public class User extends BaseBean implements Serializable {
 			user.setLove(6000);
 			user.setTryst(1);
 			user.setLoveMovie(1);
-			user.setSex(sexs[i%1]);
+			user.setSex(sexs[i % 1]);
 			user.setLoveMovieName("魔兽世界");
 			user.setConstell("双子座");
 			user.setPortrait(Images.imageUrls[i]);
@@ -287,9 +290,22 @@ public class User extends BaseBean implements Serializable {
 	public void setFilmId(int filmId) {
 		this.filmId = filmId;
 	}
-	
-	
-	
+
+	public int getApplyCnt() {
+		return applyCnt;
+	}
+
+	public void setApplyCnt(int applyCnt) {
+		this.applyCnt = applyCnt;
+	}
+
+	public int getInviteCnt() {
+		return inviteCnt;
+	}
+
+	public void setInviteCnt(int inviteCnt) {
+		this.inviteCnt = inviteCnt;
+	}
 	
 
 }

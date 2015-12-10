@@ -229,17 +229,40 @@
                     android:layout_width="0.0dip"
                     android:layout_height="1.0dip"
                     android:layout_weight="1.0" />
-                
-                 <TextView
-                    android:id="@+id/trystCnt"
-                    style="@style/setting_item_text"/>
 
-               <!--  <TextView
+                <TextView
+                    android:id="@+id/trystCnt"
+                    style="@style/setting_item_text" />
+
+                <!--
+                     <TextView
                     android:id="@+id/trystCnt"
                     style="@style/setting_alt_text"
                     android:background="@drawable/message_count"
-                    android:textColor="@color/white" /> -->
-                 <ImageView style="@style/setting_arrow" />
+                    android:textColor="@color/white" />
+                -->
+
+                <ImageView style="@style/setting_arrow" />
+            </LinearLayout>
+
+            <LinearLayout
+                android:id="@+id/apply_layout"
+                style="@style/setting_item_center" >
+
+                <TextView
+                    style="@style/setting_item_text"
+                    android:text="@string/apply_miss" />
+
+                <View
+                    android:layout_width="0.0dip"
+                    android:layout_height="1.0dip"
+                    android:layout_weight="1.0" />
+
+                <TextView
+                    android:id="@+id/applyCnt"
+                    style="@style/setting_item_text" />
+
+                <ImageView style="@style/setting_arrow" />
             </LinearLayout>
 
             <LinearLayout
@@ -247,7 +270,6 @@
                 style="@style/setting_item_center" >
 
                 <TextView
-                    android:id="@+id/my_invitation"
                     style="@style/setting_item_text"
                     android:text="@string/my_invitation" />
 
@@ -257,9 +279,8 @@
                     android:layout_weight="1.0" />
 
                 <TextView
-                    style="@style/setting_alt_text"
-                    android:background="@drawable/message_count"
-                    android:visibility="gone" />
+                    android:id="@+id/inviteCnt"
+                    style="@style/setting_item_text" />
 
                 <ImageView style="@style/setting_arrow" />
             </LinearLayout>

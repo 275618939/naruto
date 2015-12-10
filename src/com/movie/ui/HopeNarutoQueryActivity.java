@@ -41,7 +41,7 @@ public class HopeNarutoQueryActivity extends BaseActivity implements
 	PullToRefreshListView refreshableListView;
 	List<MissNaruto> missNarutos = new ArrayList<MissNaruto>();
 	int page;
-	int trystId;
+	String trystId;
 	View rootView;
 
 	@Override
@@ -79,13 +79,13 @@ public class HopeNarutoQueryActivity extends BaseActivity implements
 
 	@Override
 	protected void initData() {
-		trystId = getIntent().getIntExtra("trystId", 0);
+		trystId = getIntent().getStringExtra("trystId");
 		title.setText("参与人");
 
 	}
 
 	private void loadMissData() {
-		httpMissQueryService.addUrls(Constant.Miss_Touch_Query_API_URL);
+		httpMissQueryService.addUrls(Constant.Miss_Hope_Query_API_URL);
 		httpMissQueryService.addParams("id", trystId);
 		httpMissQueryService.addParams("page", page);
 		httpMissQueryService.addParams("size", Page.DEFAULT_SIZE);
@@ -137,13 +137,11 @@ public class HopeNarutoQueryActivity extends BaseActivity implements
 				List<HashMap<String, Object>> datas = (ArrayList<HashMap<String, Object>>) map.get(Constant.ReturnCode.RETURN_VALUE);
 				MissNaruto missNaruto = null;
 				int size = datas.size();
-				int count=0;
 				HashMap<String, Object> dataMap = null;
 				for (int i = 0; i < size; i++) {
 					missNaruto = new MissNaruto();
 					dataMap = datas.get(i);
 					if (dataMap.containsKey("memberId")){
-						count++;
 						missNaruto.setMemberId(dataMap.get("memberId").toString());
 					}
 					if (dataMap.containsKey("portrait"))

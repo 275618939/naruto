@@ -41,7 +41,10 @@
     <string name="branch_coin">派发影币</string>
     <string name="my_miss">我的约会</string>
     <string name="my_participate">我的邀请</string>
-    <string name="my_invitation">我被邀请</string>
+    <string name="apply_miss">参与的约会</string>
+    <string name="apply_miss_have">参与了%1$s 个约会,点击查看</string>
+    <string name="invite_miss_have">%1$s 个约会邀请,点击查看</string>
+    <string name="my_invitation">邀请的约会</string>
     <string name="more">更多></string>
     <string name="miss_me">约我</string>
     <string name="scenarists">导演</string>
@@ -53,7 +56,8 @@
     <string name="miss_lately">最近</string>
     <string name="miss_best">最款</string>
     <!-- &gt; -->
-    <string name="miss_have">%1$s 个约会,点击查看更多</string>
+  
+    <string name="miss_have">%1$s 个约会,点击查看</string>
     <string name="miss_none">暂时没有约会</string>
     <string name="movie_interval">片长%1$s分钟</string>
     <string name="movie_start">首映时间%1$s</string>

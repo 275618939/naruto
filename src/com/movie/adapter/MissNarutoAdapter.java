@@ -17,9 +17,8 @@ import com.movie.R;
 import com.movie.app.BaseObjectListAdapter;
 import com.movie.app.NarutoApplication;
 import com.movie.client.bean.BaseBean;
-import com.movie.client.bean.NearNaruto;
+import com.movie.client.bean.MissNaruto;
 import com.movie.state.SexState;
-import com.movie.ui.MovieDetailActivity;
 import com.movie.ui.UserDetailActivity;
 import com.movie.util.Horoscope;
 import com.movie.util.StringUtil;
@@ -55,7 +54,7 @@ public class MissNarutoAdapter extends BaseObjectListAdapter {
 		} else {
 			mHolder = (ViewHolder) view.getTag();
 		}
-		final NearNaruto nearNaruto = (NearNaruto)getItem(position);
+		final MissNaruto nearNaruto = (MissNaruto)getItem(position);
 		imageLoader.displayImage(nearNaruto.getPortrait(), mHolder.userIcon,NarutoApplication.imageOptions);
 		mHolder.userName.setText(nearNaruto.getNickname());
 		mHolder.userSex.setText(SexState.getState(nearNaruto.getSex()).getMessage());
@@ -76,9 +75,9 @@ public class MissNarutoAdapter extends BaseObjectListAdapter {
 			
 			@Override
 			public void onClick(View v) {
-				Intent movieDetailIntent = new Intent(mContext, MovieDetailActivity.class);
-				movieDetailIntent.putExtra("filmId", nearNaruto.getFilmId());
-				mContext.startActivity(movieDetailIntent);
+				Intent userDetailIntent = new Intent(mContext, UserDetailActivity.class);
+				userDetailIntent.putExtra("memberId", nearNaruto.getMemberId());
+				mContext.startActivity(userDetailIntent);
 				
 			}
 		});
