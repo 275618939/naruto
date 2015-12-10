@@ -110,7 +110,7 @@ public class MissQueryActivity extends BaseActivity implements OnClickListener,C
 			if(null!=queryCondition){
 				User user=(User)queryCondition;
 				title.setText(user.getNickname()+"正在进行的约会");
-				missQueryService.addUrls(Constant.Miss_Touch_Query_API_URL);
+				missQueryService.addUrls(Constant.Miss_Query_API_URL);
 				missQueryService.addParams("id", user.getMemberId());
 				missQueryService.addParams("page", page);
 				missQueryService.addParams("size", Page.DEFAULT_SIZE);
@@ -141,7 +141,10 @@ public class MissQueryActivity extends BaseActivity implements OnClickListener,C
 	@Override
 	public void onClick(View v) {
 		switch (v.getId()) {
-
+		case R.id.loading_error:
+			misses.clear();
+			loadMissData();
+			break;
 		default:
 			break;
 
@@ -194,7 +197,7 @@ public class MissQueryActivity extends BaseActivity implements OnClickListener,C
 					if (missMap.containsKey("filmId"))
 						miss.setFilmId(Integer.parseInt(missMap.get("filmId").toString()));
 					if (missMap.containsKey("filmName"))
-						miss.setFilmName(missMap.get("filmName").toString());
+						miss.setFilmName(missMap.get("filmName")==null?"":missMap.get("filmName").toString());
 					if (missMap.containsKey("runTime"))
 						miss.setRunTime(missMap.get("runTime").toString());
 					if (missMap.containsKey("coin"))

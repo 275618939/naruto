@@ -25,6 +25,7 @@ import com.nostra13.universalimageloader.core.ImageLoader;
 
 public abstract class BaseActivity extends FragmentActivity {
 	
+	protected boolean isLoad;
 	protected ProgressDialog progressDialog;
 	protected NetWorkUtils mNetWorkUtils;
 	protected LoginService loginService;
@@ -93,6 +94,9 @@ public abstract class BaseActivity extends FragmentActivity {
 		Toast.makeText(this, text, Toast.LENGTH_LONG).show();
 	}
 
+	public void showProgressDialog() {
+		showProgressDialog("提示","请求中,请稍后...");
+	}
 	public void showProgressDialog(String title, String message) {
 		if (progressDialog == null) {
 			progressDialog = ProgressDialog.show(this, title, message, true,true);

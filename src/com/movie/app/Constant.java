@@ -208,6 +208,8 @@ public interface Constant {
 		public static String STATE_3 = "3";
 
 		public static String STATE_12 = "12";
+		
+		public static String STATE_97 = "97";
 
 		public static String STATE_101 = "101";
 		

@@ -12,16 +12,16 @@ import com.movie.client.service.CallBackService;
 import com.movie.state.ErrorState;
 import com.movie.util.HttpUtils;
 
-public class HttpMissCancelService extends BaseService {
+public class HttpMissApplyService extends BaseService {
 
 
-	public HttpMissCancelService() {
-		TAG="HttpMissCancelService";
+	public HttpMissApplyService() {
+		TAG="HttpMissApplyService";
 	
 	}
-	public HttpMissCancelService(Context context) {
+	public HttpMissApplyService(Context context) {
 		this.context=context;
-		TAG="HttpMissCancelService";
+		TAG="HttpMissApplyService";
 		
 	}
 
@@ -33,12 +33,7 @@ public class HttpMissCancelService extends BaseService {
 			requestCount++;
 			String sid = getSid();
 			headers.put(SESSION_KEY, sid);
-			Object id=params.get("trystId");
-			StringBuilder path=new StringBuilder(Constant.Miss_Cancel_API_URL);
-			if(null!=id){
-				path.append("/").append(id);
-			}
-			String result = HttpUtils.requestDelete(path.toString(), headers);
+			String result = HttpUtils.requestPost(Constant.Miss_Apply_API_URL, headers,params);
 			if (result != null) {
 				try {
 					map = objectMapper.readValue(result, typeReference);

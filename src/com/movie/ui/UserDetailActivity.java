@@ -257,6 +257,9 @@ public class UserDetailActivity extends BaseActivity implements
 			if (tag.endsWith(httpUsersService.TAG)) {
 				user = new User();
 				Map<String, Object> values = (Map<String, Object>) map.get(ReturnCode.RETURN_VALUE);
+				if (values.containsKey("memberId")) {
+					user.setMemberId(values.get("memberId").toString());
+				}
 				if (values.containsKey("portrait")) {
 					user.setPortrait(Constant.SERVER_ADRESS+values.get("portrait").toString());
 					imageLoader.displayImage(user.getPortrait(),headView,NarutoApplication.imageOptions);

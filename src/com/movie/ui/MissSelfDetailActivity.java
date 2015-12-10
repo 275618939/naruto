@@ -32,6 +32,7 @@ import com.movie.client.bean.MissNaruto;
 import com.movie.client.bean.User;
 import com.movie.client.service.BaseService;
 import com.movie.client.service.CallBackService;
+import com.movie.network.HttpMissCancelService;
 import com.movie.network.HttpMissDetailService;
 import com.movie.network.HttpMissQueryService;
 import com.movie.state.SexState;
@@ -65,13 +66,15 @@ public class MissSelfDetailActivity extends BaseActivity implements OnClickListe
 	ScrollView missDetailView;
 	BaseService httpMissDetailService;
 	BaseService httpMissQueryService;
+	BaseService httpMissCancelService;
 	PullToRefreshListView refreshableListView;
 	MissNarutoAdapter missNarutoAdapter;
 	List<MissNaruto> missNarutos = new ArrayList<MissNaruto>();
 	//ExpandListViewForScrollView missPartList;
 	//PartNarutoExpandableAdapter partNarutoAdapter;
 	//List<Dictionary> parents=new ArrayList<Dictionary>();
-    //List<List<User>> childs = new ArrayList<List<User>>();
+    //List<List<User>> childs = new ArrayList<List<User>>();、
+	int btnType;
     LoadView loadView;
     View rootView;
     Miss miss;
@@ -85,6 +88,7 @@ public class MissSelfDetailActivity extends BaseActivity implements OnClickListe
 		setContentView(rootView);
 		httpMissDetailService = new HttpMissDetailService(this);
 		httpMissQueryService = new HttpMissQueryService(this);
+		httpMissCancelService =new HttpMissCancelService(this);
 		initViews();
 		initEvents();
 		initData();
@@ -159,14 +163,16 @@ public class MissSelfDetailActivity extends BaseActivity implements OnClickListe
 			missBottomBar.setVisibility(View.VISIBLE);
 			missBtn.setText(getResources().getString(R.string.miss_cancel));
 			missBtn.setOnClickListener(this);
+			btnType=Miss.CANCLE_MISS;
 			return;
 		}
-		//验证是否可以派发
+		//验证是否可以派影币
 		result=StringUtil.dateCompareByCurrent(miss.getRunTime());
 		if(result<0){
 			missBottomBar.setVisibility(View.VISIBLE);
 			missBtn.setText(getResources().getString(R.string.branch_coin));
 			missBtn.setOnClickListener(this);
+			btnType=Miss.COIN_MISS;
 		}
 		
 		
@@ -180,6 +186,10 @@ public class MissSelfDetailActivity extends BaseActivity implements OnClickListe
 		httpMissQueryService.addUrls(Constant.Miss_Attend_Query_API_URL);
 		httpMissQueryService.addParams("id", miss.getTrystId());
 		httpMissQueryService.execute(this);
+	}
+	private void cancelMiss() {
+		httpMissCancelService.addParams("trystId", miss.getTrystId());
+		httpMissCancelService.execute(this);
 	}
 	private void initPartUser(){
 //		parents.clear();
@@ -222,7 +232,9 @@ public class MissSelfDetailActivity extends BaseActivity implements OnClickListe
 				startActivity(intent);
 				break;
 			case R.id.miss_btn:
-				
+				if(btnType==Miss.CANCLE_MISS){
+					cancelMiss();
+				}
 				break;
 			case R.id.hope_user:
 				Intent hopeIntent = new Intent(this, HopeNarutoQueryActivity.class);
@@ -245,12 +257,14 @@ public class MissSelfDetailActivity extends BaseActivity implements OnClickListe
 	public void onBackPressed() {
 		super.onBackPressed();
 		overridePendingTransition(R.anim.slide_in_left, R.anim.slide_out_right);
+		this.finish();
 	}
 	@Override
 	public void SuccessCallBack(Map<String, Object> map) {
-		//hideProgressDialog();
+		hideProgressDialog();
 		loadView.showLoadAfter(this);
 		refreshableListView.onRefreshComplete();
+		isLoad=true;
 		String code=map.get(Constant.ReturnCode.RETURN_STATE).toString();
 		if (Constant.ReturnCode.STATE_1.equals(code)) {
 			String tag=map.get(Constant.ReturnCode.RETURN_TAG).toString();
@@ -318,6 +332,9 @@ public class MissSelfDetailActivity extends BaseActivity implements OnClickListe
 				}
 				missNarutoAdapter.notifyDataSetChanged();
 		
+			}else if(tag.endsWith(httpMissCancelService.TAG)){
+				missBottomBar.setVisibility(View.GONE);
+				showToask("撤销成功!");
 			}
 			
 		}else{
@@ -329,12 +346,14 @@ public class MissSelfDetailActivity extends BaseActivity implements OnClickListe
 	@Override
 	public void ErrorCallBack(Map<String, Object> map) {
 		refreshableListView.onRefreshComplete();
+		hideProgressDialog();
 		String message = map.get(Constant.ReturnCode.RETURN_MESSAGE).toString();
-		String state= map.get(Constant.ReturnCode.RETURN_STATE).toString();
-		if(state.equals(ReturnCode.STATE_999)){
+		int state=Integer.parseInt(map.get(Constant.ReturnCode.RETURN_STATE).toString());
+		if(state==Integer.parseInt(ReturnCode.STATE_999)){
 			loadView.showLoadLineFail(this);
-		}else{
+		}else if(state>=Integer.parseInt(ReturnCode.STATE_97)){
 			loadView.showLoadFail(this, this);
+		}else{
 			showToask(message);
 		}
 		
@@ -342,7 +361,11 @@ public class MissSelfDetailActivity extends BaseActivity implements OnClickListe
 
 	@Override
 	public void OnRequest() {
-		loadView.showLoading(this);
+		if(!isLoad){
+			loadView.showLoading(this);
+		}else{
+			showProgressDialog();
+		}
 	}
 	@Override
 	protected void onDestroy() {

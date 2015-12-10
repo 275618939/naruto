@@ -318,6 +318,7 @@
 
                         <TextView
                             android:id="@+id/user_miss"
+                            style="@style/content_text_style"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:layout_alignParentRight="true" />

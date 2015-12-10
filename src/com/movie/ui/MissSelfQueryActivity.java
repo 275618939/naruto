@@ -40,7 +40,6 @@ public class MissSelfQueryActivity extends BaseActivity implements OnClickListen
 	RelativeLayout userMissParentLayout;
 	MissSelfQueryAdapter selfQueryAdapter;
 	BaseService missQueryService;
-	BaseService httpMissCancelService;
 	PullToRefreshListView refreshableListView;
 	List<Miss> misses = new ArrayList<Miss>();
 	int page;
@@ -57,7 +56,6 @@ public class MissSelfQueryActivity extends BaseActivity implements OnClickListen
 		loadView=new LoadView();
 		setContentView(rootView);
 		missQueryService = new HttpMissQueryService(this);
-		httpMissCancelService = new HttpMissCancelService(this);
 		initData();
 		initViews();
 		initEvents();
@@ -115,7 +113,7 @@ public class MissSelfQueryActivity extends BaseActivity implements OnClickListen
 			if(null!=queryCondition){
 				User user=(User)queryCondition;
 				title.setText(user.getNickname()+"正在进行的约会");
-				missQueryService.addUrls(Constant.Miss_Touch_Query_API_URL);
+				missQueryService.addUrls(Constant.Miss_Query_API_URL);
 				missQueryService.addParams("id", user.getMemberId());
 				missQueryService.addParams("page", page);
 				missQueryService.addParams("size", Page.DEFAULT_SIZE);
@@ -138,11 +136,6 @@ public class MissSelfQueryActivity extends BaseActivity implements OnClickListen
 		}
 
 	}
-
-	private void cancelMiss() {
-		httpMissCancelService.execute(this);
-	}
-
 	@Override
 	public void onClick(View v) {
 		switch (v.getId()) {
@@ -158,7 +151,7 @@ public class MissSelfQueryActivity extends BaseActivity implements OnClickListen
 		public void handleMessage(android.os.Message msg) {
 			switch (msg.what) {
 			case Miss.CANCLE_MISS:
-				cancelMiss();
+				
 			default:
 				break;
 

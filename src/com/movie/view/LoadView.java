@@ -46,6 +46,7 @@ public class LoadView {
 		loadingErrorLayout.setOnClickListener(listener);
 		loadingLayout.setVisibility(View.GONE);
 		loadingLineFail.setVisibility(View.GONE);
+		loadAfterLayout.setVisibility(View.GONE);
 	}
 	public void showLoadAfter(CallBackService service) {
 		loadAfterLayout.setVisibility(View.VISIBLE);
