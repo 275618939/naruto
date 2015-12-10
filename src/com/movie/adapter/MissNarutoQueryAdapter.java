@@ -41,7 +41,6 @@ public class MissNarutoQueryAdapter extends BaseObjectListAdapter {
 			mHolder.missName = (TextView) view.findViewById(R.id.miss_name);
 			mHolder.missCoin = (TextView) view.findViewById(R.id.miss_coin);
 			mHolder.missBtnLayout = (LinearLayout) view.findViewById(R.id.miss_btn_layout);
-			mHolder.missStageLayout = (LinearLayout) view.findViewById(R.id.miss_stage_layout);
 			view.setTag(mHolder);
 		} else {
 			mHolder = (ViewHolder) view.getTag();
@@ -71,7 +70,6 @@ public class MissNarutoQueryAdapter extends BaseObjectListAdapter {
 
 		RelativeLayout missItemView;
 		LinearLayout missBtnLayout;
-		LinearLayout missStageLayout;
 		// 约会LOGO
 		ImageView missIcon;
 		// 约会人

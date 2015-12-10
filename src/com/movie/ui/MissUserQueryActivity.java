@@ -44,7 +44,7 @@ public class MissUserQueryActivity extends BaseActivity implements
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
-		setContentView(R.layout.activity_miss_user_query);
+		setContentView(R.layout.activity_miss_query);
 		httpMissAgreeService = new HttpMissAgreeService(this);
 		httoMissUserQueryService = new HttpMissUserQueryService(this);
 		initViews();
@@ -53,11 +53,11 @@ public class MissUserQueryActivity extends BaseActivity implements
 	}
 	@Override
 	protected void initViews() {
-		title = (TextView) findViewById(R.id.title);
+		/*title = (TextView) findViewById(R.id.title);
 		userViewList = (ListView) findViewById(R.id.miss_user_list);
 		userAdapter = new MissUserAdapter(this, mHandler, null);
 		userViewList.setAdapter(userAdapter);
-		refreshableListView = (RefreshableListView) findViewById(R.id.refresh_user);
+		refreshableListView = (RefreshableListView) findViewById(R.id.refresh_user);*/
 	}
 
 	@Override

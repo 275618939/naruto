@@ -6,10 +6,8 @@
     android:layout_height="wrap_content" >
 
     <FrameLayout
-        android:id="@+id/layout_ment"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:orientation="vertical" >
+        android:layout_height="wrap_content" >
 
         <RelativeLayout
             android:id="@+id/miss_item_view"
@@ -18,33 +16,63 @@
             android:layout_marginBottom="@dimen/layout_item_bottom"
             android:background="@drawable/background_with_border_radius" >
 
-            <ImageView
-                android:id="@+id/miss_icon"
+            <LinearLayout
+                android:id="@+id/miss_icon_layout"
                 android:layout_width="@dimen/user_item_image_width"
                 android:layout_height="@dimen/user_item_image_height"
-                android:layout_marginLeft="@dimen/input_margin_left"
-                android:src="@drawable/empty_photo" />
+                android:layout_margin="@dimen/layout_item_top_1" >
+
+                <ImageView
+                    android:id="@+id/miss_icon"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:scaleType="centerCrop"
+                    android:src="@drawable/empty_photo" />
+            </LinearLayout>
+
+            <LinearLayout
+                android:id="@+id/miss_layout"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="@dimen/layout_item_top_1"
+                android:layout_toRightOf="@+id/miss_icon_layout"
+                android:orientation="horizontal" >
+
+                <TextView
+                    style="@style/common_content_white_hint"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="@string/miss_user" />
+
+                <TextView
+                    android:id="@+id/miss_user"
+                    style="@style/common_content_white_hint"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginLeft="@dimen/layout_left" />
+            </LinearLayout>
 
             <LinearLayout
                 android:id="@+id/miss_layout_0"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginLeft="@dimen/layout_left"
-                android:layout_marginTop="@dimen/layout_item_top_1"
-                android:layout_toRightOf="@+id/miss_icon"
+                android:layout_below="@+id/miss_layout"
+                android:layout_toRightOf="@+id/miss_icon_layout"
                 android:orientation="horizontal" >
 
                 <TextView
                     android:id="@+id/miss_date_hint"
+                    style="@style/common_content_white_hint"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:text="@string/miss_date" />
 
                 <TextView
                     android:id="@+id/miss_date"
-                    style="@style/common_content_text_style"
+                    style="@style/common_content_white_hint"
                     android:layout_width="wrap_content"
-                    android:layout_height="wrap_content" />
+                    android:layout_height="wrap_content"
+                    android:layout_marginLeft="@dimen/layout_left" />
             </LinearLayout>
 
             <LinearLayout
@@ -52,21 +80,23 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_below="@+id/miss_layout_0"
-                android:layout_marginLeft="@dimen/layout_left"
-                android:layout_toRightOf="@+id/miss_icon"
+                android:layout_toRightOf="@+id/miss_icon_layout"
                 android:orientation="horizontal" >
 
                 <TextView
-                    android:id="@+id/miss_user_hint"
+                    android:id="@+id/miss_coin_hint"
+                    style="@style/common_content_white_hint"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="@string/miss_user" />
+                    android:text="@string/miss_coin_hint" />
 
                 <TextView
-                    android:id="@+id/miss_user"
-                    style="@style/common_content_text_style"
+                    android:id="@+id/miss_coin"
+                    style="@style/common_content_white_hint"
                     android:layout_width="wrap_content"
-                    android:layout_height="wrap_content" />
+                    android:layout_height="wrap_content"
+                    android:layout_marginLeft="@dimen/layout_left"
+                    android:text="@string/integer_default" />
             </LinearLayout>
 
             <LinearLayout
@@ -74,159 +104,39 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_below="@+id/miss_layout_1"
-                android:layout_marginLeft="@dimen/layout_left"
-                android:layout_toRightOf="@+id/miss_icon"
+                android:layout_toRightOf="@+id/miss_icon_layout"
                 android:orientation="horizontal" >
 
                 <TextView
                     android:id="@+id/miss_name_hint"
+                    style="@style/common_content_white_hint"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:text="@string/movie_name" />
 
                 <TextView
                     android:id="@+id/miss_name"
-                    style="@style/common_content_text_style"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content" />
-            </LinearLayout>
-
-          <!--   <LinearLayout
-                android:id="@+id/miss_layout_3"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_below="@+id/miss_layout_2"
-                android:layout_marginLeft="@dimen/layout_left"
-                android:layout_toRightOf="@+id/miss_icon"
-                android:orientation="horizontal" >
-
-                <TextView
-                    android:id="@+id/miss_address_hint"
+                    style="@style/common_content_white_hint"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="@string/cinema_address" />
-
-                <TextView
-                    android:id="@+id/miss_address"
-                    style="@style/common_content_text_style"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content" />
-            </LinearLayout> -->
-
-            <LinearLayout
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_below="@+id/miss_icon"
-                android:layout_marginLeft="@dimen/input_margin_left"
-                android:layout_marginRight="@dimen/input_margin_right"
-                android:background="@drawable/background_with_border_top"
-                android:orientation="horizontal"
-                android:paddingBottom="@dimen/nav_padding_bottom"
-                android:paddingTop="@dimen/nav_padding_top" >
-
-                <LinearLayout
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_marginTop="@dimen/layout_item_top_0"
-                    android:layout_weight="1"
-                    android:orientation="horizontal" >
-
-                    <TextView
-                        android:id="@+id/miss_state_hint"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:text="@string/miss_state" />
-
-                    <TextView
-                        android:id="@+id/miss_state"
-                        style="@style/common_content_text_style"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content" />
-                </LinearLayout>
-
-                <LinearLayout
-                    android:id="@+id/miss_stage_layout"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_marginTop="@dimen/layout_item_top_0"
-                    android:layout_weight="1"
-                    android:orientation="horizontal"
-                    android:visibility="gone" >
-
-                    <TextView
-                        android:id="@+id/miss_stage_hint"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:text="@string/miss_stage" />
-
-                    <TextView
-                        android:id="@+id/miss_stage"
-                        style="@style/common_content_text_style"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content" />
-                </LinearLayout>
-
-                <!--
-                <LinearLayout
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_marginTop="@dimen/layout_item_top_0"
-                    android:layout_weight="1"
-                    android:orientation="horizontal" >
-
-                    <TextView
-                        android:id="@+id/miss_part_hint"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:text="@string/miss_part_list" />
-
-                    <TextView
-                        android:id="@+id/miss_part_list"
-                        style="@style/common_content_text_style"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content" />
-                </LinearLayout>
-                -->
-
-                <LinearLayout
-                    android:id="@+id/miss_btn_layout"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_weight="1"
-                    android:gravity="right"
-                    android:visibility="gone" >
-
-                    <TextView
-                        android:id="@+id/miss_btn"
-                        style="@style/common_title_btn"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content" />
-                </LinearLayout>
+                    android:layout_marginLeft="@dimen/layout_left" />
             </LinearLayout>
         </RelativeLayout>
-        <!-- 应约人 tag -->
 
         <LinearLayout
-            android:id="@+id/part_tag"
-            android:layout_width="match_parent"
-            android:layout_height="30dp"
-            android:layout_gravity="top"
-            android:background="@drawable/bg_ment_radio"
-            android:gravity="center_vertical"
-            android:orientation="horizontal" >
+            android:id="@+id/miss_btn_layout"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="right|center_vertical"
+            android:layout_marginRight="@dimen/layout_right"
+            android:background="@drawable/miss_btn_ment"
+            android:visibility="gone" >
 
             <TextView
+                android:id="@+id/miss_btn"
+                style="@style/common_content_white_hint"
                 android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginLeft="8dp"
-                android:text="@string/miss_part_list"
-                android:textColor="@color/white" />
-
-            <TextView
-                android:id="@+id/miss_part_list"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:textColor="@color/red" />
+                android:layout_height="wrap_content" />
         </LinearLayout>
     </FrameLayout>
 

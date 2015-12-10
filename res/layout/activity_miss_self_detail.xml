@@ -133,14 +133,6 @@
                                 android:layout_marginLeft="@dimen/text_left"
                                 android:orientation="horizontal" >
 
-                                <!--
-                                     <TextView
-                                    style="@style/common_content_text_style"
-                                    android:layout_width="wrap_content"
-                                    android:layout_height="wrap_content"
-                                    android:text="@string/love_hint" />
-                                -->
-
                                 <TextView
                                     android:id="@+id/love"
                                     style="@style/common_content_text_style"
@@ -317,12 +309,6 @@
                 </LinearLayout>
                 <!-- 约会影院信息 end -->
 
-                <ImageView
-                    style="@style/input_item_line"
-                    android:layout_marginLeft="@dimen/layout_left"
-                    android:layout_marginRight="@dimen/layout_right"
-                    android:layout_marginTop="@dimen/layout_item_top_1" />
-
                 <RelativeLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
@@ -343,8 +329,22 @@
                         style="@style/content_text_style"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:layout_alignParentRight="true" />
+                        android:layout_centerVertical="true"
+                        android:layout_marginRight="@dimen/layout_right"
+                        android:layout_toLeftOf="@+id/hope_user_more" />
+
+                    <ImageView
+                        android:id="@+id/hope_user_more"
+                        style="@style/setting_arrow"
+                        android:layout_alignParentRight="true"
+                        android:layout_centerVertical="true" />
                 </RelativeLayout>
+
+                <ImageView
+                    style="@style/input_item_line"
+                    android:layout_marginLeft="@dimen/layout_left"
+                    android:layout_marginRight="@dimen/layout_right"
+                    android:layout_marginTop="@dimen/layout_item_top_1" />
 
                 <RelativeLayout
                     android:layout_width="match_parent"
@@ -366,7 +366,8 @@
                         style="@style/content_text_style"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:layout_alignParentRight="true" />
+                        android:layout_alignParentRight="true"
+                        android:layout_marginRight="@dimen/layout_right" />
                 </RelativeLayout>
 
                 <ImageView

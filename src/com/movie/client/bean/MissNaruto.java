@@ -15,6 +15,7 @@ public class MissNaruto extends BaseBean implements Parcelable {
 	private int faceCnt;
 	private int trystCnt;
 	private int filmCnt;
+	private int stage;
 	
 	public MissNaruto() {
 		super();
@@ -107,16 +108,21 @@ public class MissNaruto extends BaseBean implements Parcelable {
 	public void setTrystCnt(int trystCnt) {
 		this.trystCnt = trystCnt;
 	}
-
-	
-
-	
 	public int getFilmCnt() {
 		return filmCnt;
 	}
 
 	public void setFilmCnt(int filmCnt) {
 		this.filmCnt = filmCnt;
+	}
+	
+
+	public int getStage() {
+		return stage;
+	}
+
+	public void setStage(int stage) {
+		this.stage = stage;
 	}
 
 	@Override
@@ -136,6 +142,7 @@ public class MissNaruto extends BaseBean implements Parcelable {
 		dest.writeInt(faceCnt);
 		dest.writeInt(trystCnt);
 		dest.writeInt(filmCnt);
+		dest.writeInt(stage);
 	}
 
 	public static final Parcelable.Creator<MissNaruto> CREATOR = new Parcelable.Creator<MissNaruto>() {
@@ -153,6 +160,7 @@ public class MissNaruto extends BaseBean implements Parcelable {
 			near.setFaceCnt(source.readInt());
 			near.setTrystCnt(source.readInt());
 			near.setFilmCnt(source.readInt());
+			near.setStage(source.readInt());
 			return near;
 		}
 

@@ -18,9 +18,9 @@ import android.widget.Toast;
 import com.movie.R;
 import com.movie.client.bean.Login;
 import com.movie.client.service.LoginService;
+import com.movie.client.service.UserService;
 import com.movie.ui.LoginActivity;
 import com.movie.util.NetWorkUtils;
-import com.movie.view.LoadView;
 import com.nostra13.universalimageloader.core.ImageLoader;
 
 public abstract class BaseActivity extends FragmentActivity {
@@ -28,13 +28,14 @@ public abstract class BaseActivity extends FragmentActivity {
 	protected ProgressDialog progressDialog;
 	protected NetWorkUtils mNetWorkUtils;
 	protected LoginService loginService;
+	protected UserService userService;
 	protected ImageLoader imageLoader=ImageLoader.getInstance();
 	protected List<AsyncTask<Void, Void, Boolean>> mAsyncTasks = new ArrayList<AsyncTask<Void, Void, Boolean>>();
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		loginService=new LoginService();	
-		
+		userService=new UserService();
 	}
 	/** 初始化视图 **/
 	protected abstract void initViews();

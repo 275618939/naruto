@@ -10,7 +10,6 @@ import android.os.Handler;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.widget.ListView;
-import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.handmark.pulltorefresh.library.PullToRefreshBase;
@@ -18,60 +17,57 @@ import com.handmark.pulltorefresh.library.PullToRefreshBase.Mode;
 import com.handmark.pulltorefresh.library.PullToRefreshBase.OnRefreshListener2;
 import com.handmark.pulltorefresh.library.PullToRefreshListView;
 import com.movie.R;
-import com.movie.adapter.MissSelfQueryAdapter;
+import com.movie.adapter.MissNarutoAdapter;
 import com.movie.app.BaseActivity;
 import com.movie.app.Constant;
 import com.movie.app.Constant.Page;
 import com.movie.app.Constant.ReturnCode;
 import com.movie.client.bean.Miss;
-import com.movie.client.bean.Movie;
-import com.movie.client.bean.User;
+import com.movie.client.bean.MissNaruto;
 import com.movie.client.service.BaseService;
 import com.movie.client.service.CallBackService;
 import com.movie.network.HttpMissCancelService;
 import com.movie.network.HttpMissQueryService;
 import com.movie.view.LoadView;
 
-public class HopeNarutoQueryActivity extends BaseActivity implements OnClickListener,CallBackService, OnRefreshListener2<ListView> {
+public class HopeNarutoQueryActivity extends BaseActivity implements
+		OnClickListener, CallBackService, OnRefreshListener2<ListView> {
 
 	LoadView loadView;
 	TextView title;
-	ListView myMissList;
-	RelativeLayout userMissParentLayout;
-	MissSelfQueryAdapter selfQueryAdapter;
-	BaseService missQueryService;
+	MissNarutoAdapter missNarutoAdapter;
 	BaseService httpMissCancelService;
+	BaseService httpMissQueryService;
 	PullToRefreshListView refreshableListView;
-	List<Miss> misses = new ArrayList<Miss>();
+	List<MissNaruto> missNarutos = new ArrayList<MissNaruto>();
 	int page;
-	int missType;
-	Object queryCondition;
+	int trystId;
 	View rootView;
 
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
-		if(rootView==null){  
-	        rootView=getLayoutInflater().inflate(R.layout.activity_miss_self_query,null);  
-	    }  
-		loadView=new LoadView();
+		if (rootView == null) {
+			rootView = getLayoutInflater().inflate(R.layout.activity_hope_naruto_query, null);
+		}
+		loadView = new LoadView();
 		setContentView(rootView);
-		missQueryService = new HttpMissQueryService(this);
+		httpMissQueryService = new HttpMissQueryService(this);
 		httpMissCancelService = new HttpMissCancelService(this);
-		initData();
 		initViews();
+		initData();
 		initEvents();
-		
+
 	}
+
 	@Override
 	protected void initViews() {
 		loadView.initView(rootView);
 		title = (TextView) findViewById(R.id.title);
-		userMissParentLayout= (RelativeLayout)findViewById(R.id.user_miss_parent_layout);
-		selfQueryAdapter = new MissSelfQueryAdapter(this, mHandler, misses);
-		refreshableListView = (PullToRefreshListView) findViewById(R.id.slef_miss_list);
+		missNarutoAdapter = new MissNarutoAdapter(this, mHandler, missNarutos);
+		refreshableListView = (PullToRefreshListView) findViewById(R.id.hope_attend_list);
 		refreshableListView.setMode(Mode.BOTH);
-		refreshableListView.setAdapter(selfQueryAdapter);
+		refreshableListView.setAdapter(missNarutoAdapter);
 		refreshableListView.setEmptyView(rootView.findViewById(R.id.empty));
 	}
 
@@ -83,60 +79,17 @@ public class HopeNarutoQueryActivity extends BaseActivity implements OnClickList
 
 	@Override
 	protected void initData() {
-		missType=getIntent().getIntExtra(Miss.MISS_KEY, 0);
-		//page=0;
-		//loadMissData();		
-	}
-	
-	private void loadMissData() {
-		switch (missType) {
-		case Miss.MY_MISS:
-			title.setText(getResources().getString(R.string.my_miss));
-			missQueryService.addUrls(Constant.Miss_Query_API_URL);
-			missQueryService.addParams("page", page);
-			missQueryService.addParams("size", Page.DEFAULT_SIZE);
-			missQueryService.execute(this);
-			break;
-		case Miss.MY_PART:
-			title.setText("参与的约会");
-			missQueryService.addUrls(Constant.Miss_Touch_Query_API_URL);
-			missQueryService.addParams("page", page);
-			missQueryService.addParams("size", Page.DEFAULT_SIZE);
-			missQueryService.execute(this);
-			break;
-		case Miss.MY_INVITATION:
-			title.setText("应邀的约会");
-			missQueryService.addUrls(Constant.Miss_Attend_Query_API_URL);
-			missQueryService.addParams("page", page);
-			missQueryService.addParams("size", Page.DEFAULT_SIZE);
-			missQueryService.execute(this);
-			break;
-		case Miss.USER_INVITATION:
-			if(null!=queryCondition){
-				User user=(User)queryCondition;
-				title.setText(user.getNickname()+"正在进行的约会");
-				missQueryService.addUrls(Constant.Miss_Touch_Query_API_URL);
-				missQueryService.addParams("id", user.getMemberId());
-				missQueryService.addParams("page", page);
-				missQueryService.addParams("size", Page.DEFAULT_SIZE);
-				missQueryService.execute(this);
-			}
-			break;
-		case Miss.MOVIE_INVITATION:
-			if(null!=queryCondition){
-				Movie movie=(Movie)queryCondition;
-				title.setText(movie.getName()+"正在进行的约会");
-				missQueryService.addUrls(Constant.Miss_Film_Query_API_URL);
-				missQueryService.addParams("id", movie.getId());
-				missQueryService.addParams("page", page);
-				missQueryService.addParams("size", Page.DEFAULT_SIZE);
-				missQueryService.execute(this);
-			}
-			break;
-		default:
-			break;
-		}
+		trystId = getIntent().getIntExtra("trystId", 0);
+		title.setText("参与人");
 
+	}
+
+	private void loadMissData() {
+		httpMissQueryService.addUrls(Constant.Miss_Touch_Query_API_URL);
+		httpMissQueryService.addParams("id", trystId);
+		httpMissQueryService.addParams("page", page);
+		httpMissQueryService.addParams("size", Page.DEFAULT_SIZE);
+		httpMissQueryService.execute(this);
 	}
 
 	private void cancelMiss() {
@@ -180,43 +133,43 @@ public class HopeNarutoQueryActivity extends BaseActivity implements OnClickList
 		String code = map.get(Constant.ReturnCode.RETURN_STATE).toString();
 		if (Constant.ReturnCode.STATE_1.equals(code)) {
 			String tag = map.get(Constant.ReturnCode.RETURN_TAG).toString();
-			if (tag.endsWith(missQueryService.TAG)) {
+			if(tag.endsWith(httpMissQueryService.TAG)){
 				List<HashMap<String, Object>> datas = (ArrayList<HashMap<String, Object>>) map.get(Constant.ReturnCode.RETURN_VALUE);
-				Miss miss = null;
+				MissNaruto missNaruto = null;
 				int size = datas.size();
-				HashMap<String, Object> missMap = null;
+				int count=0;
+				HashMap<String, Object> dataMap = null;
 				for (int i = 0; i < size; i++) {
-					miss = new Miss();
-					missMap = datas.get(i);
-					if (missMap.containsKey("trystId"))
-						miss.setTrystId(missMap.get("trystId").toString());
-					if (missMap.containsKey("memberId"))
-						miss.setMemberId(missMap.get("memberId").toString());
-					if (missMap.containsKey("portrait"))
-						miss.setIcon(Constant.SERVER_ADRESS+missMap.get("portrait").toString());
-					if (missMap.containsKey("nickname"))
-						miss.setNickName(missMap.get("nickname").toString());
-					if (missMap.containsKey("filmId"))
-						miss.setFilmId(Integer.parseInt(missMap.get("filmId").toString()));
-					if (missMap.containsKey("filmName"))
-						miss.setFilmName(missMap.get("filmName")==null?"":missMap.get("filmName").toString());
-					if (missMap.containsKey("runTime"))
-						miss.setRunTime(missMap.get("runTime").toString());
-					if (missMap.containsKey("coin"))
-						miss.setCoin(Integer.parseInt(missMap.get("coin").toString()));
-					if (missMap.containsKey("cinemaId")) {
-						miss.setCinemaId(missMap.get("cinemaId").toString());
+					missNaruto = new MissNaruto();
+					dataMap = datas.get(i);
+					if (dataMap.containsKey("memberId")){
+						count++;
+						missNaruto.setMemberId(dataMap.get("memberId").toString());
 					}
-					if (missMap.containsKey("cinemaName")) {
-						miss.setCinameName(missMap.get("cinemaName")==null?"":missMap.get("cinemaName").toString());
-					}
-					if (missMap.containsKey("status")) {
-						miss.setStatus(Integer.parseInt(missMap.get("status").toString()));
-					}
-					misses.add(miss);
+					if (dataMap.containsKey("portrait"))
+						missNaruto.setPortrait(Constant.SERVER_ADRESS+dataMap.get("portrait").toString());
+					if (dataMap.containsKey("nickname"))
+						missNaruto.setNickname(dataMap.get("nickname").toString());
+					if (dataMap.containsKey("birthday"))
+						missNaruto.setBirthday(Integer.parseInt((dataMap.get("birthday").toString())));
+					if (dataMap.containsKey("sex"))
+						missNaruto.setSex(Integer.parseInt((dataMap.get("sex").toString())));
+					if (dataMap.containsKey("loveCnt"))
+						missNaruto.setLoveCnt(Integer.parseInt((dataMap.get("loveCnt").toString())));
+					if (dataMap.containsKey("faceTtl"))
+						missNaruto.setFaceTtl(Long.parseLong((dataMap.get("faceTtl").toString())));
+					if (dataMap.containsKey("faceCnt"))
+						missNaruto.setFaceCnt(Integer.parseInt((dataMap.get("faceCnt").toString())));
+					if (dataMap.containsKey("trystCnt"))
+						missNaruto.setTrystCnt(Integer.parseInt((dataMap.get("trystCnt").toString())));
+					if (dataMap.containsKey("filmCnt"))
+						missNaruto.setFilmCnt(Integer.parseInt((dataMap.get("filmCnt").toString())));
+					if (dataMap.containsKey("stage"))
+						missNaruto.setStage(Integer.parseInt((dataMap.get("stage").toString())));
+					missNarutos.add(missNaruto);
 				}
-				
-				selfQueryAdapter.notifyDataSetChanged();
+				missNarutoAdapter.notifyDataSetChanged();
+		
 			}
 		} else {
 			String message = map.get(Constant.ReturnCode.RETURN_MESSAGE).toString();
@@ -230,41 +183,41 @@ public class HopeNarutoQueryActivity extends BaseActivity implements OnClickList
 		refreshableListView.onRefreshComplete();
 		String message = map.get(Constant.ReturnCode.RETURN_MESSAGE).toString();
 		String code = map.get(Constant.ReturnCode.RETURN_STATE).toString();
-		showToask(message);
 		if(code.equals(ReturnCode.STATE_999)){
-			loadView.hideAllHit(this);
+			loadView.showLoadLineFail(this);
 		}else{
-			loadView.showLoadFail(this,this);
+			loadView.showLoadFail(this, this);
+			showToask(message);
 		}
-	
+
 	}
 
 	@Override
 	public void OnRequest() {
 		loadView.showLoading(this);
 	}
+
 	@Override
 	public void onPullDownToRefresh(PullToRefreshBase<ListView> refreshView) {
 		page = 0;
-		misses.clear();
+		missNarutos.clear();
 		loadMissData();
-		
+
 	}
 
 	@Override
 	public void onPullUpToRefresh(PullToRefreshBase<ListView> refreshView) {
 		page = 1;
 		loadMissData();
-		
+
 	}
+
 	@Override
 	protected void onDestroy() {
 		super.onDestroy();
-		selfQueryAdapter=null;
-		misses.clear();
+		missNarutoAdapter = null;
+		missNarutos.clear();
 		System.gc();
 	}
-
-	
 
 }

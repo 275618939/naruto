@@ -43,8 +43,6 @@ import com.movie.view.LoadView;
 
 public class MissSelfDetailActivity extends BaseActivity implements OnClickListener, CallBackService,OnRefreshListener<ListView>  {
 
-
-	protected static int LOADUSERCOMPLETE=1;
 	TextView title;
 	ImageView missIcon;
 	TextView missCreateUser;
@@ -128,6 +126,7 @@ public class MissSelfDetailActivity extends BaseActivity implements OnClickListe
 	protected void initEvents() {
 		layoutCinemaAddress.setOnClickListener(this);	
 		hopeUserView.setOnClickListener(this);
+		missIcon.setOnClickListener(this);
 	}
 
 	@Override
@@ -150,6 +149,8 @@ public class MissSelfDetailActivity extends BaseActivity implements OnClickListe
 		initMissBtn();
 		/*初始化约会详情信息*/
 		loadMissDetail();
+		/*加载应约人信息*/
+		loadAttendUser();
 	}
 	private void initMissBtn(){
 		//验证是否可以撤销
@@ -175,6 +176,7 @@ public class MissSelfDetailActivity extends BaseActivity implements OnClickListe
 		httpMissDetailService.execute(this);
 	}
 	private void loadAttendUser(){
+		missNarutos.clear();
 		httpMissQueryService.addUrls(Constant.Miss_Attend_Query_API_URL);
 		httpMissQueryService.addParams("id", miss.getTrystId());
 		httpMissQueryService.execute(this);
@@ -227,6 +229,12 @@ public class MissSelfDetailActivity extends BaseActivity implements OnClickListe
 				hopeIntent.putExtra("trystId", miss.getTrystId());
 				startActivity(hopeIntent);
 				break;
+			case R.id.miss_icon:
+				Intent userIntent=new Intent(this,UserDetailActivity.class);
+				userIntent.putExtra("memberId", miss.getMemberId());
+				startActivity(userIntent);
+				break;
+			
 			default:
 				break;
 		
@@ -242,6 +250,7 @@ public class MissSelfDetailActivity extends BaseActivity implements OnClickListe
 	public void SuccessCallBack(Map<String, Object> map) {
 		//hideProgressDialog();
 		loadView.showLoadAfter(this);
+		refreshableListView.onRefreshComplete();
 		String code=map.get(Constant.ReturnCode.RETURN_STATE).toString();
 		if (Constant.ReturnCode.STATE_1.equals(code)) {
 			String tag=map.get(Constant.ReturnCode.RETURN_TAG).toString();
@@ -273,12 +282,15 @@ public class MissSelfDetailActivity extends BaseActivity implements OnClickListe
 				List<HashMap<String, Object>> datas = (ArrayList<HashMap<String, Object>>) map.get(Constant.ReturnCode.RETURN_VALUE);
 				MissNaruto missNaruto = null;
 				int size = datas.size();
+				int count=0;
 				HashMap<String, Object> dataMap = null;
 				for (int i = 0; i < size; i++) {
 					missNaruto = new MissNaruto();
 					dataMap = datas.get(i);
-					if (dataMap.containsKey("memberId"))
+					if (dataMap.containsKey("memberId")){
+						count++;
 						missNaruto.setMemberId(dataMap.get("memberId").toString());
+					}
 					if (dataMap.containsKey("portrait"))
 						missNaruto.setPortrait(Constant.SERVER_ADRESS+dataMap.get("portrait").toString());
 					if (dataMap.containsKey("nickname"))
@@ -299,7 +311,7 @@ public class MissSelfDetailActivity extends BaseActivity implements OnClickListe
 						missNaruto.setFilmCnt(Integer.parseInt((dataMap.get("filmCnt").toString())));
 					missNarutos.add(missNaruto);
 				}
-				if(size>0){
+				if(count>0){
 					attendUserView.setText(String.format(getResources().getString(R.string.attend_have), size));
 				}else{
 					attendUserView.setText(getResources().getString(R.string.attend_none));
@@ -316,7 +328,7 @@ public class MissSelfDetailActivity extends BaseActivity implements OnClickListe
 
 	@Override
 	public void ErrorCallBack(Map<String, Object> map) {
-		hideProgressDialog();
+		refreshableListView.onRefreshComplete();
 		String message = map.get(Constant.ReturnCode.RETURN_MESSAGE).toString();
 		String state= map.get(Constant.ReturnCode.RETURN_STATE).toString();
 		if(state.equals(ReturnCode.STATE_999)){
@@ -342,7 +354,7 @@ public class MissSelfDetailActivity extends BaseActivity implements OnClickListe
 	}
 	@Override
 	public void onRefresh(PullToRefreshBase<ListView> refreshView) {
-		missNarutos.clear();
+	
 		loadAttendUser();
 	}
 	
