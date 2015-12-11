@@ -4,7 +4,9 @@ import java.util.List;
 
 import android.content.Context;
 import android.content.Intent;
+import android.os.Bundle;
 import android.os.Handler;
+import android.os.Message;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.view.ViewGroup;
@@ -17,7 +19,9 @@ import com.movie.R;
 import com.movie.app.BaseObjectListAdapter;
 import com.movie.app.NarutoApplication;
 import com.movie.client.bean.BaseBean;
+import com.movie.client.bean.Miss;
 import com.movie.client.bean.MissNaruto;
+import com.movie.state.MissStage;
 import com.movie.state.SexState;
 import com.movie.ui.UserDetailActivity;
 import com.movie.util.Horoscope;
@@ -27,18 +31,21 @@ import com.movie.util.UserCharm;
 public class MissNarutoAdapter extends BaseObjectListAdapter {
 
 	
+	protected String memberId;
+	protected String loginMemberId;
+	
 	public MissNarutoAdapter(Context context, Handler mHandler,List<? extends BaseBean> datas) {
 		super(context, mHandler, datas);
-
 	}
 	@Override
 	public View getView(int position, View convertView, ViewGroup parent) {
 		// TODO Auto-generated method stub
-		ViewHolder mHolder;
+		final ViewHolder mHolder;
 		View view = convertView;
 		if (view == null) {
 			view = mInflater.inflate(R.layout.miss_attend_naruto_item, null);
 			mHolder = new ViewHolder();
+			mHolder.missBtnLayout= (LinearLayout) view.findViewById(R.id.miss_btn_layout);
 			mHolder.userBreifLayout= (LinearLayout) view.findViewById(R.id.user_breif_layout);
 			mHolder.userItemView = (LinearLayout) view.findViewById(R.id.user_item_view);
 			mHolder.userIcon = (ImageView) view.findViewById(R.id.user_icon);
@@ -49,6 +56,7 @@ public class MissNarutoAdapter extends BaseObjectListAdapter {
 			mHolder.userLove = (TextView) view.findViewById(R.id.user_love);
 			mHolder.userMovieLove = (TextView) view.findViewById(R.id.user_movie_love);
 			mHolder.userCharmBar = (RatingBar) view.findViewById(R.id.user_charm_bar);
+			mHolder.missBtn = (TextView)view.findViewById(R.id.miss_btn);
 			
 			view.setTag(mHolder);
 		} else {
@@ -70,6 +78,33 @@ public class MissNarutoAdapter extends BaseObjectListAdapter {
 			mHolder.userCharmBar.setRating(Float.valueOf(score)/2f);
 			mHolder.userCharm.setText(score);
 		}
+		if(nearNaruto.getStage()==MissStage.Apply.getState()){
+			if(memberId.equals(loginMemberId)){
+				mHolder.missBtn.setText(mContext.getResources().getString(R.string.miss_agree));
+				mHolder.missBtn.setOnClickListener(new OnClickListener() {
+					@Override
+					public void onClick(View v) {
+						mHolder.missBtn.setText(mContext.getResources().getString(R.string.miss_agree_after));
+						Message message=new Message();
+						Bundle bundle=new Bundle();
+						bundle.putString("memberid",nearNaruto.getMemberId());
+						message.setData(bundle);
+						message.what=Miss.AGREE_MISS;
+						mHandler.sendMessage(message);
+					}
+				});
+			}else{
+				//mContext.getResources().getString(R.string.miss_wait_agree)
+				mHolder.missBtn.setText(mContext.getResources().getString(R.string.miss_wait_handle));
+			}
+		}
+		/*else if(nearNaruto.getStage()==MissStage.BeInvited.getState()){
+			mHolder.missBtn.setText(mContext.getResources().getString(R.string.miss_wait_agree));
+		}else{
+			mHolder.missBtn.setText(MissStage.End.getMessage());
+		}*/
+		
+		
 		
 		mHolder.userBreifLayout.setOnClickListener(new OnClickListener() {
 			
@@ -101,6 +136,7 @@ public class MissNarutoAdapter extends BaseObjectListAdapter {
 		LinearLayout userBtnView;
         LinearLayout userBreifLayout;
 		LinearLayout userItemView;
+		LinearLayout missBtnLayout;
 		//用户颜值
 		RatingBar userCharmBar;
 		// 用户LOGO
@@ -117,13 +153,18 @@ public class MissNarutoAdapter extends BaseObjectListAdapter {
 		TextView userLove;
 		// 用户想看的电影
 		TextView userMovieLove;
-		// 用户留言
-		//TextView userBtnMessage;
-		// 用户心动
-	    //TextView userBtnLove;
-	    // 用户邀请
-	    //TextView missInvite;
+		// 操作按钮
+		TextView missBtn;
 
 	}
+
+	public void setMemberId(String memberId) {
+		this.memberId = memberId;
+	}
+	public void setLoginMemberId(String loginMemberId) {
+		this.loginMemberId = loginMemberId;
+	}
+	
+	
 
 }

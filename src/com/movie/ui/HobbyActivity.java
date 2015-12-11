@@ -86,6 +86,7 @@ public class HobbyActivity extends BaseActivity implements OnClickListener,CallB
 	public void onBackPressed() {
 		super.onBackPressed();
 		overridePendingTransition(R.anim.slide_in_left, R.anim.slide_out_right);
+		this.finish();
 		/*if(go==GO_USER){
 			Intent intent = new Intent(this, UserActivity.class);
 			this.startActivity(intent);

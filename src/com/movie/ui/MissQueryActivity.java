@@ -92,7 +92,7 @@ public class MissQueryActivity extends BaseActivity implements OnClickListener,C
 			missQueryService.addParams("size", Page.DEFAULT_SIZE);
 			missQueryService.execute(this);
 			break;
-		case Miss.MY_PART:
+		case Miss.MY_APPLY:
 			title.setText("参与的约会");
 			missQueryService.addUrls(Constant.Miss_Touch_Query_API_URL);
 			missQueryService.addParams("page", page);
@@ -116,6 +116,13 @@ public class MissQueryActivity extends BaseActivity implements OnClickListener,C
 				missQueryService.addParams("size", Page.DEFAULT_SIZE);
 				missQueryService.execute(this);
 			}
+			break;
+		case Miss.ATTEDD_MISS:
+			title.setText("应约的约会");
+			missQueryService.addUrls(Constant.Miss_Member_Attend_Query_API_URL);
+			missQueryService.addParams("page", page);
+			missQueryService.addParams("size", Page.DEFAULT_SIZE);
+			missQueryService.execute(this);
 			break;
 		case Miss.MOVIE_INVITATION:
 			if(null!=queryCondition){

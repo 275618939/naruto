@@ -12,16 +12,16 @@ import com.movie.client.service.CallBackService;
 import com.movie.state.ErrorState;
 import com.movie.util.HttpUtils;
 
-public class HttpMissAgreeService extends BaseService {
+public class HttpMissInviteService extends BaseService {
 
 
-	public HttpMissAgreeService() {
-		TAG="HttpMissAgreeService";
+	public HttpMissInviteService() {
+		TAG="HttpMissInviteService";
 	
 	}
-	public HttpMissAgreeService(Context context) {
+	public HttpMissInviteService(Context context) {
 		this.context=context;
-		TAG="HttpMissAgreeService";
+		TAG="HttpMissInviteService";
 		
 	}
 
@@ -33,7 +33,7 @@ public class HttpMissAgreeService extends BaseService {
 			requestCount++;
 			String sid = getSid();
 			headers.put(SESSION_KEY, sid);		
-			String result = HttpUtils.requestPost(Constant.Miss_Agree_API_URL, headers,params);
+			String result = HttpUtils.requestPost(Constant.Miss_Invite_API_URL, headers,params);
 			if (result != null) {
 				try {
 					map = objectMapper.readValue(result, typeReference);

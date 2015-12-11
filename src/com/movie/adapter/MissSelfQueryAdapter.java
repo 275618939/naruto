@@ -4,7 +4,9 @@ import java.util.List;
 
 import android.content.Context;
 import android.content.Intent;
+import android.os.Bundle;
 import android.os.Handler;
+import android.os.Message;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.view.ViewGroup;
@@ -60,9 +62,19 @@ public class MissSelfQueryAdapter extends BaseObjectListAdapter {
 		mHolder.missItemView.setOnClickListener(new OnClickListener() {
 			@Override
 			public void onClick(View v) {
-				Intent intent = new Intent(mContext, MissSelfDetailActivity.class);
-				intent.putExtra("miss", miss);
-				mContext.startActivity(intent);
+				if(missType==Miss.INVITE_MISS){
+					Message message=new Message();
+					message.what=Miss.INVITE_MISS;
+					Bundle bundle=new Bundle();
+					bundle.putString("trystId", miss.getTrystId());
+					bundle.putInt("status", miss.getStatus());
+					message.setData(bundle);
+					mHandler.sendMessage(message);
+				}else{
+					Intent intent = new Intent(mContext, MissSelfDetailActivity.class);
+					intent.putExtra("miss", miss);
+					mContext.startActivity(intent);
+				}
 			}
 		});
 		if(miss.getStatus().intValue()==MissState.Expired.getState()){
@@ -101,10 +113,11 @@ public class MissSelfQueryAdapter extends BaseObjectListAdapter {
 
 	}
 
-
 	public void setMissType(int missType) {
 		this.missType = missType;
 	}
+
+	
 	
 
 }

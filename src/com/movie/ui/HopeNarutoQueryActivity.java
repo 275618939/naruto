@@ -26,6 +26,7 @@ import com.movie.client.bean.Miss;
 import com.movie.client.bean.MissNaruto;
 import com.movie.client.service.BaseService;
 import com.movie.client.service.CallBackService;
+import com.movie.network.HttpMissAgreeService;
 import com.movie.network.HttpMissCancelService;
 import com.movie.network.HttpMissQueryService;
 import com.movie.view.LoadView;
@@ -38,10 +39,14 @@ public class HopeNarutoQueryActivity extends BaseActivity implements
 	MissNarutoAdapter missNarutoAdapter;
 	BaseService httpMissCancelService;
 	BaseService httpMissQueryService;
+	BaseService httpMissAgreeService;
 	PullToRefreshListView refreshableListView;
+	List<String> members=new ArrayList<String>();
 	List<MissNaruto> missNarutos = new ArrayList<MissNaruto>();
 	int page;
 	String trystId;
+	String memberId;
+	String loginMemberId;
 	View rootView;
 
 	@Override
@@ -54,6 +59,7 @@ public class HopeNarutoQueryActivity extends BaseActivity implements
 		setContentView(rootView);
 		httpMissQueryService = new HttpMissQueryService(this);
 		httpMissCancelService = new HttpMissCancelService(this);
+		httpMissAgreeService = new HttpMissAgreeService(this);
 		initViews();
 		initData();
 		initEvents();
@@ -80,7 +86,12 @@ public class HopeNarutoQueryActivity extends BaseActivity implements
 	@Override
 	protected void initData() {
 		trystId = getIntent().getStringExtra("trystId");
+		memberId = getIntent().getStringExtra("memberId");
 		title.setText("参与人");
+		missNarutoAdapter.setMemberId(memberId);
+		loginMemberId=userService.getUserItem().getMemberId();
+		missNarutoAdapter.setLoginMemberId(loginMemberId);
+		
 
 	}
 
@@ -91,7 +102,13 @@ public class HopeNarutoQueryActivity extends BaseActivity implements
 		httpMissQueryService.addParams("size", Page.DEFAULT_SIZE);
 		httpMissQueryService.execute(this);
 	}
-
+	private void agreeMiss(String memberId){
+		members.clear();
+		members.add(memberId);
+		httpMissAgreeService.addParams("trystId", trystId);
+		httpMissAgreeService.addParams("members", members);
+		httpMissAgreeService.execute(this);
+	}
 	private void cancelMiss() {
 		httpMissCancelService.execute(this);
 	}
@@ -112,6 +129,11 @@ public class HopeNarutoQueryActivity extends BaseActivity implements
 			switch (msg.what) {
 			case Miss.CANCLE_MISS:
 				cancelMiss();
+				break;
+			case Miss.AGREE_MISS:
+			    Bundle data =  msg.getData();
+			    String memberid=data.getString("memberid");
+				agreeMiss(memberid);
 			default:
 				break;
 
@@ -129,7 +151,9 @@ public class HopeNarutoQueryActivity extends BaseActivity implements
 	@Override
 	public void SuccessCallBack(Map<String, Object> map) {
 		loadView.showLoadAfter(this);
+		hideProgressDialog();
 		refreshableListView.onRefreshComplete();
+		isLoad=true;
 		String code = map.get(Constant.ReturnCode.RETURN_STATE).toString();
 		if (Constant.ReturnCode.STATE_1.equals(code)) {
 			String tag = map.get(Constant.ReturnCode.RETURN_TAG).toString();
@@ -168,6 +192,8 @@ public class HopeNarutoQueryActivity extends BaseActivity implements
 				}
 				missNarutoAdapter.notifyDataSetChanged();
 		
+			}else if(tag.endsWith(httpMissAgreeService.TAG)){
+				showToask("操作成功,可在应约人中查看详情!");
 			}
 		} else {
 			String message = map.get(Constant.ReturnCode.RETURN_MESSAGE).toString();
@@ -179,12 +205,14 @@ public class HopeNarutoQueryActivity extends BaseActivity implements
 	@Override
 	public void ErrorCallBack(Map<String, Object> map) {
 		refreshableListView.onRefreshComplete();
+		hideProgressDialog();
 		String message = map.get(Constant.ReturnCode.RETURN_MESSAGE).toString();
-		String code = map.get(Constant.ReturnCode.RETURN_STATE).toString();
-		if(code.equals(ReturnCode.STATE_999)){
+		int state=Integer.parseInt(map.get(Constant.ReturnCode.RETURN_STATE).toString());
+		if(state==Integer.parseInt(ReturnCode.STATE_999)){
 			loadView.showLoadLineFail(this);
-		}else{
+		}else if(state>=Integer.parseInt(ReturnCode.STATE_97)){
 			loadView.showLoadFail(this, this);
+		}else{
 			showToask(message);
 		}
 
@@ -192,7 +220,11 @@ public class HopeNarutoQueryActivity extends BaseActivity implements
 
 	@Override
 	public void OnRequest() {
-		loadView.showLoading(this);
+		if(!isLoad){
+			loadView.showLoading(this);
+		}else{
+			showProgressDialog();
+		}
 	}
 
 	@Override

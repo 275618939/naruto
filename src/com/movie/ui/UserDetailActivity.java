@@ -81,6 +81,7 @@ public class UserDetailActivity extends BaseActivity implements
 	TextView userLove;
 	TextView userConstell;
 	TextView hobbyArrowMore;
+	TextView userInviteView;
 	RatingBar userCharmBar;
 	LinearLayout hobbiesLayout;
 	LinearLayout commentsLayout;
@@ -134,6 +135,7 @@ public class UserDetailActivity extends BaseActivity implements
 		commnetsMore = (TextView) findViewById(R.id.comments_more);
 		hobbyArrowMore = (TextView) findViewById(R.id.hobby_arrow_more);
 		userLove = (TextView) findViewById(R.id.userLove);
+		userInviteView=(TextView)findViewById(R.id.user_invite);
 		userCharmBar = (RatingBar) findViewById(R.id.user_charm_bar);
 		refreshableScollView=(PullToRefreshScrollView) findViewById(R.id.user_detail_view);
 		refreshableScollView.setMode(Mode.PULL_FROM_START);
@@ -147,6 +149,7 @@ public class UserDetailActivity extends BaseActivity implements
 	protected void initEvents() {
 		refreshableScollView.setOnRefreshListener(this);
 		userLove.setOnClickListener(this);
+		userInviteView.setOnClickListener(this);
 	}
 
 	@Override
@@ -229,7 +232,13 @@ public class UserDetailActivity extends BaseActivity implements
 				return;
 			}
 			putLove();
-			
+			break;
+		case R.id.user_invite:
+			Intent inviteIntent = new Intent(this, MissSelfQueryActivity.class);
+			inviteIntent.putExtra("memberId", user.getMemberId());
+			inviteIntent.putExtra(Miss.MISS_KEY, Miss.INVITE_MISS);
+			startActivity(inviteIntent);
+			finish();
 			break;
 		default:
 			break;
@@ -420,7 +429,7 @@ public class UserDetailActivity extends BaseActivity implements
 	@Override
 	public void OnRequest() {
 		if(requestTag.equals(httpUserLoveService.TAG)){
-			showProgressDialog("提示", "请稍后......");
+			showProgressDialog();
 		}else{
 			loadView.showLoading(this);
 		}

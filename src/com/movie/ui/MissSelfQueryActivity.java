@@ -5,10 +5,12 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.os.Handler;
 import android.view.View;
 import android.view.View.OnClickListener;
+import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
@@ -28,8 +30,9 @@ import com.movie.client.bean.Movie;
 import com.movie.client.bean.User;
 import com.movie.client.service.BaseService;
 import com.movie.client.service.CallBackService;
-import com.movie.network.HttpMissCancelService;
+import com.movie.network.HttpMissInviteService;
 import com.movie.network.HttpMissQueryService;
+import com.movie.state.MissState;
 import com.movie.view.LoadView;
 
 public class MissSelfQueryActivity extends BaseActivity implements OnClickListener,CallBackService, OnRefreshListener2<ListView> {
@@ -37,13 +40,17 @@ public class MissSelfQueryActivity extends BaseActivity implements OnClickListen
 	LoadView loadView;
 	TextView title;
 	ListView myMissList;
+	TextView missBtn;
+	LinearLayout missBarLayout;
 	RelativeLayout userMissParentLayout;
 	MissSelfQueryAdapter selfQueryAdapter;
 	BaseService missQueryService;
+	BaseService missInviteService;
 	PullToRefreshListView refreshableListView;
 	List<Miss> misses = new ArrayList<Miss>();
 	int page;
 	int missType;
+	String memberId;
 	Object queryCondition;
 	View rootView;
 
@@ -56,6 +63,7 @@ public class MissSelfQueryActivity extends BaseActivity implements OnClickListen
 		loadView=new LoadView();
 		setContentView(rootView);
 		missQueryService = new HttpMissQueryService(this);
+		missInviteService =new HttpMissInviteService(this);
 		initData();
 		initViews();
 		initEvents();
@@ -65,6 +73,8 @@ public class MissSelfQueryActivity extends BaseActivity implements OnClickListen
 	protected void initViews() {
 		loadView.initView(rootView);
 		title = (TextView) findViewById(R.id.title);
+		missBtn = (TextView) findViewById(R.id.miss_btn);
+		missBarLayout = (LinearLayout) findViewById(R.id.miss_bottom_bar);
 		userMissParentLayout= (RelativeLayout)findViewById(R.id.user_miss_parent_layout);
 		selfQueryAdapter = new MissSelfQueryAdapter(this, mHandler, misses);
 		refreshableListView = (PullToRefreshListView) findViewById(R.id.slef_miss_list);
@@ -82,12 +92,22 @@ public class MissSelfQueryActivity extends BaseActivity implements OnClickListen
 	@Override
 	protected void initData() {
 		missType=getIntent().getIntExtra(Miss.MISS_KEY, 0);
-		//page=0;
-		//loadMissData();		
-	}
+		memberId=getIntent().getStringExtra("memberId");
 	
+	}
 	private void loadMissData() {
 		switch (missType) {
+		case Miss.INVITE_MISS:
+			title.setText("选择一个约会");
+			selfQueryAdapter.setMissType(missType);
+			missQueryService.addUrls(Constant.Miss_Query_API_URL);
+			missQueryService.addParams("page", page);
+			missQueryService.addParams("size", Page.DEFAULT_SIZE);
+			missQueryService.execute(this);
+			missBtn.setText("创建一个约会");
+			missBarLayout.setVisibility(View.VISIBLE);
+			missBtn.setOnClickListener(this);
+			break;
 		case Miss.MY_MISS:
 			title.setText(getResources().getString(R.string.my_miss));
 			missQueryService.addUrls(Constant.Miss_Query_API_URL);
@@ -95,7 +115,7 @@ public class MissSelfQueryActivity extends BaseActivity implements OnClickListen
 			missQueryService.addParams("size", Page.DEFAULT_SIZE);
 			missQueryService.execute(this);
 			break;
-		case Miss.MY_PART:
+		case Miss.MY_APPLY:
 			title.setText("参与的约会");
 			missQueryService.addUrls(Constant.Miss_Touch_Query_API_URL);
 			missQueryService.addParams("page", page);
@@ -139,7 +159,11 @@ public class MissSelfQueryActivity extends BaseActivity implements OnClickListen
 	@Override
 	public void onClick(View v) {
 		switch (v.getId()) {
-
+		case R.id.miss_btn:
+			Intent intent = new Intent(this, MovieQueryActivity.class);
+			startActivity(intent);
+			finish();
+			break;
 		default:
 			break;
 
@@ -150,15 +174,28 @@ public class MissSelfQueryActivity extends BaseActivity implements OnClickListen
 	Handler mHandler = new Handler() {
 		public void handleMessage(android.os.Message msg) {
 			switch (msg.what) {
-			case Miss.CANCLE_MISS:
-				
+			case Miss.INVITE_MISS:
+				Bundle bundle=msg.getData();
+				String trystId=bundle.getString("trystId");
+				int status=bundle.getInt("status");
+				if(status!=MissState.HaveInHand.getState()){
+					showToask("当前约会已经"+MissState.getState(status).getMessage()+",请选择其他的约会!");
+					return;
+				}
+				inviteMiss(trystId);
+				break;
 			default:
 				break;
 
 			}
 		};
 	};
-
+	private void inviteMiss(String trystId){
+		missInviteService.addParams("trystId", trystId);
+		missInviteService.addParams("memberId", memberId);
+		missInviteService.execute(this);
+	}
+	
 	@Override
 	public void onBackPressed() {
 		super.onBackPressed();
@@ -169,7 +206,9 @@ public class MissSelfQueryActivity extends BaseActivity implements OnClickListen
 	@Override
 	public void SuccessCallBack(Map<String, Object> map) {
 		loadView.showLoadAfter(this);
+		hideProgressDialog();
 		refreshableListView.onRefreshComplete();
+		isLoad=true;
 		String code = map.get(Constant.ReturnCode.RETURN_STATE).toString();
 		if (Constant.ReturnCode.STATE_1.equals(code)) {
 			String tag = map.get(Constant.ReturnCode.RETURN_TAG).toString();
@@ -210,6 +249,8 @@ public class MissSelfQueryActivity extends BaseActivity implements OnClickListen
 				}
 				
 				selfQueryAdapter.notifyDataSetChanged();
+			}else if(tag.endsWith(missInviteService.TAG)){
+				showToask("邀请成功,等待对方同意!");
 			}
 		} else {
 			String message = map.get(Constant.ReturnCode.RETURN_MESSAGE).toString();
@@ -221,20 +262,26 @@ public class MissSelfQueryActivity extends BaseActivity implements OnClickListen
 	@Override
 	public void ErrorCallBack(Map<String, Object> map) {
 		refreshableListView.onRefreshComplete();
+		hideProgressDialog();
 		String message = map.get(Constant.ReturnCode.RETURN_MESSAGE).toString();
-		String code = map.get(Constant.ReturnCode.RETURN_STATE).toString();
-		showToask(message);
-		if(code.equals(ReturnCode.STATE_999)){
-			loadView.hideAllHit(this);
+		int state=Integer.parseInt(map.get(Constant.ReturnCode.RETURN_STATE).toString());
+		if(state==Integer.parseInt(ReturnCode.STATE_999)){
+			loadView.showLoadLineFail(this);
+		}else if(state>=Integer.parseInt(ReturnCode.STATE_97)){
+			loadView.showLoadFail(this, this);
 		}else{
-			loadView.showLoadFail(this,this);
+			showToask(message);
 		}
 	
 	}
 
 	@Override
 	public void OnRequest() {
-		loadView.showLoading(this);
+		if(!isLoad){
+			loadView.showLoading(this);
+		}else{
+			showProgressDialog();
+		}
 	}
 	@Override
 	public void onPullDownToRefresh(PullToRefreshBase<ListView> refreshView) {

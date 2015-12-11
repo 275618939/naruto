@@ -13,22 +13,27 @@ public class Miss extends BaseBean implements Serializable {
 
 
 	private static final long serialVersionUID = -2476412515600400457L;
-	public static final int AGREE_MISS = 0X111;    // 同意约会
-	public static final int CANCLE_MISS = 0X112;   // 取消约会
-	public static final int KICKED_OUT = 0X113;    // 踢出约会
-	public static final int EVLATOIN_USER = 0X114; // 评价用户
-	public static final int APPLY_MISS = 0X115;    // 报名约会
-	public static final int COIN_MISS = 0X116;     // 分影币
+	public static final int AGREE_MISS = 0X111;   		 // 同意约会
+	public static final int CANCLE_MISS = 0X112;  		 // 取消约会
+	public static final int KICKED_OUT = 0X113;    		 // 踢出约会
+	public static final int EVLATOIN_USER = 0X114;		 // 评价用户
+	public static final int APPLY_MISS = 0X115;   		 // 报名约会
+	public static final int COIN_MISS = 0X116;     		 // 分影币
+	public static final int INVITE_MISS = 0X117;   		 // 邀请约会
+	public static final int AGREE_INVITE_MISS = 0X118;   // 同意邀请
 	//我发起的约会
 	public static final int MY_MISS = 0X210;
 	//我参与的约会
-	public static final int MY_PART = 0X211;
+	public static final int MY_APPLY = 0X211;
 	//我应邀的约会
 	public static final int MY_INVITATION = 0X212;
+	//应约的约会
+	public static final int ATTEDD_MISS = 0X215;
 	//用户参与的约会
 	public static final int USER_INVITATION = 0X213;
 	//电影下的约会
 	public static final int MOVIE_INVITATION = 0X214;
+
 	//约会类型
 	public static final String MISS_KEY = "miss_type";
 	//电影下的约会

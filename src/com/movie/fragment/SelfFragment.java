@@ -40,9 +40,11 @@ import com.movie.network.HttpLogoutService;
 import com.movie.network.HttpUserService;
 import com.movie.pop.SignInPopupWindow;
 import com.movie.ui.LoginActivity;
+import com.movie.ui.MissQueryActivity;
 import com.movie.ui.MissSelfQueryActivity;
 import com.movie.ui.UserActivity;
 import com.movie.ui.UserDetailActivity;
+import com.movie.ui.UserLoveMovieActivity;
 import com.movie.util.UserCharm;
 import com.nostra13.universalimageloader.core.ImageLoader;
 
@@ -59,6 +61,7 @@ public class SelfFragment extends BaseFragment implements OnClickListener , Call
 	RelativeLayout logoutLayout;
 	LinearLayout myMissLayout;
 	LinearLayout loginAfterLayout;
+	LinearLayout seeMoiveLayout;
 	ImageLoader loaderCache;
 	ImageView loginLogo;
 	ImageView userInfoLogo;
@@ -70,7 +73,8 @@ public class SelfFragment extends BaseFragment implements OnClickListener , Call
 	TextView selfLoveView;
 	TextView trystCntView;
 	TextView applyCntView;
-	TextView inviteCntView;
+	TextView attendCntView;
+	TextView filmCntView;
 	ImageView userSignIn;
 	SignInPopupWindow signInPopupWindow;
 	UserPhotoGridAdapter photoGridAdapter;
@@ -114,6 +118,7 @@ public class SelfFragment extends BaseFragment implements OnClickListener , Call
 		logoutLayout=(RelativeLayout)rootView.findViewById(R.id.logout_layout);
 		myMissLayout=(LinearLayout)rootView.findViewById(R.id.my_miss_layout);
 		loginAfterLayout=(LinearLayout)rootView.findViewById(R.id.loginAfter);
+		seeMoiveLayout=(LinearLayout)rootView.findViewById(R.id.see_moive_layout);
 		loginLogo = (ImageView)rootView.findViewById(R.id.login_logo);
 		userInfoLogo = (ImageView)rootView.findViewById(R.id.user_info_logo);
 		userEdit = (ImageView)rootView.findViewById(R.id.user_edit);
@@ -124,7 +129,8 @@ public class SelfFragment extends BaseFragment implements OnClickListener , Call
 		selfLoveView = (TextView)rootView.findViewById(R.id.self_love);
 		trystCntView = (TextView)rootView.findViewById(R.id.trystCnt);
 		applyCntView= (TextView)rootView.findViewById(R.id.applyCnt);
-		inviteCntView= (TextView)rootView.findViewById(R.id.inviteCnt);
+		attendCntView= (TextView)rootView.findViewById(R.id.attendCnt);
+		filmCntView = (TextView) rootView.findViewById(R.id.filmCnt);
 		userSignIn = (ImageView)rootView.findViewById(R.id.user_sign_in);
 		photoGridview = (GridView)rootView.findViewById(R.id.userPhotoGridview);
 		photoGridview.setSelector(new ColorDrawable(Color.TRANSPARENT));
@@ -205,11 +211,6 @@ public class SelfFragment extends BaseFragment implements OnClickListener , Call
 		loginAfterLayout.setVisibility(View.GONE);
 		httpLogotService.execute(this);
 	}
-	private void missQuery(int type){
-		Intent cinemaPoi = new Intent(getActivity(),MissSelfQueryActivity.class);
-		cinemaPoi.putExtra(Miss.MISS_KEY, type);
-		startActivity(cinemaPoi);
-	}
 	@Override
 	public void onActivityResult(int requestCode, int resultCode, Intent data) {
 		switch (resultCode) { 
@@ -256,7 +257,6 @@ public class SelfFragment extends BaseFragment implements OnClickListener , Call
 				break;
 			case R.id.login_logo:
 				Intent loginIntent = new Intent(getActivity(),LoginActivity.class);
-				//startActivity(loginIntent);
 				startActivityForResult(loginIntent, RELOAGIN);
 				break;
 			case R.id.user_info_logo:
@@ -268,11 +268,25 @@ public class SelfFragment extends BaseFragment implements OnClickListener , Call
 				Intent userEditIntent = new Intent(getActivity(),UserActivity.class);			
 				startActivity(userEditIntent);
 				break;
-			case R.id.my_miss_layout:
-				missQuery(Miss.MY_MISS);
+			case R.id.filmCnt:
+				Intent movieIntent = new Intent(getActivity(),UserLoveMovieActivity.class);
+				movieIntent.putExtra("user", user);
+				startActivity(movieIntent);
 				break;
-			case R.id.my_invitation_layout:
-				missQuery(Miss.MY_INVITATION);
+			case R.id.my_miss_layout:
+				Intent myMissIntent = new Intent(getActivity(),MissSelfQueryActivity.class);
+				myMissIntent.putExtra(Miss.MISS_KEY, Miss.MY_MISS);
+				startActivity(myMissIntent);
+				break;
+			case R.id.attendCnt:
+				Intent attendIntent = new Intent(getActivity(),MissQueryActivity.class);
+				attendIntent.putExtra(Miss.MISS_KEY, Miss.ATTEDD_MISS);
+				startActivity(attendIntent);
+				break;
+			case R.id.applyCnt:
+				Intent applyIntent = new Intent(getActivity(),MissQueryActivity.class);
+				applyIntent.putExtra(Miss.MISS_KEY, Miss.MY_APPLY);
+				startActivity(applyIntent);
 				break;
 	
 			default:
@@ -331,17 +345,20 @@ public class SelfFragment extends BaseFragment implements OnClickListener , Call
 				if(values.containsKey("filmCnt")){
 					int filmCnt=Integer.parseInt(values.get("filmCnt").toString());
 					user.setFilmCnt(filmCnt);
+					filmCntView.setText(String.format(getResources().getString(R.string.movie_have),filmCnt));
+					filmCntView.setOnClickListener(this);
 				}
 				if(values.containsKey("applyCnt")){
 					user.setApplyCnt(Integer.parseInt(values.get("applyCnt").toString()));
 					applyCntView.setText(String.format(getResources().getString(R.string.apply_miss_have),user.getApplyCnt()));
 					applyCntView.setOnClickListener(this);
 				}
-				if(values.containsKey("inviteCnt")){
-					user.setInviteCnt(Integer.parseInt(values.get("inviteCnt").toString()));
-					inviteCntView.setText(String.format(getResources().getString(R.string.invite_miss_have),user.getInviteCnt()));
-					inviteCntView.setOnClickListener(this);
+				if(values.containsKey("attendCnt")){
+					user.setInviteCnt(Integer.parseInt(values.get("attendCnt").toString()));
+					attendCntView.setText(String.format(getResources().getString(R.string.attend_miss_have),user.getInviteCnt()));
+					attendCntView.setOnClickListener(this);
 				}
+				
 				String score=UserCharm.GetScore(user.getFace(), user.getFaceCnt()<=0?1:user.getFaceCnt());
 				if(!score.equals("NaN")){
 					selfCharmView.setText(score);
@@ -371,13 +388,14 @@ public class SelfFragment extends BaseFragment implements OnClickListener , Call
 	@Override
 	public void ErrorCallBack(Map<String, Object> map) {
 		String message = map.get(Constant.ReturnCode.RETURN_MESSAGE).toString();
-		String state= map.get(Constant.ReturnCode.RETURN_STATE).toString();
-//		if(state.equals(ReturnCode.STATE_999)){
-//			loadView.showLoadLineFail(this);
-//		}else{
-//			loadView.showLoadFail(this, this);
-//			showToask(message);
-//		}
+		int state=Integer.parseInt(map.get(Constant.ReturnCode.RETURN_STATE).toString());
+		if(state==Integer.parseInt(ReturnCode.STATE_999)){
+			loadView.showLoadLineFail(this);
+		}else if(state>=Integer.parseInt(ReturnCode.STATE_97)){
+			loadView.showLoadFail(this, this);
+		}else{
+			showToask(message);
+		}
 	}
 	@Override
 	public void OnRequest() {

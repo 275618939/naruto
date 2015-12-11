@@ -154,13 +154,15 @@ public class MissNarutoDetailActivity extends BaseActivity implements OnClickLis
 		//验证是否可以报名
 		if(userService.getUserItem().getMemberId().equals(miss.getMemberId()))
 			return;
+		//验证是否可以爽约
 		int result=StringUtil.dateCompareByCurrent(miss.getRunTime(),MissBtnStatus.MAX_MISS_CANCEL_HOUR);
 		if(result>0){
 			missBottomBar.setVisibility(View.VISIBLE);
 			missBtn.setText(getResources().getString(R.string.miss_enter));
 			missBtn.setOnClickListener(this);
-			
 		}
+		
+		
 	}
 	private void loadMissDetail() {
 		httpMissDetailService.addParams("trystId",miss.getTrystId());
@@ -212,6 +214,7 @@ public class MissNarutoDetailActivity extends BaseActivity implements OnClickLis
 			case R.id.hope_user:
 				Intent hopeIntent = new Intent(this, HopeNarutoQueryActivity.class);
 				hopeIntent.putExtra("trystId", miss.getTrystId());
+				hopeIntent.putExtra("memberId",miss.getMemberId());
 				startActivity(hopeIntent);
 				break;
 			case R.id.miss_icon:

@@ -43,14 +43,15 @@
                         android:orientation="horizontal" >
 
                         <LinearLayout
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content" >
+                            android:layout_width="@dimen/user_image_width"
+                            android:layout_height="@dimen/user_image_height"
+                            android:layout_marginLeft="@dimen/layout_left" >
 
                             <ImageView
                                 android:id="@+id/user_poster"
-                                android:layout_width="@dimen/user_image_width"
-                                android:layout_height="@dimen/user_image_width"
-                                android:scaleType="fitCenter"
+                                android:layout_width="match_parent"
+                                android:layout_height="match_parent"
+                                android:scaleType="centerCrop"
                                 android:src="@drawable/default_portrait" />
                         </LinearLayout>
 
@@ -343,6 +344,7 @@
             android:text="@string/user_session" />
 
         <TextView
+            android:id="@+id/user_invite"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:layout_weight="1"

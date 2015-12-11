@@ -7,7 +7,7 @@
     <string name="main_title">未登录</string>
     <string name="dynamic_create_hint">说点什么吧...</string>
     <string name="integer_default">0</string>
-     <string name="delete">C</string>
+    <string name="delete">C</string>
     <string name="noText">暂没有数据</string>
     <string name="loadfail_hint">加载失败,请点击重试</string>
     <string name="linefail_hint">加载失败,请检查网络</string>
@@ -20,6 +20,9 @@
     <string name="home_dynamic">动态</string>
     <string name="home_near">附近</string>
     <string name="miss">约会</string>
+    <string name="miss_agree">同意此申请</string>
+    <string name="miss_agree_after">^_^感谢您</string>
+    <string name="miss_wait_handle">等待对方同意</string>
     <string name="miss_evlation">评价</string>
     <string name="miss_enter">报名</string>
     <string name="miss_cancel">撤销</string>
@@ -28,6 +31,10 @@
     <string name="miss_coin_hint">悬赏</string>
     <string name="miss_invite">应邀人%1$s个</string>
     <!-- \u0020\u0020 -->
+    <string name="miss_me">约我</string>
+    <string name="miss_have">%1$s 个约会,点击查看</string>
+    <string name="miss_none">暂时没有约会</string>
+    <string name="miss_cinema">约会影院</string>
     <string name="miss_user">发起</string>
     <string name="miss_date">时间</string>
     <string name="miss_state">状态</string>
@@ -45,8 +52,9 @@
     <string name="apply_miss_have">参与了%1$s 个约会,点击查看</string>
     <string name="invite_miss_have">%1$s 个约会邀请,点击查看</string>
     <string name="my_invitation">邀请的约会</string>
+    <string name="memberAttend">应约的约会</string>
+    <string name="attend_miss_have">应约了%1$s 个约会,点击查看</string>
     <string name="more">更多></string>
-    <string name="miss_me">约我</string>
     <string name="scenarists">导演</string>
     <string name="stars">主演</string>
     <string name="cinema_detail">影院信息</string>
@@ -56,9 +64,7 @@
     <string name="miss_lately">最近</string>
     <string name="miss_best">最款</string>
     <!-- &gt; -->
-  
-    <string name="miss_have">%1$s 个约会,点击查看</string>
-    <string name="miss_none">暂时没有约会</string>
+
     <string name="movie_interval">片长%1$s分钟</string>
     <string name="movie_start">首映时间%1$s</string>
     <string name="movie_detail">观影信息</string>
@@ -67,7 +73,6 @@
     <string name="movie_score_hint">评分&#58;</string>
     <string name="evlatuion_hint">评论&#58;</string>
     <string name="search_cinema">选择影院</string>
-    <string name="miss_cinema">约会影院</string>
     <string name="comment">评论</string>
     <string name="comment_hint">请输入评论</string>
     <string name="movie_comment">影片评论</string>
@@ -88,7 +93,7 @@
     <string name="user_love_count">%1$s人心动过</string>
     <string name="user_love_none">修炼中</string>
     <string name="movie_none">暂时还没有哟</string>
-    <string name="movie_have">%1$s部&gt;</string>
+    <string name="movie_have">想看%1$s部电影,点击查看</string>
     <string name="want_see">想看</string>
     <string name="recently_want_see">Ta想看</string>
     <string name="miss_create">新建约会</string>

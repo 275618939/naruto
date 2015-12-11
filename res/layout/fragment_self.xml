@@ -240,8 +240,9 @@
                     style="@style/setting_alt_text"
                     android:background="@drawable/message_count"
                     android:textColor="@color/white" />
-                -->
 
+                -->
+                
                 <ImageView style="@style/setting_arrow" />
             </LinearLayout>
 
@@ -266,12 +267,13 @@
             </LinearLayout>
 
             <LinearLayout
-                android:id="@+id/my_invitation_layout"
-                style="@style/setting_item_center" >
+                android:id="@+id/member_attend_layout"
+                style="@style/setting_item_center"
+                android:visibility="gone" >
 
                 <TextView
                     style="@style/setting_item_text"
-                    android:text="@string/my_invitation" />
+                    android:text="@string/memberAttend" />
 
                 <View
                     android:layout_width="0.0dip"
@@ -279,7 +281,7 @@
                     android:layout_weight="1.0" />
 
                 <TextView
-                    android:id="@+id/inviteCnt"
+                    android:id="@+id/attendCnt"
                     style="@style/setting_item_text" />
 
                 <ImageView style="@style/setting_arrow" />
@@ -299,7 +301,9 @@
                     android:layout_height="1.0dip"
                     android:layout_weight="1.0" />
 
-                <TextView style="@style/setting_alt_text" />
+                <TextView
+                    android:id="@+id/filmCnt"
+                    style="@style/setting_item_text" />
 
                 <ImageView style="@style/setting_arrow" />
             </LinearLayout>

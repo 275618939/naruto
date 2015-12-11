@@ -239,6 +239,7 @@ public class MissSelfDetailActivity extends BaseActivity implements OnClickListe
 			case R.id.hope_user:
 				Intent hopeIntent = new Intent(this, HopeNarutoQueryActivity.class);
 				hopeIntent.putExtra("trystId", miss.getTrystId());
+				hopeIntent.putExtra("memberId",miss.getMemberId());
 				startActivity(hopeIntent);
 				break;
 			case R.id.miss_icon:
