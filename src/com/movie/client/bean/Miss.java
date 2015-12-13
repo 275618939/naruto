@@ -13,6 +13,7 @@ public class Miss extends BaseBean implements Serializable {
 
 
 	private static final long serialVersionUID = -2476412515600400457L;
+	public static final int CREATE_MISS = 0X110;   		 // 同意约会
 	public static final int AGREE_MISS = 0X111;   		 // 同意约会
 	public static final int CANCLE_MISS = 0X112;  		 // 取消约会
 	public static final int KICKED_OUT = 0X113;    		 // 踢出约会

@@ -161,6 +161,7 @@ public class MissSelfQueryActivity extends BaseActivity implements OnClickListen
 		switch (v.getId()) {
 		case R.id.miss_btn:
 			Intent intent = new Intent(this, MovieQueryActivity.class);
+			intent.putExtra(Miss.MISS_KEY, Miss.CREATE_MISS);
 			startActivity(intent);
 			finish();
 			break;

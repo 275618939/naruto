@@ -16,7 +16,6 @@ import android.view.ViewGroup;
 import android.widget.GridView;
 
 import com.handmark.pulltorefresh.library.PullToRefreshBase;
-import com.handmark.pulltorefresh.library.PullToRefreshBase.Mode;
 import com.handmark.pulltorefresh.library.PullToRefreshBase.OnRefreshListener;
 import com.handmark.pulltorefresh.library.PullToRefreshGridView;
 import com.movie.R;
@@ -24,6 +23,7 @@ import com.movie.adapter.MoviesAdapter;
 import com.movie.app.BaseFragment;
 import com.movie.app.Constant;
 import com.movie.app.Constant.ReturnCode;
+import com.movie.client.bean.Miss;
 import com.movie.client.bean.Movie;
 import com.movie.client.service.BaseService;
 import com.movie.client.service.CallBackService;
@@ -71,6 +71,8 @@ public class MoiveUpComingFragment extends BaseFragment implements CallBackServi
 		refreshViewLayout = (PullToRefreshGridView) rootView.findViewById(R.id.moive_list);
 		refreshViewLayout.setAdapter(moviesAdapter);	
 		refreshViewLayout.setEmptyView(rootView.findViewById(R.id.empty));
+		int missType=getActivity().getIntent().getIntExtra(Miss.MISS_KEY, 0);
+		moviesAdapter.setMissType(missType);
 	}
 	@Override
 	protected void initEvents() {

@@ -1,33 +1,31 @@
 package com.movie.network;
 
 import java.util.HashMap;
-import java.util.Map;
 
 import android.content.Context;
 import android.os.Message;
 
 import com.movie.app.Constant;
 import com.movie.app.InvokeException;
-import com.movie.client.dao.BaseDao;
-import com.movie.client.dao.LoginDaoImple;
-import com.movie.client.db.SQLHelper;
+import com.movie.client.bean.Login;
 import com.movie.client.service.BaseService;
 import com.movie.client.service.CallBackService;
+import com.movie.client.service.LoginService;
 import com.movie.state.ErrorState;
 import com.movie.util.HttpUtils;
 
 public class HttpLoginAutoService extends BaseService {
 
-	BaseDao loginDao;
+	LoginService loginService;
 
 	public HttpLoginAutoService() {
 		TAG="HttpLoginAutoService";
-		loginDao = new LoginDaoImple();
+		loginService = new LoginService();
 	}
 	public HttpLoginAutoService(Context context) {
 		this.context=context;
 		TAG="HttpLoginAutoService";
-		loginDao = new LoginDaoImple();
+		loginService = new LoginService();
 	}
 
 	@Override
@@ -37,14 +35,14 @@ public class HttpLoginAutoService extends BaseService {
 		try {
 			requestCount++;
 			String sid = getSid();
-			Map<String, String> loginMap = loginDao.viewData(null, null);
-			if (loginMap == null||loginMap.size()<0) {
+			Login login = loginService.getLogin();
+			if (login == null) {
 				throw new InvokeException(ErrorState.ObjectNotExist.getState(),ErrorState.ObjectNotExist.getMessage());
 			}
 			headers.put(SESSION_KEY, sid);
 			// 重新登陆，更新回话信息
-			params.put("login", loginMap.get(SQLHelper.ACCOUNT));
-			params.put("password", loginMap.get(SQLHelper.PASS));
+			params.put("login", login.getAccount());
+			params.put("password", login.getPass());
 		
 			String result = HttpUtils.requestPost(Constant.Login_API_URL, headers, params);
 			if (result != null) {
@@ -55,7 +53,7 @@ public class HttpLoginAutoService extends BaseService {
 				}
 				Integer state = (Integer) map.get(Constant.ReturnCode.RETURN_STATE);
 				if (state == ErrorState.Success.getState()) {
-					map.put("login", loginMap.get(SQLHelper.ACCOUNT));
+					map.put("login", login.getAccount());
 					message.what = SUCCESS_STATE;
 				
 				} else if (state == ErrorState.SessionInvalid.getState()) {

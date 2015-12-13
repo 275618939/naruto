@@ -35,7 +35,6 @@ import com.movie.client.bean.Miss;
 import com.movie.client.bean.User;
 import com.movie.client.service.BaseService;
 import com.movie.client.service.CallBackService;
-import com.movie.network.HttpLoginAutoService;
 import com.movie.network.HttpLogoutService;
 import com.movie.network.HttpUserService;
 import com.movie.pop.SignInPopupWindow;
@@ -54,7 +53,6 @@ public class SelfFragment extends BaseFragment implements OnClickListener , Call
 	public static final int PTHOTO_UPDATE = 0X001;
 	public static final int LOGOUT = 0X110;
 	User user;
-	BaseService httpLoginAutoService;
 	BaseService httpUsersService;
 	BaseService httpLogotService;
 	RelativeLayout loginLayout;
@@ -79,7 +77,6 @@ public class SelfFragment extends BaseFragment implements OnClickListener , Call
 	SignInPopupWindow signInPopupWindow;
 	UserPhotoGridAdapter photoGridAdapter;
 	GridView photoGridview;
-	boolean isLoad;
 	public SelfFragment() {
 		super();		
 	}
@@ -92,7 +89,6 @@ public class SelfFragment extends BaseFragment implements OnClickListener , Call
 		loaderCache = ImageLoader.getInstance();
 		httpUsersService = new HttpUserService(getActivity());
 		httpLogotService = new HttpLogoutService(getActivity());
-		httpLoginAutoService = new HttpLoginAutoService(getActivity());
 		initPopWindow();
 	}
 	@Override
@@ -158,9 +154,7 @@ public class SelfFragment extends BaseFragment implements OnClickListener , Call
 			return;
 		}		
 		loadUser();
-		if(!isLoad){
-			autoLogin();
-		}
+		
 	}
 	
 	
@@ -202,13 +196,12 @@ public class SelfFragment extends BaseFragment implements OnClickListener , Call
 		httpUsersService.addParams(httpUsersService.URL_KEY,Constant.User_API_URL);
 		httpUsersService.execute(this);
 	}
-	private void autoLogin() {
-		httpLoginAutoService.execute(this);
-	}
+	
 	private void logoutUser(){
 		loginLayout.setVisibility(View.VISIBLE);
 		logoutLayout.setVisibility(View.GONE);
 		loginAfterLayout.setVisibility(View.GONE);
+		photoGridview.setVisibility(View.GONE);
 		httpLogotService.execute(this);
 	}
 	@Override
@@ -295,10 +288,6 @@ public class SelfFragment extends BaseFragment implements OnClickListener , Call
 			}
 
 	}
-	
-
-
-
 	@Override
 	public void SuccessCallBack(Map<String, Object> map) {
 		//loadView.showLoadAfter(this);
@@ -366,19 +355,16 @@ public class SelfFragment extends BaseFragment implements OnClickListener , Call
 				loginLayout.setVisibility(View.GONE);
 				logoutLayout.setVisibility(View.VISIBLE);
 				loginAfterLayout.setVisibility(View.VISIBLE);
+				photoGridview.setVisibility(View.VISIBLE);
 				
-			}else if(tag.equals(httpLoginAutoService.TAG)){
-				isLoad=true;
-				loadUser();
 			}else if(tag.equals(httpLogotService.TAG)){
-				
+				 user=null;
 			}
 		}else if (Constant.ReturnCode.STATE_3.equals(code)) {
 			//提示用户登入
-			//autoLogin();
-			Intent loginIntent = new Intent(getActivity(),LoginActivity.class);
-			getActivity().overridePendingTransition(R.anim.slide_in_right, R.anim.slide_out_left);
-			startActivityForResult(loginIntent, RELOAGIN);
+//			Intent loginIntent = new Intent(getActivity(),LoginActivity.class);
+//			getActivity().overridePendingTransition(R.anim.slide_in_right, R.anim.slide_out_left);
+//			startActivityForResult(loginIntent, RELOAGIN);
 		}else {
 			String message = map.get(Constant.ReturnCode.RETURN_MESSAGE).toString();
 			showToask(message);

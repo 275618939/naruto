@@ -23,6 +23,7 @@ import com.movie.adapter.MoviesAdapter;
 import com.movie.app.BaseFragment;
 import com.movie.app.Constant;
 import com.movie.app.Constant.ReturnCode;
+import com.movie.client.bean.Miss;
 import com.movie.client.bean.Movie;
 import com.movie.client.service.BaseService;
 import com.movie.client.service.CallBackService;
@@ -68,7 +69,9 @@ public class MoiveCurrentFragment extends BaseFragment implements CallBackServic
 		refreshViewLayout = (PullToRefreshGridView) rootView.findViewById(R.id.moive_list);
 		refreshViewLayout.setAdapter(moviesAdapter);
 		refreshViewLayout.setEmptyView(rootView.findViewById(R.id.empty));
-
+		int missType=getActivity().getIntent().getIntExtra(Miss.MISS_KEY, 0);
+		moviesAdapter.setMissType(missType);
+	
 	}
 	@Override
 	protected void initEvents() {
@@ -76,6 +79,7 @@ public class MoiveCurrentFragment extends BaseFragment implements CallBackServic
 	}
 	@Override
 	protected void lazyLoad() {
+		
 		
 		if (!isVisible||!isPrepared||isLoad) {
 			return;

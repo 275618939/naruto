@@ -36,6 +36,8 @@ public class LoginActivity extends BaseActivity implements OnClickListener, Call
 
 	EditText accountEdit;
 	EditText passwordEdit;
+	ImageView loginClearView;
+	ImageView passClearView;
 	Button loginButton;
 	Button forgetButton;
 	TextView title;
@@ -60,10 +62,12 @@ public class LoginActivity extends BaseActivity implements OnClickListener, Call
 	}
 	@Override
 	protected void initViews() {		
-		accountEdit = (EditText) this.findViewById(R.id.account);
-		passwordEdit= (EditText) this.findViewById(R.id.password);
-		loginButton = (Button) this.findViewById(R.id.login);
-		forgetButton = (Button) this.findViewById(R.id.forget);
+		accountEdit = (EditText) findViewById(R.id.account);
+		passwordEdit= (EditText) findViewById(R.id.password);
+		loginButton = (Button) findViewById(R.id.login);
+		forgetButton = (Button) findViewById(R.id.forget);
+		loginClearView = (ImageView)findViewById(R.id.clear_login);
+		passClearView = (ImageView)findViewById(R.id.clear_password);
 		accountEdit.setInputType(EditorInfo.TYPE_CLASS_NUMBER);
 		title = (TextView) findViewById(R.id.title);
 		right_text = (TextView) findViewById(R.id.right_text);
@@ -76,6 +80,8 @@ public class LoginActivity extends BaseActivity implements OnClickListener, Call
 		forgetButton.setOnClickListener(this);
 		right_text.setOnClickListener(this);	
 		right_text.setClickable(true);
+		loginClearView.setOnClickListener(this);
+		passClearView.setOnClickListener(this);
 	}
 
 	@Override
@@ -120,6 +126,12 @@ public class LoginActivity extends BaseActivity implements OnClickListener, Call
 	@Override
 	public void onClick(View v) {
 		switch (v.getId()) {
+		case R.id.clear_login:
+			accountEdit.setText("");
+			break;
+		case R.id.clear_password:
+			passwordEdit.setText("");
+			break;
 		case R.id.right_text:
 			Intent intent = new Intent(this, RegisterActivity.class);
 			startActivity(intent);

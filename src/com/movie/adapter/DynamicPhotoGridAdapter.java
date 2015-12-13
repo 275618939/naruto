@@ -71,10 +71,7 @@ public class DynamicPhotoGridAdapter extends BaseObjectListAdapter {
 		public TextView  deleteImage;
 	}
 
-			/*Intent intent = new Intent(this.context,GalleryActivity.class);
-			intent.putExtra("position", "1");
-			intent.putExtra("ID", position);
-			startActivity(intent);*/
+	
 		
 		
 	
