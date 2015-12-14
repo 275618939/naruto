@@ -22,6 +22,13 @@
         android:paddingLeft="15dip"
         android:paddingRight="15dip" >
 
+        <ImageView
+            android:id="@+id/imagebrowser_delete"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_vertical"
+            android:src="@drawable/ic_topbar_back_normal" />
+
         <com.movie.view.PhotoTextView
             android:id="@+id/imagebrowser_ptv_page"
             android:layout_width="wrap_content"

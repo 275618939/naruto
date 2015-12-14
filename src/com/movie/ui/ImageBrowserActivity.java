@@ -17,8 +17,8 @@ public class ImageBrowserActivity extends BaseActivity implements
 
 	private ScrollViewPager mSvpPager;
 	private PhotoTextView mPtvPage;
+	//private ImageView imagebrowserDelete;
 	private ImageBrowserAdapter mAdapter;
-	private String mType;
 	private int mPosition;
 	private int mTotal;
 	public static final String IMAGE_TYPE = "image_type";
@@ -38,11 +38,13 @@ public class ImageBrowserActivity extends BaseActivity implements
 	protected void initViews() {
 		mSvpPager = (ScrollViewPager) findViewById(R.id.imagebrowser_svp_pager);
 		mPtvPage = (PhotoTextView) findViewById(R.id.imagebrowser_ptv_page);
+		//imagebrowserDelete = (ImageView)findViewById(R.id.imagebrowser_delete);
 	}
 
 	@Override
 	protected void initEvents() {
 		mSvpPager.addOnPageChangeListener(this);
+		//imagebrowserDelete.setOnClickListener(this);
 	}
 
 	private void init() {
@@ -68,7 +70,7 @@ public class ImageBrowserActivity extends BaseActivity implements
 
 	@Override
 	public void onPageScrollStateChanged(int arg0) {
-
+		
 	}
 
 	@Override
@@ -96,7 +98,17 @@ public class ImageBrowserActivity extends BaseActivity implements
 
 	@Override
 	public void onClick(View v) {
-		// TODO Auto-generated method stub
+		switch (v.getId()) {
+		/*case R.id.imagebrowser_delete:
+			Bimp.tempSelectBitmap.get(mPosition).getBitmap().recycle();
+			Bimp.tempSelectBitmap.remove(mPosition);
+			mAdapter.notifyDataSetChanged();
+			mPtvPage.setText((mPosition % mTotal) + 1-1 + "/" + (mTotal-1));
+			break;*/
+
+		default:
+			break;
+		}
 		
 	}
 	@Override

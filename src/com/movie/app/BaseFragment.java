@@ -68,6 +68,8 @@ public abstract class BaseFragment extends Fragment {
 	protected abstract void initEvents();
 	/**在fragment可见时加载数据*/
 	protected abstract void lazyLoad();
+	/**在fragment不可见时销毁数据*/
+	protected abstract void destroyData();
 	@Override
 	public void onHiddenChanged(boolean hidden) {
 		super.onHiddenChanged(hidden);
@@ -119,6 +121,6 @@ public abstract class BaseFragment extends Fragment {
 		lazyLoad();
 	}
 	protected void onInvisible() {
-		
+		destroyData();
 	}
 }

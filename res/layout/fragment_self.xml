@@ -15,7 +15,7 @@
         <FrameLayout
             android:id="@+id/self_brief"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
+            android:layout_height="@dimen/slef_back_height"
             android:orientation="vertical" >
 
             <ImageView
@@ -109,19 +109,26 @@
                 </RelativeLayout>
             </LinearLayout>
 
-            <GridView
-                android:id="@+id/userPhotoGridview"
+            <LinearLayout
+                android:id="@+id/user_photo_manger"
                 android:layout_width="match_parent"
-                android:layout_height="@dimen/user_select_image_height"
+                android:layout_height="@dimen/user_info_image_height"
                 android:layout_gravity="bottom"
-                android:layout_marginBottom="@dimen/layout_item_bottom_1"
+                android:layout_marginBottom="3dp"
                 android:layout_marginLeft="@dimen/layout_left_0"
-                android:horizontalSpacing="3dp"
-                android:numColumns="4"
-                android:scrollbars="none"
-                android:verticalSpacing="5dp"
-                android:visibility="gone" >
-            </GridView>
+                android:orientation="horizontal"
+                android:visibility="visible" >
+ 				<GridView
+	                android:id="@+id/userPhotoGridview"
+	                android:layout_width="290dp"
+	                android:layout_height="@dimen/user_info_image_height"
+	                android:horizontalSpacing="3dp"
+	                android:numColumns="4"
+	                android:scrollbars="none"
+	                android:verticalSpacing="5dp" >
+           		 </GridView>
+            </LinearLayout>
+
         </FrameLayout>
 
         <LinearLayout
@@ -240,9 +247,8 @@
                     style="@style/setting_alt_text"
                     android:background="@drawable/message_count"
                     android:textColor="@color/white" />
-
                 -->
-                
+
                 <ImageView style="@style/setting_arrow" />
             </LinearLayout>
 

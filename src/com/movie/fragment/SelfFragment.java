@@ -44,6 +44,8 @@ import com.movie.ui.MissSelfQueryActivity;
 import com.movie.ui.UserActivity;
 import com.movie.ui.UserDetailActivity;
 import com.movie.ui.UserLoveMovieActivity;
+import com.movie.util.Bimp;
+import com.movie.util.ImageItem;
 import com.movie.util.UserCharm;
 import com.nostra13.universalimageloader.core.ImageLoader;
 
@@ -74,9 +76,11 @@ public class SelfFragment extends BaseFragment implements OnClickListener , Call
 	TextView attendCntView;
 	TextView filmCntView;
 	ImageView userSignIn;
+	ImageItem imageItem;
 	SignInPopupWindow signInPopupWindow;
 	UserPhotoGridAdapter photoGridAdapter;
 	GridView photoGridview;
+	LinearLayout userPhotoMangerLayout;
 	public SelfFragment() {
 		super();		
 	}
@@ -89,7 +93,7 @@ public class SelfFragment extends BaseFragment implements OnClickListener , Call
 		loaderCache = ImageLoader.getInstance();
 		httpUsersService = new HttpUserService(getActivity());
 		httpLogotService = new HttpLogoutService(getActivity());
-		initPopWindow();
+		initPopWindowData();
 	}
 	@Override
 	public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -128,11 +132,12 @@ public class SelfFragment extends BaseFragment implements OnClickListener , Call
 		attendCntView= (TextView)rootView.findViewById(R.id.attendCnt);
 		filmCntView = (TextView) rootView.findViewById(R.id.filmCnt);
 		userSignIn = (ImageView)rootView.findViewById(R.id.user_sign_in);
+		userPhotoMangerLayout = (LinearLayout)rootView.findViewById(R.id.user_photo_manger);
 		photoGridview = (GridView)rootView.findViewById(R.id.userPhotoGridview);
 		photoGridview.setSelector(new ColorDrawable(Color.TRANSPARENT));
-		photoGridAdapter =new UserPhotoGridAdapter(getActivity(), mHandler,null);
+		photoGridAdapter =new UserPhotoGridAdapter(getActivity(), mHandler,Bimp.tempSelectBitmap);
 		photoGridview.setAdapter(photoGridAdapter);
-		photoGridview.setOnItemClickListener(photoGridAdapter);	
+		Bimp.photoGridAdapter=photoGridAdapter;
 		
 	}
 	@Override
@@ -158,7 +163,6 @@ public class SelfFragment extends BaseFragment implements OnClickListener , Call
 	}
 	
 	
-	
 	Handler mHandler = new Handler() {
 		public void handleMessage(android.os.Message msg) {
 			
@@ -173,7 +177,7 @@ public class SelfFragment extends BaseFragment implements OnClickListener , Call
 			}
 		};
 	};
-	private void initPopWindow() {
+	private void initPopWindowData() {
 		signInPopupWindow = new SignInPopupWindow(getActivity(), mHandler);
 		/*临时签到数据，正式环境需去除*/
 		List<Map<Integer,Integer>> signInList = new ArrayList<Map<Integer,Integer>>();
@@ -201,25 +205,26 @@ public class SelfFragment extends BaseFragment implements OnClickListener , Call
 		loginLayout.setVisibility(View.VISIBLE);
 		logoutLayout.setVisibility(View.GONE);
 		loginAfterLayout.setVisibility(View.GONE);
-		photoGridview.setVisibility(View.GONE);
+		userPhotoMangerLayout.setVisibility(View.GONE);
 		httpLogotService.execute(this);
 	}
 	@Override
 	public void onActivityResult(int requestCode, int resultCode, Intent data) {
 		switch (resultCode) { 
 		   case RELOAGIN:
-		    //Bundle b=data.getExtras(); 
-		    //String str=b.getString("str1");
-		    loadUser();
-		    break;
-		default:
-		    break;
+			    loadUser();
+			    break;	
+			default:
+				break;
+				
+			
 		    }
 		}
 
 	@Override
 	public void onClick(View v) {
 		switch (v.getId()) {
+			
 		    case R.id.user_sign_in:
 		    	int[] arrayOfInt = new int[2];
 				//获取点击按钮的坐标
@@ -355,7 +360,7 @@ public class SelfFragment extends BaseFragment implements OnClickListener , Call
 				loginLayout.setVisibility(View.GONE);
 				logoutLayout.setVisibility(View.VISIBLE);
 				loginAfterLayout.setVisibility(View.VISIBLE);
-				photoGridview.setVisibility(View.VISIBLE);
+				userPhotoMangerLayout.setVisibility(View.VISIBLE);
 				
 			}else if(tag.equals(httpLogotService.TAG)){
 				 user=null;
@@ -391,6 +396,11 @@ public class SelfFragment extends BaseFragment implements OnClickListener , Call
 	public void onDestroyView() {
 		super.onDestroyView();
 		photoGridAdapter=null;
+	}
+	@Override
+	protected void destroyData() {
+		Bimp.tempSelectBitmap.clear();
+		Bimp.photoGridAdapter=null;
 	}
 	
 

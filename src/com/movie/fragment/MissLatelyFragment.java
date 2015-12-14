@@ -222,6 +222,11 @@ public class MissLatelyFragment extends BaseFragment implements OnClickListener,
 		page = 1;
 		loadMiss();
 	}
+	@Override
+	protected void destroyData() {
+		// TODO Auto-generated method stub
+		
+	}
 
 	
 

@@ -187,6 +187,11 @@ public class HomeDynamicFragment extends BaseFragment implements CallBackService
 		page = 1;
 		loadFeeds();
 	}
+	@Override
+	protected void destroyData() {
+		// TODO Auto-generated method stub
+		
+	}
 
 
 }

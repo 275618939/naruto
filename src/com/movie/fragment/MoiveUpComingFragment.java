@@ -180,5 +180,10 @@ public class MoiveUpComingFragment extends BaseFragment implements CallBackServi
 		loadUpcomingMovie();
 		
 	}
+	@Override
+	protected void destroyData() {
+		// TODO Auto-generated method stub
+		
+	}
 
 }

@@ -181,6 +181,11 @@ public class MoiveCurrentFragment extends BaseFragment implements CallBackServic
 		loadPlayingMovie();
 		
 	}
+	@Override
+	protected void destroyData() {
+		// TODO Auto-generated method stub
+		
+	}
 
 	
 

@@ -100,4 +100,10 @@ public class MissFragment extends BaseFragment {
 		}
 	}
 
+	@Override
+	protected void destroyData() {
+		// TODO Auto-generated method stub
+		
+	}
+
 }

@@ -104,6 +104,11 @@ public class MoiveFragment extends BaseFragment implements OnClickListener {
 			}
 		}
 	}
+	@Override
+	protected void destroyData() {
+		// TODO Auto-generated method stub
+		
+	}
 	
 
 

@@ -33,7 +33,7 @@ import android.util.TypedValue;
 
 public class PhotoUtils {
 	// 图片在SD卡中的缓存路径
-	private static final String IMAGE_PATH = Environment.getExternalStorageDirectory().toString()+ File.separator+ "naruto" + File.separator + "Images" + File.separator;
+	public static final String IMAGE_PATH = Environment.getExternalStorageDirectory().toString()+ File.separator+ "naruto" + File.separator + "Images" + File.separator;
 	// 相册的RequestCode
 	public static final int INTENT_REQUEST_CODE_ALBUM = 0;
 	// 照相的RequestCode

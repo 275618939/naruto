@@ -233,6 +233,11 @@ public class HomeNearFragment extends BaseFragment implements CallBackService,
 		page+=Page.MIN_DISTANCE;
 		loadNearNaruto();
 	}
+	@Override
+	protected void destroyData() {
+		// TODO Auto-generated method stub
+		
+	}
 
 
 }
