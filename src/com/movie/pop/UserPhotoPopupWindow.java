@@ -1,5 +1,6 @@
 package com.movie.pop;
 
+import android.app.Activity;
 import android.content.Context;
 import android.graphics.drawable.ColorDrawable;
 import android.view.LayoutInflater;
@@ -56,11 +57,11 @@ public class UserPhotoPopupWindow extends BasePopupWindow implements OnClickList
 	public void onClick(View v) {
 		switch (v.getId()) {
 		case R.id.item_popupwindows_camera:
-			takeImagePath=PhotoUtils.takePicture((DynamicCreateActivity)mContext);
+			takeImagePath=PhotoUtils.takePicture((Activity)mContext);
 			break;
 
 		case R.id.item_popupwindows_Photo:
-			PhotoUtils.selectPhoto((DynamicCreateActivity)mContext);
+			PhotoUtils.selectPhoto((Activity)mContext);
 			break;
 		case R.id.item_popupwindows_cancel:
 			

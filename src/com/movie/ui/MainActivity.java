@@ -93,79 +93,78 @@ public class MainActivity extends BaseActivity implements OnClickListener,
 		addDynamic.setOnClickListener(this);
 
 	}
-
-	public void onActivityResult(int requestCode, int resultCode, Intent data) {
-		switch (requestCode) {
-		case PhotoUtils.INTENT_REQUEST_CODE_ALBUM:
-			if (data == null) {
-				return;
-			}
-			if (resultCode == RESULT_OK) {
-				if (data.getData() == null) {
-					return;
-				}
-				if (!FileUtils.isSdcardExist()) {
-					showToask("SD卡不可用,请检查");
-					return;
-				}
-				Uri uri = data.getData();
-				String[] proj = { MediaStore.Images.Media.DATA };
-				Cursor cursor = getContentResolver().query(uri, proj, null,
-						null, null);
-				if (cursor != null) {
-					int column_index = cursor
-							.getColumnIndexOrThrow(MediaStore.Images.Media.DATA);
-					if (cursor.getCount() > 0 && cursor.moveToFirst()) {
-						String path = cursor.getString(column_index);
-						boolean isImage = PhotoUtils.IsImage(path);
-						if (!isImage) {
-							showToask("请选择正确的图片文件");
-							return;
-						}
-						// 压缩图片
-						Bitmap bitmap = PhotoUtils.createBitmap(path,
-								NarutoApplication.getApp().mScreenWidth / 2,
-								NarutoApplication.getApp().mScreenHeight / 2);
-						imageItem = new ImageItem();
-						imageItem.setImagePath(path);
-						imageItem.setBitmap(bitmap);
-						Bimp.tempSelectBitmap.add(imageItem);
-						bitmap = null;
-						imageItem = null;
-						Bimp.photoGridAdapter.notifyDataSetChanged();
-						System.gc();
-					}
-				}
-				cursor.close();
-				uri = null;
-				proj = null;
-				data = null;
-			}
-			break;
-		case PhotoUtils.INTENT_REQUEST_CODE_CAMERA:
-			if (resultCode == RESULT_OK) {
-				String path = Bimp.takeImagePath;
-				if (path != null) {
-					// 按比例缩放图片
-					Bitmap bitmap = PhotoUtils.createBitmap(path,
-							NarutoApplication.getApp().mScreenWidth / 2,
-							NarutoApplication.getApp().mScreenHeight / 2);
-					imageItem = new ImageItem();
-					imageItem.setImagePath(path);
-					imageItem.setBitmap(bitmap);
-					Bimp.tempSelectBitmap.add(imageItem);
-					bitmap = null;
-					imageItem = null;
-					Bimp.photoGridAdapter.notifyDataSetChanged();
-					System.gc();
-				}
-			}
-			break;
-		default:
-			break;
-
-		}
-	}
+//	public void onActivityResult(int requestCode, int resultCode, Intent data) {
+//		switch (requestCode) {
+//		case PhotoUtils.INTENT_REQUEST_CODE_ALBUM:
+//			if (data == null) {
+//				return;
+//			}
+//			if (resultCode == RESULT_OK) {
+//				if (data.getData() == null) {
+//					return;
+//				}
+//				if (!FileUtils.isSdcardExist()) {
+//					showToask("SD卡不可用,请检查");
+//					return;
+//				}
+//				Uri uri = data.getData();
+//				String[] proj = { MediaStore.Images.Media.DATA };
+//				Cursor cursor = getContentResolver().query(uri, proj, null,
+//						null, null);
+//				if (cursor != null) {
+//					int column_index = cursor
+//							.getColumnIndexOrThrow(MediaStore.Images.Media.DATA);
+//					if (cursor.getCount() > 0 && cursor.moveToFirst()) {
+//						String path = cursor.getString(column_index);
+//						boolean isImage = PhotoUtils.IsImage(path);
+//						if (!isImage) {
+//							showToask("请选择正确的图片文件");
+//							return;
+//						}
+//						// 压缩图片
+//						Bitmap bitmap = PhotoUtils.createBitmap(path,
+//								NarutoApplication.getApp().mScreenWidth / 2,
+//								NarutoApplication.getApp().mScreenHeight / 2);
+//						imageItem = new ImageItem();
+//						imageItem.setImagePath(path);
+//						imageItem.setBitmap(bitmap);
+//						Bimp.tempSelectBitmap.add(imageItem);
+//						bitmap = null;
+//						imageItem = null;
+//						Bimp.photoGridAdapter.notifyDataSetChanged();
+//						System.gc();
+//					}
+//				}
+//				cursor.close();
+//				uri = null;
+//				proj = null;
+//				data = null;
+//			}
+//			break;
+//		case PhotoUtils.INTENT_REQUEST_CODE_CAMERA:
+//			if (resultCode == RESULT_OK) {
+//				String path = Bimp.takeImagePath;
+//				if (path != null) {
+//					// 按比例缩放图片
+//					Bitmap bitmap = PhotoUtils.createBitmap(path,
+//							NarutoApplication.getApp().mScreenWidth / 2,
+//							NarutoApplication.getApp().mScreenHeight / 2);
+//					imageItem = new ImageItem();
+//					imageItem.setImagePath(path);
+//					imageItem.setBitmap(bitmap);
+//					Bimp.tempSelectBitmap.add(imageItem);
+//					bitmap = null;
+//					imageItem = null;
+//					Bimp.photoGridAdapter.notifyDataSetChanged();
+//					System.gc();
+//				}
+//			}
+//			break;
+//		default:
+//			break;
+//
+//		}
+//	}
 
 	@Override
 	protected void initData() {
