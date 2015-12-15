@@ -5,6 +5,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.app.AlertDialog;
 import android.content.Context;
@@ -26,7 +27,6 @@ import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.movie.R;
-import com.movie.adapter.UserPhotoGridAdapter;
 import com.movie.app.BaseFragment;
 import com.movie.app.Constant;
 import com.movie.app.Constant.ReturnCode;
@@ -78,7 +78,6 @@ public class SelfFragment extends BaseFragment implements OnClickListener , Call
 	ImageView userSignIn;
 	ImageItem imageItem;
 	SignInPopupWindow signInPopupWindow;
-	UserPhotoGridAdapter photoGridAdapter;
 	GridView photoGridview;
 	LinearLayout userPhotoMangerLayout;
 	public SelfFragment() {
@@ -135,9 +134,6 @@ public class SelfFragment extends BaseFragment implements OnClickListener , Call
 		userPhotoMangerLayout = (LinearLayout)rootView.findViewById(R.id.user_photo_manger);
 		photoGridview = (GridView)rootView.findViewById(R.id.userPhotoGridview);
 		photoGridview.setSelector(new ColorDrawable(Color.TRANSPARENT));
-		photoGridAdapter =new UserPhotoGridAdapter(getActivity(), mHandler,Bimp.tempSelectBitmap);
-		photoGridview.setAdapter(photoGridAdapter);
-		Bimp.photoGridAdapter=photoGridAdapter;
 		
 	}
 	@Override
@@ -167,9 +163,7 @@ public class SelfFragment extends BaseFragment implements OnClickListener , Call
 		public void handleMessage(android.os.Message msg) {
 			
 			switch (msg.what) {
-				case PTHOTO_UPDATE:
-					photoGridAdapter.notifyDataSetChanged();
-					break;
+				
 			
 			default:
 				break;
@@ -177,6 +171,8 @@ public class SelfFragment extends BaseFragment implements OnClickListener , Call
 			}
 		};
 	};
+	@SuppressWarnings("serial")
+	@SuppressLint("UseSparseArrays")
 	private void initPopWindowData() {
 		signInPopupWindow = new SignInPopupWindow(getActivity(), mHandler);
 		/*临时签到数据，正式环境需去除*/
@@ -395,12 +391,11 @@ public class SelfFragment extends BaseFragment implements OnClickListener , Call
 	@Override
 	public void onDestroyView() {
 		super.onDestroyView();
-		photoGridAdapter=null;
 	}
 	@Override
 	protected void destroyData() {
 		Bimp.tempSelectBitmap.clear();
-		Bimp.photoGridAdapter=null;
+		
 	}
 	
 

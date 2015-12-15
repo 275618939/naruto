@@ -12,8 +12,7 @@ import android.os.Environment;
 
 public class FileUtils {
 	
-	public static String SDPATH = Environment.getExternalStorageDirectory()
-			+ "/Photo_LJ/";
+	public static String SDPATH = Environment.getExternalStorageDirectory()+ "/Photo_LJ/";
 	/**
 	 * 判断SD是否可以
 	 * 
@@ -137,7 +136,22 @@ public class FileUtils {
 		}
 		return fileSizeString;
 	}
-
+	public static void saveBitmapByPath(Bitmap bm, String pathc) {
+		try {
+			File f = new File(pathc); 
+			if (f.exists()) {
+				f.delete();
+			}
+			FileOutputStream out = new FileOutputStream(f);
+			bm.compress(Bitmap.CompressFormat.JPEG, 30, out);
+			out.flush();
+			out.close();
+		} catch (FileNotFoundException e) {
+			e.printStackTrace();
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+	}
 	public static void saveBitmap(Bitmap bm, String picName) {
 		try {
 			if (!isFileExist("")) {

@@ -91,7 +91,6 @@ public class MainActivity extends BaseActivity implements OnClickListener,
 	@Override
 	protected void initEvents() {
 		addDynamic.setOnClickListener(this);
-
 	}
 //	public void onActivityResult(int requestCode, int resultCode, Intent data) {
 //		switch (requestCode) {

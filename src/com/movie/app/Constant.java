@@ -46,6 +46,12 @@ public interface Constant {
 	public final static String Hobby_Modify_API_URL = SERVER_URL+ "/member/hobby";
 	// 用户心动
 	public final static String User_Love_API_URL = SERVER_URL+ "/member/love";
+	// 用户删除图片
+	public final static String User_Image_Delete_API_URL = SERVER_URL+ "/member/image";
+	// 用户上传图片
+	public final static String User_Image_Upload_API_URL = SERVER_URL+ "/member/image";
+	// 查询上传图片
+	public final static String User_Image_Query_API_URL = SERVER_URL+ "/member/image";
 	// 查询所有评价信息
 	public final static String Dic_Comment_API_URL = SERVER_URL+ "/dictionary/effect";
 	// 查询所有影片类型信息

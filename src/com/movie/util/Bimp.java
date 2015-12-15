@@ -7,8 +7,6 @@ import java.io.FileInputStream;
 import java.io.IOException;
 import java.util.ArrayList;
 
-import com.movie.adapter.UserPhotoGridAdapter;
-
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Matrix;
@@ -16,8 +14,6 @@ import android.media.ExifInterface;
 
 public class Bimp {
 	public static int max = 0;
-	public static String takeImagePath;
-	public static UserPhotoGridAdapter photoGridAdapter;
 	public static ArrayList<ImageItem> tempSelectBitmap = new ArrayList<ImageItem>(); // 选择的图片的临时列表
 
 	public static Bitmap revitionImageSize(String path) throws IOException {

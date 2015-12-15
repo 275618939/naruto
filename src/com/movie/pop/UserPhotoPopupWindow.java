@@ -10,7 +10,6 @@ import android.widget.Button;
 
 import com.movie.R;
 import com.movie.app.BasePopupWindow;
-import com.movie.ui.DynamicCreateActivity;
 import com.movie.util.PhotoUtils;
 
 public class UserPhotoPopupWindow extends BasePopupWindow implements OnClickListener {
