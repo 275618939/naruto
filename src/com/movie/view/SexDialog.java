@@ -111,7 +111,7 @@ public class SexDialog extends Dialog {
 			LayoutInflater inflater = (LayoutInflater) context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
 
 			final SexDialog dialog = new SexDialog(context, R.style.Dialog);
-			View layout = inflater.inflate(R.layout.dialog_sex, null);
+			View layout = inflater.inflate(R.layout.include_dialog_sex, null);
 			dialog.addContentView(layout, new LayoutParams(LayoutParams.MATCH_PARENT, LayoutParams.WRAP_CONTENT));
 			// set the dialog title
 			((TextView) layout.findViewById(R.id.title)).setText(title);

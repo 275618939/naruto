@@ -16,7 +16,6 @@ import android.net.Uri;
 import android.os.Bundle;
 import android.os.Handler;
 import android.provider.MediaStore;
-import android.util.Log;
 import android.view.Gravity;
 import android.view.View;
 import android.view.View.OnClickListener;
@@ -30,34 +29,33 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.movie.R;
-import com.movie.adapter.DynamicPhotoGridAdapter;
-import com.movie.adapter.UserPhotoGridAdapter;
+import com.movie.adapter.UserPhotoMangeGridAdapter;
 import com.movie.app.BaseActivity;
 import com.movie.app.Constant;
+import com.movie.app.Constant.Page;
 import com.movie.app.NarutoApplication;
 import com.movie.client.bean.User;
 import com.movie.client.service.BaseService;
 import com.movie.client.service.CallBackService;
+import com.movie.dialog.UserSetSexDialog;
 import com.movie.network.HttpUploadImageService;
 import com.movie.network.HttpUserDeleteImageService;
 import com.movie.network.HttpUserImageQueryService;
 import com.movie.network.HttpUserService;
 import com.movie.network.HttpUserUpdateService;
 import com.movie.pop.UserPhotoPopupWindow;
+import com.movie.state.SexState;
 import com.movie.util.Bimp;
 import com.movie.util.FileUtils;
 import com.movie.util.ImageItem;
 import com.movie.util.PhotoUtils;
 import com.movie.util.StringUtil;
-import com.movie.util.UploadUtil;
 import com.movie.view.BirthdayDialog;
 import com.movie.view.RoundImageView;
-import com.movie.view.SexDialog;
 
 public class UserActivity extends BaseActivity implements OnClickListener,CallBackService {
 	
 	public static final int DELETE_IMAGE=0x1;
-	UploadUtil uploadUtil = UploadUtil.getInstance();
 	EditText accountEdit;
 	EditText passwordEdit;
 	Button loginButton;
@@ -70,6 +68,7 @@ public class UserActivity extends BaseActivity implements OnClickListener,CallBa
 	TextView email;
 	TextView sign;
 	ImageView captchaView;
+	ImageView addPicView;
 	RoundImageView headImage;
 	LinearLayout layoutNick;
 	LinearLayout layoutSex;
@@ -90,7 +89,8 @@ public class UserActivity extends BaseActivity implements OnClickListener,CallBa
 	List<Integer> userHobbis;
 	UserPhotoPopupWindow userPhotoPopupWindow;
 	GridView photoGridview;
-	DynamicPhotoGridAdapter photoGridAdapter;
+	UserPhotoMangeGridAdapter photoGridAdapter;
+	UserSetSexDialog sexDialog;
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
@@ -108,6 +108,8 @@ public class UserActivity extends BaseActivity implements OnClickListener,CallBa
 
 	@Override
 	protected void initViews() {
+		
+		sexDialog=new UserSetSexDialog(this);
 		title = (TextView) findViewById(R.id.title);
 		nickName = (TextView) findViewById(R.id.nickName);
 		sex = (TextView) findViewById(R.id.sex);
@@ -115,6 +117,7 @@ public class UserActivity extends BaseActivity implements OnClickListener,CallBa
 		mobile = (TextView) findViewById(R.id.mobile);
 		email = (TextView) findViewById(R.id.email);
 		sign = (TextView) findViewById(R.id.sign);
+		addPicView = (ImageView) findViewById(R.id.addPic);
 		headImage = (RoundImageView) findViewById(R.id.head_image);
 		layoutNick = (LinearLayout) findViewById(R.id.layout_nick);
 		layoutSex = (LinearLayout) findViewById(R.id.layout_sex);
@@ -126,10 +129,7 @@ public class UserActivity extends BaseActivity implements OnClickListener,CallBa
 		layoutHead = (LinearLayout) findViewById(R.id.layout_head);
 		photoGridview = (GridView)findViewById(R.id.userPhotoGridview);
 		photoGridview.setSelector(new ColorDrawable(Color.TRANSPARENT));
-		Log.i("bimpsize1", Bimp.tempSelectBitmap.size()+"");
-		Bimp.tempSelectBitmap.clear();
-		Log.i("bimpsize2", Bimp.tempSelectBitmap.size()+"");
-		photoGridAdapter =new DynamicPhotoGridAdapter(this, mHandler,Bimp.tempSelectBitmap);
+		photoGridAdapter =new UserPhotoMangeGridAdapter(this, mHandler,Bimp.tempSelectBitmap);
 		photoGridview.setAdapter(photoGridAdapter);
 	}
 	Handler mHandler = new Handler() {
@@ -146,6 +146,9 @@ public class UserActivity extends BaseActivity implements OnClickListener,CallBa
 				}
 				Bimp.tempSelectBitmap.remove(position);
 				photoGridAdapter.notifyDataSetChanged();
+				if(Bimp.tempSelectBitmap.size()<Page.MAX_SHOW_USER_PHOTO){
+					addPicView.setVisibility(View.VISIBLE);
+				}
 				break;
 			
 			default:
@@ -164,11 +167,13 @@ public class UserActivity extends BaseActivity implements OnClickListener,CallBa
 		layoutSign.setOnClickListener(this);
 		layoutHobby.setOnClickListener(this);
 		layoutHead.setOnClickListener(this);
+		addPicView.setOnClickListener(this);
 	}
 
 	@Override
 	protected void initData() {
 		title.setText("编辑信息");
+		sexDialog.setTitle(getText(R.string.sex_hint));
 		loadUser();
 		loadUserImage();
 	}
@@ -187,6 +192,9 @@ public class UserActivity extends BaseActivity implements OnClickListener,CallBa
 	@Override
 	public void onClick(View v) {
 		switch (v.getId()) {
+		case R.id.addPic:
+			userPhotoPopupWindow.showAtLocation(v, Gravity.BOTTOM, 0, 0);
+			break;
 		case R.id.layout_nick:
 			Intent intent = new Intent(this, NickActivity.class);
 			startActivity(intent);
@@ -218,27 +226,24 @@ public class UserActivity extends BaseActivity implements OnClickListener,CallBa
 			userPhotoPopupWindow.showAtLocation(v, Gravity.BOTTOM, 0, 0);
 			break;
 		case R.id.layout_sex:
-			final SexDialog.Builder builder = new SexDialog.Builder(this);
-			builder.setTitle(R.string.sex_hint);
-			builder.setPositiveButton("取消",
+			sexDialog.setButton("取消",
 					new DialogInterface.OnClickListener() {
+						@Override
 						public void onClick(DialogInterface dialog, int which) {
-							dialog.dismiss();
+							sexDialog.cancel();
 						}
-					});
-			builder.setNegativeButton("确定",
-					new android.content.DialogInterface.OnClickListener() {
+					}, "确认", new DialogInterface.OnClickListener() {
+
+						@Override
 						public void onClick(DialogInterface dialog, int which) {
-							dialog.dismiss();
-							int sex = builder.getSex();
+							sexDialog.dismiss();
 							httpUserUpdateService.clearReqeustParams();
-							httpUserUpdateService.addParams("sex", sex);
-							UserActivity.this.sex.setText(sexChangeStr(sex));
+							httpUserUpdateService.addParams("sex", sexDialog.getSex());
+							UserActivity.this.sex.setText(SexState.getState(sexDialog.getSex()).getMessage());
 							modifyUserInfo();
 						}
 					});
-
-			builder.create().show();
+			sexDialog.show();
 			break;
 		case R.id.layout_birthday:
 
@@ -331,12 +336,7 @@ public class UserActivity extends BaseActivity implements OnClickListener,CallBa
 			break;
 		case PhotoUtils.INTENT_REQUEST_CODE_CAMERA:
 			if (resultCode == RESULT_OK) {
-				String picPath=null;
-				if(isHead){
-					picPath = userPhotoPopupWindow.getTakeImagePath();
-				}else{
-					//picPath = photoGridAdapter.getUserPhotoPopupWindow().getTakeImagePath();
-				}
+				String	picPath = userPhotoPopupWindow.getTakeImagePath();	
 				if (picPath != null) {
 					// 按比例缩放图片
 					Bitmap bitmap = PhotoUtils.createBitmap(picPath,NarutoApplication.getApp().mScreenWidth / 2,NarutoApplication.getApp().mScreenHeight / 2);
@@ -356,14 +356,16 @@ public class UserActivity extends BaseActivity implements OnClickListener,CallBa
 						imageItem=null;
 						photoGridAdapter.notifyDataSetChanged();
 					}
-					 bitmap=null;
-				
+					bitmap=null;
 					System.gc();
 				}
 			}
 			break;
 		default:
 			break;
+		}
+		if(Bimp.tempSelectBitmap.size()==Page.MAX_SHOW_USER_PHOTO){
+			addPicView.setVisibility(View.GONE);
 		}
 	}
 	private void synUserPhoto(){
@@ -373,8 +375,7 @@ public class UserActivity extends BaseActivity implements OnClickListener,CallBa
 				upload(imageItem.getImagePath(),Constant.User_Image_Upload_API_URL);
 			}
 		}
-		httpUploadImageService=null;
-		Bimp.tempSelectBitmap.clear();
+		//Bimp.tempSelectBitmap.clear();
 		//PhotoUtils.deleteImageFile();
 	}
 	private void upload(String picPath,String url) {
@@ -405,18 +406,6 @@ public class UserActivity extends BaseActivity implements OnClickListener,CallBa
 		this.startActivity(intent);
 		this.finish();
 	}
-
-	public String sexChangeStr(int sex) {
-		if (sex == Constant.Sex.MEN) {
-			return "男";
-		} else if (sex == Constant.Sex.WOMEN) {
-			return "女";
-		} else {
-			return "保密";
-		}
-
-	}
-
 	@Override
 	public void SuccessCallBack(Map<String, Object> map) {
 
@@ -435,7 +424,7 @@ public class UserActivity extends BaseActivity implements OnClickListener,CallBa
 					}
 					if (value.containsKey("sex")) {
 						user.setSex(Integer.parseInt(value.get("sex").toString()));
-						sex.setText(sexChangeStr(Integer.parseInt(value.get("sex").toString())));
+						sex.setText(SexState.getState(user.getSex()).getMessage());
 					}
 					if (value.containsKey("birthday"))
 						birthday.setText(StringUtil.strChangeDate(value.get("birthday").toString()));
@@ -464,7 +453,6 @@ public class UserActivity extends BaseActivity implements OnClickListener,CallBa
 				List<HashMap<String, Object>> datas = (ArrayList<HashMap<String, Object>>) map.get(Constant.ReturnCode.RETURN_VALUE);
 				int size = datas.size();
 				HashMap<String, Object> missMap = null;
-				ImageItem imageItem=null;
 				for (int i = 0; i < size; i++) {
 					imageItem = new ImageItem();
 					imageItem.setSelected(false);
@@ -473,9 +461,13 @@ public class UserActivity extends BaseActivity implements OnClickListener,CallBa
 						imageItem.setImageId(missMap.get("id").toString());
 					if (missMap.containsKey("url"))
 						imageItem.setImagePath(Constant.SERVER_ADRESS+missMap.get("url").toString());
-					//Bimp.tempSelectBitmap.add(imageItem);
+		
+					Bimp.tempSelectBitmap.add(imageItem);
 				}
-				//photoGridAdapter.notifyDataSetChanged();
+				if(Bimp.tempSelectBitmap.size()==Page.MAX_SHOW_USER_PHOTO){
+					addPicView.setVisibility(View.GONE);
+				}
+				photoGridAdapter.notifyDataSetChanged();
 			}else if (tag.endsWith(httpUploadImageService.TAG)) {
 				
 			}

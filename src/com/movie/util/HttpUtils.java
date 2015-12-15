@@ -170,7 +170,7 @@ public class HttpUtils {
 					conn.setRequestProperty(entry.getKey(),entry.getValue());
 				}
 			}
-			conn.setRequestMethod("POST");
+			conn.setRequestMethod(method);
 			conn.setConnectTimeout(60000);
 			conn.setReadTimeout(180000);
 			conn.setDoInput(true);
@@ -187,7 +187,7 @@ public class HttpUtils {
 			StringBuffer sb = new StringBuffer();
 			sb.append(PREFIX).append(BOUNDARY).append(LINE_END);
 			sb.append("Content-Disposition:form-data; name=\"image\"; filename=\"" + file.getName() + "\"" + LINE_END);
-			sb.append("Content-Type:image/png" + LINE_END); // 这里配置的Content-type很重要的																// ，用于服务器端辨别文件的类型的
+			sb.append("Content-Type:image/png" + LINE_END); 															
 			sb.append(LINE_END);
 			
 			os.write(sb.toString().getBytes());
