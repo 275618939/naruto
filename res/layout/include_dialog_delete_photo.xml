@@ -7,13 +7,12 @@
 
     <com.movie.view.HandyTextView
         android:id="@+id/dialog_delete"
-        android:layout_width="fill_parent"
-        android:layout_height="wrap_content"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
         android:background="@drawable/bg_dialog_listitem_selector"
         android:gravity="center"
-        android:padding="10dip"
-        android:text="删除"
-        android:textColor="@color/text_color"
-        android:textSize="14sp" />
+        android:padding="5dip"
+        android:text="@string/favorite_btn_delete"
+        android:textColor="@color/text_color" />
 
 </LinearLayout>

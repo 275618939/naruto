@@ -29,7 +29,7 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.movie.R;
-import com.movie.adapter.UserPhotoMangeGridAdapter;
+import com.movie.adapter.UserPhotoGridAdapter;
 import com.movie.app.BaseActivity;
 import com.movie.app.Constant;
 import com.movie.app.Constant.Page;
@@ -70,7 +70,7 @@ public class UserActivity extends BaseActivity implements OnClickListener,CallBa
 	TextView email;
 	TextView sign;
 	ImageView captchaView;
-	ImageView addPicView;
+	//ImageView addPicView;
 	RoundImageView headImage;
 	LinearLayout layoutNick;
 	LinearLayout layoutSex;
@@ -91,7 +91,8 @@ public class UserActivity extends BaseActivity implements OnClickListener,CallBa
 	List<Integer> userHobbis;
 	UserPhotoPopupWindow userPhotoPopupWindow;
 	GridView photoGridview;
-	UserPhotoMangeGridAdapter photoGridAdapter;
+	//UserPhotoMangeGridAdapter photoGridAdapter;
+	UserPhotoGridAdapter photoGridAdapter;
 	UserSetSexDialog sexDialog;
 	UserDateDialog userDateDialog;
 	@Override
@@ -121,7 +122,7 @@ public class UserActivity extends BaseActivity implements OnClickListener,CallBa
 		mobile = (TextView) findViewById(R.id.mobile);
 		email = (TextView) findViewById(R.id.email);
 		sign = (TextView) findViewById(R.id.sign);
-		addPicView = (ImageView) findViewById(R.id.addPic);
+		//addPicView = (ImageView) findViewById(R.id.addPic);
 		headImage = (RoundImageView) findViewById(R.id.head_image);
 		layoutNick = (LinearLayout) findViewById(R.id.layout_nick);
 		layoutSex = (LinearLayout) findViewById(R.id.layout_sex);
@@ -133,8 +134,9 @@ public class UserActivity extends BaseActivity implements OnClickListener,CallBa
 		layoutHead = (LinearLayout) findViewById(R.id.layout_head);
 		photoGridview = (GridView)findViewById(R.id.userPhotoGridview);
 		photoGridview.setSelector(new ColorDrawable(Color.TRANSPARENT));
-		photoGridAdapter =new UserPhotoMangeGridAdapter(this, mHandler,Bimp.tempSelectBitmap);
+		photoGridAdapter =new UserPhotoGridAdapter(this, mHandler,Bimp.tempSelectBitmap);
 		photoGridview.setAdapter(photoGridAdapter);
+	
 	}
 	Handler mHandler = new Handler() {
 		public void handleMessage(android.os.Message msg) {
@@ -151,7 +153,7 @@ public class UserActivity extends BaseActivity implements OnClickListener,CallBa
 				Bimp.tempSelectBitmap.remove(position);
 				photoGridAdapter.notifyDataSetChanged();
 				if(Bimp.tempSelectBitmap.size()<Page.MAX_SHOW_USER_PHOTO){
-					addPicView.setVisibility(View.VISIBLE);
+					//addPicView.setVisibility(View.VISIBLE);
 				}
 				break;
 			
@@ -171,7 +173,7 @@ public class UserActivity extends BaseActivity implements OnClickListener,CallBa
 		layoutSign.setOnClickListener(this);
 		layoutHobby.setOnClickListener(this);
 		layoutHead.setOnClickListener(this);
-		addPicView.setOnClickListener(this);
+		//addPicView.setOnClickListener(this);
 	}
 	@Override
 	protected void initData() {
@@ -317,7 +319,9 @@ public class UserActivity extends BaseActivity implements OnClickListener,CallBa
 							imageItem.setBitmap(bitmap);
 							imageItem.setSelected(true);
 							Bimp.tempSelectBitmap.add(imageItem);
-							photoGridAdapter.notifyDataSetChanged();
+							//photoGridAdapter.notifyDataSetChanged();
+							photoGridAdapter =new UserPhotoGridAdapter(this, mHandler,null);
+							photoGridview.setAdapter(photoGridAdapter);
 							upload(imageItem.getImagePath(),Constant.User_Image_Upload_API_URL);
 							//释放内存
 							imageItem.getBitmap().recycle();
@@ -351,7 +355,9 @@ public class UserActivity extends BaseActivity implements OnClickListener,CallBa
 						imageItem.setBitmap(bitmap);
 						imageItem.setSelected(true);
 						Bimp.tempSelectBitmap.add(imageItem);
-						photoGridAdapter.notifyDataSetChanged();
+						//photoGridAdapter.notifyDataSetChanged();
+						photoGridAdapter =new UserPhotoGridAdapter(this, mHandler,null);
+						photoGridview.setAdapter(photoGridAdapter);
 						upload(imageItem.getImagePath(),Constant.User_Image_Upload_API_URL);
 						//释放内存
 						imageItem.getBitmap().recycle();
@@ -365,7 +371,7 @@ public class UserActivity extends BaseActivity implements OnClickListener,CallBa
 			break;
 		}
 		if(Bimp.tempSelectBitmap.size()==Page.MAX_SHOW_USER_PHOTO){
-			addPicView.setVisibility(View.GONE);
+			//addPicView.setVisibility(View.GONE);
 		}
 	}
 	private void synUserPhoto(){
@@ -466,9 +472,9 @@ public class UserActivity extends BaseActivity implements OnClickListener,CallBa
 					Bimp.tempSelectBitmap.add(imageItem);
 				}
 				if(Bimp.tempSelectBitmap.size()==Page.MAX_SHOW_USER_PHOTO){
-					addPicView.setVisibility(View.GONE);
+					//addPicView.setVisibility(View.GONE);
 				}
-				photoGridAdapter.notifyDataSetChanged();
+				//photoGridAdapter.notifyDataSetChanged();
 			}else if (tag.equals(httpUploadImageService.TAG)) {
 				
 			}

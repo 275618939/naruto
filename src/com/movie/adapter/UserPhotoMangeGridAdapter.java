@@ -57,11 +57,6 @@ public class UserPhotoMangeGridAdapter extends BaseObjectListAdapter implements 
 			imagePath="file://"+imageItem.getImagePath();
 		}
 		imageLoader.displayImage(imagePath, holder.image,NarutoApplication.imageOptions);
-//		if(imageItem.getImageId()!=null&&!imageItem.getImageId().isEmpty()){	
-//			imageLoader.displayImage(imageItem.getImagePath(), holder.image,NarutoApplication.imageOptions);
-//		}else{
-//			holder.image.setImageBitmap(imageItem.getBitmap());
-//		}
 		holder.image.setOnClickListener(new OnClickListener() {
 			@Override
 			public void onClick(View v) {
