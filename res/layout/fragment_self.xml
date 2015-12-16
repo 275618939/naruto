@@ -315,14 +315,14 @@
             </LinearLayout>
 
             <LinearLayout
-                android:id="@+id/my_coin_layout"
+                android:id="@+id/my_dynamic_layout"
                 style="@style/setting_item_head"
                 android:layout_marginTop="@dimen/layout_item_top" >
 
                 <TextView
-                    android:id="@+id/my_coin"
+                    android:id="@+id/my_dynamic"
                     style="@style/setting_item_text"
-                    android:text="@string/left_drawer_item_my_coin" />
+                    android:text="@string/left_drawer_item_my_dynamic" />
 
                 <View
                     android:layout_width="0.0dip"

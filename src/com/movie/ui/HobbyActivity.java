@@ -64,9 +64,6 @@ public class HobbyActivity extends BaseActivity implements OnClickListener,CallB
 		hobbyView.loadMoreHobby();
 		
 	}
-
-
-
 	private void modifyUser() {
 		hobbyUpdateService.addParams("hobbies", hobbyView.getUserHobbies());
 		hobbyUpdateService.execute(this);
@@ -86,17 +83,8 @@ public class HobbyActivity extends BaseActivity implements OnClickListener,CallB
 	public void onBackPressed() {
 		super.onBackPressed();
 		overridePendingTransition(R.anim.slide_in_left, R.anim.slide_out_right);
+		setResult(UserActivity.RELOAGIN);
 		this.finish();
-		/*if(go==GO_USER){
-			Intent intent = new Intent(this, UserActivity.class);
-			this.startActivity(intent);
-			this.finish();
-		}else if(go==GO_DETAIL){
-			Intent intent = new Intent(this, UserDetailActivity.class);
-			intent.putExtra("user", user);
-			startActivity(intent);
-			//this.finish();
-		}*/
 	}
 
 
@@ -116,7 +104,14 @@ public class HobbyActivity extends BaseActivity implements OnClickListener,CallB
 
 	@Override
 	public void OnRequest() {
-		showProgressDialog("提示", "正在提交，请稍后......");
+		showProgressDialog();
+	}
+	@Override
+	protected void onDestroy() {
+		super.onDestroy();
+		hobbyUpdateService=null;
+	    hobbyService=null;
+		hobbies=null;
 	}
 
 	

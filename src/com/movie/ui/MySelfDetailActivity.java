@@ -65,7 +65,6 @@ public class MySelfDetailActivity extends BaseActivity implements
 	LinearLayout hobbiesLayout;
 	LinearLayout commentsLayout;
 	List<Map<Integer, Integer>> comments = new ArrayList<Map<Integer, Integer>>();
-	ImageLoader imageLoaderCache;
 	Map<Integer,String> hobbiesMap;
 	Map<Integer,String> filmTypeMap;
 
@@ -78,7 +77,6 @@ public class MySelfDetailActivity extends BaseActivity implements
 		httpUserFilmTyService = new HttpUserFilmTypeService(this);
 		hobbyService = new HobbyService();
 		filmTypeService = new FilmTypeService();
-		imageLoaderCache=ImageLoader.getInstance();
 		initViews();
 		initEvents();
 		initData();
@@ -186,7 +184,7 @@ public class MySelfDetailActivity extends BaseActivity implements
 				Map<String, Object> values = (Map<String, Object>) map.get(ReturnCode.RETURN_VALUE);
 				user.setMemberId(values.get("memberId").toString());
 				if (values.containsKey("portrait")) {
-					imageLoaderCache.displayImage(Constant.SERVER_ADRESS+values.get("portrait").toString(),headView,NarutoApplication.imageOptions);
+					imageLoader.displayImage(Constant.SERVER_ADRESS+values.get("portrait").toString(),headView,NarutoApplication.imageOptions);
 					user.setPortrait(values.get("portrait").toString());
 				}
 				if (values.containsKey("sex")) {

@@ -111,7 +111,7 @@ public class FeedProfileActivity extends BaseActivity implements
 	protected void onDestroy() {
 		super.onDestroy();
 		mComments.clear();
-		mAdapter=null;
+		//mAdapter=null;
 	}
 	
 

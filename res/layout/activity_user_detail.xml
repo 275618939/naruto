@@ -59,7 +59,6 @@
                             android:id="@+id/user_introduce"
                             android:layout_width="match_parent"
                             android:layout_height="match_parent"
-                            android:layout_marginLeft="@dimen/layout_left"
                             android:orientation="vertical" >
 
                             <LinearLayout
@@ -242,6 +241,41 @@
                             android:numColumns="4"
                             android:stretchMode="columnWidth" >
                         </com.movie.view.CommentsGridView>
+
+                        <ImageView
+                            style="@style/input_item_line"
+                            android:layout_marginTop="@dimen/layout_item_top_1" />
+                    </LinearLayout>
+
+                    <LinearLayout
+                        android:id="@+id/layout_show_pre"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="@dimen/layout_item_top_1"
+                        android:orientation="vertical"
+                        android:visibility="gone" >
+
+                        <RelativeLayout
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content" >
+
+                            <TextView
+                                style="@style/common_title"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:layout_alignParentLeft="true"
+                                android:text="@string/user_photo_show" />
+                        </RelativeLayout>
+
+                        <GridView
+                            android:id="@+id/userPhotoGridview"
+                            android:layout_width="@dimen/user_manage_image_width"
+                            android:layout_height="@dimen/user_info_image_height"
+                            android:horizontalSpacing="3dp"
+                            android:numColumns="4"
+                            android:scrollbars="none"
+                            android:verticalSpacing="5dp" >
+                        </GridView>
 
                         <ImageView
                             style="@style/input_item_line"

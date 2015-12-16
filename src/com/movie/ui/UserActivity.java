@@ -37,7 +37,9 @@ import com.movie.app.NarutoApplication;
 import com.movie.client.bean.User;
 import com.movie.client.service.BaseService;
 import com.movie.client.service.CallBackService;
+import com.movie.dialog.UserDateDialog;
 import com.movie.dialog.UserSetSexDialog;
+import com.movie.fragment.SelfFragment;
 import com.movie.network.HttpUploadImageService;
 import com.movie.network.HttpUserDeleteImageService;
 import com.movie.network.HttpUserImageQueryService;
@@ -50,12 +52,12 @@ import com.movie.util.FileUtils;
 import com.movie.util.ImageItem;
 import com.movie.util.PhotoUtils;
 import com.movie.util.StringUtil;
-import com.movie.view.BirthdayDialog;
 import com.movie.view.RoundImageView;
 
 public class UserActivity extends BaseActivity implements OnClickListener,CallBackService {
 	
 	public static final int DELETE_IMAGE=0x1;
+	public static final int RELOAGIN = 0x2;
 	EditText accountEdit;
 	EditText passwordEdit;
 	Button loginButton;
@@ -91,6 +93,7 @@ public class UserActivity extends BaseActivity implements OnClickListener,CallBa
 	GridView photoGridview;
 	UserPhotoMangeGridAdapter photoGridAdapter;
 	UserSetSexDialog sexDialog;
+	UserDateDialog userDateDialog;
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
@@ -101,6 +104,8 @@ public class UserActivity extends BaseActivity implements OnClickListener,CallBa
 		httpUserDeleteImageService = new HttpUserDeleteImageService(this);
 		httpUploadImageService = new HttpUploadImageService(this);
 		userPhotoPopupWindow = new UserPhotoPopupWindow(this,LayoutParams.MATCH_PARENT, LayoutParams.WRAP_CONTENT);
+		sexDialog=new UserSetSexDialog(this);
+		userDateDialog=new UserDateDialog(this);
 		initViews();
 		initEvents();
 		initData();
@@ -109,7 +114,6 @@ public class UserActivity extends BaseActivity implements OnClickListener,CallBa
 	@Override
 	protected void initViews() {
 		
-		sexDialog=new UserSetSexDialog(this);
 		title = (TextView) findViewById(R.id.title);
 		nickName = (TextView) findViewById(R.id.nickName);
 		sex = (TextView) findViewById(R.id.sex);
@@ -169,13 +173,14 @@ public class UserActivity extends BaseActivity implements OnClickListener,CallBa
 		layoutHead.setOnClickListener(this);
 		addPicView.setOnClickListener(this);
 	}
-
 	@Override
 	protected void initData() {
 		title.setText("编辑信息");
 		sexDialog.setTitle(getText(R.string.sex_hint));
+		userDateDialog.setTitle(getText(R.string.birthday_hint));
 		loadUser();
 		loadUserImage();
+		
 	}
 	private void deleteImage(String imageId){
 		httpUserDeleteImageService.addParams("imageId", imageId);
@@ -197,29 +202,24 @@ public class UserActivity extends BaseActivity implements OnClickListener,CallBa
 			break;
 		case R.id.layout_nick:
 			Intent intent = new Intent(this, NickActivity.class);
-			startActivity(intent);
-			this.finish();
+			startActivityForResult(intent, RELOAGIN);
 			break;
 		case R.id.layout_mobile:
 			Intent intentMobile = new Intent(this, MobileActivity.class);
-			startActivity(intentMobile);
-			this.finish();
+			startActivityForResult(intentMobile, RELOAGIN);
 			break;
 		case R.id.layout_email:
 			Intent intentEmail = new Intent(this, EmailActivity.class);
-			startActivity(intentEmail);
-			this.finish();
+			startActivityForResult(intentEmail, RELOAGIN);
 			break;
 		case R.id.layout_sign:
 			Intent intentSign = new Intent(this, SignActivity.class);
-			startActivity(intentSign);
-			this.finish();
+			startActivityForResult(intentSign, RELOAGIN);
 			break;
 		case R.id.layout_hobby:
 			Intent intentHobby = new Intent(this, HobbyActivity.class);
 			intentHobby.putExtra("user", user);
-			startActivity(intentHobby);
-			this.finish();
+			startActivityForResult(intentHobby, RELOAGIN);
 			break;
 		case R.id.layout_head:
 			isHead=true;
@@ -246,34 +246,29 @@ public class UserActivity extends BaseActivity implements OnClickListener,CallBa
 			sexDialog.show();
 			break;
 		case R.id.layout_birthday:
-
-			final BirthdayDialog.Builder birthdayBuilder = new BirthdayDialog.Builder(this);
-			birthdayBuilder.setTitle(R.string.birthday_hint);
-			birthdayBuilder.setPositiveButton("取消",
+			userDateDialog.setButton("取消",
 					new DialogInterface.OnClickListener() {
+						@Override
 						public void onClick(DialogInterface dialog, int which) {
-							dialog.dismiss();
+							userDateDialog.cancel();
 						}
-					});
-			birthdayBuilder.setNegativeButton("确定",
-					new android.content.DialogInterface.OnClickListener() {
+					}, "确认", new DialogInterface.OnClickListener() {
+
+						@Override
 						public void onClick(DialogInterface dialog, int which) {
-							dialog.dismiss();
-							DatePicker datePicker = birthdayBuilder
-									.getBirthDay();
+							userDateDialog.dismiss();
+							DatePicker datePicker = userDateDialog.getUserDate();
 							int year = datePicker.getYear();
 							int month = datePicker.getMonth();
 							int data = datePicker.getDayOfMonth();
-							String value = StringUtil.dateChangeStr(year,
-									month, data);
+							String value = StringUtil.dateChangeStr(year,month, data);
 							birthday.setText(StringUtil.strChangeDate(value));
 							httpUserUpdateService.clearReqeustParams();
 							httpUserUpdateService.addParams("birthday", value);
 							modifyUserInfo();
 						}
 					});
-
-			birthdayBuilder.create().show();
+			userDateDialog.show();
 			break;
 
 		}
@@ -281,7 +276,9 @@ public class UserActivity extends BaseActivity implements OnClickListener,CallBa
 	}
 	protected void onActivityResult(int requestCode, int resultCode, Intent data) {
 		switch (requestCode) {
-		
+		case RELOAGIN:
+			loadUser();
+			break;
 		case PhotoUtils.INTENT_REQUEST_CODE_ALBUM:
 			if (data == null) {
 				return;
@@ -306,12 +303,11 @@ public class UserActivity extends BaseActivity implements OnClickListener,CallBa
 							showToask("请选择正确的图片文件");
 							return;
 						}
-						// 压缩图片
 						Bitmap bitmap = PhotoUtils.createBitmap(picPath,NarutoApplication.getApp().mScreenWidth / 2,NarutoApplication.getApp().mScreenHeight / 2);
+						//重新保存压缩后的图片
+						FileUtils.saveBitmapByPath(bitmap, picPath);
 						if(isHead){
 							headImage.setImageBitmap(bitmap);
-							//重新保存压缩后的图片
-							FileUtils.saveBitmapByPath(bitmap, picPath);
 							//上传图片
 							upload(picPath,Constant.Portrait_Modify_API_URL);
 							isHead=false;
@@ -321,8 +317,10 @@ public class UserActivity extends BaseActivity implements OnClickListener,CallBa
 							imageItem.setBitmap(bitmap);
 							imageItem.setSelected(true);
 							Bimp.tempSelectBitmap.add(imageItem);
-							imageItem=null;
 							photoGridAdapter.notifyDataSetChanged();
+							upload(imageItem.getImagePath(),Constant.User_Image_Upload_API_URL);
+							//释放内存
+							imageItem.getBitmap().recycle();
 						}
 						bitmap=null;
 						System.gc();
@@ -340,10 +338,10 @@ public class UserActivity extends BaseActivity implements OnClickListener,CallBa
 				if (picPath != null) {
 					// 按比例缩放图片
 					Bitmap bitmap = PhotoUtils.createBitmap(picPath,NarutoApplication.getApp().mScreenWidth / 2,NarutoApplication.getApp().mScreenHeight / 2);
+					//重新保存压缩后的图片
+					FileUtils.saveBitmapByPath(bitmap, picPath);
 					if(isHead){
-						headImage.setImageBitmap(bitmap);
-					   //重新保存压缩后的图片
-					   FileUtils.saveBitmapByPath(bitmap, picPath);
+					   headImage.setImageBitmap(bitmap);
 					   //上传图片
 					   upload(picPath,Constant.Portrait_Modify_API_URL);
 					   isHead=false;
@@ -353,8 +351,10 @@ public class UserActivity extends BaseActivity implements OnClickListener,CallBa
 						imageItem.setBitmap(bitmap);
 						imageItem.setSelected(true);
 						Bimp.tempSelectBitmap.add(imageItem);
-						imageItem=null;
 						photoGridAdapter.notifyDataSetChanged();
+						upload(imageItem.getImagePath(),Constant.User_Image_Upload_API_URL);
+						//释放内存
+						imageItem.getBitmap().recycle();
 					}
 					bitmap=null;
 					System.gc();
@@ -369,14 +369,17 @@ public class UserActivity extends BaseActivity implements OnClickListener,CallBa
 		}
 	}
 	private void synUserPhoto(){
-		for(ImageItem imageItem:Bimp.tempSelectBitmap){
+		for(int i=0;i<Bimp.tempSelectBitmap.size();i++){
+			imageItem=Bimp.tempSelectBitmap.get(i);
 			if(imageItem.isSelected){
 				//上传图片
 				upload(imageItem.getImagePath(),Constant.User_Image_Upload_API_URL);
+				//释放内存
+				imageItem.getBitmap().recycle();
+				Bimp.tempSelectBitmap.remove(i);
+				i--;
 			}
 		}
-		//Bimp.tempSelectBitmap.clear();
-		//PhotoUtils.deleteImageFile();
 	}
 	private void upload(String picPath,String url) {
 		
@@ -403,17 +406,15 @@ public class UserActivity extends BaseActivity implements OnClickListener,CallBa
 	@Override
 	public void onBackPressed() {
 		Intent intent = new Intent(this, MainActivity.class);
-		this.startActivity(intent);
-		this.finish();
+		setResult(SelfFragment.RELOAGIN,intent);
+		finish();
 	}
 	@Override
 	public void SuccessCallBack(Map<String, Object> map) {
-
-		hideProgressDialog();
 		String code = map.get(Constant.ReturnCode.RETURN_STATE).toString();
 		if (Constant.ReturnCode.STATE_1.equals(code)) {
 			String tag = map.get(Constant.ReturnCode.RETURN_TAG).toString();
-			if (tag.endsWith(httpUserService.TAG)) {
+			if (tag.equals(httpUserService.TAG)) {
 				Map<String, Object> value = (Map<String, Object>) map.get(Constant.ReturnCode.RETURN_VALUE);
 				if (null != value) {
 					user = new User();
@@ -448,7 +449,7 @@ public class UserActivity extends BaseActivity implements OnClickListener,CallBa
 					}
 				}
 
-			}else if (tag.endsWith(httpUserQueryImageService.TAG)) {
+			}else if (tag.equals(httpUserQueryImageService.TAG)) {
 				Bimp.tempSelectBitmap.clear();
 				List<HashMap<String, Object>> datas = (ArrayList<HashMap<String, Object>>) map.get(Constant.ReturnCode.RETURN_VALUE);
 				int size = datas.size();
@@ -468,7 +469,7 @@ public class UserActivity extends BaseActivity implements OnClickListener,CallBa
 					addPicView.setVisibility(View.GONE);
 				}
 				photoGridAdapter.notifyDataSetChanged();
-			}else if (tag.endsWith(httpUploadImageService.TAG)) {
+			}else if (tag.equals(httpUploadImageService.TAG)) {
 				
 			}
 		} else {
@@ -477,28 +478,26 @@ public class UserActivity extends BaseActivity implements OnClickListener,CallBa
 		}
 		map = null;
 	}
-
 	@Override
 	public void ErrorCallBack(Map<String, Object> map) {
-		hideProgressDialog();
 		String message = map.get(Constant.ReturnCode.RETURN_MESSAGE).toString();
 		showToask(message);
 	}
-
 	@Override
 	public void OnRequest() {
 
 	}
-
 	@Override
 	protected void onDestroy() {
 		super.onDestroy();
 		httpUserDeleteImageService = null;
 		httpUserUpdateService = null;
-		//httpUserService = null;
 		userHobbis = null;
+		//Bimp.tempSelectBitmap.clear();
+		PhotoUtils.deleteImageFile();
 		//退出时同步用户新增图片
-		synUserPhoto();
+		//synUserPhoto();
+		
 		
 	}
 

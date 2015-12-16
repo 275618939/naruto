@@ -2,7 +2,6 @@ package com.movie.ui;
 
 import java.util.Map;
 
-import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
 import android.view.View.OnClickListener;
@@ -12,7 +11,10 @@ import android.widget.TextView;
 
 import com.movie.R;
 import com.movie.app.BaseActivity;
+import com.movie.app.Constant;
+import com.movie.client.service.BaseService;
 import com.movie.client.service.CallBackService;
+import com.movie.network.HttpUserUpdateService;
 
 public class EmailActivity extends BaseActivity implements OnClickListener,CallBackService {
 
@@ -21,11 +23,13 @@ public class EmailActivity extends BaseActivity implements OnClickListener,CallB
 	TextView right;
 	EditText email;
 	ImageView clear;
+	BaseService httpUserDateService;
 
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_email);
+		httpUserDateService = new HttpUserUpdateService(this);
 		initViews();
 		initEvents();
 		initData();
@@ -65,7 +69,8 @@ public class EmailActivity extends BaseActivity implements OnClickListener,CallB
 			showToask("邮箱不合法");
 			return;
         }
-
+		httpUserDateService.addParams("email", value);
+		httpUserDateService.execute(this);
 	}
 
 	@Override
@@ -84,28 +89,41 @@ public class EmailActivity extends BaseActivity implements OnClickListener,CallB
 
 	@Override
 	public void onBackPressed() {
-		Intent intent = new Intent(this, UserActivity.class);
-		this.startActivity(intent);
+		super.onBackPressed();
+		overridePendingTransition(R.anim.slide_in_left, R.anim.slide_out_right);
+		setResult(UserActivity.RELOAGIN);
 		this.finish();
 	}
 
 	
 	@Override
 	public void SuccessCallBack(Map<String, Object> map) {
-		
+		hideProgressDialog();
+		String code=map.get(Constant.ReturnCode.RETURN_STATE).toString();
+		if (Constant.ReturnCode.STATE_1.equals(code)) {
+			onBackPressed();
+		}else{
+			String message=map.get(Constant.ReturnCode.RETURN_MESSAGE).toString();
+			showToask(message);
+		}
 		
 	}
 
 	@Override
 	public void ErrorCallBack(Map<String, Object> map) {
-		
+		String message=map.get(Constant.ReturnCode.RETURN_MESSAGE).toString();
+		showToask(message);
 		
 	}
 
 	@Override
 	public void OnRequest() {
-		showProgressDialog("提示", "正在提交，请稍后......");
-		
+		showProgressDialog();
+	}
+	@Override
+	protected void onDestroy() {
+		super.onDestroy();
+		httpUserDateService=null;
 	}
 
 

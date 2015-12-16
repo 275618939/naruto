@@ -2,7 +2,6 @@ package com.movie.ui;
 
 import java.util.Map;
 
-import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
 import android.view.View.OnClickListener;
@@ -32,6 +31,7 @@ public class MobileActivity extends BaseActivity implements OnClickListener,Call
 		setContentView(R.layout.activity_mobile);
 		httpUserDateService = new HttpUserUpdateService(this);
 		initViews();
+		initEvents();
 		initData();
 	}
 
@@ -42,6 +42,7 @@ public class MobileActivity extends BaseActivity implements OnClickListener,Call
 		mobile = (EditText) findViewById(R.id.mobile);
 		clear = (ImageView) findViewById(R.id.clear);
 		right.setVisibility(View.VISIBLE);
+		right.setClickable(true);
 
 	}
 
@@ -91,8 +92,9 @@ public class MobileActivity extends BaseActivity implements OnClickListener,Call
 
 	@Override
 	public void onBackPressed() {
-		Intent intent = new Intent(this, UserActivity.class);
-		this.startActivity(intent);
+		super.onBackPressed();
+		overridePendingTransition(R.anim.slide_in_left, R.anim.slide_out_right);
+		setResult(UserActivity.RELOAGIN);
 		this.finish();
 	}
 
@@ -118,7 +120,12 @@ public class MobileActivity extends BaseActivity implements OnClickListener,Call
 
 	@Override
 	public void OnRequest() {
-		showProgressDialog("提示", "正在提交，请稍后......");		
+		showProgressDialog();
+	}
+	@Override
+	protected void onDestroy() {
+		super.onDestroy();
+		httpUserDateService=null;
 	}
 
 

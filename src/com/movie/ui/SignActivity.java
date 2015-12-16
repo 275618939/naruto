@@ -2,7 +2,6 @@ package com.movie.ui;
 
 import java.util.Map;
 
-import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
 import android.view.View.OnClickListener;
@@ -85,8 +84,9 @@ public class SignActivity extends BaseActivity implements OnClickListener,CallBa
 
 	@Override
 	public void onBackPressed() {
-		Intent intent = new Intent(this, UserActivity.class);
-		this.startActivity(intent);
+		super.onBackPressed();
+		overridePendingTransition(R.anim.slide_in_left, R.anim.slide_out_right);
+		setResult(UserActivity.RELOAGIN);
 		this.finish();
 	}
 

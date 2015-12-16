@@ -25,11 +25,11 @@ import com.movie.client.service.BaseService;
 import com.movie.client.service.CallBackService;
 import com.movie.client.service.LoginService;
 import com.movie.client.service.UserService;
+import com.movie.dialog.CaptchaDialog;
 import com.movie.fragment.SelfFragment;
 import com.movie.network.HttpCaptchaService;
 import com.movie.network.HttpLoginService;
 import com.movie.util.BytesUtils;
-import com.movie.view.CustomDialog;
 
 
 public class LoginActivity extends BaseActivity implements OnClickListener, CallBackService {
@@ -47,7 +47,8 @@ public class LoginActivity extends BaseActivity implements OnClickListener, Call
 	UserService userService;
 	BaseService httpLoginService;
 	BaseService httpCaptchaService;
-	
+	CaptchaDialog captchaDialog;
+	String requestTag;
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
@@ -56,6 +57,7 @@ public class LoginActivity extends BaseActivity implements OnClickListener, Call
 		httpLoginService=new HttpLoginService(this);
 		httpCaptchaService=new HttpCaptchaService(this);
 		userService = new UserService();
+		captchaDialog = new CaptchaDialog(this);
 		initViews();
 		initEvents();
 		initData();
@@ -82,12 +84,14 @@ public class LoginActivity extends BaseActivity implements OnClickListener, Call
 		right_text.setClickable(true);
 		loginClearView.setOnClickListener(this);
 		passClearView.setOnClickListener(this);
+		captchaDialog.getChange().setOnClickListener(this);
 	}
 
 	@Override
 	protected void initData() {
 		title.setText("登陆");
 		right_text.setText("注册");
+		captchaDialog.setTitle(R.string.captcha_hint);
 	}
 
 
@@ -118,6 +122,7 @@ public class LoginActivity extends BaseActivity implements OnClickListener, Call
 	}
 	private void doCaptcha(String account){
 		if(null!=account&&!account.isEmpty()){
+			requestTag=httpCaptchaService.TAG;
 			httpCaptchaService.addParams("login", account);
 			httpCaptchaService.execute(this);
 		}
@@ -126,6 +131,9 @@ public class LoginActivity extends BaseActivity implements OnClickListener, Call
 	@Override
 	public void onClick(View v) {
 		switch (v.getId()) {
+		case R.id.change:
+			doCaptcha(accountEdit.getText().toString());
+			break;
 		case R.id.clear_login:
 			accountEdit.setText("");
 			break;
@@ -190,32 +198,23 @@ public class LoginActivity extends BaseActivity implements OnClickListener, Call
 				Object object= map.get(Constant.ReturnCode.RETURN_VALUE);
 				if(null!=object){
 					byte[] content=(byte[])object;
-					final CustomDialog.Builder builder = new CustomDialog.Builder(this);  
-					builder.setTitle(R.string.captcha_hint);
-					builder.setCode(BitmapFactory.decodeByteArray(content, 0, content.length));
-			        builder.setPositiveButton("取消", new DialogInterface.OnClickListener() {  
-			            public void onClick(DialogInterface dialog, int which) {  
-			                dialog.dismiss();  
-			            }  
-			        });  
-			        
-			        builder.setNegativeButton("确定",  
-			                new android.content.DialogInterface.OnClickListener() {  
-			                    public void onClick(DialogInterface dialog, int which) {  
-			                        String realCode=builder.getRealCode();
-			                        //设置操作
-			                        doLogin(realCode);
-			                        dialog.dismiss();
-			                    }  
-			                });  
-			        builder.setCaptchaChange(new android.content.DialogInterface.OnClickListener() {  
-			                    public void onClick(DialogInterface dialog, int which) {  
-			                        //dialog.dismiss();  
-			                        doCaptcha(accountEdit.getText().toString());
-			                    }  
-			                });
-			  
-			        builder.create().show();  
+					captchaDialog.getCodeView().setImageBitmap(BitmapFactory.decodeByteArray(content, 0, content.length));
+					captchaDialog.setButton("取消",
+							new DialogInterface.OnClickListener() {
+								@Override
+								public void onClick(DialogInterface dialog, int which) {
+									captchaDialog.cancel();
+								}
+							}, "确认", new DialogInterface.OnClickListener() {
+								@Override
+								public void onClick(DialogInterface dialog, int which) {
+									captchaDialog.dismiss();
+									 String realCode=captchaDialog.getRealCode().getText().toString();
+				                     doLogin(realCode);				                       
+								}
+							});
+					captchaDialog.show();
+					content=null;
 				}
 			}
 			
@@ -237,7 +236,9 @@ public class LoginActivity extends BaseActivity implements OnClickListener, Call
 
 	@Override
 	public void OnRequest() {
-		showProgressDialog("提示", "正在登陆，请稍后......");
+		if(requestTag!=httpCaptchaService.TAG){
+			showProgressDialog();
+		}
 	}
 	@Override
 	protected void onDestroy() {

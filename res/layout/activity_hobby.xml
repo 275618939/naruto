@@ -13,8 +13,7 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_below="@+id/title_bar"
-        android:layout_marginRight="@dimen/btn_margin_right"
-        android:layout_marginTop="@dimen/nav_padding_top" >
+        android:layout_marginTop="@dimen/layout_item_top_1" >
 
         <include layout="@layout/hobby_item" />
     </RelativeLayout>

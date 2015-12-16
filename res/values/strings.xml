@@ -15,6 +15,7 @@
     <string name="receive_have">已领取</string>
     <string name="home_item_1">火影日排行榜</string>
     <string name="user_evaluation">伙影评价</string>
+    <string name="user_photo_show">Show</string>
     <string name="user_none_sign">这家伙,很懒没有任何介绍</string>
     <string name="home_miss">今日约会</string>
     <string name="home_dynamic">动态</string>
@@ -182,6 +183,7 @@
     <string name="my_friends">好友</string>
     <string name="left_drawer_item_my_friends">我的好友</string>
     <string name="left_drawer_item_my_coin">我的影币</string>
+    <string name="left_drawer_item_my_dynamic">我的历史动态</string>
     <string name="left_drawer_item_my_letters">我的消息</string>
     <string name="left_drawer_item_setting">设置</string>
     <string name="left_drawer_item_logout">注销用户</string>

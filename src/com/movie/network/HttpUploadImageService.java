@@ -60,6 +60,7 @@ public class HttpUploadImageService extends BaseService {
 			}else{
 				throw new InvokeException(ErrorState.InvalidResource.getState(),ErrorState.InvalidResource.getMessage());
 			}
+			file=null;
 		}catch (InvokeException e) {
 			 message.what = FAILE_STATE;
 			 map.put(Constant.ReturnCode.RETURN_STATE, e.getState());

@@ -1,9 +1,7 @@
 package com.movie.ui;
 
-import java.util.HashMap;
 import java.util.Map;
 
-import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
 import android.view.View.OnClickListener;
@@ -21,7 +19,6 @@ import com.movie.network.HttpUserUpdateService;
 public class NickActivity extends BaseActivity implements OnClickListener,
 		CallBackService {
 
-	public HashMap<String, Object> apiParams = new HashMap<String, Object>();
 	TextView title;
 	TextView right;
 	EditText nickName;
@@ -87,8 +84,9 @@ public class NickActivity extends BaseActivity implements OnClickListener,
 
 	@Override
 	public void onBackPressed() {
-		Intent intent = new Intent(this, UserActivity.class);
-		this.startActivity(intent);
+		super.onBackPressed();
+		overridePendingTransition(R.anim.slide_in_left, R.anim.slide_out_right);
+		setResult(UserActivity.RELOAGIN);
 		this.finish();
 	}
 
@@ -113,7 +111,7 @@ public class NickActivity extends BaseActivity implements OnClickListener,
 
 	@Override
 	public void OnRequest() {
-		showProgressDialog("提示", "正在提交，请稍后......");		
+		showProgressDialog();
 	}
 	@Override
 	protected void onDestroy() {

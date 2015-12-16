@@ -16,6 +16,7 @@ import android.view.ViewGroup;
 import android.widget.ImageView;
 
 import com.movie.R;
+import com.movie.app.BaseActivity;
 import com.movie.app.BaseObjectListAdapter;
 import com.movie.app.NarutoApplication;
 import com.movie.client.bean.BaseBean;
@@ -30,6 +31,7 @@ public class UserPhotoMangeGridAdapter extends BaseObjectListAdapter implements 
 	private PhotoDeletePopupWindow deletePopupWindow;
 	private int selectPosition;
 	private int mWidthAndHeight;
+	private boolean unEnableDelete;
 	public UserPhotoMangeGridAdapter(Context context, Handler mHandler,List<? extends BaseBean> datas) {
 		super(context, mHandler, datas);
 		mWidthAndHeight = (int) TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, 60, context.getResources().getDisplayMetrics());
@@ -64,20 +66,22 @@ public class UserPhotoMangeGridAdapter extends BaseObjectListAdapter implements 
 			@Override
 			public void onClick(View v) {
 				Intent intent = new Intent(mContext, ImageBrowserActivity.class);
-				mContext.startActivity(intent);
-				((UserActivity) mContext).overridePendingTransition(R.anim.zoom_enter,0);
+				mContext.startActivity(intent);			
+				((BaseActivity) mContext).overridePendingTransition(R.anim.zoom_enter,0);
 			}
 		});
-		holder.image.setOnLongClickListener(new OnLongClickListener() {
-			@Override
-			public boolean onLongClick(View v) {
-				selectPosition=position;
-				int[] location = new int[2];
-				v.getLocationOnScreen(location);
-				deletePopupWindow.showAtLocation(v, Gravity.NO_GRAVITY,location[0], location[1]+mWidthAndHeight+10);
-				return false;
-			}
-		});
+		if(!unEnableDelete){
+			holder.image.setOnLongClickListener(new OnLongClickListener() {
+				@Override
+				public boolean onLongClick(View v) {
+					selectPosition=position;
+					int[] location = new int[2];
+					v.getLocationOnScreen(location);
+					deletePopupWindow.showAtLocation(v, Gravity.NO_GRAVITY,location[0], location[1]+mWidthAndHeight+10);
+					return false;
+				}
+			});
+		}
 
 	
 		return convertView;
@@ -94,6 +98,10 @@ public class UserPhotoMangeGridAdapter extends BaseObjectListAdapter implements 
 		message.setData(bundle);
         mHandler.sendMessage(message);		
 	}
+	public void setUnEnableDelete(boolean unEnableDelete) {
+		this.unEnableDelete = unEnableDelete;
+	}
+	
 
 	
 		

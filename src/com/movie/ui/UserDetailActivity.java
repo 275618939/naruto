@@ -10,6 +10,7 @@ import android.content.Intent;
 import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
 import android.os.Bundle;
+import android.os.Handler;
 import android.view.ContextThemeWrapper;
 import android.view.View;
 import android.view.View.OnClickListener;
@@ -28,6 +29,7 @@ import com.handmark.pulltorefresh.library.PullToRefreshBase.OnRefreshListener;
 import com.handmark.pulltorefresh.library.PullToRefreshScrollView;
 import com.movie.R;
 import com.movie.adapter.EvaluationAdapter;
+import com.movie.adapter.UserPhotoMangeGridAdapter;
 import com.movie.app.BaseActivity;
 import com.movie.app.Constant;
 import com.movie.app.Constant.Page;
@@ -42,11 +44,14 @@ import com.movie.client.service.HobbyService;
 import com.movie.client.service.UserService;
 import com.movie.network.HttpUserCommentService;
 import com.movie.network.HttpUserFilmTypeService;
+import com.movie.network.HttpUserImageQueryService;
 import com.movie.network.HttpUserLoveService;
 import com.movie.network.HttpUserService;
 import com.movie.state.BackGroundColor;
 import com.movie.state.SexState;
+import com.movie.util.Bimp;
 import com.movie.util.Horoscope;
+import com.movie.util.ImageItem;
 import com.movie.util.StringUtil;
 import com.movie.util.UserCharm;
 import com.movie.view.LoadView;
@@ -55,6 +60,7 @@ public class UserDetailActivity extends BaseActivity implements
 		OnClickListener, CallBackService,OnRefreshListener<ScrollView> {
 	
 	User user;
+	ImageItem imageItem;
 	String memberId;
 	TextView title;
 	TextView right_text;
@@ -64,11 +70,14 @@ public class UserDetailActivity extends BaseActivity implements
 	BaseService httpUserCommentService;
 	BaseService httpUserFilmTyService;
 	BaseService httpUserLoveService;
+	BaseService httpUserQueryImageService;
 	UserService userService;
 	HobbyService hobbyService;
 	FilmTypeService filmTypeService;
 	EvaluationAdapter evaluationAdapter;
 	GridView commentsView;
+	GridView photoGridview;
+	UserPhotoMangeGridAdapter photoGridAdapter;
 	PullToRefreshScrollView refreshableScollView;
 	TextView userSex;
 	TextView loveView;
@@ -87,6 +96,7 @@ public class UserDetailActivity extends BaseActivity implements
 	LinearLayout commentsLayout;
 	LinearLayout layoutMoviesPre;
 	LinearLayout userDetailTool;
+	LinearLayout layoutShowPre;
 	RelativeLayout userDetailParent;
 	List<Map<Integer, Integer>> comments = new ArrayList<Map<Integer, Integer>>();
 	Map<Integer,String> hobbiesMap;
@@ -104,6 +114,7 @@ public class UserDetailActivity extends BaseActivity implements
 		httpUserCommentService = new HttpUserCommentService(this);
 		httpUserFilmTyService = new HttpUserFilmTypeService(this);
 		httpUserLoveService = new HttpUserLoveService(this);
+		httpUserQueryImageService = new HttpUserImageQueryService(this);
 		hobbyService = new HobbyService();
 		userService = new UserService();
 		filmTypeService = new FilmTypeService();
@@ -131,6 +142,7 @@ public class UserDetailActivity extends BaseActivity implements
 		commentsLayout = (LinearLayout) findViewById(R.id.comments_layout);
 		layoutMoviesPre = (LinearLayout) findViewById(R.id.layout_movies_pre);
 		userDetailTool  = (LinearLayout) findViewById(R.id.user_detail_tool);
+		layoutShowPre  = (LinearLayout) findViewById(R.id.layout_show_pre);
 		hobbyMore = (RelativeLayout) findViewById(R.id.hobby_arrow);
 		commnetsMore = (TextView) findViewById(R.id.comments_more);
 		hobbyArrowMore = (TextView) findViewById(R.id.hobby_arrow_more);
@@ -142,6 +154,11 @@ public class UserDetailActivity extends BaseActivity implements
 		commentsView.setAdapter(evaluationAdapter);
 		commentsView.setSelector(new ColorDrawable(Color.TRANSPARENT));	
 		refreshableScollView.setMode(Mode.PULL_FROM_START);
+		photoGridview = (GridView)findViewById(R.id.userPhotoGridview);
+		photoGridview.setSelector(new ColorDrawable(Color.TRANSPARENT));
+		photoGridAdapter =new UserPhotoMangeGridAdapter(this,mHandler,Bimp.tempSelectBitmap);
+		photoGridview.setAdapter(photoGridAdapter);
+		photoGridAdapter.setUnEnableDelete(true);
 		
 	}
 
@@ -160,9 +177,15 @@ public class UserDetailActivity extends BaseActivity implements
 		refreshableScollView.setRefreshing();
 		loginUser = userService.getUserItem();
 		loadUser();
+		loadUserImage();
 		loadUserFilmType();
 		
 	}
+	private void loadUserImage(){
+		httpUserQueryImageService.addParams("memberId", memberId);
+		httpUserQueryImageService.execute(this);
+	}
+
 	@Override
 	public void onStart(){
 		super.onStart();
@@ -171,7 +194,6 @@ public class UserDetailActivity extends BaseActivity implements
 				userDetailTool.setVisibility(View.GONE);
 			}
 		}
-		
 	}
 
 	/* 获取传递过来的数据 */
@@ -198,7 +220,11 @@ public class UserDetailActivity extends BaseActivity implements
 		httpUserLoveService.addParams("memberId", memberId);
 		httpUserLoveService.execute(this);
 	}
-
+	Handler mHandler = new Handler() {
+		public void handleMessage(android.os.Message msg) {
+			switch (msg.what) {}
+		};
+	};
 	@Override
 	public void onClick(View v) {
 		switch (v.getId()) {
@@ -311,8 +337,10 @@ public class UserDetailActivity extends BaseActivity implements
 					TextView textView = null;
 					if (null != hobbies) {
 						int size = hobbies.size();
-					
-						for (int i = 0; i < Page.MAXHOBBIES; i++) {
+						for (int i = 0; i < size; i++) {
+							if(i>=Page.MAXHOBBIES){
+								break;
+							}
 							textView = new TextView(new ContextThemeWrapper(this, R.style.common_tag), null, 0);
 							int key = hobbies.get(i);
 							String value = hobbiesMap.get(key);
@@ -381,6 +409,28 @@ public class UserDetailActivity extends BaseActivity implements
 				
 			}else if(tag.endsWith(httpUserLoveService.TAG)){
 				loadUser();
+			}else if (tag.equals(httpUserQueryImageService.TAG)) {
+				Bimp.tempSelectBitmap.clear();
+				List<HashMap<String, Object>> datas = (ArrayList<HashMap<String, Object>>) map.get(Constant.ReturnCode.RETURN_VALUE);
+				int size = datas.size();
+				if(size>0){
+					layoutShowPre.setVisibility(View.VISIBLE);
+				}else{
+					layoutShowPre.setVisibility(View.GONE);
+				}
+				HashMap<String, Object> missMap = null;
+				for (int i = 0; i < size; i++) {
+					imageItem = new ImageItem();
+					imageItem.setSelected(false);
+					missMap = datas.get(i);
+					if (missMap.containsKey("id"))
+						imageItem.setImageId(missMap.get("id").toString());
+					if (missMap.containsKey("url"))
+						imageItem.setImagePath(Constant.SERVER_ADRESS+missMap.get("url").toString());
+		
+					Bimp.tempSelectBitmap.add(imageItem);
+				}
+				photoGridAdapter.notifyDataSetChanged();
 			}
 		}else if (Constant.ReturnCode.STATE_3.equals(code)) {
 			Intent loginIntent = new Intent(this,LoginActivity.class);
@@ -454,6 +504,7 @@ public class UserDetailActivity extends BaseActivity implements
 	    hobbiesMap=null;
 		filmTypeMap=null;
 		comments.clear();
+		Bimp.tempSelectBitmap.clear();
 	}
 
 	

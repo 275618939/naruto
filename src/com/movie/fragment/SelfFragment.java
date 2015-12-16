@@ -27,6 +27,7 @@ import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.movie.R;
+import com.movie.adapter.UserPhotoMangeGridAdapter;
 import com.movie.app.BaseFragment;
 import com.movie.app.Constant;
 import com.movie.app.Constant.ReturnCode;
@@ -36,11 +37,13 @@ import com.movie.client.bean.User;
 import com.movie.client.service.BaseService;
 import com.movie.client.service.CallBackService;
 import com.movie.network.HttpLogoutService;
+import com.movie.network.HttpUserImageQueryService;
 import com.movie.network.HttpUserService;
 import com.movie.pop.SignInPopupWindow;
 import com.movie.ui.LoginActivity;
 import com.movie.ui.MissQueryActivity;
 import com.movie.ui.MissSelfQueryActivity;
+import com.movie.ui.MySelfDetailActivity;
 import com.movie.ui.UserActivity;
 import com.movie.ui.UserDetailActivity;
 import com.movie.ui.UserLoveMovieActivity;
@@ -51,10 +54,9 @@ import com.nostra13.universalimageloader.core.ImageLoader;
 
 public class SelfFragment extends BaseFragment implements OnClickListener , CallBackService{
 	
-	public static final int RELOAGIN = 0X101;
-	public static final int PTHOTO_UPDATE = 0X001;
-	public static final int LOGOUT = 0X110;
+	public static final int RELOAGIN = 0x1;
 	User user;
+	BaseService httpUserQueryImageService;
 	BaseService httpUsersService;
 	BaseService httpLogotService;
 	RelativeLayout loginLayout;
@@ -62,6 +64,7 @@ public class SelfFragment extends BaseFragment implements OnClickListener , Call
 	LinearLayout myMissLayout;
 	LinearLayout loginAfterLayout;
 	LinearLayout seeMoiveLayout;
+	LinearLayout myDynamicLayout;
 	ImageLoader loaderCache;
 	ImageView loginLogo;
 	ImageView userInfoLogo;
@@ -79,7 +82,9 @@ public class SelfFragment extends BaseFragment implements OnClickListener , Call
 	ImageItem imageItem;
 	SignInPopupWindow signInPopupWindow;
 	GridView photoGridview;
+	UserPhotoMangeGridAdapter photoGridAdapter;
 	LinearLayout userPhotoMangerLayout;
+	
 	public SelfFragment() {
 		super();		
 	}
@@ -90,6 +95,7 @@ public class SelfFragment extends BaseFragment implements OnClickListener , Call
 	public void onCreate(Bundle savedInstanceState){
 		super.onCreate(savedInstanceState);
 		loaderCache = ImageLoader.getInstance();
+		httpUserQueryImageService = new HttpUserImageQueryService(getActivity());
 		httpUsersService = new HttpUserService(getActivity());
 		httpLogotService = new HttpLogoutService(getActivity());
 		initPopWindowData();
@@ -118,6 +124,7 @@ public class SelfFragment extends BaseFragment implements OnClickListener , Call
 		myMissLayout=(LinearLayout)rootView.findViewById(R.id.my_miss_layout);
 		loginAfterLayout=(LinearLayout)rootView.findViewById(R.id.loginAfter);
 		seeMoiveLayout=(LinearLayout)rootView.findViewById(R.id.see_moive_layout);
+		myDynamicLayout=(LinearLayout)rootView.findViewById(R.id.my_dynamic_layout);
 		loginLogo = (ImageView)rootView.findViewById(R.id.login_logo);
 		userInfoLogo = (ImageView)rootView.findViewById(R.id.user_info_logo);
 		userEdit = (ImageView)rootView.findViewById(R.id.user_edit);
@@ -134,7 +141,9 @@ public class SelfFragment extends BaseFragment implements OnClickListener , Call
 		userPhotoMangerLayout = (LinearLayout)rootView.findViewById(R.id.user_photo_manger);
 		photoGridview = (GridView)rootView.findViewById(R.id.userPhotoGridview);
 		photoGridview.setSelector(new ColorDrawable(Color.TRANSPARENT));
-		
+		photoGridAdapter =new UserPhotoMangeGridAdapter(getActivity(), mHandler,Bimp.tempSelectBitmap);
+		photoGridAdapter.setUnEnableDelete(true);
+		photoGridview.setAdapter(photoGridAdapter);
 	}
 	@Override
 	protected void initEvents() {
@@ -144,6 +153,9 @@ public class SelfFragment extends BaseFragment implements OnClickListener , Call
 		userLogoutBtn.setOnClickListener(this);
 		myMissLayout.setOnClickListener(this);
 		userSignIn.setOnClickListener(this);
+	}
+	private void loadUserImage(){
+		httpUserQueryImageService.execute(this);
 	}
 	@Override
 	protected void lazyLoad() {
@@ -155,7 +167,7 @@ public class SelfFragment extends BaseFragment implements OnClickListener , Call
 			return;
 		}		
 		loadUser();
-		
+		loadUserImage();
 	}
 	
 	
@@ -209,6 +221,8 @@ public class SelfFragment extends BaseFragment implements OnClickListener , Call
 		switch (resultCode) { 
 		   case RELOAGIN:
 			    loadUser();
+			    photoGridAdapter.notifyDataSetChanged();
+			    //loadUserImage();
 			    break;	
 			default:
 				break;
@@ -260,7 +274,7 @@ public class SelfFragment extends BaseFragment implements OnClickListener , Call
 				break;
 			case R.id.user_edit:
 				Intent userEditIntent = new Intent(getActivity(),UserActivity.class);			
-				startActivity(userEditIntent);
+				startActivityForResult(userEditIntent, RELOAGIN);
 				break;
 			case R.id.filmCnt:
 				Intent movieIntent = new Intent(getActivity(),UserLoveMovieActivity.class);
@@ -356,10 +370,26 @@ public class SelfFragment extends BaseFragment implements OnClickListener , Call
 				loginLayout.setVisibility(View.GONE);
 				logoutLayout.setVisibility(View.VISIBLE);
 				loginAfterLayout.setVisibility(View.VISIBLE);
-				userPhotoMangerLayout.setVisibility(View.VISIBLE);
-				
 			}else if(tag.equals(httpLogotService.TAG)){
 				 user=null;
+			}else if (tag.equals(httpUserQueryImageService.TAG)) {
+				Bimp.tempSelectBitmap.clear();
+				List<HashMap<String, Object>> datas = (ArrayList<HashMap<String, Object>>) map.get(Constant.ReturnCode.RETURN_VALUE);
+				int size = datas.size();
+				HashMap<String, Object> missMap = null;
+				for (int i = 0; i < size; i++) {
+					imageItem = new ImageItem();
+					imageItem.setSelected(false);
+					missMap = datas.get(i);
+					if (missMap.containsKey("id"))
+						imageItem.setImageId(missMap.get("id").toString());
+					if (missMap.containsKey("url"))
+						imageItem.setImagePath(Constant.SERVER_ADRESS+missMap.get("url").toString());
+		
+					Bimp.tempSelectBitmap.add(imageItem);
+				}
+				photoGridAdapter.notifyDataSetChanged();
+				userPhotoMangerLayout.setVisibility(View.VISIBLE);
 			}
 		}else if (Constant.ReturnCode.STATE_3.equals(code)) {
 			//提示用户登入
@@ -395,7 +425,6 @@ public class SelfFragment extends BaseFragment implements OnClickListener , Call
 	@Override
 	protected void destroyData() {
 		Bimp.tempSelectBitmap.clear();
-		
 	}
 	
 

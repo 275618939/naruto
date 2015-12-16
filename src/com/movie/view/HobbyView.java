@@ -114,7 +114,6 @@ public class HobbyView extends ScrollView implements OnTouchListener {
 		};
 
 	};
-
 	/**
 	 * ContractView 的构造函数。
 	 * 
@@ -125,7 +124,6 @@ public class HobbyView extends ScrollView implements OnTouchListener {
 		super(context, attrs);
 		setOnTouchListener(this);
 	}
-
 	/**
 	 * 进行一些关键性的初始化操作，获取HobbyView的高度，以及得到第一列的宽度值。并在这里开始加载第一页的喜好。
 	 */
@@ -133,7 +131,6 @@ public class HobbyView extends ScrollView implements OnTouchListener {
 	protected void onLayout(boolean changed, int l, int t, int r, int b) {
 		super.onLayout(changed, l, t, r, b);
 	}
-
 	public void init() {
 		scrollViewHeight = getHeight();
 		scrollLayout = getChildAt(0);
@@ -141,7 +138,6 @@ public class HobbyView extends ScrollView implements OnTouchListener {
 		secondColumn = (LinearLayout) findViewById(R.id.second_column);
 		thirdColumn = (LinearLayout) findViewById(R.id.third_column);
 		columnWidth = firstColumn.getWidth();
-
 	}
 
 	/**
@@ -161,7 +157,6 @@ public class HobbyView extends ScrollView implements OnTouchListener {
 	 * 开始加载喜好信息
 	 */
 	public void loadMoreHobby() {
-		Toast.makeText(getContext(), "正在加载...", Toast.LENGTH_SHORT).show();
 		int startIndex = page * PAGE_SIZE;
 		int endIndex = page * PAGE_SIZE + PAGE_SIZE;
 		int len = hobbies.size();
@@ -172,9 +167,6 @@ public class HobbyView extends ScrollView implements OnTouchListener {
 			for(Entry<Integer, String> value:hobbies.entrySet()){
 				addHobby(value.getKey(),value.getValue());
 			}
-			/*for (int i = startIndex; i < endIndex; i++) {
-				
-			}*/
 			page++;
 		} else {
 			Toast.makeText(getContext(), "已没有更多喜好", Toast.LENGTH_SHORT).show();

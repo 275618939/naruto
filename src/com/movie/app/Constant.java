@@ -136,7 +136,7 @@ public interface Constant {
 		// 想看电影显示大小
 		public static int WANT_SEE_MOIVE_SIZE = 5;
 		// 喜好显示最大项
-		public final static int MAXHOBBIES = 3;
+		public final static int MAXHOBBIES = 2;
 		// 评价最大显示项
 		public final static int COMMENTS_MAX_SHOW = 4;
 		// 电影评论最大显示项
