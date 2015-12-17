@@ -2,7 +2,7 @@ package com.movie.state;
 
 public enum MissStage {
 
-	Apply(1, "申请"), BeInvited(2, "被邀请"), At(3, "应约"), End(3, "已结束");
+	Apply(1, "申请"), BeInvited(2, "被邀请"), At(3, "应约"), End(4, "已结束");
 
 	private int state;
 	private String message;
@@ -21,29 +21,16 @@ public enum MissStage {
 	}
 
 	public static MissStage getState(int id) {
-
-		try {
-			return MissStage.values()[id];
-		} catch (Throwable e) {
-			throw new RuntimeException("not exist MissStage: " + id);
+		for (MissStage m : MissStage.values()) {
+			if (m.getState() == id) {
+				return m;
+			}
 		}
-//		switch (state) {
-//		case 1:
-//
-//			return Apply;
-//		case 2:
-//
-//			return BeInvited;
-//		case 3:
-//
-//			return At;
-//		case 4:
-//
-//			return End;
-//
-//		default:
-//			return End;
-//		}
+		return null;
+		/*
+		 * try { return MissStage.values()[id]; } catch (Throwable e) { throw
+		 * new RuntimeException("not exist MissStage: " + id); }
+		 */
 
 	}
 

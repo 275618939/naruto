@@ -116,8 +116,7 @@
                 android:layout_gravity="bottom"
                 android:layout_marginBottom="3dp"
                 android:layout_marginLeft="@dimen/layout_left_0"
-                android:orientation="horizontal"
-                android:visibility="gone" >
+                android:orientation="horizontal">
  				<GridView
 	                android:id="@+id/userPhotoGridview"
 	                android:layout_width="290dp"

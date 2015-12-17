@@ -115,7 +115,8 @@ public class StringUtil {
 			Date date = format.parse(time);
 			Calendar calendar=Calendar.getInstance();
 			calendar.setTime(date);
-			calendar.add(Calendar.HOUR_OF_DAY, hour);
+			calendar.set(Calendar.HOUR_OF_DAY, calendar.get(Calendar.HOUR_OF_DAY)-hour);
+			//calendar.add(Calendar.HOUR_OF_DAY, hour);
 			Date currentDate = new Date();
 			result = calendar.getTime().compareTo(currentDate);
 		} catch (ParseException e) {

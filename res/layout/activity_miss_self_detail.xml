@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:layout_width="fill_parent"
-    android:layout_height="fill_parent"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
     android:orientation="vertical" >
 
     <include
@@ -18,14 +18,15 @@
         android:orientation="vertical"
         android:visibility="gone" >
 
-        <ScrollView
+
+         <com.handmark.pulltorefresh.library.PullToRefreshScrollView
             android:id="@+id/miss_detail_view"
             android:layout_width="match_parent"
             android:layout_height="match_parent" >
 
             <LinearLayout
-                android:layout_width="fill_parent"
-                android:layout_height="wrap_content"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
                 android:gravity="center_horizontal"
                 android:orientation="vertical" >
 
@@ -379,21 +380,20 @@
                 <com.handmark.pulltorefresh.library.PullToRefreshListView
                     android:id="@+id/attend_user_list"
                     android:layout_width="match_parent"
-                    android:layout_height="match_parent"
+                    android:layout_height="wrap_content"
                     android:layout_marginLeft="@dimen/layout_left"
                     android:layout_marginRight="@dimen/layout_right"
-                    android:layout_marginTop="@dimen/layout_item_top_1"
+        			android:layout_marginBottom="@dimen/layout_list_bottom"
                     android:divider="@null" >
                 </com.handmark.pulltorefresh.library.PullToRefreshListView>
             </LinearLayout>
-        </ScrollView>
+        </com.handmark.pulltorefresh.library.PullToRefreshScrollView>
     </LinearLayout>
 
     <LinearLayout
         android:id="@+id/miss_bottom_bar"
         style="@style/bottom_bar_style"
-        android:layout_alignParentBottom="true"
-        android:visibility="gone" >
+        android:layout_alignParentBottom="true">
 
         <TextView
             android:id="@+id/miss_btn"

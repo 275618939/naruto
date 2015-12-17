@@ -41,7 +41,6 @@ public class HopeNarutoQueryActivity extends BaseActivity implements
 	BaseService httpMissQueryService;
 	BaseService httpMissAgreeService;
 	PullToRefreshListView refreshableListView;
-	//List<String> members=new ArrayList<String>();
 	List<MissNaruto> missNarutos = new ArrayList<MissNaruto>();
 	int page;
 	String trystId;
@@ -103,8 +102,6 @@ public class HopeNarutoQueryActivity extends BaseActivity implements
 		httpMissQueryService.execute(this);
 	}
 	private void agreeMiss(String memberId){
-		//members.clear();
-		//members.add(memberId);
 		httpMissAgreeService.addParams("trystId", trystId);
 		httpMissAgreeService.addParams("memberId", memberId);
 		httpMissAgreeService.execute(this);

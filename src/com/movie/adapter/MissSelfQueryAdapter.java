@@ -77,18 +77,17 @@ public class MissSelfQueryAdapter extends BaseObjectListAdapter {
 				}
 			}
 		});
+		mHolder.missBtnLayout.setVisibility(View.VISIBLE);
 		if(miss.getStatus().intValue()==MissState.Expired.getState()){
-			mHolder.missBtnLayout.setVisibility(View.VISIBLE);
 			mHolder.missBtn.setText(mContext.getResources().getString(R.string.branch_coin));
+		}else{
+			mHolder.missBtn.setText(MissState.getState(miss.getStatus()).getMessage());
 		}
 		int result=StringUtil.dateCompareByCurrent(miss.getRunTime());
 		if(result<0){
 			mHolder.missItemView.setBackgroundResource(MissStateBackColor.Expired.getSourceId());
-			mHolder.missBtnLayout.setVisibility(View.VISIBLE);
 			mHolder.missBtn.setText(mContext.getResources().getString(R.string.branch_coin));
 		}
-		
-		
 		return view;
 	}
 

@@ -20,22 +20,13 @@ public enum MissState {
 		return message;
 	}
 
-	public static MissState getState(int state) {
-
-		switch (state) {
-		case 1:
-
-			return HaveInHand;
-		case 2:
-
-			return Expired;
-		case 3:
-
-			return Completed;
-
-		default:
-			return Completed;
+	public static MissState getState(int id) {
+		for (MissState m : MissState.values()) {
+			if (m.getState() == id) {
+				return m;
+			}
 		}
+		return null;
 
 	}
 

@@ -20,20 +20,14 @@ public enum SexState {
 		return message;
 	}
 
-	public static SexState getState(int state) {
+	public static SexState getState(int id) {
 
-		switch (state) {
-		case 0:
-
-			return WOMAN;
-		case 1:
-
-			return MAN;
-	
-
-		default:
-			return WOMAN;
+		for (SexState s : SexState.values()) {
+			if (s.getState() == id) {
+				return s;
+			}
 		}
+		return null;
 
 	}
 

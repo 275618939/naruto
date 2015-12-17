@@ -43,7 +43,6 @@ import com.movie.pop.SignInPopupWindow;
 import com.movie.ui.LoginActivity;
 import com.movie.ui.MissQueryActivity;
 import com.movie.ui.MissSelfQueryActivity;
-import com.movie.ui.MySelfDetailActivity;
 import com.movie.ui.UserActivity;
 import com.movie.ui.UserDetailActivity;
 import com.movie.ui.UserLoveMovieActivity;
@@ -155,6 +154,7 @@ public class SelfFragment extends BaseFragment implements OnClickListener , Call
 		userSignIn.setOnClickListener(this);
 	}
 	private void loadUserImage(){
+		userPhotoMangerLayout.setVisibility(View.VISIBLE);
 		httpUserQueryImageService.execute(this);
 	}
 	@Override
@@ -221,8 +221,7 @@ public class SelfFragment extends BaseFragment implements OnClickListener , Call
 		switch (resultCode) { 
 		   case RELOAGIN:
 			    loadUser();
-			    photoGridAdapter.notifyDataSetChanged();
-			    //loadUserImage();
+			    loadUserImage();
 			    break;	
 			default:
 				break;
@@ -389,7 +388,6 @@ public class SelfFragment extends BaseFragment implements OnClickListener , Call
 					Bimp.tempSelectBitmap.add(imageItem);
 				}
 				photoGridAdapter.notifyDataSetChanged();
-				userPhotoMangerLayout.setVisibility(View.VISIBLE);
 			}
 		}else if (Constant.ReturnCode.STATE_3.equals(code)) {
 			//提示用户登入

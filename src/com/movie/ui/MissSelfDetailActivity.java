@@ -8,6 +8,7 @@ import java.util.Map;
 import android.content.Intent;
 import android.os.Bundle;
 import android.os.Handler;
+import android.util.Log;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.widget.ImageView;
@@ -18,8 +19,11 @@ import android.widget.ScrollView;
 import android.widget.TextView;
 
 import com.handmark.pulltorefresh.library.PullToRefreshBase;
+import com.handmark.pulltorefresh.library.PullToRefreshBase.Mode;
 import com.handmark.pulltorefresh.library.PullToRefreshBase.OnRefreshListener;
+import com.handmark.pulltorefresh.library.PullToRefreshBase.OnRefreshListener2;
 import com.handmark.pulltorefresh.library.PullToRefreshListView;
+import com.handmark.pulltorefresh.library.PullToRefreshScrollView;
 import com.movie.R;
 import com.movie.adapter.MissNarutoAdapter;
 import com.movie.app.BaseActivity;
@@ -29,12 +33,14 @@ import com.movie.app.Constant.ReturnCode;
 import com.movie.app.NarutoApplication;
 import com.movie.client.bean.Miss;
 import com.movie.client.bean.MissNaruto;
-import com.movie.client.bean.User;
 import com.movie.client.service.BaseService;
 import com.movie.client.service.CallBackService;
 import com.movie.network.HttpMissCancelService;
 import com.movie.network.HttpMissDetailService;
 import com.movie.network.HttpMissQueryService;
+import com.movie.network.HttpMissUpdateService;
+import com.movie.state.MissState;
+import com.movie.state.MissStateBtnBackColor;
 import com.movie.state.SexState;
 import com.movie.util.Horoscope;
 import com.movie.util.StringUtil;
@@ -42,7 +48,7 @@ import com.movie.util.UserCharm;
 import com.movie.view.LoadView;
 
 
-public class MissSelfDetailActivity extends BaseActivity implements OnClickListener, CallBackService,OnRefreshListener<ListView>  {
+public class MissSelfDetailActivity extends BaseActivity implements OnClickListener, CallBackService,OnRefreshListener2<ListView>,OnRefreshListener<ScrollView>  {
 
 	TextView title;
 	ImageView missIcon;
@@ -63,11 +69,12 @@ public class MissSelfDetailActivity extends BaseActivity implements OnClickListe
 	LinearLayout layoutCinemaAddress;
 	LinearLayout missBottomBar;
 	RatingBar userCharmBar;
-	ScrollView missDetailView;
 	BaseService httpMissDetailService;
 	BaseService httpMissQueryService;
 	BaseService httpMissCancelService;
+	BaseService httpMissUpdateService;
 	PullToRefreshListView refreshableListView;
+	PullToRefreshScrollView refreshableScollView;
 	MissNarutoAdapter missNarutoAdapter;
 	List<MissNaruto> missNarutos = new ArrayList<MissNaruto>();
 	//ExpandListViewForScrollView missPartList;
@@ -89,6 +96,7 @@ public class MissSelfDetailActivity extends BaseActivity implements OnClickListe
 		httpMissDetailService = new HttpMissDetailService(this);
 		httpMissQueryService = new HttpMissQueryService(this);
 		httpMissCancelService =new HttpMissCancelService(this);
+		httpMissUpdateService =new HttpMissUpdateService(this);
 		initViews();
 		initEvents();
 		initData();
@@ -96,8 +104,6 @@ public class MissSelfDetailActivity extends BaseActivity implements OnClickListe
 	}
 	@Override
 	protected void initViews() {
-		missDetailView = (ScrollView)findViewById(R.id.miss_detail_view);
-		missDetailView.smoothScrollTo(0, 0);
 		title = (TextView) findViewById(R.id.title);
 		userLove = (TextView) findViewById(R.id.userLove);
 		loveView = (TextView) findViewById(R.id.love);
@@ -118,8 +124,13 @@ public class MissSelfDetailActivity extends BaseActivity implements OnClickListe
 		layoutCinemaAddress = (LinearLayout) findViewById(R.id.miss_cinema_detail_panel);
 		missBottomBar = (LinearLayout) findViewById(R.id.miss_bottom_bar);
 		refreshableListView  = (PullToRefreshListView) findViewById(R.id.attend_user_list);
+		refreshableScollView=(PullToRefreshScrollView) findViewById(R.id.miss_detail_view);
+		//refreshableListView.setEmptyView(rootView.findViewById(R.id.empty));
 		missNarutoAdapter =new MissNarutoAdapter(this, mHandler, missNarutos);
 		refreshableListView.setAdapter(missNarutoAdapter);	
+		refreshableListView.setMode(Mode.PULL_FROM_END);
+		refreshableListView.setFocusable(false);
+		refreshableScollView.setMode(Mode.PULL_FROM_START);
 		//missPartList = (ExpandListViewForScrollView) findViewById(R.id.miss_part_list);
 		//partNarutoAdapter = new PartNarutoExpandableAdapter(this,mHandler, null,null);
 		//missPartList.setAdapter(partNarutoAdapter);
@@ -128,6 +139,8 @@ public class MissSelfDetailActivity extends BaseActivity implements OnClickListe
 
 	@Override
 	protected void initEvents() {
+		refreshableScollView.setOnRefreshListener(this);
+		refreshableListView.setOnRefreshListener(this);
 		layoutCinemaAddress.setOnClickListener(this);	
 		hopeUserView.setOnClickListener(this);
 		missIcon.setOnClickListener(this);
@@ -159,8 +172,9 @@ public class MissSelfDetailActivity extends BaseActivity implements OnClickListe
 	private void initMissBtn(){
 		//验证是否可以撤销
 		int result=StringUtil.dateCompareByCurrent(miss.getRunTime(),MissBtnStatus.MAX_MISS_CANCEL_HOUR);
-		if(result>0){
-			missBottomBar.setVisibility(View.VISIBLE);
+		missBtn.setBackgroundResource(MissStateBtnBackColor.getState(miss.getStatus()).getSourceId());
+		missNarutoAdapter.setTimeResult(result);
+		if(result>0&&(miss.getStatus().intValue()==MissState.HaveInHand.getState())){
 			missBtn.setText(getResources().getString(R.string.miss_cancel));
 			missBtn.setOnClickListener(this);
 			btnType=Miss.CANCLE_MISS;
@@ -168,14 +182,14 @@ public class MissSelfDetailActivity extends BaseActivity implements OnClickListe
 		}
 		//验证是否可以派影币
 		result=StringUtil.dateCompareByCurrent(miss.getRunTime());
-		if(result<0){
-			missBottomBar.setVisibility(View.VISIBLE);
+		if(result<0&&(miss.getStatus().intValue()==MissState.Expired.getState())){
 			missBtn.setText(getResources().getString(R.string.branch_coin));
 			missBtn.setOnClickListener(this);
 			btnType=Miss.COIN_MISS;
+		}else{
+			//显示其他状态条
+			missBtn.setText(MissState.getState(miss.getStatus()).getMessage());
 		}
-		
-		
 	}
 	private void loadMissDetail() {
 		httpMissDetailService.addParams("trystId",miss.getTrystId());
@@ -186,6 +200,12 @@ public class MissSelfDetailActivity extends BaseActivity implements OnClickListe
 		httpMissQueryService.addUrls(Constant.Miss_Attend_Query_API_URL);
 		httpMissQueryService.addParams("id", miss.getTrystId());
 		httpMissQueryService.execute(this);
+	}
+	private void kickNaruto(String memberId){
+		httpMissUpdateService.addUrls(Constant.Miss_Kick_API_URL);
+		httpMissUpdateService.addParams("trystId", miss.getTrystId());
+		httpMissUpdateService.addParams("memberId", memberId);
+		httpMissUpdateService.execute(this);
 	}
 	private void cancelMiss() {
 		httpMissCancelService.addParams("trystId", miss.getTrystId());
@@ -207,8 +227,11 @@ public class MissSelfDetailActivity extends BaseActivity implements OnClickListe
 			
 			case Miss.KICKED_OUT:
 				Bundle bundle = msg.getData();
-				User user = (User) bundle.getSerializable("user");
+				String memberid = bundle.getString("memberid");
+				int postion = bundle.getInt("position");
+				missNarutos.remove(postion);
 				//踢出用户
+				kickNaruto(memberid);
 				break;
 			case Miss.EVLATOIN_USER:
 				//评价用户
@@ -265,6 +288,7 @@ public class MissSelfDetailActivity extends BaseActivity implements OnClickListe
 		hideProgressDialog();
 		loadView.showLoadAfter(this);
 		refreshableListView.onRefreshComplete();
+		refreshableScollView.onRefreshComplete();
 		isLoad=true;
 		String code=map.get(Constant.ReturnCode.RETURN_STATE).toString();
 		if (Constant.ReturnCode.STATE_1.equals(code)) {
@@ -305,6 +329,8 @@ public class MissSelfDetailActivity extends BaseActivity implements OnClickListe
 					if (dataMap.containsKey("memberId")){
 						count++;
 						missNaruto.setMemberId(dataMap.get("memberId").toString());
+					}else{
+						continue;
 					}
 					if (dataMap.containsKey("portrait"))
 						missNaruto.setPortrait(Constant.SERVER_ADRESS+dataMap.get("portrait").toString());
@@ -324,6 +350,8 @@ public class MissSelfDetailActivity extends BaseActivity implements OnClickListe
 						missNaruto.setTrystCnt(Integer.parseInt((dataMap.get("trystCnt").toString())));
 					if (dataMap.containsKey("filmCnt"))
 						missNaruto.setFilmCnt(Integer.parseInt((dataMap.get("filmCnt").toString())));
+					if (dataMap.containsKey("stage"))
+						missNaruto.setStage(Integer.parseInt((dataMap.get("stage").toString())));
 					missNarutos.add(missNaruto);
 				}
 				if(count>0){
@@ -346,8 +374,9 @@ public class MissSelfDetailActivity extends BaseActivity implements OnClickListe
 
 	@Override
 	public void ErrorCallBack(Map<String, Object> map) {
-		refreshableListView.onRefreshComplete();
 		hideProgressDialog();
+		refreshableListView.onRefreshComplete();
+		refreshableScollView.onRefreshComplete();
 		String message = map.get(Constant.ReturnCode.RETURN_MESSAGE).toString();
 		int state=Integer.parseInt(map.get(Constant.ReturnCode.RETURN_STATE).toString());
 		if(state==Integer.parseInt(ReturnCode.STATE_999)){
@@ -371,16 +400,29 @@ public class MissSelfDetailActivity extends BaseActivity implements OnClickListe
 	@Override
 	protected void onDestroy() {
 		super.onDestroy();
-		httpMissDetailService=null;
-		httpMissQueryService=null;
+		httpMissDetailService = null;
+		httpMissQueryService = null;
+		httpMissCancelService =null;
+		httpMissUpdateService =null;
 		missNarutoAdapter=null;
 		missNarutos.clear();
 	}
 	@Override
-	public void onRefresh(PullToRefreshBase<ListView> refreshView) {
-	
+	public void onPullDownToRefresh(PullToRefreshBase<ListView> refreshView) {
+		
+		
+	}
+
+	@Override
+	public void onPullUpToRefresh(PullToRefreshBase<ListView> refreshView) {
 		loadAttendUser();
 	}
+	@Override
+	public void onRefresh(PullToRefreshBase<ScrollView> refreshView) {
+		loadMissDetail();
+		loadAttendUser();
+	}
+	
 	
 	
 	

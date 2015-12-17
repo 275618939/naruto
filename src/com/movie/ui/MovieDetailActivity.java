@@ -52,12 +52,10 @@ import com.movie.util.StringUtil;
 import com.movie.view.HorizontalListView;
 import com.movie.view.LoadView;
 import com.movie.view.MovieCommentsDialog;
-import com.nostra13.universalimageloader.core.ImageLoader;
 
 
 public class MovieDetailActivity extends BaseActivity implements OnClickListener, CallBackService , OnRefreshListener2<ListView>,OnRefreshListener<ScrollView>{
 
-	protected static int LOADUSERCOMPLETE=1;
 	Movie movie;
 	int filmId;
 	TextView title;
@@ -94,7 +92,6 @@ public class MovieDetailActivity extends BaseActivity implements OnClickListener
 	BaseService httpCommentCreateService;
 	BaseService httpCommentQueryService;
 	FilmTypeService filmTypeService;
-	ImageLoader imageLoaderCache;
 	Map<Integer,String> filemTypes;
 	List<User> users=new ArrayList<User>();
 	List<MovieComment> comments = new ArrayList<MovieComment>(); 
@@ -111,7 +108,6 @@ public class MovieDetailActivity extends BaseActivity implements OnClickListener
 		httpCommentCreateService = new HttpMovieCommentCreateService(this);
 		httpCommentQueryService = new HttpMovieCommentQueryService(this);
 		filmTypeService = new FilmTypeService();
-		imageLoaderCache=ImageLoader.getInstance();
 		initViews();
 		initEvents();
 		initData();
@@ -316,7 +312,7 @@ public class MovieDetailActivity extends BaseActivity implements OnClickListener
 							movie.setLoveCnt(Integer.parseInt(value.get("loveCnt").toString()));
 						}
 						title.setText(movie.getName());
-						imageLoaderCache.displayImage(movie.getIcon(), imagePoster,NarutoApplication.imageOptions);
+						imageLoader.displayImage(movie.getIcon(), imagePoster,NarutoApplication.imageOptions);
 						String score=MovieScore.GetScore(movie.getScore(), movie.getScoreCnt());
 						startBar.setRating(Float.valueOf(score)/2f);
 						movieScore.setText(score);

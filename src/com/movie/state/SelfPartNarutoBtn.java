@@ -20,18 +20,15 @@ public enum SelfPartNarutoBtn {
 		return message;
 	}
 
-	public static SelfPartNarutoBtn getState(int state) {
+	public static SelfPartNarutoBtn getState(int id) {
 
-		switch (state) {
-		case 0:
-			return InProcess;
-		case 1:
-			return KickedOut;
-		case 2:
-			return Evaluation;
-		default:
-			return InProcess;
+		for (SelfPartNarutoBtn m : SelfPartNarutoBtn.values()) {
+			if (m.getState() == id) {
+				return m;
+			}
 		}
+		return null;
+		
 
 	}
 

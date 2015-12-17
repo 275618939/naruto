@@ -29,6 +29,7 @@
     <dimen name="naruto_ment_height">40.0dip</dimen>
     <dimen name="slef_back_height">230dp</dimen>
     <dimen name="user_tag_height">35dp</dimen>
+    <dimen name="list_part_height">250dp</dimen>
     <dimen name="user_image_select_width">60dp</dimen>
     <dimen name="user_image_select_height">60dp</dimen>
     <dimen name="user_round_image_width">60dp</dimen>
@@ -62,6 +63,7 @@
     <dimen name="layout_item_top_03">3.0dip</dimen>
     <dimen name="layout_item_top_0">5.0dip</dimen>
     <dimen name="layout_item_top_1">10.0dip</dimen>
+    <dimen name="layout_list_bottom">100.0dip</dimen>
     <dimen name="layout_item_bottom">10.0dip</dimen>
     <dimen name="layout_item_bottom_2">20.0dip</dimen>
     <dimen name="layout_item_bottom_1">5.0dip</dimen>
