@@ -59,6 +59,13 @@ public class MissSelfQueryAdapter extends BaseObjectListAdapter {
 		mHolder.missCoin.setText(miss.getCoin()==null?"0":miss.getCoin().toString());
 		int sourceId = MissStateBackColor.getState(miss.getStatus()).getSourceId();
 		mHolder.missItemView.setBackgroundResource(sourceId);
+		mHolder.missBtnLayout.setVisibility(View.VISIBLE);
+		mHolder.missBtn.setText(MissState.getState(miss.getStatus()).getMessage());
+		if(miss.getStatus().intValue()==MissState.Expired.getState()){
+			if(miss.getCoin()!=null&&miss.getCoin()>0){
+				mHolder.missBtn.setText(mContext.getResources().getString(R.string.branch_coin));
+			}
+		}
 		mHolder.missItemView.setOnClickListener(new OnClickListener() {
 			@Override
 			public void onClick(View v) {
@@ -77,17 +84,11 @@ public class MissSelfQueryAdapter extends BaseObjectListAdapter {
 				}
 			}
 		});
-		mHolder.missBtnLayout.setVisibility(View.VISIBLE);
-		if(miss.getStatus().intValue()==MissState.Expired.getState()){
-			mHolder.missBtn.setText(mContext.getResources().getString(R.string.branch_coin));
-		}else{
-			mHolder.missBtn.setText(MissState.getState(miss.getStatus()).getMessage());
-		}
-		int result=StringUtil.dateCompareByCurrent(miss.getRunTime());
+		/*int result=StringUtil.dateCompareByCurrent(miss.getRunTime());
 		if(result<0){
 			mHolder.missItemView.setBackgroundResource(MissStateBackColor.Expired.getSourceId());
 			mHolder.missBtn.setText(mContext.getResources().getString(R.string.branch_coin));
-		}
+		}*/
 		return view;
 	}
 

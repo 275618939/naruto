@@ -20,7 +20,7 @@ import com.handmark.pulltorefresh.library.PullToRefreshBase.Mode;
 import com.handmark.pulltorefresh.library.PullToRefreshBase.OnRefreshListener2;
 import com.handmark.pulltorefresh.library.PullToRefreshListView;
 import com.movie.R;
-import com.movie.adapter.MissNarutoQueryAdapter;
+import com.movie.adapter.MissQueryAdapter;
 import com.movie.app.BaseFragment;
 import com.movie.app.Constant;
 import com.movie.app.Constant.Page;
@@ -35,7 +35,7 @@ public class MissLatelyFragment extends BaseFragment implements OnClickListener,
 
 	BaseService missQueryService;
 	PullToRefreshListView refreshableListView;
-	MissNarutoQueryAdapter missQueryAdapter;
+	MissQueryAdapter missQueryAdapter;
 	List<Miss> misses = new ArrayList<Miss>();
 	int page;
 	public MissLatelyFragment() {
@@ -67,7 +67,7 @@ public class MissLatelyFragment extends BaseFragment implements OnClickListener,
 
 	@Override
 	protected void initViews() {
-		missQueryAdapter = new MissNarutoQueryAdapter(getActivity(), mHandler, misses);
+		missQueryAdapter = new MissQueryAdapter(getActivity(), mHandler, misses);
 		refreshableListView = (PullToRefreshListView) rootView.findViewById(R.id.miss_list);
 		refreshableListView.setMode(Mode.BOTH);
 		refreshableListView.setAdapter(missQueryAdapter);
@@ -90,7 +90,7 @@ public class MissLatelyFragment extends BaseFragment implements OnClickListener,
 	}
 	
 	private void loadMiss() {
-		missQueryService.addUrls(Constant.Miss_Query_API_URL);
+		missQueryService.addUrls(Constant.Miss_Recent_Query_API_URL);
 		missQueryService.addParams("page", page);
 		missQueryService.addParams("size", Page.DEFAULT_SIZE);
 		missQueryService.execute(this);
@@ -141,22 +141,24 @@ public class MissLatelyFragment extends BaseFragment implements OnClickListener,
 						miss.setTrystId(missMap.get("trystId").toString());
 					if (missMap.containsKey("memberId"))
 						miss.setMemberId(missMap.get("memberId").toString());
+					if (missMap.containsKey("portrait"))
+						miss.setIcon(Constant.SERVER_ADRESS+missMap.get("portrait").toString());
+					if (missMap.containsKey("nickname"))
+						miss.setNickName(missMap.get("nickname").toString());
 					if (missMap.containsKey("filmId"))
 						miss.setFilmId(Integer.parseInt(missMap.get("filmId").toString()));
+					if (missMap.containsKey("filmName"))
+						miss.setFilmName(missMap.get("filmName")==null?"":missMap.get("filmName").toString());
 					if (missMap.containsKey("runTime"))
 						miss.setRunTime(missMap.get("runTime").toString());
 					if (missMap.containsKey("coin"))
 						miss.setCoin(Integer.parseInt(missMap.get("coin").toString()));
-					if (missMap.containsKey("cinemaId")) {
-
-					}
-					if (missMap.containsKey("attend")) {
-
-					}
-					if (missMap.containsKey("status")) {
+					if (missMap.containsKey("cinemaId"))
+						miss.setCinemaId(missMap.get("cinemaId").toString());
+					if (missMap.containsKey("cinemaName"))
+						miss.setCinameName(missMap.get("cinemaName")==null?"":missMap.get("cinemaName").toString());
+					if (missMap.containsKey("status"))
 						miss.setStatus(Integer.parseInt(missMap.get("status").toString()));
-					}
-					miss.setIcon("http://101.200.176.217/test.jpg");
 					misses.add(miss);
 				}
 				if (size >= Page.DEFAULT_SIZE) {
@@ -167,30 +169,23 @@ public class MissLatelyFragment extends BaseFragment implements OnClickListener,
 
 			}
 		} else {
-			tempData();
 			String message = map.get(Constant.ReturnCode.RETURN_MESSAGE).toString();
 			showToask(message);
 		}
 
 	}
-
-	private void tempData() {
-		misses=Miss.getTempData();
-		missQueryAdapter.notifyDataSetChanged();
-	}
-
 	@Override
 	public void ErrorCallBack(Map<String, Object> map) {
 		refreshableListView.onRefreshComplete();
 		String message = map.get(Constant.ReturnCode.RETURN_MESSAGE).toString();
-		String state= map.get(Constant.ReturnCode.RETURN_STATE).toString();
-		if(state.equals(ReturnCode.STATE_999)){
+		int state=Integer.parseInt(map.get(Constant.ReturnCode.RETURN_STATE).toString());
+		if(state==Integer.parseInt(ReturnCode.STATE_999)){
 			loadView.showLoadLineFail(this);
-		}else{
+		}else if(state>=Integer.parseInt(ReturnCode.STATE_97)){
 			loadView.showLoadFail(this, this);
+		}else{
 			showToask(message);
 		}
-
 	}
 	/* 摧毁视图 */
 	@Override
@@ -198,6 +193,7 @@ public class MissLatelyFragment extends BaseFragment implements OnClickListener,
 	
 		super.onDestroyView();
 		missQueryAdapter = null;
+		missQueryService=null;
 		misses.clear();
 	}
 	@Override

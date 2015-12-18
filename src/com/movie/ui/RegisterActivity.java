@@ -48,6 +48,7 @@ public class RegisterActivity extends BaseActivity implements OnClickListener, C
 	VerifyCodeCountTimer  countTimer;
 	BaseService  httpMobileCaptchaService;
 	BaseService  httpRegisterService;
+	String tag;
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
@@ -92,7 +93,8 @@ public class RegisterActivity extends BaseActivity implements OnClickListener, C
 	}
 	private void doCaptcha(){
 		String account=login.getText().toString();
-		if(null!=account&&!account.isEmpty()){			
+		if(null!=account&&!account.isEmpty()){		
+			tag=httpMobileCaptchaService.TAG;
 			httpMobileCaptchaService.addParams("login", account);
 			httpMobileCaptchaService.execute(this);
 			countTimer.start();
@@ -129,6 +131,7 @@ public class RegisterActivity extends BaseActivity implements OnClickListener, C
 		}
 		try {
 			String pwd = BytesUtils.toHexString(MessageDigest.getInstance("MD5").digest((account +":"+ pass).getBytes()), false);
+			tag=httpRegisterService.TAG;
 			httpRegisterService.addParams("login", account);
 			httpRegisterService.addParams("password", pwd);
 			httpRegisterService.addParams("captcha", code);
@@ -206,7 +209,9 @@ public class RegisterActivity extends BaseActivity implements OnClickListener, C
 
 	@Override
 	public void OnRequest() {
-		showProgressDialog("提示", "请稍后......");
+		if(tag.equals(httpRegisterService.TAG)){
+			showProgressDialog();
+		}
 	}
 	@Override
 	protected void onDestroy() {

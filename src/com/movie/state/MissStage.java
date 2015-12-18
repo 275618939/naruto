@@ -2,7 +2,7 @@ package com.movie.state;
 
 public enum MissStage {
 
-	Apply(1, "申请"), BeInvited(2, "被邀请"), At(3, "应约"), End(4, "已结束");
+	Un(0, "未知"),Apply(1, "申请"), BeInvited(2, "被邀请"), At(3, "应约"), End(4, "已结束");
 
 	private int state;
 	private String message;

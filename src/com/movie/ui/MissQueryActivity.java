@@ -233,11 +233,12 @@ public class MissQueryActivity extends BaseActivity implements OnClickListener,C
 
 		refreshableListView.onRefreshComplete();
 		String message = map.get(Constant.ReturnCode.RETURN_MESSAGE).toString();
-		String code = map.get(Constant.ReturnCode.RETURN_STATE).toString();
-		if(code.equals(ReturnCode.STATE_999)){
+		int state=Integer.parseInt(map.get(Constant.ReturnCode.RETURN_STATE).toString());
+		if(state==Integer.parseInt(ReturnCode.STATE_999)){
 			loadView.showLoadLineFail(this);
-		}else{
+		}else if(state>=Integer.parseInt(ReturnCode.STATE_97)){
 			loadView.showLoadFail(this, this);
+		}else{
 			showToask(message);
 		}
 	}

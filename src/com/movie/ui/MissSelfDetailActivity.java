@@ -8,7 +8,6 @@ import java.util.Map;
 import android.content.Intent;
 import android.os.Bundle;
 import android.os.Handler;
-import android.util.Log;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.widget.ImageView;
@@ -135,6 +134,7 @@ public class MissSelfDetailActivity extends BaseActivity implements OnClickListe
 		//partNarutoAdapter = new PartNarutoExpandableAdapter(this,mHandler, null,null);
 		//missPartList.setAdapter(partNarutoAdapter);
 		loadView.initView(rootView);
+		
 	}
 
 	@Override
@@ -173,6 +173,7 @@ public class MissSelfDetailActivity extends BaseActivity implements OnClickListe
 		//验证是否可以撤销
 		int result=StringUtil.dateCompareByCurrent(miss.getRunTime(),MissBtnStatus.MAX_MISS_CANCEL_HOUR);
 		missBtn.setBackgroundResource(MissStateBtnBackColor.getState(miss.getStatus()).getSourceId());
+		missNarutoAdapter.setLoginMemberId(userService.getUserItem().getMemberId());
 		missNarutoAdapter.setTimeResult(result);
 		if(result>0&&(miss.getStatus().intValue()==MissState.HaveInHand.getState())){
 			missBtn.setText(getResources().getString(R.string.miss_cancel));
@@ -189,7 +190,10 @@ public class MissSelfDetailActivity extends BaseActivity implements OnClickListe
 		}else{
 			//显示其他状态条
 			missBtn.setText(MissState.getState(miss.getStatus()).getMessage());
+			missBtn.setOnClickListener(this);
+			btnType=Miss.COIN_MISS;
 		}
+	
 	}
 	private void loadMissDetail() {
 		httpMissDetailService.addParams("trystId",miss.getTrystId());
@@ -257,6 +261,10 @@ public class MissSelfDetailActivity extends BaseActivity implements OnClickListe
 			case R.id.miss_btn:
 				if(btnType==Miss.CANCLE_MISS){
 					cancelMiss();
+				}else if(btnType==Miss.COIN_MISS){
+					Intent userIntent=new Intent(this,MissTreatCoinActivity.class);
+					userIntent.putExtra("trystId", miss.getTrystId());
+					startActivity(userIntent);
 				}
 				break;
 			case R.id.hope_user:
@@ -323,6 +331,7 @@ public class MissSelfDetailActivity extends BaseActivity implements OnClickListe
 				int size = datas.size();
 				int count=0;
 				HashMap<String, Object> dataMap = null;
+				attendUserView.setText(getResources().getString(R.string.attend_none));
 				for (int i = 0; i < size; i++) {
 					missNaruto = new MissNaruto();
 					dataMap = datas.get(i);
@@ -356,10 +365,8 @@ public class MissSelfDetailActivity extends BaseActivity implements OnClickListe
 				}
 				if(count>0){
 					attendUserView.setText(String.format(getResources().getString(R.string.attend_have), size));
-				}else{
-					attendUserView.setText(getResources().getString(R.string.attend_none));
 				}
-				missNarutoAdapter.notifyDataSetChanged();
+				setListViewHeight(missNarutoAdapter, refreshableListView);
 		
 			}else if(tag.endsWith(httpMissCancelService.TAG)){
 				missBottomBar.setVisibility(View.GONE);
@@ -422,7 +429,6 @@ public class MissSelfDetailActivity extends BaseActivity implements OnClickListe
 		loadMissDetail();
 		loadAttendUser();
 	}
-	
 	
 	
 	

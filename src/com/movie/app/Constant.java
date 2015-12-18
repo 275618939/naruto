@@ -95,6 +95,8 @@ public interface Constant {
 	public final static String Miss_Member_Attend_Query_API_URL = SERVER_URL+ "/member/attend";
 	// 查询约会参与的会员
 	public final static String Miss_Hope_Query_API_URL = SERVER_URL+ "/tryst/hope";
+	// 查询最近创建的约会
+	public final static String Miss_Recent_Query_API_URL = SERVER_URL+ "/tryst/recent";
 	// 撤销约会
 	public final static String Miss_Cancel_API_URL = SERVER_URL+ "/tryst/cancel";
 	// 同意约会

@@ -1,77 +1,68 @@
-package com.movie.fragment;
+package com.movie.ui;
 
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import android.app.Activity;
-import android.content.Context;
 import android.os.Bundle;
 import android.os.Handler;
-import android.view.LayoutInflater;
 import android.view.View;
 import android.view.View.OnClickListener;
-import android.view.ViewGroup;
 import android.widget.ListView;
+import android.widget.TextView;
 
 import com.handmark.pulltorefresh.library.PullToRefreshBase;
 import com.handmark.pulltorefresh.library.PullToRefreshBase.Mode;
 import com.handmark.pulltorefresh.library.PullToRefreshBase.OnRefreshListener2;
 import com.handmark.pulltorefresh.library.PullToRefreshListView;
 import com.movie.R;
-import com.movie.adapter.MissQueryAdapter;
-import com.movie.app.BaseFragment;
+import com.movie.adapter.MissTreatCoinAdapter;
+import com.movie.app.BaseActivity;
 import com.movie.app.Constant;
-import com.movie.app.Constant.Page;
 import com.movie.app.Constant.ReturnCode;
 import com.movie.client.bean.Miss;
 import com.movie.client.service.BaseService;
 import com.movie.client.service.CallBackService;
 import com.movie.network.HttpMissQueryService;
+import com.movie.view.LoadView;
 
-public class MissBestFragment extends BaseFragment implements OnClickListener,
-		CallBackService, OnRefreshListener2<ListView> {
+public class MissTreatCoinActivity extends BaseActivity implements OnClickListener,CallBackService, OnRefreshListener2<ListView> {
 
+	LoadView loadView;
+	TextView title;
+	ListView myMissList;
+	View rootView;
+	MissTreatCoinAdapter treatCoinAdapter;
 	BaseService missQueryService;
 	PullToRefreshListView refreshableListView;
-	MissQueryAdapter missQueryAdapter;
 	List<Miss> misses = new ArrayList<Miss>();
 	int page;
-	public MissBestFragment() {
-		super();		
-	}
-	public MissBestFragment(Activity activity,Context context) {
-		super(activity, context);
-	}
+	String trystId;
+
 	@Override
-	public void onCreate(Bundle savedInstanceState){
+	public void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
-		missQueryService = new HttpMissQueryService(getActivity());
+		if (rootView == null) {
+			rootView = getLayoutInflater().inflate(R.layout.activity_attend_coin_query, null);
+		}
+		loadView = new LoadView();
+		setContentView(rootView);
+		missQueryService = new HttpMissQueryService(this);
+		initViews();
+		initData();
+		initEvents();
+		
 	}
-	@Override
-	public View onCreateView(LayoutInflater inflater, ViewGroup container,
-			Bundle savedInstanceState) {
-
-		if(rootView==null){  
-	        rootView=inflater.inflate(R.layout.fragment_miss_best_query,container,false);  
-	    }  
-		ViewGroup parent = (ViewGroup) rootView.getParent();  
-	    if (parent != null) {  
-	        parent.removeView(rootView);  
-	    }   
-		loadView.initView(rootView);
-		isPrepared=true;
-		return super.onCreateView(inflater, container, savedInstanceState);		
-	}
-
 	@Override
 	protected void initViews() {
-		missQueryAdapter = new MissQueryAdapter(getActivity(), mHandler, misses);
-		refreshableListView = (PullToRefreshListView) rootView.findViewById(R.id.miss_list);
+		title = (TextView) findViewById(R.id.title);
+		treatCoinAdapter = new MissTreatCoinAdapter(this, mHandler, misses);
+		refreshableListView = (PullToRefreshListView) findViewById(R.id.miss_list);
 		refreshableListView.setMode(Mode.BOTH);
-		refreshableListView.setAdapter(missQueryAdapter);
-		refreshableListView.setEmptyView(rootView.findViewById(R.id.empty));
+		refreshableListView.setAdapter(treatCoinAdapter);
+		refreshableListView.setEmptyView(findViewById(R.id.empty));
+		loadView.initView(rootView);
 	}
 
 	@Override
@@ -79,48 +70,46 @@ public class MissBestFragment extends BaseFragment implements OnClickListener,
 		refreshableListView.setOnRefreshListener(this);		
 		refreshableListView.setRefreshing(true);
 	}
-
 	@Override
-	protected void lazyLoad() {
-		if (!isVisible||!isPrepared) {
-			return;
-		}		
-		//loadMiss();
+	protected void initData() {
+		title.setText("派发影币");
+		trystId=getIntent().getStringExtra("trystId");
 	}
-	
-	private void loadMiss() {
-		missQueryService.addUrls(Constant.Miss_Recent_Query_API_URL);
-		missQueryService.addParams("page", page);
-		missQueryService.addParams("size", Page.DEFAULT_SIZE);
-		missQueryService.execute(this);
+
+	private void loadMissData() {
+		missQueryService.addUrls(Constant.Miss_Attend_Query_API_URL);
+		missQueryService.addParams("id", trystId);
 	}
 
 	@Override
 	public void onClick(View v) {
 		switch (v.getId()) {
-			
-		   case R.id.loading_error:
-			   misses.clear();
-			   loadMiss();
+		case R.id.loading_error:
+			misses.clear();
+			loadMissData();
 			break;
-	
 		default:
 			break;
 
 		}
+
 	}
 
 	Handler mHandler = new Handler() {
 		public void handleMessage(android.os.Message msg) {
 			switch (msg.what) {
 		
-			default:
-				break;
-
+		
 			}
 		};
 	};
 
+	@Override
+	public void onBackPressed() {
+		super.onBackPressed();
+		overridePendingTransition(R.anim.slide_in_left, R.anim.slide_out_right);
+		this.finish();
+	}
 	@Override
 	public void SuccessCallBack(Map<String, Object> map) {
 		loadView.showLoadAfter(this);
@@ -160,28 +149,20 @@ public class MissBestFragment extends BaseFragment implements OnClickListener,
 						miss.setStatus(Integer.parseInt(missMap.get("status").toString()));
 					misses.add(miss);
 				}
-				if (size >= Page.DEFAULT_SIZE) {
-					page++;
-				}
-				missQueryAdapter.notifyDataSetChanged();
-				
+			
+				treatCoinAdapter.notifyDataSetChanged();
 
 			}
 		} else {
-			tempData();
 			String message = map.get(Constant.ReturnCode.RETURN_MESSAGE).toString();
 			showToask(message);
 		}
 
 	}
 
-	private void tempData() {
-		misses=Miss.getTempData();
-		missQueryAdapter.notifyDataSetChanged();
-	}
-
 	@Override
 	public void ErrorCallBack(Map<String, Object> map) {
+
 		refreshableListView.onRefreshComplete();
 		String message = map.get(Constant.ReturnCode.RETURN_MESSAGE).toString();
 		int state=Integer.parseInt(map.get(Constant.ReturnCode.RETURN_STATE).toString());
@@ -192,45 +173,31 @@ public class MissBestFragment extends BaseFragment implements OnClickListener,
 		}else{
 			showToask(message);
 		}
+	}
 
-	}
-	/* 摧毁视图 */
-	@Override
-	public void onDestroyView() {
-	
-		super.onDestroyView();
-		missQueryAdapter = null;
-		missQueryService=null;
-		misses.clear();
-	}
 	@Override
 	public void OnRequest() {
-		if(!isLoad){
-			loadView.showLoading(this);
-			isLoad=true;
-		}
-		
+		//showProgressDialog("提示", "请稍后......");
+		loadView.showLoading(this);
 	}
-	// 下拉刷新
+	@Override
+	protected void onDestroy() {
+		super.onDestroy();
+		treatCoinAdapter=null;
+	}
 	@Override
 	public void onPullDownToRefresh(PullToRefreshBase<ListView> refreshView) {
 		page = 0;
 		misses.clear();
-		loadMiss();
+		loadMissData();
+		
 	}
-
-	// 上拉Pulling Up
 	@Override
 	public void onPullUpToRefresh(PullToRefreshBase<ListView> refreshView) {
 		page = 1;
-		loadMiss();
-	}
-	@Override
-	protected void destroyData() {
-		// TODO Auto-generated method stub
+		loadMissData();
 		
 	}
 
 	
-
 }

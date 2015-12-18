@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/miss_view"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content" >
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="@dimen/layout_item_bottom"
+        android:background="@drawable/background_with_border_radius" >
+
+        <ImageView
+            android:id="@+id/naruto_portrait"
+            android:layout_width="@dimen/user_item_image_width"
+            android:layout_height="@dimen/user_item_image_height"
+            android:layout_margin="@dimen/layout_item_top_1"
+            android:scaleType="centerCrop"
+            android:src="@drawable/empty_photo" />
+
+        <EditText
+            android:id="@+id/coin"
+            android:layout_width="50dp"
+            android:layout_height="wrap_content"
+            android:layout_alignParentRight="true"
+            android:layout_marginRight="@dimen/layout_right"
+            android:background="@drawable/background_with_border_radius"
+            android:inputType="number" />
+    </RelativeLayout>
+
+</LinearLayout>

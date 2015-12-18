@@ -128,7 +128,7 @@
             android:alwaysRetainTaskState="true"
             android:launchMode="singleTop"
             android:screenOrientation="portrait" />
-         <activity
+        <activity
             android:name=".ui.MovieQueryActivity"
             android:alwaysRetainTaskState="true"
             android:launchMode="singleTop"
@@ -210,6 +210,11 @@
             android:screenOrientation="portrait" />
         <activity
             android:name=".ui.CinemaSearchActivity"
+            android:alwaysRetainTaskState="true"
+            android:launchMode="singleTop"
+            android:screenOrientation="portrait" />
+        <activity
+            android:name=".ui.MissTreatCoinActivity"
             android:alwaysRetainTaskState="true"
             android:launchMode="singleTop"
             android:screenOrientation="portrait" />

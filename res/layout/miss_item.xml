@@ -129,8 +129,7 @@
             android:layout_height="wrap_content"
             android:layout_gravity="right|center_vertical"
             android:layout_marginRight="@dimen/layout_right"
-            android:background="@drawable/miss_btn_ment"
-            android:visibility="gone" >
+            android:background="@drawable/miss_btn_ment" >
 
             <TextView
                 android:id="@+id/miss_btn"

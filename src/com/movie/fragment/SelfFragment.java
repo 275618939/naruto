@@ -111,6 +111,7 @@ public class SelfFragment extends BaseFragment implements OnClickListener , Call
 	    if (parent != null) {  
 	        parent.removeView(rootView);  
 	    }   
+		loadView.initView(rootView);
 		isVisible=true;
 		isPrepared=true;
 		return super.onCreateView(inflater, container, savedInstanceState);
@@ -312,7 +313,9 @@ public class SelfFragment extends BaseFragment implements OnClickListener , Call
 				isLoad=true;				
 				user = new User();			
 				Map<String, Object> values = (Map<String, Object>) map.get(ReturnCode.RETURN_VALUE);
-				user.setMemberId(values.get("memberId").toString());
+				if (values.containsKey("memberId")){
+					user.setMemberId(values.get("memberId").toString());
+				}
 				if (values.containsKey("portrait")) {
 					user.setPortrait(Constant.SERVER_ADRESS+values.get("portrait").toString());
 					loaderCache.displayImage(user.getPortrait(), userInfoLogo,NarutoApplication.imageOptions);

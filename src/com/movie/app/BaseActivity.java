@@ -13,8 +13,10 @@ import android.os.Bundle;
 import android.support.v4.app.FragmentActivity;
 import android.util.Log;
 import android.view.View;
+import android.view.ViewGroup.LayoutParams;
 import android.widget.Toast;
 
+import com.handmark.pulltorefresh.library.PullToRefreshListView;
 import com.movie.R;
 import com.movie.client.bean.Login;
 import com.movie.client.service.LoginService;
@@ -189,6 +191,21 @@ public abstract class BaseActivity extends FragmentActivity {
 				.show();
 		return alertDialog;
 	}
+	/**动态设置listview高度*/
+	protected void setListViewHeight(BaseObjectListAdapter adapter,PullToRefreshListView listView){  
+	    int listViewHeight = 0;  
+	    int adaptCount = adapter.getCount();  
+	    for(int i=0;i<adaptCount;i++){  
+	        View temp = adapter.getView(i,null,listView);  
+	        temp.measure(0,0);  
+	        listViewHeight += temp.getMeasuredHeight();  
+	    } 	    
+	    LayoutParams layoutParams = listView.getLayoutParams();  
+	    layoutParams.width = LayoutParams.MATCH_PARENT;
+	    layoutParams.height = listViewHeight;  
+	    listView.setLayoutParams(layoutParams);  
+	}  
+	
 	/** 默认退出 **/
 	protected void defaultFinish() {
 		super.finish();

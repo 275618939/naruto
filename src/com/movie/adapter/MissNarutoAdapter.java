@@ -79,54 +79,46 @@ public class MissNarutoAdapter extends BaseObjectListAdapter {
 			mHolder.userCharmBar.setRating(Float.valueOf(score)/2f);
 			mHolder.userCharm.setText(score);
 		}
-		if(nearNaruto.getStage()==MissStage.Apply.getState()){//是否可同意
-			if(memberId.equals(loginMemberId)){
-				mHolder.missBtn.setText(mContext.getResources().getString(R.string.miss_agree));
-				mHolder.missBtn.setOnClickListener(new OnClickListener() {
-					@Override
-					public void onClick(View v) {
-						mHolder.missBtn.setText(mContext.getResources().getString(R.string.miss_agree_after));
-						Message message=new Message();
-						Bundle bundle=new Bundle();
-						bundle.putString("memberid",nearNaruto.getMemberId());
-						message.setData(bundle);
-						message.what=Miss.AGREE_MISS;
-						mHandler.sendMessage(message);
-					}
-				});
+		if(nearNaruto.getStage()>0){
+			mHolder.missBtnLayout.setVisibility(View.VISIBLE);
+			if(nearNaruto.getMemberId().equals(loginMemberId)){
+				//是否可同意
+				if(nearNaruto.getStage()==MissStage.Apply.getState()){
+					mHolder.missBtn.setText(mContext.getResources().getString(R.string.miss_agree));
+					mHolder.missBtn.setOnClickListener(new OnClickListener() {
+						@Override
+						public void onClick(View v) {
+							mHolder.missBtn.setText(mContext.getResources().getString(R.string.miss_agree_after));
+							Message message=new Message();
+							Bundle bundle=new Bundle();
+							bundle.putString("memberid",nearNaruto.getMemberId());
+							message.setData(bundle);
+							message.what=Miss.AGREE_MISS;
+							mHandler.sendMessage(message);
+						}
+					});
+				//是否可踢出
+				}else if(nearNaruto.getStage()==MissStage.At.getState()&&timeResult>0){ 
+						mHolder.missBtn.setText(mContext.getResources().getString(R.string.kicked_out));
+						mHolder.missBtn.setOnClickListener(new OnClickListener() {
+							@Override
+							public void onClick(View v) {
+								Message message=new Message();
+								Bundle bundle=new Bundle();
+								bundle.putString("memberid",nearNaruto.getMemberId());
+								bundle.putInt("position", position);
+								message.setData(bundle);
+								message.what=Miss.KICKED_OUT;
+								mHandler.sendMessage(message);
+							}
+						});
+				}
 			}else{
-				//mContext.getResources().getString(R.string.miss_wait_agree)
-				//mHolder.missBtn.setText(mContext.getResources().getString(R.string.miss_wait_handle));
-			}
-		}else if(nearNaruto.getStage()==MissStage.At.getState()&&timeResult>0){ //是否可踢出
-			
-			if(memberId.equals(loginMemberId)){
-				mHolder.missBtn.setText(mContext.getResources().getString(R.string.kicked_out));
-				mHolder.missBtn.setOnClickListener(new OnClickListener() {
-					@Override
-					public void onClick(View v) {
-						Message message=new Message();
-						Bundle bundle=new Bundle();
-						bundle.putString("memberid",nearNaruto.getMemberId());
-						bundle.putInt("position", position);
-						message.setData(bundle);
-						message.what=Miss.KICKED_OUT;
-						mHandler.sendMessage(message);
-					}
-				});
+				mHolder.missBtn.setText(MissStage.getState(nearNaruto.getStage()).getMessage());
 			}
 		}else{
 			mHolder.missBtnLayout.setVisibility(View.GONE);
-			//mHolder.missBtn.setVisibility(View.GONE);
-			//mHolder.missBtn.setText(MissStage.getState(nearNaruto.getStage()).getMessage());
 		}
-		/*else if(nearNaruto.getStage()==MissStage.BeInvited.getState()){
-			mHolder.missBtn.setText(mContext.getResources().getString(R.string.miss_wait_agree));
-		}else{
-			mHolder.missBtn.setText(MissStage.End.getMessage());
-		}*/
-		
-		
 		
 		mHolder.userBreifLayout.setOnClickListener(new OnClickListener() {
 			

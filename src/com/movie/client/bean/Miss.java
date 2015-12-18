@@ -22,6 +22,7 @@ public class Miss extends BaseBean implements Serializable {
 	public static final int COIN_MISS = 0X116;     		 // 分影币
 	public static final int INVITE_MISS = 0X117;   		 // 邀请约会
 	public static final int AGREE_INVITE_MISS = 0X118;   // 同意邀请
+	public static final int LOSE_MISS = 0X119;   		 // 爽约
 	//我发起的约会
 	public static final int MY_MISS = 0X210;
 	//我参与的约会

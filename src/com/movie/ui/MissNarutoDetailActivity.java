@@ -18,8 +18,11 @@ import android.widget.ScrollView;
 import android.widget.TextView;
 
 import com.handmark.pulltorefresh.library.PullToRefreshBase;
+import com.handmark.pulltorefresh.library.PullToRefreshBase.Mode;
 import com.handmark.pulltorefresh.library.PullToRefreshBase.OnRefreshListener;
+import com.handmark.pulltorefresh.library.PullToRefreshBase.OnRefreshListener2;
 import com.handmark.pulltorefresh.library.PullToRefreshListView;
+import com.handmark.pulltorefresh.library.PullToRefreshScrollView;
 import com.movie.R;
 import com.movie.adapter.MissNarutoAdapter;
 import com.movie.app.BaseActivity;
@@ -37,6 +40,7 @@ import com.movie.network.HttpMissDetailService;
 import com.movie.network.HttpMissQueryService;
 import com.movie.state.MissState;
 import com.movie.state.MissStateBackColor;
+import com.movie.state.MissTimeBtnBackColor;
 import com.movie.state.SexState;
 import com.movie.util.Horoscope;
 import com.movie.util.StringUtil;
@@ -44,7 +48,7 @@ import com.movie.util.UserCharm;
 import com.movie.view.LoadView;
 
 
-public class MissNarutoDetailActivity extends BaseActivity implements OnClickListener, CallBackService,OnRefreshListener<ListView> {
+public class MissNarutoDetailActivity extends BaseActivity implements OnClickListener, CallBackService,OnRefreshListener2<ListView>,OnRefreshListener<ScrollView> {
 
 	TextView title;
 	ImageView missIcon;
@@ -65,10 +69,10 @@ public class MissNarutoDetailActivity extends BaseActivity implements OnClickLis
 	LinearLayout layoutCinemaAddress;
 	LinearLayout missBottomBar;
 	RatingBar userCharmBar;
-	ScrollView missDetailView;
 	BaseService httpMissDetailService;
 	BaseService httpMissQueryService;
 	BaseService httpMissApplyService;
+	PullToRefreshScrollView refreshableScollView;
 	PullToRefreshListView refreshableListView;
 	MissNarutoAdapter missNarutoAdapter;
 	List<MissNaruto> missNarutos = new ArrayList<MissNaruto>();
@@ -93,8 +97,7 @@ public class MissNarutoDetailActivity extends BaseActivity implements OnClickLis
 	}
 	@Override
 	protected void initViews() {
-		missDetailView = (ScrollView)findViewById(R.id.miss_detail_view);
-		missDetailView.smoothScrollTo(0, 0);
+		
 		title = (TextView) findViewById(R.id.title);
 		userLove = (TextView) findViewById(R.id.userLove);
 		loveView = (TextView) findViewById(R.id.love);
@@ -117,11 +120,17 @@ public class MissNarutoDetailActivity extends BaseActivity implements OnClickLis
 		refreshableListView  = (PullToRefreshListView) findViewById(R.id.attend_user_list);
 		missNarutoAdapter =new MissNarutoAdapter(this, mHandler, missNarutos);
 		refreshableListView.setAdapter(missNarutoAdapter);		
+		refreshableListView.setMode(Mode.PULL_FROM_END);
+		refreshableListView.setFocusable(false);
+		refreshableScollView = (PullToRefreshScrollView)findViewById(R.id.miss_detail_view);
+		refreshableScollView.setMode(Mode.PULL_FROM_START);
 		loadView.initView(rootView);
 	}
 
 	@Override
 	protected void initEvents() {
+		refreshableScollView.setOnRefreshListener(this);
+		refreshableListView.setOnRefreshListener(this);
 		layoutCinemaAddress.setOnClickListener(this);	
 		hopeUserView.setOnClickListener(this);
 		missIcon.setOnClickListener(this);
@@ -142,7 +151,6 @@ public class MissNarutoDetailActivity extends BaseActivity implements OnClickLis
 		cinemaAddress.setText(miss.getCinameAddress());
 		cinemaPhone.setText(miss.getCinemaPhone());
 		hopeUserView.setText(getResources().getString(R.string.hope_have));
-		//partNarutoAdapter.setMiss(miss);
 		/*初始化操作按钮*/
 		initMissBtn();
 		/*初始化约会详情信息*/
@@ -151,16 +159,20 @@ public class MissNarutoDetailActivity extends BaseActivity implements OnClickLis
 		loadAttendUser();
 	}
 	private void initMissBtn(){
-		//验证是否可以报名
-		if(userService.getUserItem().getMemberId().equals(miss.getMemberId()))
-			return;
-		//验证是否可以爽约
 		int result=StringUtil.dateCompareByCurrent(miss.getRunTime(),MissBtnStatus.MAX_MISS_CANCEL_HOUR);
-		if(result>0){
-			missBottomBar.setVisibility(View.VISIBLE);
-			missBtn.setText(getResources().getString(R.string.miss_enter));
-			missBtn.setOnClickListener(this);
+		missBtn.setBackgroundResource(MissTimeBtnBackColor.getState(result).getSourceId());
+		missBtn.setText(MissState.getState(miss.getStatus()).getMessage());
+		missNarutoAdapter.setLoginMemberId(userService.getUserItem().getMemberId());
+		if(!userService.getUserItem().getMemberId().equals(miss.getMemberId())){
+			//验证是否进行约会报名操作
+			if(result>0&&(miss.getStatus().intValue()==MissState.HaveInHand.getState())){
+				missBottomBar.setVisibility(View.VISIBLE);
+				missBtn.setText(getResources().getString(R.string.miss_enter));
+				missBtn.setOnClickListener(this);
+			}
+			//验证是否可进行评价操作
 		}
+		
 		
 		
 	}
@@ -182,7 +194,7 @@ public class MissNarutoDetailActivity extends BaseActivity implements OnClickLis
 		public void handleMessage(android.os.Message msg) {
 			switch (msg.what) {
 			
-			case Miss.KICKED_OUT:
+			case Miss.LOSE_MISS:
 				Bundle bundle = msg.getData();
 				User user = (User) bundle.getSerializable("user");
 				//踢出用户
@@ -239,6 +251,7 @@ public class MissNarutoDetailActivity extends BaseActivity implements OnClickLis
 		hideProgressDialog();
 		loadView.showLoadAfter(this);
 		refreshableListView.onRefreshComplete();
+		refreshableScollView.onRefreshComplete();
 		isLoad=true;
 		String code=map.get(Constant.ReturnCode.RETURN_STATE).toString();
 		if (Constant.ReturnCode.STATE_1.equals(code)) {
@@ -287,12 +300,15 @@ public class MissNarutoDetailActivity extends BaseActivity implements OnClickLis
 				int size = datas.size();
 				int count=0;
 				HashMap<String, Object> dataMap = null;
+				attendUserView.setText(getResources().getString(R.string.attend_none));
 				for (int i = 0; i < size; i++) {
 					missNaruto = new MissNaruto();
 					dataMap = datas.get(i);
 					if (dataMap.containsKey("memberId")){
 						count++;
 						missNaruto.setMemberId(dataMap.get("memberId").toString());
+					}else{
+						continue;
 					}
 					if (dataMap.containsKey("portrait"))
 						missNaruto.setPortrait(Constant.SERVER_ADRESS+dataMap.get("portrait").toString());
@@ -312,18 +328,20 @@ public class MissNarutoDetailActivity extends BaseActivity implements OnClickLis
 						missNaruto.setTrystCnt(Integer.parseInt((dataMap.get("trystCnt").toString())));
 					if (dataMap.containsKey("filmCnt"))
 						missNaruto.setFilmCnt(Integer.parseInt((dataMap.get("filmCnt").toString())));
+					if (dataMap.containsKey("stage"))
+						missNaruto.setStage(Integer.parseInt((dataMap.get("stage").toString())));
 					missNarutos.add(missNaruto);
 				}
 				if(count>0){
 					attendUserView.setText(String.format(getResources().getString(R.string.attend_have), size));
-				}else{
-					attendUserView.setText(getResources().getString(R.string.attend_none));
 				}
-				missNarutoAdapter.notifyDataSetChanged();
+				setListViewHeight(missNarutoAdapter, refreshableListView);
 		
 			}else if(tag.endsWith(httpMissApplyService.TAG)){
 				missBottomBar.setVisibility(View.GONE);
 				showToask("报名成功!");
+				//更新参与人
+				loadAttendUser();
 			}
 			
 		}else{
@@ -334,8 +352,9 @@ public class MissNarutoDetailActivity extends BaseActivity implements OnClickLis
 
 	@Override
 	public void ErrorCallBack(Map<String, Object> map) {
-		refreshableListView.onRefreshComplete();
 		hideProgressDialog();
+		refreshableListView.onRefreshComplete();
+		refreshableScollView.onRefreshComplete();
 		String message = map.get(Constant.ReturnCode.RETURN_MESSAGE).toString();
 		int state=Integer.parseInt(map.get(Constant.ReturnCode.RETURN_STATE).toString());
 		if(state==Integer.parseInt(ReturnCode.STATE_999)){
@@ -361,12 +380,23 @@ public class MissNarutoDetailActivity extends BaseActivity implements OnClickLis
 		super.onDestroy();
 		httpMissDetailService=null;
 		httpMissQueryService=null;
+		httpMissApplyService=null;
 		missNarutoAdapter=null;
 		missNarutos.clear();
 	}
 	@Override
-	public void onRefresh(PullToRefreshBase<ListView> refreshView) {
-	
+	public void onPullDownToRefresh(PullToRefreshBase<ListView> refreshView) {
+		
+		
+	}
+
+	@Override
+	public void onPullUpToRefresh(PullToRefreshBase<ListView> refreshView) {
+		loadAttendUser();
+	}
+	@Override
+	public void onRefresh(PullToRefreshBase<ScrollView> refreshView) {
+		loadMissDetail();
 		loadAttendUser();
 	}
 	
