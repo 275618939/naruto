@@ -49,12 +49,10 @@
     <string name="branch_coin">派发影币</string>
     <string name="my_miss">我的约会</string>
     <string name="my_participate">我的邀请</string>
-    <string name="apply_miss">参与的约会</string>
-    <string name="apply_miss_have">参与了%1$s 个约会,点击查看</string>
+    <string name="touch_miss">参与的约会</string>
+    <string name="touch_miss_have">参与了%1$s 个约会,点击查看</string>
     <string name="invite_miss_have">%1$s 个约会邀请,点击查看</string>
     <string name="my_invitation">邀请的约会</string>
-    <string name="memberAttend">应约的约会</string>
-    <string name="attend_miss_have">应约了%1$s 个约会,点击查看</string>
     <string name="more">更多></string>
     <string name="scenarists">导演</string>
     <string name="stars">主演</string>
@@ -92,7 +90,7 @@
     <string name="user_ing_miss">%1$s个进行中的约会</string>
     <string name="user_love">心动</string>
     <string name="user_love_count">%1$s人心动过</string>
-    <string name="user_love_none">修炼中</string>
+    <string name="user_love_none">暂无心动</string>
     <string name="movie_none">暂时还没有哟</string>
     <string name="movie_have">想看%1$s部电影,点击查看</string>
     <string name="want_see">想看</string>

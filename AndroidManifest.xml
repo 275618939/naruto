@@ -57,7 +57,6 @@
         <meta-data
             android:name="com.baidu.lbsapi.API_KEY"
             android:value="KciV0QdFdGb3sYWD4CGByET0" />
-
         <service
             android:name="com.movie.system.service.NarutoService"
             android:process=":narutolocation" />
@@ -245,11 +244,6 @@
             android:screenOrientation="portrait" />
         <activity
             android:name=".ui.MissNarutoDetailActivity"
-            android:alwaysRetainTaskState="true"
-            android:launchMode="singleTop"
-            android:screenOrientation="portrait" />
-        <activity
-            android:name=".ui.MySelfDetailActivity"
             android:alwaysRetainTaskState="true"
             android:launchMode="singleTop"
             android:screenOrientation="portrait" />

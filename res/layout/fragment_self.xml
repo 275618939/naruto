@@ -116,18 +116,18 @@
                 android:layout_gravity="bottom"
                 android:layout_marginBottom="3dp"
                 android:layout_marginLeft="@dimen/layout_left_0"
-                android:orientation="horizontal">
- 				<GridView
-	                android:id="@+id/userPhotoGridview"
-	                android:layout_width="290dp"
-	                android:layout_height="@dimen/user_info_image_height"
-	                android:horizontalSpacing="3dp"
-	                android:numColumns="4"
-	                android:scrollbars="none"
-	                android:verticalSpacing="5dp" >
-           		 </GridView>
-            </LinearLayout>
+                android:orientation="horizontal" >
 
+                <GridView
+                    android:id="@+id/userPhotoGridview"
+                    android:layout_width="290dp"
+                    android:layout_height="@dimen/user_info_image_height"
+                    android:horizontalSpacing="3dp"
+                    android:numColumns="4"
+                    android:scrollbars="none"
+                    android:verticalSpacing="5dp" >
+                </GridView>
+            </LinearLayout>
         </FrameLayout>
 
         <LinearLayout
@@ -252,12 +252,12 @@
             </LinearLayout>
 
             <LinearLayout
-                android:id="@+id/apply_layout"
+                android:id="@+id/member_touch_layout"
                 style="@style/setting_item_center" >
 
                 <TextView
                     style="@style/setting_item_text"
-                    android:text="@string/apply_miss" />
+                    android:text="@string/touch_miss" />
 
                 <View
                     android:layout_width="0.0dip"
@@ -265,28 +265,7 @@
                     android:layout_weight="1.0" />
 
                 <TextView
-                    android:id="@+id/applyCnt"
-                    style="@style/setting_item_text" />
-
-                <ImageView style="@style/setting_arrow" />
-            </LinearLayout>
-
-            <LinearLayout
-                android:id="@+id/member_attend_layout"
-                style="@style/setting_item_center"
-                android:visibility="gone" >
-
-                <TextView
-                    style="@style/setting_item_text"
-                    android:text="@string/memberAttend" />
-
-                <View
-                    android:layout_width="0.0dip"
-                    android:layout_height="1.0dip"
-                    android:layout_weight="1.0" />
-
-                <TextView
-                    android:id="@+id/attendCnt"
+                    android:id="@+id/touchCnt"
                     style="@style/setting_item_text" />
 
                 <ImageView style="@style/setting_arrow" />

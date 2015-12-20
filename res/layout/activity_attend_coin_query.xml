@@ -31,7 +31,14 @@
                 android:id="@+id/miss_list"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
-                android:divider="@null" >
+                android:background="@drawable/transparent"
+                android:cacheColorHint="@color/transparent"
+                android:divider="@null"
+                android:dividerHeight="0dip"
+                android:fadingEdge="none"
+                android:fastScrollEnabled="true"
+                android:focusable="true"
+                android:listSelector="@drawable/list_selector_transition" >
             </com.handmark.pulltorefresh.library.PullToRefreshListView>
         </LinearLayout>
     </LinearLayout>

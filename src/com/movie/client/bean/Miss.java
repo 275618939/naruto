@@ -26,15 +26,11 @@ public class Miss extends BaseBean implements Serializable {
 	//我发起的约会
 	public static final int MY_MISS = 0X210;
 	//我参与的约会
-	public static final int MY_APPLY = 0X211;
-	//我应邀的约会
-	public static final int MY_INVITATION = 0X212;
-	//应约的约会
-	public static final int ATTEDD_MISS = 0X215;
-	//用户参与的约会
-	public static final int USER_INVITATION = 0X213;
+	public static final int MY_TOUCH= 0X211;
+	//用户正在进行约会
+	public static final int USER_INVITATION= 0X212;
 	//电影下的约会
-	public static final int MOVIE_INVITATION = 0X214;
+	public static final int MOVIE_INVITATION = 0X314;
 
 	//约会类型
 	public static final String MISS_KEY = "miss_type";

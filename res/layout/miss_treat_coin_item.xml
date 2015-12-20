@@ -9,24 +9,35 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginBottom="@dimen/layout_item_bottom"
-        android:background="@drawable/background_with_border_radius" >
+        android:gravity="center" >
 
         <ImageView
             android:id="@+id/naruto_portrait"
-            android:layout_width="@dimen/user_item_image_width"
-            android:layout_height="@dimen/user_item_image_height"
+            android:layout_width="@dimen/user_smail_image_width"
+            android:layout_height="@dimen/user_smail_image_height"
             android:layout_margin="@dimen/layout_item_top_1"
             android:scaleType="centerCrop"
             android:src="@drawable/empty_photo" />
 
+        <TextView
+            android:id="@+id/nickname"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerVertical="true"
+            android:layout_marginLeft="@dimen/layout_left"
+            android:layout_toRightOf="@+id/naruto_portrait" />
+
         <EditText
             android:id="@+id/coin"
-            android:layout_width="50dp"
-            android:layout_height="wrap_content"
+            android:layout_width="70dp"
+            android:layout_height="25dp"
             android:layout_alignParentRight="true"
+            android:layout_centerVertical="true"
             android:layout_marginRight="@dimen/layout_right"
             android:background="@drawable/background_with_border_radius"
-            android:inputType="number" />
+            android:gravity="center_vertical"
+            android:inputType="number"
+            android:text="@string/integer_default" />
     </RelativeLayout>
 
 </LinearLayout>

@@ -49,6 +49,7 @@ import com.movie.view.LoadView;
 
 public class MissSelfDetailActivity extends BaseActivity implements OnClickListener, CallBackService,OnRefreshListener2<ListView>,OnRefreshListener<ScrollView>  {
 
+	public static final int RELOAGIN = 0x1;
 	TextView title;
 	ImageView missIcon;
 	TextView missCreateUser;
@@ -174,6 +175,7 @@ public class MissSelfDetailActivity extends BaseActivity implements OnClickListe
 		int result=StringUtil.dateCompareByCurrent(miss.getRunTime(),MissBtnStatus.MAX_MISS_CANCEL_HOUR);
 		missBtn.setBackgroundResource(MissStateBtnBackColor.getState(miss.getStatus()).getSourceId());
 		missNarutoAdapter.setLoginMemberId(userService.getUserItem().getMemberId());
+		missNarutoAdapter.setMemberId(miss.getMemberId());
 		missNarutoAdapter.setTimeResult(result);
 		if(result>0&&(miss.getStatus().intValue()==MissState.HaveInHand.getState())){
 			missBtn.setText(getResources().getString(R.string.miss_cancel));
@@ -225,6 +227,13 @@ public class MissSelfDetailActivity extends BaseActivity implements OnClickListe
 //		childs.add(new ArrayList<User>());
 //		partNarutoAdapter.updateData(parents, childs);
 	}
+	protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+		switch (requestCode) {
+		case RELOAGIN:
+			loadAttendUser();
+			break;
+		}
+	}
 	Handler mHandler = new Handler() {
 		public void handleMessage(android.os.Message msg) {
 			switch (msg.what) {
@@ -271,7 +280,7 @@ public class MissSelfDetailActivity extends BaseActivity implements OnClickListe
 				Intent hopeIntent = new Intent(this, HopeNarutoQueryActivity.class);
 				hopeIntent.putExtra("trystId", miss.getTrystId());
 				hopeIntent.putExtra("memberId",miss.getMemberId());
-				startActivity(hopeIntent);
+				startActivityForResult(hopeIntent, RELOAGIN);
 				break;
 			case R.id.miss_icon:
 				Intent userIntent=new Intent(this,UserDetailActivity.class);
@@ -313,6 +322,8 @@ public class MissSelfDetailActivity extends BaseActivity implements OnClickListe
 				}
 				if (values.containsKey("loveCnt")) {
 					loveView.setText(String.format(getResources().getString(R.string.user_love_count), values.get("loveCnt").toString()));
+				}else{
+					loveView.setText(String.format(getResources().getString(R.string.user_love_none)));
 				}
 				if(values.containsKey("faceTtl")){
 					faceTtl=Integer.parseInt(values.get("faceTtl").toString());

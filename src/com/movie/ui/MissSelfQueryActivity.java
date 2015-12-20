@@ -27,7 +27,6 @@ import com.movie.app.Constant.Page;
 import com.movie.app.Constant.ReturnCode;
 import com.movie.client.bean.Miss;
 import com.movie.client.bean.Movie;
-import com.movie.client.bean.User;
 import com.movie.client.service.BaseService;
 import com.movie.client.service.CallBackService;
 import com.movie.network.HttpMissInviteService;
@@ -115,30 +114,12 @@ public class MissSelfQueryActivity extends BaseActivity implements OnClickListen
 			missQueryService.addParams("size", Page.DEFAULT_SIZE);
 			missQueryService.execute(this);
 			break;
-		case Miss.MY_APPLY:
+		case Miss.MY_TOUCH:
 			title.setText("参与的约会");
 			missQueryService.addUrls(Constant.Miss_Touch_Query_API_URL);
 			missQueryService.addParams("page", page);
 			missQueryService.addParams("size", Page.DEFAULT_SIZE);
 			missQueryService.execute(this);
-			break;
-		case Miss.MY_INVITATION:
-			title.setText("应邀的约会");
-			missQueryService.addUrls(Constant.Miss_Attend_Query_API_URL);
-			missQueryService.addParams("page", page);
-			missQueryService.addParams("size", Page.DEFAULT_SIZE);
-			missQueryService.execute(this);
-			break;
-		case Miss.USER_INVITATION:
-			if(null!=queryCondition){
-				User user=(User)queryCondition;
-				title.setText(user.getNickname()+"正在进行的约会");
-				missQueryService.addUrls(Constant.Miss_Query_API_URL);
-				missQueryService.addParams("id", user.getMemberId());
-				missQueryService.addParams("page", page);
-				missQueryService.addParams("size", Page.DEFAULT_SIZE);
-				missQueryService.execute(this);
-			}
 			break;
 		case Miss.MOVIE_INVITATION:
 			if(null!=queryCondition){

@@ -74,8 +74,7 @@ public class SelfFragment extends BaseFragment implements OnClickListener , Call
 	TextView selfCharmView;
 	TextView selfLoveView;
 	TextView trystCntView;
-	TextView applyCntView;
-	TextView attendCntView;
+	TextView touchCntView;
 	TextView filmCntView;
 	ImageView userSignIn;
 	ImageItem imageItem;
@@ -134,8 +133,7 @@ public class SelfFragment extends BaseFragment implements OnClickListener , Call
 		selfCharmView = (TextView)rootView.findViewById(R.id.self_charm);
 		selfLoveView = (TextView)rootView.findViewById(R.id.self_love);
 		trystCntView = (TextView)rootView.findViewById(R.id.trystCnt);
-		applyCntView= (TextView)rootView.findViewById(R.id.applyCnt);
-		attendCntView= (TextView)rootView.findViewById(R.id.attendCnt);
+		touchCntView= (TextView)rootView.findViewById(R.id.touchCnt);
 		filmCntView = (TextView) rootView.findViewById(R.id.filmCnt);
 		userSignIn = (ImageView)rootView.findViewById(R.id.user_sign_in);
 		userPhotoMangerLayout = (LinearLayout)rootView.findViewById(R.id.user_photo_manger);
@@ -286,16 +284,12 @@ public class SelfFragment extends BaseFragment implements OnClickListener , Call
 				myMissIntent.putExtra(Miss.MISS_KEY, Miss.MY_MISS);
 				startActivity(myMissIntent);
 				break;
-			case R.id.attendCnt:
+			case R.id.touchCnt:
 				Intent attendIntent = new Intent(getActivity(),MissQueryActivity.class);
-				attendIntent.putExtra(Miss.MISS_KEY, Miss.ATTEDD_MISS);
+				attendIntent.putExtra(Miss.MISS_KEY, Miss.MY_TOUCH);
 				startActivity(attendIntent);
 				break;
-			case R.id.applyCnt:
-				Intent applyIntent = new Intent(getActivity(),MissQueryActivity.class);
-				applyIntent.putExtra(Miss.MISS_KEY, Miss.MY_APPLY);
-				startActivity(applyIntent);
-				break;
+			
 	
 			default:
 				break;
@@ -312,6 +306,7 @@ public class SelfFragment extends BaseFragment implements OnClickListener , Call
 			if (tag.equals(httpUsersService.TAG)) {
 				isLoad=true;				
 				user = new User();			
+				int touchCnt=0;
 				Map<String, Object> values = (Map<String, Object>) map.get(ReturnCode.RETURN_VALUE);
 				if (values.containsKey("memberId")){
 					user.setMemberId(values.get("memberId").toString());
@@ -336,6 +331,8 @@ public class SelfFragment extends BaseFragment implements OnClickListener , Call
 				if (values.containsKey("loveCnt")) {
 					user.setLove(Integer.parseInt(values.get("loveCnt").toString()));
 					selfLoveView.setText(values.get("loveCnt").toString());
+				}else{
+					selfLoveView.setText("0");
 				}
 				if(values.containsKey("faceTtl")){
 					user.setFace(Integer.parseInt(values.get("faceTtl").toString()));
@@ -347,27 +344,33 @@ public class SelfFragment extends BaseFragment implements OnClickListener , Call
 					int tryst=Integer.parseInt(values.get("trystCnt").toString());
 					user.setTryst(tryst);
 					trystCntView.setText(String.format(getResources().getString(R.string.miss_have),tryst));
+				}else{
+					trystCntView.setText("");
 				}
 				if(values.containsKey("filmCnt")){
 					int filmCnt=Integer.parseInt(values.get("filmCnt").toString());
 					user.setFilmCnt(filmCnt);
 					filmCntView.setText(String.format(getResources().getString(R.string.movie_have),filmCnt));
 					filmCntView.setOnClickListener(this);
+				}else{
+					filmCntView.setText("");
 				}
 				if(values.containsKey("applyCnt")){
 					user.setApplyCnt(Integer.parseInt(values.get("applyCnt").toString()));
-					applyCntView.setText(String.format(getResources().getString(R.string.apply_miss_have),user.getApplyCnt()));
-					applyCntView.setOnClickListener(this);
 				}
 				if(values.containsKey("attendCnt")){
 					user.setInviteCnt(Integer.parseInt(values.get("attendCnt").toString()));
-					attendCntView.setText(String.format(getResources().getString(R.string.attend_miss_have),user.getInviteCnt()));
-					attendCntView.setOnClickListener(this);
 				}
-				
 				String score=UserCharm.GetScore(user.getFace(), user.getFaceCnt()<=0?1:user.getFaceCnt());
 				if(!score.equals("NaN")){
 					selfCharmView.setText(score);
+				}
+				touchCnt=user.getApplyCnt()+user.getInviteCnt();
+				if(touchCnt>0){
+					touchCntView.setText(String.format(getResources().getString(R.string.touch_miss_have),touchCnt));
+					touchCntView.setOnClickListener(this);
+				}else{
+					touchCntView.setText("");
 				}
 				loginLayout.setVisibility(View.GONE);
 				logoutLayout.setVisibility(View.VISIBLE);

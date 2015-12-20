@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content"
+    android:background="@drawable/background_with_border_window_radius"
+    android:gravity="center"
+    android:orientation="vertical" >
+
+    <com.movie.view.CommentsGridView
+        android:id="@+id/comments"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="@dimen/layout_left"
+        android:layout_marginRight="@dimen/layout_right"
+        android:layout_marginTop="@dimen/layout_item_top_1"
+        android:divider="@null"
+        android:horizontalSpacing="5dp"
+        android:numColumns="3"
+        android:stretchMode="columnWidth" >
+    </com.movie.view.CommentsGridView>
+
+    <ImageView style="@style/input_item_line" />
+
+    <ImageView
+        android:id="@+id/btn_pop_close"
+        android:layout_width="36.0dip"
+        android:layout_height="36.0dip"
+        android:background="@drawable/dislike_bg"
+        android:scaleType="center"
+        android:src="@drawable/listpage_more_close" />
+
+</LinearLayout>

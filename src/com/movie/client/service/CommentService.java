@@ -26,6 +26,45 @@ public class CommentService {
 		commentDao.setContentValues(comment);
 		commentDao.addData();
 	}
+	public Map<Integer,String> getMenCommentsMap() {
+
+		List<Map<String, String>> commnetList = commentDao.listData(null, null);
+	    Map<Integer,String> menDictionaries = new HashMap<Integer,String>();
+	    int type=0;
+		for (Map<String, String> map : commnetList) {
+			type=Integer.parseInt(map.get(SQLHelper.TYPE));
+			if(type==SexState.MAN.getState()){
+				menDictionaries.put(Integer.parseInt(map.get(SQLHelper.ID)),map.get(SQLHelper.NAME));
+			}
+		}
+		return menDictionaries;
+	}
+	public Map<Integer,String> getWoMenCommentsMap() {
+
+		List<Map<String, String>> commnetList = commentDao.listData(null, null);
+		Map<Integer,String> womenDictionaries = new HashMap<Integer,String>();
+	    int type=0;
+		for (Map<String, String> map : commnetList) {
+			type=Integer.parseInt(map.get(SQLHelper.TYPE));
+			if(type==SexState.WOMAN.getState()){
+				womenDictionaries.put(Integer.parseInt(map.get(SQLHelper.ID)),map.get(SQLHelper.NAME));
+			}
+		}
+		return womenDictionaries;
+	}
+	public Map<Integer,String> getCommentsMapBySex(int sex) {
+
+		List<Map<String, String>> commnetList = commentDao.listData(null, null);
+		Map<Integer,String> dictionaries = new HashMap<Integer,String>();
+	    int type=0;
+		for (Map<String, String> map : commnetList) {
+			type=Integer.parseInt(map.get(SQLHelper.TYPE));
+			if(type==sex){
+				dictionaries.put(Integer.parseInt(map.get(SQLHelper.ID)),map.get(SQLHelper.NAME));
+			}
+		}
+		return dictionaries;
+	}
 
 	public Map<Integer, Map<Integer,String>> getCommentsMap() {
 

@@ -8,6 +8,7 @@ import java.util.Map;
 import android.content.Intent;
 import android.os.Bundle;
 import android.os.Handler;
+import android.view.Gravity;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.widget.ImageView;
@@ -35,9 +36,11 @@ import com.movie.client.bean.MissNaruto;
 import com.movie.client.bean.User;
 import com.movie.client.service.BaseService;
 import com.movie.client.service.CallBackService;
+import com.movie.client.service.CommentService;
 import com.movie.network.HttpMissApplyService;
 import com.movie.network.HttpMissDetailService;
 import com.movie.network.HttpMissQueryService;
+import com.movie.pop.CommentPopupWindow;
 import com.movie.state.MissState;
 import com.movie.state.MissStateBackColor;
 import com.movie.state.MissTimeBtnBackColor;
@@ -72,9 +75,11 @@ public class MissNarutoDetailActivity extends BaseActivity implements OnClickLis
 	BaseService httpMissDetailService;
 	BaseService httpMissQueryService;
 	BaseService httpMissApplyService;
+	CommentService commentService;
 	PullToRefreshScrollView refreshableScollView;
 	PullToRefreshListView refreshableListView;
 	MissNarutoAdapter missNarutoAdapter;
+	CommentPopupWindow commentPopupWindow;
 	List<MissNaruto> missNarutos = new ArrayList<MissNaruto>();
     LoadView loadView;
     View rootView;
@@ -91,6 +96,7 @@ public class MissNarutoDetailActivity extends BaseActivity implements OnClickLis
 		httpMissDetailService = new HttpMissDetailService(this);
 		httpMissQueryService = new HttpMissQueryService(this);
 		httpMissApplyService =new HttpMissApplyService(this);
+		commentService = new CommentService();
 		initViews();
 		initEvents();
 		initData();
@@ -98,6 +104,7 @@ public class MissNarutoDetailActivity extends BaseActivity implements OnClickLis
 	@Override
 	protected void initViews() {
 		
+		commentPopupWindow =new CommentPopupWindow(this, mHandler);
 		title = (TextView) findViewById(R.id.title);
 		userLove = (TextView) findViewById(R.id.userLove);
 		loveView = (TextView) findViewById(R.id.love);
@@ -163,14 +170,25 @@ public class MissNarutoDetailActivity extends BaseActivity implements OnClickLis
 		missBtn.setBackgroundResource(MissTimeBtnBackColor.getState(result).getSourceId());
 		missBtn.setText(MissState.getState(miss.getStatus()).getMessage());
 		missNarutoAdapter.setLoginMemberId(userService.getUserItem().getMemberId());
+		missNarutoAdapter.setMemberId(miss.getMemberId());
 		if(!userService.getUserItem().getMemberId().equals(miss.getMemberId())){
 			//验证是否进行约会报名操作
 			if(result>0&&(miss.getStatus().intValue()==MissState.HaveInHand.getState())){
 				missBottomBar.setVisibility(View.VISIBLE);
 				missBtn.setText(getResources().getString(R.string.miss_enter));
 				missBtn.setOnClickListener(this);
-			}
+				
+			} 
 			//验证是否可进行评价操作
+			if(miss.getStatus().intValue()==MissState.Completed.getState()){
+				
+				missBottomBar.setVisibility(View.VISIBLE);
+				missBtn.setText(getResources().getString(R.string.miss_evlation));
+				missBtn.setOnClickListener(this);
+			}
+			
+			
+			
 		}
 		
 		
@@ -195,9 +213,9 @@ public class MissNarutoDetailActivity extends BaseActivity implements OnClickLis
 			switch (msg.what) {
 			
 			case Miss.LOSE_MISS:
+				//踢出用户
 				Bundle bundle = msg.getData();
 				User user = (User) bundle.getSerializable("user");
-				//踢出用户
 				break;
 			case Miss.EVLATOIN_USER:
 				//评价用户
@@ -221,7 +239,11 @@ public class MissNarutoDetailActivity extends BaseActivity implements OnClickLis
 				startActivity(intent);
 				break;
 			case R.id.miss_btn:
-				applyMiss();
+				if(miss.getStatus().intValue()==MissState.HaveInHand.getState()){
+					applyMiss();
+				}else if(miss.getStatus().intValue()==MissState.Completed.getState()){
+					commentPopupWindow.showAtLocation(v, Gravity.CENTER, 0,0);
+				}
 				break;
 			case R.id.hope_user:
 				Intent hopeIntent = new Intent(this, HopeNarutoQueryActivity.class);
@@ -268,6 +290,8 @@ public class MissNarutoDetailActivity extends BaseActivity implements OnClickLis
 				}
 				if (values.containsKey("loveCnt")) {
 					loveView.setText(String.format(getResources().getString(R.string.user_love_count), values.get("loveCnt").toString()));
+				}else{
+					loveView.setText(String.format(getResources().getString(R.string.user_love_none)));
 				}
 				if(values.containsKey("faceTtl")){
 					faceTtl=Integer.parseInt(values.get("faceTtl").toString());
@@ -319,7 +343,7 @@ public class MissNarutoDetailActivity extends BaseActivity implements OnClickLis
 					if (dataMap.containsKey("sex"))
 						missNaruto.setSex(Integer.parseInt((dataMap.get("sex").toString())));
 					if (dataMap.containsKey("loveCnt"))
-						missNaruto.setLoveCnt(Integer.parseInt((dataMap.get("loveCnt").toString())));
+						missNaruto.setLoveCnt(Integer.parseInt((dataMap.get("loveCnt").toString())));				
 					if (dataMap.containsKey("faceTtl"))
 						missNaruto.setFaceTtl(Long.parseLong((dataMap.get("faceTtl").toString())));
 					if (dataMap.containsKey("faceCnt"))
@@ -341,7 +365,7 @@ public class MissNarutoDetailActivity extends BaseActivity implements OnClickLis
 				missBottomBar.setVisibility(View.GONE);
 				showToask("报名成功!");
 				//更新参与人
-				loadAttendUser();
+				//loadAttendUser();
 			}
 			
 		}else{

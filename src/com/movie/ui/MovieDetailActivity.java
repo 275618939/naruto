@@ -367,12 +367,18 @@ public class MovieDetailActivity extends BaseActivity implements OnClickListener
 					   if(size>=Page.MOVIES_COMMENTS_MAX_SHOW)
 						  break;
 						movieComment = new MovieComment();
-						movieComment.setPortrait(Constant.SERVER_ADRESS+value.get("portrait").toString());
-						movieComment.setNickname(value.get("nickname").toString());
-						movieComment.setMemberId(value.get("memberId").toString());
-						movieComment.setContent(value.get("content").toString());
-						movieComment.setTime(value.get("time").toString());
-						movieComment.setScore(Integer.parseInt(value.get("score").toString()));
+						if(value.containsKey("portrait"))
+							movieComment.setPortrait(Constant.SERVER_ADRESS+value.get("portrait").toString());
+						if(value.containsKey("nickname"))
+							movieComment.setNickname(value.get("nickname").toString());
+						if(value.containsKey("memberId"))
+							movieComment.setMemberId(value.get("memberId").toString());
+						if(value.containsKey("content"))
+							movieComment.setContent(value.get("content").toString());
+						if(value.containsKey("time"))
+							movieComment.setTime(value.get("time").toString());
+						if(value.containsKey("score"))
+							movieComment.setScore(Integer.parseInt(value.get("score").toString()));
 					    comments.add(movieComment);
 					    size++;
 					}

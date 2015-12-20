@@ -14,7 +14,7 @@ import android.widget.TextView;
 
 import com.handmark.pulltorefresh.library.PullToRefreshBase;
 import com.handmark.pulltorefresh.library.PullToRefreshBase.Mode;
-import com.handmark.pulltorefresh.library.PullToRefreshBase.OnRefreshListener2;
+import com.handmark.pulltorefresh.library.PullToRefreshBase.OnRefreshListener;
 import com.handmark.pulltorefresh.library.PullToRefreshListView;
 import com.movie.R;
 import com.movie.adapter.MissTreatCoinAdapter;
@@ -27,10 +27,11 @@ import com.movie.client.service.CallBackService;
 import com.movie.network.HttpMissQueryService;
 import com.movie.view.LoadView;
 
-public class MissTreatCoinActivity extends BaseActivity implements OnClickListener,CallBackService, OnRefreshListener2<ListView> {
+public class MissTreatCoinActivity extends BaseActivity implements OnClickListener,CallBackService, OnRefreshListener<ListView> {
 
 	LoadView loadView;
 	TextView title;
+	TextView rightBtn;
 	ListView myMissList;
 	View rootView;
 	MissTreatCoinAdapter treatCoinAdapter;
@@ -53,15 +54,19 @@ public class MissTreatCoinActivity extends BaseActivity implements OnClickListen
 		initData();
 		initEvents();
 		
+		
+		
 	}
 	@Override
 	protected void initViews() {
 		title = (TextView) findViewById(R.id.title);
 		treatCoinAdapter = new MissTreatCoinAdapter(this, mHandler, misses);
 		refreshableListView = (PullToRefreshListView) findViewById(R.id.miss_list);
-		refreshableListView.setMode(Mode.BOTH);
+		refreshableListView.setMode(Mode.PULL_FROM_START);
 		refreshableListView.setAdapter(treatCoinAdapter);
 		refreshableListView.setEmptyView(findViewById(R.id.empty));
+		rightBtn = (TextView) findViewById(R.id.right_text);
+		rightBtn.setVisibility(View.VISIBLE);	
 		loadView.initView(rootView);
 	}
 
@@ -73,12 +78,15 @@ public class MissTreatCoinActivity extends BaseActivity implements OnClickListen
 	@Override
 	protected void initData() {
 		title.setText("派发影币");
+		rightBtn.setText("确定");
 		trystId=getIntent().getStringExtra("trystId");
+		//loadMissData();
 	}
 
 	private void loadMissData() {
 		missQueryService.addUrls(Constant.Miss_Attend_Query_API_URL);
 		missQueryService.addParams("id", trystId);
+		missQueryService.execute(this);
 	}
 
 	@Override
@@ -129,6 +137,8 @@ public class MissTreatCoinActivity extends BaseActivity implements OnClickListen
 						miss.setTrystId(missMap.get("trystId").toString());
 					if (missMap.containsKey("memberId"))
 						miss.setMemberId(missMap.get("memberId").toString());
+					else
+						continue;
 					if (missMap.containsKey("portrait"))
 						miss.setIcon(Constant.SERVER_ADRESS+missMap.get("portrait").toString());
 					if (missMap.containsKey("nickname"))
@@ -186,18 +196,10 @@ public class MissTreatCoinActivity extends BaseActivity implements OnClickListen
 		treatCoinAdapter=null;
 	}
 	@Override
-	public void onPullDownToRefresh(PullToRefreshBase<ListView> refreshView) {
-		page = 0;
+	public void onRefresh(PullToRefreshBase<ListView> refreshView) {
 		misses.clear();
-		loadMissData();
-		
+		loadMissData();		
 	}
-	@Override
-	public void onPullUpToRefresh(PullToRefreshBase<ListView> refreshView) {
-		page = 1;
-		loadMissData();
-		
-	}
-
+	
 	
 }
