@@ -1,5 +1,6 @@
 package com.movie.ui;
 
+import java.io.File;
 import java.util.Map;
 
 import android.annotation.SuppressLint;
@@ -29,8 +30,11 @@ import com.movie.app.BaseActivity;
 import com.movie.app.Constant;
 import com.movie.app.Constant.Page;
 import com.movie.app.NarutoApplication;
+import com.movie.client.service.BaseService;
 import com.movie.client.service.CallBackService;
+import com.movie.network.HttpDynamicCreateService;
 import com.movie.pop.UserPhotoPopupWindow;
+import com.movie.state.DynamicContentType;
 import com.movie.util.Bimp;
 import com.movie.util.FileUtils;
 import com.movie.util.ImageItem;
@@ -53,6 +57,7 @@ public class DynamicCreateActivity extends BaseActivity implements
 	ImageItem imageItem;
 	ImageView addPicView;
 	ImageView addEmoteView;
+	BaseService httpDynamicService;
 	DynamicPhotoGridAdapter photoGridAdapter;
 	UserPhotoPopupWindow userPhotoPopupWindow;
 	
@@ -64,6 +69,7 @@ public class DynamicCreateActivity extends BaseActivity implements
 	        rootView=getLayoutInflater().inflate(R.layout.activity_dynamic_create,null);  
 	    }  
 		setContentView(rootView);
+		httpDynamicService = new HttpDynamicCreateService(this);
 		userPhotoPopupWindow = new UserPhotoPopupWindow(this,LayoutParams.MATCH_PARENT,LayoutParams.WRAP_CONTENT);
 		initViews();
 		initEvents();
@@ -112,6 +118,9 @@ public class DynamicCreateActivity extends BaseActivity implements
 	@Override
 	public void onClick(View v) {
 		switch (v.getId()) {
+			case  R.id.right_text:
+				createDynamic();
+				break;
 			case R.id.addPic:
 				userPhotoPopupWindow.showAtLocation(v, Gravity.BOTTOM, 0, 0);
 				break;
@@ -127,7 +136,31 @@ public class DynamicCreateActivity extends BaseActivity implements
 			default:
 				break;
 		}
-
+	}
+	
+	private void createDynamic(){
+		String info = content.getText().toString();
+		if (info==null||info.isEmpty()) {
+			showToask("内容不能为空");
+			return;
+		}
+		int size=Bimp.tempSelectBitmap.size();
+		File [] files=new File[size];
+		for(int i=0;i<size;i++){
+			files[i]=new File(Bimp.tempSelectBitmap.get(i).getImagePath());
+		}
+		httpDynamicService.addParams("title",info);
+		if(size>0){
+			httpDynamicService.addParams("type", DynamicContentType.Photo.getType());
+		}else{
+			httpDynamicService.addParams("type", DynamicContentType.Text.getType());
+		}
+		httpDynamicService.addParams("longitude", NarutoApplication.longitude);
+		httpDynamicService.addParams("latitude", NarutoApplication.latitude);
+		httpDynamicService.addParams("files", files);
+		httpDynamicService.execute(this);
+		
+		
 	}
 	private void showKeyBoard() {
 		if (mInputView.isShown()) {
@@ -172,12 +205,16 @@ public class DynamicCreateActivity extends BaseActivity implements
 						}
 						//压缩图片
 						Bitmap bitmap = PhotoUtils.createBitmap(path,NarutoApplication.getApp().mScreenWidth/2,NarutoApplication.getApp().mScreenHeight/2);
+						//重新保存压缩后的图片
+						FileUtils.saveBitmapByPath(bitmap, path);
 						imageItem= new ImageItem();
 						imageItem.setImagePath(path);
 						imageItem.setBitmap(bitmap);
 						Bimp.tempSelectBitmap.add(imageItem);
-						bitmap=null;
+						//释放内存
+						//imageItem.getBitmap().recycle();
 						imageItem=null;
+						bitmap=null;
 						photoGridAdapter.notifyDataSetChanged();
 						System.gc();
 					}
@@ -194,12 +231,16 @@ public class DynamicCreateActivity extends BaseActivity implements
 				if (path != null) {
 				   //按比例缩放图片				
 				   Bitmap bitmap = PhotoUtils.createBitmap(path,NarutoApplication.getApp().mScreenWidth/2,NarutoApplication.getApp().mScreenHeight/2);
+				   //重新保存压缩后的图片
+				   FileUtils.saveBitmapByPath(bitmap, path);
 				   imageItem= new ImageItem();
 				   imageItem.setImagePath(path);
 				   imageItem.setBitmap(bitmap);
 				   Bimp.tempSelectBitmap.add(imageItem);
-				   bitmap=null;
+				   //释放内存
+				   //imageItem.getBitmap().recycle();
 				   imageItem=null;
+				   bitmap=null;
 				   photoGridAdapter.notifyDataSetChanged();
 				   System.gc();
 				}
@@ -269,8 +310,7 @@ public class DynamicCreateActivity extends BaseActivity implements
 
 	@Override
 	public void OnRequest() {
-		showProgressDialog("提示", "请稍后......");
-
+		showProgressDialog();
 	}
 	@Override
 	protected void onDestroy() {

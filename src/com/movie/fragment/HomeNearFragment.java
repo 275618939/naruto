@@ -90,8 +90,8 @@ public class HomeNearFragment extends BaseFragment implements CallBackService,
 	}
 	protected void loadNearNaruto() {
 		httpNearService.addParams("distance", page);
-		httpNearService.addParams("longitude", NarutoApplication.getApp().longitude);
-		httpNearService.addParams("latitude", NarutoApplication.getApp().latitude);
+		httpNearService.addParams("longitude", NarutoApplication.longitude);
+		httpNearService.addParams("latitude", NarutoApplication.latitude);
 		httpNearService.execute(this);
 	}
 	Handler mHandler = new Handler() {

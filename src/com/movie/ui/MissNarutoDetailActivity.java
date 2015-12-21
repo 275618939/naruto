@@ -218,7 +218,7 @@ public class MissNarutoDetailActivity extends BaseActivity implements OnClickLis
 				User user = (User) bundle.getSerializable("user");
 				break;
 			case Miss.EVLATOIN_USER:
-				//评价用户
+			
 				break;
 		
 			default:

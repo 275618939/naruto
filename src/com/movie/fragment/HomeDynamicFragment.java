@@ -21,14 +21,14 @@ import com.movie.R;
 import com.movie.adapter.DynamicAdapter;
 import com.movie.app.BaseFragment;
 import com.movie.app.Constant;
-import com.movie.app.NarutoManager;
 import com.movie.app.Constant.Page;
 import com.movie.app.Constant.ReturnCode;
+import com.movie.app.NarutoApplication;
 import com.movie.client.bean.Feed;
 import com.movie.client.bean.User;
 import com.movie.client.service.BaseService;
 import com.movie.client.service.CallBackService;
-import com.movie.network.HttpNearService;
+import com.movie.network.HttpDynamicNearQueryService;
 import com.movie.ui.LoginActivity;
 import com.movie.util.JsonResolveUtils;
 
@@ -37,15 +37,16 @@ public class HomeDynamicFragment extends BaseFragment implements CallBackService
 	
 	DynamicAdapter dynamicAdapter;
 	PullToRefreshListView refreshViewLayout;
-	BaseService httpNearService;
+	BaseService httpDynamicService;
 	List<Feed> feeds = new ArrayList<Feed>();
+	
 	public HomeDynamicFragment() {
 		super();		
 	}
 	@Override
 	public void onCreate(Bundle savedInstanceState){
 		super.onCreate(savedInstanceState);		
-		httpNearService = new HttpNearService(getActivity());
+		httpDynamicService = new HttpDynamicNearQueryService(getActivity());
 	}
 	@Override
 	public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -86,10 +87,10 @@ public class HomeDynamicFragment extends BaseFragment implements CallBackService
 	
 	}
 	protected void loadFeeds() {
-		httpNearService.addParams("distance", Page.MAX_DISTANCE);
-		httpNearService.addParams("longitude", NarutoManager.longitude);
-		httpNearService.addParams("latitude", NarutoManager.latitude);
-		httpNearService.execute(this);
+		httpDynamicService.addParams("distance", page);
+		httpDynamicService.addParams("longitude", NarutoApplication.longitude);
+		httpDynamicService.addParams("latitude", NarutoApplication.latitude);
+		httpDynamicService.execute(this);
 		
 		
 	}
@@ -127,7 +128,7 @@ public class HomeDynamicFragment extends BaseFragment implements CallBackService
 		String code = map.get(Constant.ReturnCode.RETURN_STATE).toString();
 		if (Constant.ReturnCode.STATE_1.equals(code)) {
 			String tag = map.get(Constant.ReturnCode.RETURN_TAG).toString();
-			if (tag.equals(httpNearService.TAG)) {
+			if (tag.equals(httpDynamicService.TAG)) {
 				//初始化临时数据
 				refreshViewLayout.onRefreshComplete();
 				JsonResolveUtils.resolveNearbyStatus(getActivity(), feeds,"momo_p_001");
@@ -177,7 +178,7 @@ public class HomeDynamicFragment extends BaseFragment implements CallBackService
 
 	@Override
 	public void onPullDownToRefresh(PullToRefreshBase<ListView> refreshView) {
-		page = 0;
+		page = Page.MIN_DISTANCE;
 		feeds.clear();
 		loadFeeds();
 	}
@@ -185,6 +186,7 @@ public class HomeDynamicFragment extends BaseFragment implements CallBackService
 	@Override
 	public void onPullUpToRefresh(PullToRefreshBase<ListView> refreshView) {
 		page = 1;
+		page+=Page.MIN_DISTANCE;
 		loadFeeds();
 	}
 	@Override

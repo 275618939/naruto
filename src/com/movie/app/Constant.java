@@ -118,6 +118,10 @@ public interface Constant {
 	public final static String Member_Near_Query_API_URL = SERVER_URL+ "/member/near";
 	// 查询城市id
 	public final static String Region_API_URL = SERVER_URL+ "/region";
+	// 创建动态
+	public final static String Dynamic_Create_API_URL = SERVER_URL+ "/dynamic/create";
+	// 查询附近的动态
+	public final static String Dynamic_Near_API_URL = SERVER_URL+ "/dynamic/near";
 
 	public static final int CIM_SERVER_PORT = 23456;
 	
