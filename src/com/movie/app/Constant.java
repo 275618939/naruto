@@ -124,7 +124,7 @@ public interface Constant {
     public static class MissBtnStatus{
     	
     	//约会时间跟当前时间的最大允许撤销时间差
-    	public final static int MAX_MISS_CANCEL_HOUR=12;
+    	public final static int MAX_MISS_CANCEL_HOUR=1;
     	
     }
     public static final int UPLOAD_LOCATION_TIME=1*60*1000;
