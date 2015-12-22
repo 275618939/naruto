@@ -293,7 +293,7 @@ public class DynamicCreateActivity extends BaseActivity implements
 		hideProgressDialog();
 		String code = map.get(Constant.ReturnCode.RETURN_STATE).toString();
 		if (Constant.ReturnCode.STATE_1.equals(code)) {
-
+			onBackPressed();
 		} else {
 			String message = map.get(Constant.ReturnCode.RETURN_MESSAGE).toString();
 			showToask(message);

@@ -122,6 +122,8 @@ public interface Constant {
 	public final static String Dynamic_Create_API_URL = SERVER_URL+ "/dynamic/create";
 	// 查询附近的动态
 	public final static String Dynamic_Near_API_URL = SERVER_URL+ "/dynamic/near";
+	// 查询历史的动态
+	public final static String Dynamic_History_API_URL = SERVER_URL+ "/dynamic/history";
 
 	public static final int CIM_SERVER_PORT = 23456;
 	

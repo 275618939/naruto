@@ -161,24 +161,20 @@ private static String requestImages(String method,String url,Map<String,Object> 
 		
 		try{
 			int fileDataLength = 0;  
-			for(File tempFile : file){//得到文件类型数据的总长度  
-	             StringBuilder fileExplain = new StringBuilder();  
-	             fileExplain.append(PREFIX).append(BOUNDARY).append(LINE_END);
-	             fileExplain.append("Content-Disposition:form-data; name=\"content\"; filename=\"" + tempFile.getName() + "\"" + LINE_END);
-	             fileExplain.append("Content-Type:image/png" + LINE_END); 															
-	             fileExplain.append(LINE_END);
-	             
-	             /*fileExplain.append("--");  
-	             fileExplain.append(BOUNDARY);  
-	             fileExplain.append("\r\n");  
-	             fileExplain.append("Content-Disposition: form-data;name=\"content\";filename=\""+ tempFile.getName() + "\"\r\n");  
-	             fileExplain.append("Content-Type:image/png\r\n\r\n");  
-	             fileExplain.append("\r\n"); */
-	             fileDataLength += fileExplain.length();  
-	             fileDataLength += tempFile.length(); 
+			StringBuilder fileExplain = null;
+			int count=0;
+			for(File tempFile : file){//得到文件类型数据的总长度  				
+	            fileExplain = new StringBuilder();  
+	            fileExplain.append(PREFIX).append(BOUNDARY).append(LINE_END);
+	            fileExplain.append("Content-Disposition:form-data; name=\"content\"; filename=\"" + tempFile.getName() + "\"" + LINE_END);
+	            fileExplain.append("Content-Type:image/png" + LINE_END); 															
+	            fileExplain.append(LINE_END);
+	            fileDataLength += fileExplain.toString().getBytes().length;
+	            fileDataLength += tempFile.length(); 
+	            count+=2;
 	        }  
 			StringBuilder textEntity = new StringBuilder();  
-			//构造文本类型参数的实体数据
+			//构造文本类型参数
 	        for (Map.Entry<String, Object> entry : params.entrySet()) { 
 	        	textEntity.append(PREFIX).append(BOUNDARY).append(LINE_END);
 	            textEntity.append("Content-Disposition: form-data; name=\""+ entry.getKey() + "\"\r\n\r\n");  
@@ -187,7 +183,7 @@ private static String requestImages(String method,String url,Map<String,Object> 
 	        }  
 	        byte[] end_data = (PREFIX + BOUNDARY + PREFIX + LINE_END).getBytes();
 	        //计算传输给服务器的实体数据总长度  
-	        int dataLength = textEntity.toString().getBytes().length + fileDataLength +  end_data.length; 
+	        int dataLength = textEntity.toString().getBytes().length + fileDataLength +  end_data.length+count; 
 			URL u = new URL(url);
 			conn = (HttpURLConnection) u.openConnection();
 			conn.setDoOutput(true);	
@@ -195,7 +191,7 @@ private static String requestImages(String method,String url,Map<String,Object> 
 			conn.setRequestProperty("Charset", "utf-8"); 
 			conn.setRequestProperty("Connection", "keep-alive");
 			conn.setRequestProperty("Content-Type", CONTENT_TYPE + ";boundary="+ BOUNDARY);
-			conn.setRequestProperty("Content-Length",Integer.toString(dataLength+2));
+			conn.setRequestProperty("Content-Length",Integer.toString(dataLength));
 			if(headers!=null){
 				for(Map.Entry<String, String> entry:headers.entrySet()){
 					conn.setRequestProperty(entry.getKey(),entry.getValue());
@@ -210,7 +206,6 @@ private static String requestImages(String method,String url,Map<String,Object> 
 			conn.connect();
 			os = conn.getOutputStream();			
 			os.write(textEntity.toString().getBytes());
-			/* 上传文件 */
 			StringBuffer sb = null;
 			int len = 0;
 			for(File tempFile:file){

@@ -40,6 +40,7 @@ import com.movie.network.HttpLogoutService;
 import com.movie.network.HttpUserImageQueryService;
 import com.movie.network.HttpUserService;
 import com.movie.pop.SignInPopupWindow;
+import com.movie.ui.DynamicQueryActivity;
 import com.movie.ui.LoginActivity;
 import com.movie.ui.MissQueryActivity;
 import com.movie.ui.MissSelfQueryActivity;
@@ -151,6 +152,7 @@ public class SelfFragment extends BaseFragment implements OnClickListener , Call
 		userLogoutBtn.setOnClickListener(this);
 		myMissLayout.setOnClickListener(this);
 		userSignIn.setOnClickListener(this);
+		myDynamicLayout.setOnClickListener(this);
 	}
 	private void loadUserImage(){
 		userPhotoMangerLayout.setVisibility(View.VISIBLE);
@@ -278,6 +280,10 @@ public class SelfFragment extends BaseFragment implements OnClickListener , Call
 				Intent movieIntent = new Intent(getActivity(),UserLoveMovieActivity.class);
 				movieIntent.putExtra("user", user);
 				startActivity(movieIntent);
+				break;
+			case R.id.my_dynamic_layout:
+				Intent dynamicIntent = new Intent(getActivity(),DynamicQueryActivity.class);
+				startActivity(dynamicIntent);
 				break;
 			case R.id.my_miss_layout:
 				Intent myMissIntent = new Intent(getActivity(),MissSelfQueryActivity.class);

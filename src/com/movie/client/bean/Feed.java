@@ -16,10 +16,14 @@ public class Feed extends BaseBean implements Parcelable {
 	public static final String SITE = "site";
 	public static final String COMMENT_COUNT = "comment_count";
 	
+	private int type;
+	private String dynamicId;
+	private String memberId;
 	private String name;
 	private String portrait;
 	private String time;
 	private String content;
+ 
 	private List<String> contentImage;
 	private String site;
 	private int commentCount;
@@ -27,10 +31,22 @@ public class Feed extends BaseBean implements Parcelable {
 	public Feed() {
 		super();
 	}
-
 	public Feed(String time, String content, List<String> contentImage, String site,
 			int commentCount) {
 		super();
+	
+		this.time = time;
+		this.content = content;
+		this.contentImage = contentImage;
+		this.site = site;
+		this.commentCount = commentCount;
+	}
+	public Feed(int type,String dynamicId,String memberId ,String time, String content, List<String> contentImage, String site,
+			int commentCount) {
+		super();
+		this.type=type;
+		this.dynamicId=dynamicId;
+		this.memberId=memberId;
 		this.time = time;
 		this.content = content;
 		this.contentImage = contentImage;
@@ -96,6 +112,32 @@ public class Feed extends BaseBean implements Parcelable {
 	public void setName(String name) {
 		this.name = name;
 	}
+	
+
+	public int getType() {
+		return type;
+	}
+
+	public void setType(int type) {
+		this.type = type;
+	}
+	
+
+	public String getDynamicId() {
+		return dynamicId;
+	}
+
+	public void setDynamicId(String dynamicId) {
+		this.dynamicId = dynamicId;
+	}
+
+	public String getMemberId() {
+		return memberId;
+	}
+
+	public void setMemberId(String memberId) {
+		this.memberId = memberId;
+	}
 
 	@Override
 	public int describeContents() {
@@ -105,6 +147,9 @@ public class Feed extends BaseBean implements Parcelable {
 	@Override
 	public void writeToParcel(Parcel dest, int flags) {
 		dest.writeString(time);
+		dest.writeInt(type);
+		dest.writeString(dynamicId);
+		dest.writeString(memberId);
 		dest.writeString(content);
 		dest.writeList(contentImage);
 		dest.writeString(site);
@@ -119,6 +164,9 @@ public class Feed extends BaseBean implements Parcelable {
 		@Override
 		public Feed createFromParcel(Parcel source) {
 			Feed feed = new Feed();
+			feed.setType(source.readInt());
+			feed.setMemberId(source.readString());
+			feed.setDynamicId(source.readString());
 			feed.setTime(source.readString());
 			feed.setContent(source.readString());
 			feed.setContentImage(source.readArrayList(ArrayList.class.getClassLoader()));
@@ -126,6 +174,7 @@ public class Feed extends BaseBean implements Parcelable {
 			feed.setCommentCount(source.readInt());
 			feed.setPortrait(source.readString());
 			feed.setName(source.readString());
+			
 			return feed;
 		}
 

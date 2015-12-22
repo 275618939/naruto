@@ -102,6 +102,11 @@
             android:alwaysRetainTaskState="true"
             android:launchMode="singleTop"
             android:screenOrientation="portrait" />
+         <activity
+            android:name=".ui.DynamicQueryActivity"
+            android:alwaysRetainTaskState="true"
+            android:launchMode="singleTop"
+            android:screenOrientation="portrait" />
         <activity
             android:name=".ui.FeedProfileActivity"
             android:alwaysRetainTaskState="true"
