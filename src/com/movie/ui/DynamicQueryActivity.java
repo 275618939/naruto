@@ -23,6 +23,7 @@ import com.movie.app.Constant;
 import com.movie.app.Constant.Page;
 import com.movie.app.Constant.ReturnCode;
 import com.movie.client.bean.Feed;
+import com.movie.client.bean.User;
 import com.movie.client.service.BaseService;
 import com.movie.client.service.CallBackService;
 import com.movie.network.HttpDynamicQueryService;
@@ -44,6 +45,7 @@ public class DynamicQueryActivity extends BaseActivity implements
 	TextView title;
 	String memberId;
 	int page;
+	User user;
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
@@ -54,8 +56,9 @@ public class DynamicQueryActivity extends BaseActivity implements
 		setContentView(rootView);
 		httpDynamicService = new HttpDynamicQueryService(this);
 		initViews();
-		initEvents();
 		initData();
+		initEvents();
+		
 	}
 
 	@Override
@@ -78,6 +81,10 @@ public class DynamicQueryActivity extends BaseActivity implements
 	@Override
 	protected void initData() {
 		title.setText("历史动态");
+		user = (User) getIntent().getSerializableExtra("user");
+		memberId = getIntent().getStringExtra("memberId");
+		dynamicAdapter.setUser(user);
+		
 	}
 	
 	@Override
@@ -132,8 +139,8 @@ public class DynamicQueryActivity extends BaseActivity implements
 					feed.setType(Integer.parseInt(maps.get("type").toString()));
 					feed.setDynamicId(maps.get("dynamicId").toString());
 					feed.setMemberId(maps.get("memberId").toString());
-					feed.setTime(maps.get("title").toString());
-					feed.setContent(maps.get("dynamicId").toString());
+					feed.setTime(maps.get("time").toString());
+					feed.setContent(maps.get("title").toString());
 					longitude=Integer.parseInt(maps.get("longitude").toString());
 					latitude=Integer.parseInt(maps.get("latitude").toString());
 					feed.setSite(SiteConvert.GetSite(longitude, latitude));

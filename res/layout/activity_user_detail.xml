@@ -358,6 +358,34 @@
                             android:layout_height="wrap_content"
                             android:layout_alignParentRight="true" />
                     </RelativeLayout>
+                    
+                     <ImageView
+                        style="@style/input_item_line"
+                        android:layout_marginTop="@dimen/layout_item_top_1" />
+
+                    <RelativeLayout
+                        android:id="@+id/layout_dynamic"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginBottom="@dimen/layout_item_bottom"
+                        android:layout_marginTop="@dimen/layout_item_top_1"
+                        android:orientation="horizontal" >
+
+                        <TextView
+                            style="@style/common_title"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_alignParentLeft="true"
+                            android:text="@string/user_dynamic" />
+
+                        <TextView
+                            android:id="@+id/user_dynamic"
+                            style="@style/content_text_style"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="@string/dynamic_have"
+                            android:layout_alignParentRight="true" />
+                    </RelativeLayout>
                 </LinearLayout>
             </LinearLayout>
         </com.handmark.pulltorefresh.library.PullToRefreshScrollView>

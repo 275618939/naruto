@@ -10,6 +10,7 @@ import android.widget.ImageView;
 
 import com.movie.R;
 import com.movie.app.BaseObjectListAdapter;
+import com.movie.app.NarutoApplication;
 import com.movie.client.bean.BaseBean;
 import com.movie.client.bean.FeedComment;
 import com.movie.view.EmoticonsTextView;
@@ -41,7 +42,7 @@ public class FeedProfileCommentsAdapter extends BaseObjectListAdapter {
 			holder = (ViewHolder) convertView.getTag();
 		}
 		FeedComment comment = (FeedComment) getItem(position);
-		//holder.mIvAvatar.setImageBitmap(mApplication.getAvatar(comment.getAvatar()));
+		imageLoader.displayImage(comment.getPortrait(),holder.mIvAvatar, NarutoApplication.imageOptions);
 		holder.mEtvName.setText(comment.getName());
 		holder.mEtvContent.setText(comment.getContent());
 		holder.mHtvTime.setText(comment.getTime());

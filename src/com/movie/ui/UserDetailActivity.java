@@ -98,6 +98,7 @@ public class UserDetailActivity extends BaseActivity implements
 	LinearLayout userDetailTool;
 	LinearLayout layoutShowPre;
 	RelativeLayout userDetailParent;
+	RelativeLayout layoutDynamic;
 	List<Map<Integer, Integer>> comments = new ArrayList<Map<Integer, Integer>>();
 	Map<Integer,String> hobbiesMap;
 	Map<Integer,String> filmTypeMap;
@@ -125,6 +126,7 @@ public class UserDetailActivity extends BaseActivity implements
 	@Override
 	protected void initViews() {
 		userDetailParent = (RelativeLayout) findViewById(R.id.user_detail_parent);
+		layoutDynamic = (RelativeLayout) findViewById(R.id.layout_dynamic);
 		loadView = new LoadView(userDetailParent);
 		evaluationAdapter = new EvaluationAdapter(this,comments);
 		title = (TextView) findViewById(R.id.title);
@@ -167,6 +169,7 @@ public class UserDetailActivity extends BaseActivity implements
 		refreshableScollView.setOnRefreshListener(this);
 		userLove.setOnClickListener(this);
 		userInviteView.setOnClickListener(this);
+		layoutDynamic.setOnClickListener(this);
 	}
 
 	@Override
@@ -247,6 +250,12 @@ public class UserDetailActivity extends BaseActivity implements
 			missIntent.putExtra(Miss.MISS_KEY, Miss.USER_INVITATION);
 			missIntent.putExtra(Miss.CONDITION_KEY, user);
 			startActivity(missIntent);
+			break;
+		case R.id.layout_dynamic:
+			Intent dynamicIntent = new Intent(this,DynamicQueryActivity.class);
+			dynamicIntent.putExtra("user", user);
+			dynamicIntent.putExtra("memberId", user.getMemberId());
+			startActivity(dynamicIntent);
 			break;
 		case R.id.loading_error:
 			loadUser();

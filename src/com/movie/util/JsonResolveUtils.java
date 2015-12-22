@@ -63,7 +63,7 @@ public class JsonResolveUtils {
 						}
 						String site = object.getString(Feed.SITE);
 						int commentCount = object.getInt(Feed.COMMENT_COUNT);
-						feed = new Feed(time, content,contentImage,site,commentCount);
+						feed = new Feed(0,"","",time, content,contentImage,site,commentCount);
 						if (object.has(Feed.PORTRAIT)) {
 							feed.setPortrait(object.getString(Feed.PORTRAIT));
 						}

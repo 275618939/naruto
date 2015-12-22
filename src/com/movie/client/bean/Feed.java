@@ -31,16 +31,6 @@ public class Feed extends BaseBean implements Parcelable {
 	public Feed() {
 		super();
 	}
-	public Feed(String time, String content, List<String> contentImage, String site,
-			int commentCount) {
-		super();
-	
-		this.time = time;
-		this.content = content;
-		this.contentImage = contentImage;
-		this.site = site;
-		this.commentCount = commentCount;
-	}
 	public Feed(int type,String dynamicId,String memberId ,String time, String content, List<String> contentImage, String site,
 			int commentCount) {
 		super();
@@ -146,10 +136,10 @@ public class Feed extends BaseBean implements Parcelable {
 
 	@Override
 	public void writeToParcel(Parcel dest, int flags) {
-		dest.writeString(time);
 		dest.writeInt(type);
 		dest.writeString(dynamicId);
 		dest.writeString(memberId);
+		dest.writeString(time);
 		dest.writeString(content);
 		dest.writeList(contentImage);
 		dest.writeString(site);

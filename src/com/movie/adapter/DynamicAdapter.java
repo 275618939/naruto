@@ -12,6 +12,7 @@ import android.view.Gravity;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.view.ViewGroup;
+import android.widget.HorizontalScrollView;
 import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
@@ -20,8 +21,11 @@ import android.widget.TextView;
 
 import com.movie.R;
 import com.movie.app.BaseObjectListAdapter;
+import com.movie.app.Constant;
+import com.movie.app.NarutoApplication;
 import com.movie.client.bean.BaseBean;
 import com.movie.client.bean.Feed;
+import com.movie.client.bean.User;
 import com.movie.pop.OtherFeedListPopupWindow;
 import com.movie.pop.OtherFeedListPopupWindow.onOtherFeedListPopupItemClickListner;
 import com.movie.pop.SimpleListDialog;
@@ -35,6 +39,7 @@ public class DynamicAdapter extends BaseObjectListAdapter implements onSimpleLis
 	private int mWidthAndHeight;
 	private int mPosition;
 	private SimpleListDialog mDialog;
+	private User user;
 	
 
 	public DynamicAdapter(Context context, Handler mHandler,
@@ -55,6 +60,7 @@ public class DynamicAdapter extends BaseObjectListAdapter implements onSimpleLis
 			convertView = mInflater.inflate(R.layout.item_dynamic, null);
 			holder = new ViewHolder();
 			holder.root = (RelativeLayout) convertView.findViewById(R.id.feed_item_layout_root);
+			holder.imagesView = (HorizontalScrollView)convertView.findViewById(R.id.feed_item_image_views);
 			holder.contentImages=(LinearLayout) convertView.findViewById(R.id.feed_item_content_images);
 			holder.avatar = (ImageView) convertView.findViewById(R.id.feed_item_iv_avatar);
 			holder.time = (HandyTextView) convertView.findViewById(R.id.feed_item_htv_time);
@@ -70,26 +76,29 @@ public class DynamicAdapter extends BaseObjectListAdapter implements onSimpleLis
 			holder = (ViewHolder) convertView.getTag();
 		}
 		Feed feed = (Feed) getItem(position);
-		imageLoader.displayImage(feed.getPortrait(), holder.avatar);
-		holder.name.setText(feed.getName());
+		if(user!=null){
+			imageLoader.displayImage(user.getPortrait(), holder.avatar,NarutoApplication.imageOptions);
+			holder.name.setText(user.getNickname());
+		}
 		holder.time.setText(feed.getTime());
 		holder.content.setText(feed.getContent());
-		if (feed.getContentImage() == null) {
-			holder.contentImages.setVisibility(View.GONE);
+		if (feed.getContentImage() == null||feed.getContentImage().size()<=0) {
+			holder.imagesView.setVisibility(View.GONE);
 		} else {
+			holder.imagesView.setVisibility(View.VISIBLE);
 			holder.contentImages.removeAllViews();
 			LinearLayout dynamicLayout=null;
 			ImageView dynamicImageView=null;
 			for(String image:feed.getContentImage()){
 				dynamicLayout=(LinearLayout)mInflater.inflate(R.layout.dynamic_content_image, null);
 				dynamicImageView= (ImageView)dynamicLayout.getChildAt(0);
-				imageLoader.displayImage(image, dynamicImageView);
+				imageLoader.displayImage(Constant.SERVER_ADRESS+image, dynamicImageView,NarutoApplication.imageOptions);
 				holder.contentImages.addView(dynamicLayout);
 			}
 			dynamicLayout=null;
 			dynamicImageView=null;
 		}
-		holder.site.setText(feed.getSite());
+		holder.site.setText(feed.getSite()+"km");
 		holder.commentCount.setText(feed.getCommentCount() + "");
 		holder.more.setOnClickListener(new OnClickListener() {			
 			@Override
@@ -107,6 +116,7 @@ public class DynamicAdapter extends BaseObjectListAdapter implements onSimpleLis
 				mPosition = position;
 				Intent intent = new Intent(mContext, FeedProfileActivity.class);
 				intent.putExtra("entity_feed", (Feed) getItem(mPosition));
+				intent.putExtra("user", user);
 				mContext.startActivity(intent);
 			}
 		});
@@ -116,6 +126,7 @@ public class DynamicAdapter extends BaseObjectListAdapter implements onSimpleLis
 				mPosition = position;
 				Intent intent = new Intent(mContext, FeedProfileActivity.class);
 				intent.putExtra("entity_feed", (Feed) getItem(mPosition));
+				intent.putExtra("user", user);
 				mContext.startActivity(intent);
 			}
 		});
@@ -124,6 +135,7 @@ public class DynamicAdapter extends BaseObjectListAdapter implements onSimpleLis
 	}
 
 	class ViewHolder {
+		HorizontalScrollView imagesView;
 		RelativeLayout root;
 		LinearLayout contentImages;
 		ImageView avatar;
@@ -172,9 +184,13 @@ public class DynamicAdapter extends BaseObjectListAdapter implements onSimpleLis
 				showCustomToast("举报的信息已提交");
 			}
 		}, 1500);
-	
 		
 	}
+
+	public void setUser(User user) {
+		this.user = user;
+	}
+	
 
 
 }

@@ -120,11 +120,13 @@
                     android:textSize="15sp" />
 
                 <HorizontalScrollView
+                    android:id="@+id/feed_item_image_views"
                     android:layout_width="match_parent"
                     android:layout_height="@dimen/dynamic_image_horizontal_height"
                     android:layout_below="@+id/header_feed_etv_content"
                     android:layout_gravity="center_vertical"
-                    android:scrollbars="none" >
+                    android:scrollbars="none"
+                    android:visibility="gone" >
 
                     <LinearLayout
                         android:id="@+id/feed_item_content_images"

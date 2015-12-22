@@ -124,7 +124,11 @@ public interface Constant {
 	public final static String Dynamic_Near_API_URL = SERVER_URL+ "/dynamic/near";
 	// 查询历史的动态
 	public final static String Dynamic_History_API_URL = SERVER_URL+ "/dynamic/history";
-
+	// 创建动态评论
+	public final static String Dynamic_Comment_Create_API_URL = SERVER_URL+ "/dynamic/comment";
+	// 查询动态评论
+	public final static String Dynamic_Comment_Query_API_URL = SERVER_URL+ "/dynamic/comment";
+	
 	public static final int CIM_SERVER_PORT = 23456;
 	
     public static class MissBtnStatus{

@@ -1,7 +1,9 @@
 package com.movie.ui;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import android.content.ClipData;
 import android.content.ClipboardManager;
@@ -23,6 +25,7 @@ import android.view.inputmethod.InputMethodManager;
 import android.widget.AdapterView;
 import android.widget.AdapterView.OnItemClickListener;
 import android.widget.Button;
+import android.widget.HorizontalScrollView;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.ListView;
@@ -33,15 +36,21 @@ import com.movie.R;
 import com.movie.adapter.FeedProfileCommentsAdapter;
 import com.movie.adapter.SimpleListDialogAdapter;
 import com.movie.app.BaseActivity;
+import com.movie.app.Constant;
+import com.movie.app.Constant.Page;
 import com.movie.app.NarutoApplication;
 import com.movie.client.bean.Feed;
 import com.movie.client.bean.FeedComment;
 import com.movie.client.bean.NearPeople;
+import com.movie.client.bean.User;
+import com.movie.client.service.BaseService;
+import com.movie.client.service.CallBackService;
+import com.movie.network.HttpDynamicCommentCreateService;
+import com.movie.network.HttpDynamicCommentQueryService;
 import com.movie.pop.OtherFeedListPopupWindow;
 import com.movie.pop.OtherFeedListPopupWindow.onOtherFeedListPopupItemClickListner;
 import com.movie.pop.SimpleListDialog;
 import com.movie.pop.SimpleListDialog.onSimpleListItemClickListener;
-import com.movie.util.DateUtils;
 import com.movie.util.JsonResolveUtils;
 import com.movie.view.EmoteInputView;
 import com.movie.view.EmoticonsEditText;
@@ -52,7 +61,7 @@ import com.movie.view.HeaderLayout.onRightImageButtonClickListener;
 
 public class FeedProfileActivity extends BaseActivity implements
 		OnItemClickListener, onRightImageButtonClickListener,
-		onOtherFeedListPopupItemClickListner, OnClickListener, OnTouchListener {
+		onOtherFeedListPopupItemClickListner, OnClickListener, OnTouchListener,CallBackService{
 
 
 	private ListView mLvList;
@@ -76,9 +85,10 @@ public class FeedProfileActivity extends BaseActivity implements
 	private TextView mTvLoading;
 	private ImageView mIvLoading;
 	private EmoteInputView mInputView;
+	private HorizontalScrollView imagesView;
     private LinearLayout contentImages;
 	private FeedProfileCommentsAdapter mAdapter;
-
+	private User user;
 	private NearPeople people;
 	private Feed mFeed;
 	private OtherFeedListPopupWindow mPopupWindow;
@@ -86,33 +96,22 @@ public class FeedProfileActivity extends BaseActivity implements
 	private int mHeaderHeight;
 	private SimpleListDialog mDialog;
 	private Animation mLoadingAnimation;
-
+	private BaseService httpCommentCreateService;
+	private BaseService httpCommentQueryService;
+	private int page;
 	private List<FeedComment> mComments = new ArrayList<FeedComment>();
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_feedprofile);
+		httpCommentCreateService = new HttpDynamicCommentCreateService(this);
+		httpCommentQueryService = new HttpDynamicCommentQueryService(this);
 		initViews();
 		initEvents();
-		init();
+		initData();
 	}
     
-	@Override
-	public void onBackPressed() {
-		if (mInputView.isShown()) {
-			mInputView.setVisibility(View.GONE);
-		} else {
-			
-		}
-		finish();
-	}
-	@Override
-	protected void onDestroy() {
-		super.onDestroy();
-		mComments.clear();
-		//mAdapter=null;
-	}
 	
 
 	@Override
@@ -133,6 +132,7 @@ public class FeedProfileActivity extends BaseActivity implements
 		mIvGender = (ImageView) mHeaderView.findViewById(R.id.header_feed_iv_gender);
 		mHtvAge = (HandyTextView) mHeaderView.findViewById(R.id.header_feed_htv_age);
 		mEtvContent = (EmoticonsTextView) mHeaderView.findViewById(R.id.header_feed_etv_content);
+		imagesView= (HorizontalScrollView) mHeaderView.findViewById(R.id.feed_item_image_views);
 		contentImages = (LinearLayout) mHeaderView.findViewById(R.id.feed_item_content_images);
 		mLayoutComment = (LinearLayout) mHeaderView.findViewById(R.id.header_feed_layout_comment);
 		mTvCommentCount = (TextView) mHeaderView.findViewById(R.id.header_feed_tv_commentcount);
@@ -150,21 +150,31 @@ public class FeedProfileActivity extends BaseActivity implements
 		mBtnSend.setOnClickListener(this);
 		mIvEmote.setOnClickListener(this);
 	}
-
-	private void init() {
+	@Override
+	protected void initData() {
+		user = (User) getIntent().getSerializableExtra("user");
 		mFeed = getIntent().getParcelableExtra("entity_feed");
-		initPopupWindow();
 		initHeaderView();
+		initPopupWindow();
 		mInputView.setEditText(mEetEditer);
 		mLvList.addHeaderView(mHeaderView);
 		mAdapter = new FeedProfileCommentsAdapter(FeedProfileActivity.this,mHandler,mComments);
 		mLvList.setAdapter(mAdapter);
-		getComments();
+		loadComment();
 	}
-	@Override
-	protected void initData() {
-	
+	private void loadComment(){
 		
+		httpCommentQueryService.addParams("dynamicId", mFeed.getDynamicId());
+		httpCommentQueryService.addParams("page", page);
+		httpCommentQueryService.addParams("size", Page.DEFAULT_SIZE);
+		httpCommentQueryService.execute(this);
+		startLoading();
+	}
+	private void createComment(String content){
+		
+		httpCommentCreateService.addParams("dynamicId", mFeed.getDynamicId());
+		httpCommentCreateService.addParams("content", content);
+		httpCommentCreateService.execute(this);
 	}
 
 	private void initPopupWindow() {
@@ -179,21 +189,25 @@ public class FeedProfileActivity extends BaseActivity implements
 		/*临时人员信息*/
 		people.setGender(0);
 		people.setAge(18);
-		imageLoader.displayImage(mFeed.getPortrait(), mIvAvatar,NarutoApplication.imageOptions);
-		mEtvName.setText(mFeed.getName());
+		if(user!=null){
+			imageLoader.displayImage(user.getPortrait(), mIvAvatar,NarutoApplication.imageOptions);
+			mEtvName.setText(user.getNickname());
+		}
 		mTvTime.setText(mFeed.getTime());
 		mLayoutGender.setBackgroundResource(people.getGenderBgId());
 		mIvGender.setImageResource(people.getGenderId());
 		mHtvAge.setText(people.getAge() + "");		
 		mEtvContent.setText(mFeed.getContent());
+		imagesView.setVisibility(View.GONE);
 		if (mFeed.getContentImage() != null) {
+			imagesView.setVisibility(View.VISIBLE);
 			contentImages.removeAllViews();
 			LinearLayout dynamicLayout=null;
 			ImageView dynamicImageView=null;
 			for(String image:mFeed.getContentImage()){
 				dynamicLayout=(LinearLayout)getLayoutInflater().inflate(R.layout.dynamic_content_image, null);
 				dynamicImageView= (ImageView)dynamicLayout.getChildAt(0);
-				imageLoader.displayImage(image, dynamicImageView);
+				imageLoader.displayImage(Constant.SERVER_ADRESS+image, dynamicImageView);
 				contentImages.addView(dynamicLayout);
 			}
 			dynamicLayout=null;
@@ -222,13 +236,12 @@ public class FeedProfileActivity extends BaseActivity implements
 	public void onItemClick(AdapterView<?> arg0, View arg1, int arg2, long arg3) {
 		if (arg3 != -1) {
 			FeedComment comment = mComments.get((int) arg3);
-			String[] codes = new String[] { "回复", "复制文本", "举报" };
+			String[] codes = new String[] { "复制文本", "举报" };
 			mDialog = new SimpleListDialog(this);
 			mDialog.setTitle("提示");
 			mDialog.setTitleLineVisibility(View.GONE);
 			mDialog.setAdapter(new SimpleListDialogAdapter(this, codes));
-			mDialog.setOnSimpleListItemClickListener(new OnReplyDialogItemClickListener(
-					comment));
+			mDialog.setOnSimpleListItemClickListener(new OnReplyDialogItemClickListener(comment));
 			mDialog.show();
 		}
 	}
@@ -262,6 +275,7 @@ public class FeedProfileActivity extends BaseActivity implements
 				hideKeyBoard();
 				mInputView.setVisibility(View.VISIBLE);
 			}
+			
 			break;
 		case R.id.feedprofile_btn_send:
 			String content = mEetEditer.getText().toString().trim();
@@ -274,9 +288,10 @@ public class FeedProfileActivity extends BaseActivity implements
 					reply = mEtvEditerTitle.getText().toString().trim();
 				}
 				content = TextUtils.isEmpty(reply) ? content : reply + content;
-				FeedComment comment = new FeedComment("测试用户","nearby_people_other", content, DateUtils.formatDate(FeedProfileActivity.this,System.currentTimeMillis()));
-				mComments.add(0, comment);
-				mAdapter.notifyDataSetChanged();
+				createComment(content);
+				//FeedComment comment = new FeedComment("测试用户","nearby_people_other", content, DateUtils.formatDate(FeedProfileActivity.this,System.currentTimeMillis()));
+				//mComments.add(0, comment);
+				//mAdapter.notifyDataSetChanged();
 			}
 			mEtvEditerTitle.setText(null);
 			mEtvEditerTitle.setVisibility(View.GONE);
@@ -304,8 +319,7 @@ public class FeedProfileActivity extends BaseActivity implements
 	}
 
 	private void report() {
-		String[] codes = getResources()
-				.getStringArray(R.array.reportfeed_items);
+		String[] codes = getResources().getStringArray(R.array.reportfeed_items);
 		mDialog = new SimpleListDialog(this);
 		mDialog.setTitle("举报留言");
 		mDialog.setTitleLineVisibility(View.GONE);
@@ -344,15 +358,18 @@ public class FeedProfileActivity extends BaseActivity implements
 		public void onItemClick(int position) {
 			switch (position) {
 			case 0:
-				mEtvEditerTitle.setVisibility(View.VISIBLE);
-				mEtvEditerTitle.setText("回复" + mComment.getName() + " :");
-				mEetEditer.requestFocus();
-				showKeyBoard();
+//				mEtvEditerTitle.setVisibility(View.VISIBLE);
+//				mEtvEditerTitle.setText("回复" + mComment.getName() + " :");
+//				mEetEditer.requestFocus();
+//				showKeyBoard();
+//				break;
+//				
+				String text = mComment.getContent();
+				copy(text);
 				break;
 
 			case 1:
-				String text = mComment.getContent();
-				copy(text);
+				report();
 				break;
 
 			case 2:
@@ -402,7 +419,75 @@ public class FeedProfileActivity extends BaseActivity implements
 						.getCurrentFocus().getWindowToken(),
 						InputMethodManager.HIDE_NOT_ALWAYS);
 	}
+	@Override
+	public void SuccessCallBack(Map<String, Object> map) {
+	
+		String code = map.get(Constant.ReturnCode.RETURN_STATE).toString();
+		if (Constant.ReturnCode.STATE_1.equals(code)) {
+			String tag = map.get(Constant.ReturnCode.RETURN_TAG).toString();
+			if (tag.equals(httpCommentQueryService.TAG)) {
+				mComments.clear();
+				List<HashMap<String, Object>> datas = (ArrayList<HashMap<String, Object>>) map.get(Constant.ReturnCode.RETURN_VALUE);
+				HashMap<String, Object> maps = null;
+				int size = datas.size();
+				FeedComment comment=null;
+				for (int i = 0; i < size; i++) {
+					maps = datas.get(i);
+					comment = new FeedComment();
+					comment.setCommentId(maps.get("id").toString());
+					comment.setMemberId(maps.get("memberId").toString());
+					comment.setPortrait(Constant.SERVER_ADRESS+maps.get("portrait").toString());
+					comment.setName(maps.get("nickname").toString());
+					comment.setContent(maps.get("content").toString());
+					comment.setTime(maps.get("time").toString());
+					mComments.add(comment);
+				}
+				refreshCommentTitle();
+				mAdapter.notifyDataSetChanged();
+			}else if(tag.equals(httpCommentCreateService.TAG)){
+				loadComment();
+			}
+			
+		}else {
+			String message = map.get(Constant.ReturnCode.RETURN_MESSAGE).toString();
+			showToask(message);
+			mLayoutLoading.setVisibility(View.GONE);
+			mIvLoading.clearAnimation();
+		}
+	}
 
+	@Override
+	public void ErrorCallBack(Map<String, Object> map) {
+
+		String message = map.get(Constant.ReturnCode.RETURN_MESSAGE).toString();		
+		showToask(message);
+		mLayoutLoading.setVisibility(View.GONE);
+		mIvLoading.clearAnimation();
+		
+	}
+	@Override
+	public void onBackPressed() {
+		if (mInputView.isShown()) {
+			mInputView.setVisibility(View.GONE);
+		} else {
+			
+		}
+		finish();
+	}
+	@Override
+	protected void onDestroy() {
+		super.onDestroy();
+		mComments.clear();
+		httpCommentCreateService=null;
+		httpCommentQueryService=null;
+		//mAdapter=null;
+	}
+	
+
+	@Override
+	public void OnRequest() {
+		
+	}
 	private void getComments() {
 		putAsyncTask(new AsyncTask<Void, Void, Boolean>() {
 

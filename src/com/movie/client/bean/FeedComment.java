@@ -6,17 +6,57 @@ public class FeedComment extends BaseBean {
 	public static final String AVATAR = "avatar";
 	public static final String CONTENT = "content";
 	public static final String TIME = "time";
+	private String commentId;
+	private String memberId;
+	private String portrait;
 	private String name;
 	private String avatar;
 	private String content;
 	private String time;
-
+	public FeedComment(){}
+	
 	public FeedComment(String name, String avatar, String content, String time) {
 		super();
+		
 		this.name = name;
 		this.avatar = avatar;
 		this.content = content;
 		this.time = time;
+	}
+
+	public FeedComment(String commentId,String memberId,String portrait,String name, String avatar, String content, String time) {
+		super();
+		this.commentId=commentId;
+		this.memberId=memberId;
+		this.portrait=portrait;
+		this.name = name;
+		this.avatar = avatar;
+		this.content = content;
+		this.time = time;
+	}
+
+	public String getCommentId() {
+		return commentId;
+	}
+
+	public void setCommentId(String commentId) {
+		this.commentId = commentId;
+	}
+
+	public String getMemberId() {
+		return memberId;
+	}
+
+	public void setMemberId(String memberId) {
+		this.memberId = memberId;
+	}
+
+	public String getPortrait() {
+		return portrait;
+	}
+
+	public void setPortrait(String portrait) {
+		this.portrait = portrait;
 	}
 
 	public String getName() {

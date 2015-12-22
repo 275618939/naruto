@@ -283,6 +283,7 @@ public class SelfFragment extends BaseFragment implements OnClickListener , Call
 				break;
 			case R.id.my_dynamic_layout:
 				Intent dynamicIntent = new Intent(getActivity(),DynamicQueryActivity.class);
+				dynamicIntent.putExtra("user", user);
 				startActivity(dynamicIntent);
 				break;
 			case R.id.my_miss_layout:
