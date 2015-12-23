@@ -9,6 +9,8 @@ import android.os.Bundle;
 import android.os.Handler;
 import android.view.View;
 import android.view.View.OnClickListener;
+import android.widget.EditText;
+import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.TextView;
 
@@ -25,6 +27,7 @@ import com.movie.client.bean.Miss;
 import com.movie.client.service.BaseService;
 import com.movie.client.service.CallBackService;
 import com.movie.network.HttpMissQueryService;
+import com.movie.network.HttpMissTreatCoinService;
 import com.movie.view.LoadView;
 
 public class MissTreatCoinActivity extends BaseActivity implements OnClickListener,CallBackService, OnRefreshListener<ListView> {
@@ -36,10 +39,12 @@ public class MissTreatCoinActivity extends BaseActivity implements OnClickListen
 	View rootView;
 	MissTreatCoinAdapter treatCoinAdapter;
 	BaseService missQueryService;
+	BaseService missTreatCoinService;
 	PullToRefreshListView refreshableListView;
 	List<Miss> misses = new ArrayList<Miss>();
 	int page;
 	String trystId;
+	int coin;
 
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
@@ -50,6 +55,7 @@ public class MissTreatCoinActivity extends BaseActivity implements OnClickListen
 		loadView = new LoadView();
 		setContentView(rootView);
 		missQueryService = new HttpMissQueryService(this);
+		missTreatCoinService = new HttpMissTreatCoinService(this);
 		initViews();
 		initData();
 		initEvents();
@@ -74,19 +80,52 @@ public class MissTreatCoinActivity extends BaseActivity implements OnClickListen
 	protected void initEvents() {
 		refreshableListView.setOnRefreshListener(this);		
 		refreshableListView.setRefreshing(true);
+		rightBtn.setOnClickListener(this);
 	}
 	@Override
 	protected void initData() {
-		title.setText("派发影币");
-		rightBtn.setText("确定");
 		trystId=getIntent().getStringExtra("trystId");
-		//loadMissData();
+		coin=getIntent().getIntExtra("coin", 0);
+		title.setText("可派发影币("+coin+")");
+		rightBtn.setText("确定");
+	
 	}
 
 	private void loadMissData() {
 		missQueryService.addUrls(Constant.Miss_Attend_Query_API_URL);
 		missQueryService.addParams("id", trystId);
 		missQueryService.execute(this);
+	}
+	private void treatCoin(){
+		
+		List<Map<String, Object>> treats = new ArrayList<Map<String,Object>>();
+		int count = misses.size();
+		EditText coinView = null;
+		int sumCoin=0;
+		LinearLayout linearLayout = null;
+		Map<String, Object> coins=null;
+		for(int i = 0; i < count; i++){  
+	        linearLayout =(LinearLayout) treatCoinAdapter.getView(i, null, null);
+	        coinView = (EditText) linearLayout.findViewById(R.id.coin);
+	        String memberId = coinView.getTag().toString();
+	        String coin = treatCoinAdapter.getCoins().get(memberId);
+	        if(null!=coin&&!coin.isEmpty()){
+	        	sumCoin+=Integer.parseInt(coin);
+	        	coins=new HashMap<String, Object>();
+	        	coins.put("memberId", memberId);
+	        	coins.put("value", Integer.parseInt(coin));
+	        	treats.add(coins);
+	        }
+	    }  
+		if(sumCoin>coin){
+			showToask("超出可派影币范围!");
+			return;
+		}else if(sumCoin<coin){
+			showToask("请派出所有影币!");
+			return;
+		}
+		missTreatCoinService.addParams("value", treats);
+		missTreatCoinService.execute(this);
 	}
 
 	@Override
@@ -95,6 +134,9 @@ public class MissTreatCoinActivity extends BaseActivity implements OnClickListen
 		case R.id.loading_error:
 			misses.clear();
 			loadMissData();
+			break;
+		case R.id.right_text:
+			treatCoin();
 			break;
 		default:
 			break;
@@ -162,6 +204,8 @@ public class MissTreatCoinActivity extends BaseActivity implements OnClickListen
 			
 				treatCoinAdapter.notifyDataSetChanged();
 
+			}else if(tag.equals(missTreatCoinService.TAG)){
+				onBackPressed();
 			}
 		} else {
 			String message = map.get(Constant.ReturnCode.RETURN_MESSAGE).toString();

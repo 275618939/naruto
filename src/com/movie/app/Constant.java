@@ -107,8 +107,10 @@ public interface Constant {
 	public final static String Agree_Apply_API_URL = SERVER_URL+ "/tryst/agree";
 	// 邀请约会
     public final static String Miss_Invite_API_URL = SERVER_URL+ "/tryst/invite";
-    // 提出用户
+    // 踢出用户
     public final static String Miss_Kick_API_URL = SERVER_URL+ "/tryst/kick";
+    // 分影币给用户
+    public final static String Miss_Treat_API_URL = SERVER_URL+ "/treat/coin";
 	
 	// 查询会员列表By颜值
 	public final static String Member_ByFace_Query_API_URL = SERVER_URL+ "/member/byFace";

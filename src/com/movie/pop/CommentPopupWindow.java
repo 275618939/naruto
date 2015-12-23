@@ -1,6 +1,5 @@
 package com.movie.pop;
 
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
@@ -14,26 +13,25 @@ import android.view.ViewGroup.LayoutParams;
 import android.widget.ImageView;
 
 import com.movie.R;
-import com.movie.adapter.CommentsAdapter;
+import com.movie.adapter.CommentsShowAdapter;
 import com.movie.app.BasePopupWindow;
 import com.movie.view.CommentsGridView;
 
 
 public class CommentPopupWindow extends BasePopupWindow {
 
-	List<Map<Integer,Integer>> commentsList=new ArrayList<Map<Integer,Integer>>();
 	CommentsGridView commentsGridView;
-	CommentsAdapter commentsAdapter;
+	CommentsShowAdapter commentsAdapter;
 	ImageView btnPopClose;
 	Context context;
 	Handler mHandler;
 
-	public CommentPopupWindow(Context context,Handler handler) {
+	public CommentPopupWindow(Context context,Handler handler,List<Map<Integer,String>> commentsList) {
 		super(LayoutInflater.from(context).inflate(R.layout.comments_pop, null),LayoutParams.WRAP_CONTENT, LayoutParams.WRAP_CONTENT);
 		setAnimationStyle(R.style.Popup_Animation_PushDownUp);
 		this.context=context;
 		this.mHandler=handler;
-		commentsAdapter = new CommentsAdapter(this.context,this.mHandler,commentsList);
+		commentsAdapter = new CommentsShowAdapter(this.context,this.mHandler,commentsList);
 		commentsGridView.setAdapter(commentsAdapter);
 	}
 	
@@ -60,8 +58,8 @@ public class CommentPopupWindow extends BasePopupWindow {
 		this.setFocusable(true);
 		this.setOutsideTouchable(true);
 	}
-	public void updateData(List<Map<Integer,Integer>> commentList){
-		commentsAdapter.updateData(commentList);
+	public void updateData(){
+		commentsAdapter.notifyDataSetChanged();
 	}
 
 }

@@ -162,21 +162,4 @@ public class CommentsAdapter extends BaseAdapter {
 		this.user = user;
 	}
 	
-
-	
-	
-
-	
-	
-
-	
-
-
-
-
-	
-
-
-
-	
 }

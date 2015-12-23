@@ -42,6 +42,7 @@ public class Miss extends BaseBean implements Serializable {
 	private String filmName;
 	private String runTime;
 	private Integer coin;
+	private int sex;
 	private String nickName;
 	private String cinemaId;
 	private String cinameName;
@@ -328,6 +329,15 @@ public class Miss extends BaseBean implements Serializable {
 	public void setFilmName(String filmName) {
 		this.filmName = filmName;
 	}
+
+	public int getSex() {
+		return sex;
+	}
+
+	public void setSex(int sex) {
+		this.sex = sex;
+	}
+	
 	
 	
 	

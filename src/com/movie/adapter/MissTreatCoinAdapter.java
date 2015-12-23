@@ -1,9 +1,13 @@
 package com.movie.adapter;
 
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import android.content.Context;
 import android.os.Handler;
+import android.text.Editable;
+import android.text.TextWatcher;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.EditText;
@@ -18,7 +22,7 @@ import com.movie.client.bean.Miss;
 
 public class MissTreatCoinAdapter extends BaseObjectListAdapter {
 	
-	
+	Map<String, String> coins = new HashMap<String,String>();
 	public MissTreatCoinAdapter(Context context, Handler mHandler,List<? extends BaseBean> datas) {
 		super(context, mHandler, datas);
 	}
@@ -40,6 +44,21 @@ public class MissTreatCoinAdapter extends BaseObjectListAdapter {
 		final Miss miss =(Miss)getItem(position);
 		imageLoader.displayImage(miss.getIcon(),mHolder.narutoPortrait,NarutoApplication.imageOptions);
 		mHolder.nickName.setText(miss.getNickName());
+		mHolder.coin.setTag(miss.getMemberId());
+		mHolder.coin.addTextChangedListener(new TextWatcher() {
+			@Override
+			public void onTextChanged(CharSequence s, int start, int before, int count) {
+			}		
+			@Override
+			public void beforeTextChanged(CharSequence s, int start, int count,
+					int after) {
+			}			
+			@Override
+			public void afterTextChanged(Editable s) {
+				coins.put(miss.getMemberId(), s.toString());
+			}
+		});
+		
 		
 		return view;
 	}
@@ -52,9 +71,13 @@ public class MissTreatCoinAdapter extends BaseObjectListAdapter {
 		TextView nickName;
 		// 影币
 		EditText coin;
-	
 
 	}
+
+	public Map<String, String> getCoins() {
+		return coins;
+	}
+	
 
 
 }

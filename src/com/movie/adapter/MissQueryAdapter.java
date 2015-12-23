@@ -18,8 +18,8 @@ import com.movie.app.BaseObjectListAdapter;
 import com.movie.app.NarutoApplication;
 import com.movie.client.bean.BaseBean;
 import com.movie.client.bean.Miss;
-import com.movie.state.MissState;
-import com.movie.state.MissStateBackColor;
+import com.movie.state.MissTimeBackColor;
+import com.movie.state.MissTimeState;
 import com.movie.ui.MissNarutoDetailActivity;
 import com.movie.util.StringUtil;
 
@@ -56,16 +56,6 @@ public class MissQueryAdapter extends BaseObjectListAdapter {
 		mHolder.missName.setText(miss.getFilmName());
 		mHolder.missCoin.setText(String.valueOf(miss.getCoin()));
 		mHolder.missName.setText(miss.getFilmName());
-		int sourceId = MissStateBackColor.getState(miss.getStatus()).getSourceId();
-		mHolder.missItemView.setBackgroundResource(sourceId);
-		mHolder.missBtnLayout.setVisibility(View.VISIBLE);
-		mHolder.missBtn.setText(MissState.getState(miss.getStatus()).getMessage());
-		if(miss.getStatus().intValue()==MissState.Expired.getState()){
-			//验证是否可以显示已送影币
-			if(miss.getCoin()==null||miss.getCoin()<=0){
-				mHolder.missBtnLayout.setVisibility(View.GONE);
-			}
-		}
 		mHolder.missItemView.setOnClickListener(new OnClickListener() {
 			@Override
 			public void onClick(View v) {
@@ -74,6 +64,9 @@ public class MissQueryAdapter extends BaseObjectListAdapter {
 				mContext.startActivity(intent);
 			}
 		});
+		int result=StringUtil.dateCompareByCurrent(miss.getRunTime());
+		mHolder.missItemView.setBackgroundResource(MissTimeBackColor.getState(result).getSourceId());
+		mHolder.missBtn.setText(MissTimeState.getState(result).getMessage());
 		
 		return view;
 	}

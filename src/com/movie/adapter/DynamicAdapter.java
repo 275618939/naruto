@@ -75,7 +75,7 @@ public class DynamicAdapter extends BaseObjectListAdapter implements onSimpleLis
 		} else {
 			holder = (ViewHolder) convertView.getTag();
 		}
-		Feed feed = (Feed) getItem(position);
+		final Feed feed = (Feed) getItem(position);
 		if(user!=null){
 			imageLoader.displayImage(user.getPortrait(), holder.avatar,NarutoApplication.imageOptions);
 			holder.name.setText(user.getNickname());
@@ -115,7 +115,7 @@ public class DynamicAdapter extends BaseObjectListAdapter implements onSimpleLis
 			public void onClick(View v) {
 				mPosition = position;
 				Intent intent = new Intent(mContext, FeedProfileActivity.class);
-				intent.putExtra("entity_feed", (Feed) getItem(mPosition));
+				intent.putExtra("entity_feed", feed);
 				intent.putExtra("user", user);
 				mContext.startActivity(intent);
 			}
@@ -125,7 +125,7 @@ public class DynamicAdapter extends BaseObjectListAdapter implements onSimpleLis
 			public void onClick(View v) {
 				mPosition = position;
 				Intent intent = new Intent(mContext, FeedProfileActivity.class);
-				intent.putExtra("entity_feed", (Feed) getItem(mPosition));
+				intent.putExtra("entity_feed", feed);
 				intent.putExtra("user", user);
 				mContext.startActivity(intent);
 			}

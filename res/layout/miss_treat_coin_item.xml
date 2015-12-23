@@ -33,11 +33,11 @@
             android:layout_height="25dp"
             android:layout_alignParentRight="true"
             android:layout_centerVertical="true"
+            android:hint="@string/integer_default"
             android:layout_marginRight="@dimen/layout_right"
             android:background="@drawable/background_with_border_radius"
             android:gravity="center_vertical"
-            android:inputType="number"
-            android:text="@string/integer_default" />
+            android:inputType="number"/>
     </RelativeLayout>
 
 </LinearLayout>

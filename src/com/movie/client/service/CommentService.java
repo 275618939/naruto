@@ -1,5 +1,6 @@
 package com.movie.client.service;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -26,44 +27,23 @@ public class CommentService {
 		commentDao.setContentValues(comment);
 		commentDao.addData();
 	}
-	public Map<Integer,String> getMenCommentsMap() {
+	
+	public List<Map<Integer, String>> getCommentsMapBySex(int sex) {
 
 		List<Map<String, String>> commnetList = commentDao.listData(null, null);
-	    Map<Integer,String> menDictionaries = new HashMap<Integer,String>();
-	    int type=0;
-		for (Map<String, String> map : commnetList) {
-			type=Integer.parseInt(map.get(SQLHelper.TYPE));
-			if(type==SexState.MAN.getState()){
-				menDictionaries.put(Integer.parseInt(map.get(SQLHelper.ID)),map.get(SQLHelper.NAME));
-			}
-		}
-		return menDictionaries;
-	}
-	public Map<Integer,String> getWoMenCommentsMap() {
-
-		List<Map<String, String>> commnetList = commentDao.listData(null, null);
-		Map<Integer,String> womenDictionaries = new HashMap<Integer,String>();
-	    int type=0;
-		for (Map<String, String> map : commnetList) {
-			type=Integer.parseInt(map.get(SQLHelper.TYPE));
-			if(type==SexState.WOMAN.getState()){
-				womenDictionaries.put(Integer.parseInt(map.get(SQLHelper.ID)),map.get(SQLHelper.NAME));
-			}
-		}
-		return womenDictionaries;
-	}
-	public Map<Integer,String> getCommentsMapBySex(int sex) {
-
-		List<Map<String, String>> commnetList = commentDao.listData(null, null);
-		Map<Integer,String> dictionaries = new HashMap<Integer,String>();
+		List<Map<Integer, String>> comments = new ArrayList<Map<Integer,String>>();
+		Map<Integer,String> dictionaries = null;
 	    int type=0;
 		for (Map<String, String> map : commnetList) {
 			type=Integer.parseInt(map.get(SQLHelper.TYPE));
 			if(type==sex){
+				dictionaries = new HashMap<Integer,String>();
 				dictionaries.put(Integer.parseInt(map.get(SQLHelper.ID)),map.get(SQLHelper.NAME));
+				comments.add(dictionaries);
 			}
 		}
-		return dictionaries;
+		commnetList=null;
+		return comments;
 	}
 
 	public Map<Integer, Map<Integer,String>> getCommentsMap() {
@@ -86,7 +66,7 @@ public class CommentService {
 		return commentsMap;
 	}
 
-	public int countHobby() {
+	public int countCommnets() {
 		return commentDao.countData(null);
 	}
 

@@ -39,7 +39,8 @@ import com.movie.network.HttpMissDetailService;
 import com.movie.network.HttpMissQueryService;
 import com.movie.network.HttpMissUpdateService;
 import com.movie.state.MissState;
-import com.movie.state.MissStateBtnBackColor;
+import com.movie.state.MissTimeBtnBackColor;
+import com.movie.state.MissTimeState;
 import com.movie.state.SexState;
 import com.movie.util.Horoscope;
 import com.movie.util.StringUtil;
@@ -173,11 +174,11 @@ public class MissSelfDetailActivity extends BaseActivity implements OnClickListe
 	private void initMissBtn(){
 		//验证是否可以撤销
 		int result=StringUtil.dateCompareByCurrent(miss.getRunTime(),MissBtnStatus.MAX_MISS_CANCEL_HOUR);
-		missBtn.setBackgroundResource(MissStateBtnBackColor.getState(miss.getStatus()).getSourceId());
+		missBtn.setBackgroundResource(MissTimeBtnBackColor.getState(result).getSourceId());
 		missNarutoAdapter.setLoginMemberId(userService.getUserItem().getMemberId());
 		missNarutoAdapter.setMemberId(miss.getMemberId());
 		missNarutoAdapter.setTimeResult(result);
-		if(result>0&&(miss.getStatus().intValue()==MissState.HaveInHand.getState())){
+		if(result==MissTimeState.HaveInHand.getState()){
 			missBtn.setText(getResources().getString(R.string.miss_cancel));
 			missBtn.setOnClickListener(this);
 			btnType=Miss.CANCLE_MISS;
@@ -185,15 +186,12 @@ public class MissSelfDetailActivity extends BaseActivity implements OnClickListe
 		}
 		//验证是否可以派影币
 		result=StringUtil.dateCompareByCurrent(miss.getRunTime());
-		if(result<0&&(miss.getStatus().intValue()==MissState.Expired.getState())){
+		if(result<=MissTimeState.Expired.getState()&&miss.getCoin()>0){
 			missBtn.setText(getResources().getString(R.string.branch_coin));
 			missBtn.setOnClickListener(this);
 			btnType=Miss.COIN_MISS;
 		}else{
-			//显示其他状态条
-			missBtn.setText(MissState.getState(miss.getStatus()).getMessage());
-			missBtn.setOnClickListener(this);
-			btnType=Miss.COIN_MISS;
+			missBtn.setText(MissState.Completed.getMessage());
 		}
 	
 	}
@@ -273,6 +271,7 @@ public class MissSelfDetailActivity extends BaseActivity implements OnClickListe
 				}else if(btnType==Miss.COIN_MISS){
 					Intent userIntent=new Intent(this,MissTreatCoinActivity.class);
 					userIntent.putExtra("trystId", miss.getTrystId());
+					userIntent.putExtra("coin", miss.getCoin());
 					startActivity(userIntent);
 				}
 				break;

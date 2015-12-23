@@ -78,10 +78,10 @@ public class GuideActivity extends BaseActivity implements OnPageChangeListener 
 	@Override
 	protected void initData() {
 		httpHobbyService.execute(this);
+		httpFilmTypeService.execute(this);
 		//加载男性评价
 		httpCommentService.addParams("type", SexState.MAN.getState());
 		httpCommentService.execute(this);
-		httpFilmTypeService.execute(this);
 		//加载女性评价
 		httpCommentService.addParams("type", SexState.WOMAN.getState());
 		httpCommentService.execute(this);

@@ -44,6 +44,7 @@ import com.movie.pop.CommentPopupWindow;
 import com.movie.state.MissState;
 import com.movie.state.MissStateBackColor;
 import com.movie.state.MissTimeBtnBackColor;
+import com.movie.state.MissTimeState;
 import com.movie.state.SexState;
 import com.movie.util.Horoscope;
 import com.movie.util.StringUtil;
@@ -81,10 +82,11 @@ public class MissNarutoDetailActivity extends BaseActivity implements OnClickLis
 	MissNarutoAdapter missNarutoAdapter;
 	CommentPopupWindow commentPopupWindow;
 	List<MissNaruto> missNarutos = new ArrayList<MissNaruto>();
+	List<Map<Integer, String>> comments = new ArrayList<Map<Integer,String>>();
     LoadView loadView;
     View rootView;
     Miss miss;
-    int btnType;
+    int result;
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
@@ -104,7 +106,7 @@ public class MissNarutoDetailActivity extends BaseActivity implements OnClickLis
 	@Override
 	protected void initViews() {
 		
-		commentPopupWindow =new CommentPopupWindow(this, mHandler);
+		commentPopupWindow =new CommentPopupWindow(this, mHandler,comments);
 		title = (TextView) findViewById(R.id.title);
 		userLove = (TextView) findViewById(R.id.userLove);
 		loveView = (TextView) findViewById(R.id.love);
@@ -164,33 +166,28 @@ public class MissNarutoDetailActivity extends BaseActivity implements OnClickLis
 		loadMissDetail();
 		/*加载应约人信息*/
 		loadAttendUser();
+	
 	}
 	private void initMissBtn(){
-		int result=StringUtil.dateCompareByCurrent(miss.getRunTime(),MissBtnStatus.MAX_MISS_CANCEL_HOUR);
+		
+		result=StringUtil.dateCompareByCurrent(miss.getRunTime(),MissBtnStatus.MAX_MISS_CANCEL_HOUR);
 		missBtn.setBackgroundResource(MissTimeBtnBackColor.getState(result).getSourceId());
-		missBtn.setText(MissState.getState(miss.getStatus()).getMessage());
+		missBtn.setText(MissTimeState.getState(result).getMessage());
 		missNarutoAdapter.setLoginMemberId(userService.getUserItem().getMemberId());
 		missNarutoAdapter.setMemberId(miss.getMemberId());
 		if(!userService.getUserItem().getMemberId().equals(miss.getMemberId())){
-			//验证是否进行约会报名操作
-			if(result>0&&(miss.getStatus().intValue()==MissState.HaveInHand.getState())){
+			
+			if(result==MissTimeState.HaveInHand.getState()){
+				//验证是否可进行约会报名操作
 				missBottomBar.setVisibility(View.VISIBLE);
 				missBtn.setText(getResources().getString(R.string.miss_enter));
 				missBtn.setOnClickListener(this);
-				
-			} 
-			//验证是否可进行评价操作
-			if(miss.getStatus().intValue()==MissState.Completed.getState()){
-				
+			}else if(result==MissTimeState.Completed.getState()||result==MissTimeState.Expired.getState()){
 				missBottomBar.setVisibility(View.VISIBLE);
 				missBtn.setText(getResources().getString(R.string.miss_evlation));
 				missBtn.setOnClickListener(this);
 			}
-			
-			
-			
 		}
-		
 		
 		
 	}
@@ -239,9 +236,9 @@ public class MissNarutoDetailActivity extends BaseActivity implements OnClickLis
 				startActivity(intent);
 				break;
 			case R.id.miss_btn:
-				if(miss.getStatus().intValue()==MissState.HaveInHand.getState()){
+				if(result==MissTimeState.HaveInHand.getState()){
 					applyMiss();
-				}else if(miss.getStatus().intValue()==MissState.Completed.getState()){
+				}else if(result==MissTimeState.Completed.getState()||result==MissTimeState.Expired.getState()){
 					commentPopupWindow.showAtLocation(v, Gravity.CENTER, 0,0);
 				}
 				break;
@@ -283,6 +280,9 @@ public class MissNarutoDetailActivity extends BaseActivity implements OnClickLis
 				Map<String, Object> values = (Map<String, Object>) map.get(ReturnCode.RETURN_VALUE);
 				if (values.containsKey("sex")) {
 					userSex.setText(SexState.getState(Integer.parseInt(values.get("sex").toString())).getMessage());
+					/*读取评价信息*/
+					comments=commentService.getCommentsMapBySex(Integer.parseInt(values.get("sex").toString()));
+					commentPopupWindow.updateData();
 				}
 				if (values.containsKey("birthday")){
 					int [] ds=StringUtil.strConvertInts(values.get("birthday").toString());

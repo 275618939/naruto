@@ -21,7 +21,8 @@ import com.movie.app.NarutoApplication;
 import com.movie.client.bean.BaseBean;
 import com.movie.client.bean.Miss;
 import com.movie.state.MissState;
-import com.movie.state.MissStateBackColor;
+import com.movie.state.MissTimeBackColor;
+import com.movie.state.MissTimeState;
 import com.movie.ui.MissSelfDetailActivity;
 import com.movie.util.StringUtil;
 
@@ -57,10 +58,8 @@ public class MissSelfQueryAdapter extends BaseObjectListAdapter {
 		mHolder.missDate.setText(StringUtil.getShortStrBySym(miss.getRunTime(),":"));
 		mHolder.missName.setText(miss.getFilmName());
 		mHolder.missCoin.setText(miss.getCoin()==null?"0":miss.getCoin().toString());
-		int sourceId = MissStateBackColor.getState(miss.getStatus()).getSourceId();
-		mHolder.missItemView.setBackgroundResource(sourceId);
-		mHolder.missBtnLayout.setVisibility(View.VISIBLE);
-		mHolder.missBtn.setText(MissState.getState(miss.getStatus()).getMessage());
+		//mHolder.missBtnLayout.setVisibility(View.VISIBLE);
+		//mHolder.missBtn.setText(MissState.getState(miss.getStatus()).getMessage());
 		if(miss.getStatus().intValue()==MissState.Expired.getState()){
 			if(miss.getCoin()!=null&&miss.getCoin()>0){
 				mHolder.missBtn.setText(mContext.getResources().getString(R.string.branch_coin));
@@ -84,11 +83,10 @@ public class MissSelfQueryAdapter extends BaseObjectListAdapter {
 				}
 			}
 		});
-		/*int result=StringUtil.dateCompareByCurrent(miss.getRunTime());
-		if(result<0){
-			mHolder.missItemView.setBackgroundResource(MissStateBackColor.Expired.getSourceId());
-			mHolder.missBtn.setText(mContext.getResources().getString(R.string.branch_coin));
-		}*/
+		int result=StringUtil.dateCompareByCurrent(miss.getRunTime());
+		mHolder.missItemView.setBackgroundResource(MissTimeBackColor.getState(result).getSourceId());
+		mHolder.missBtn.setText(MissTimeState.getState(result).getMessage());
+		
 		return view;
 	}
 

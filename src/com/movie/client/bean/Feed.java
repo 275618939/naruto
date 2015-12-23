@@ -155,8 +155,8 @@ public class Feed extends BaseBean implements Parcelable {
 		public Feed createFromParcel(Parcel source) {
 			Feed feed = new Feed();
 			feed.setType(source.readInt());
-			feed.setMemberId(source.readString());
 			feed.setDynamicId(source.readString());
+			feed.setMemberId(source.readString());
 			feed.setTime(source.readString());
 			feed.setContent(source.readString());
 			feed.setContentImage(source.readArrayList(ArrayList.class.getClassLoader()));
