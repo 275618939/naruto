@@ -19,17 +19,14 @@ import android.widget.TextView;
 import com.movie.R;
 import com.movie.app.Constant;
 import com.movie.client.bean.Miss;
-import com.movie.client.service.CommentService;
 import com.movie.state.BackGroundColor;
 
 public class CommentsShowAdapter extends BaseAdapter {
 	
 
 	List<Map<Integer,String>> comments;
-	Map<Integer,String> dictionarysAll;
 	Context context;
 	LayoutInflater inflater;
-	CommentService commentService;
 	Handler handler;
 
 	public CommentsShowAdapter(Context context,Handler handler,List<Map<Integer,String>> comments) {
@@ -71,9 +68,8 @@ public class CommentsShowAdapter extends BaseAdapter {
 		mHolder.comment.setBackgroundResource(BackGroundColor.getState(index).getSourceId());
 		Map<Integer,String> commentMap = getItem(position);
 		for(Entry<Integer, String> entry:commentMap.entrySet()){    
-			String text= commentMap.get(entry.getKey());
 			mHolder.comment.setTag(entry.getKey());
-			mHolder.comment.setText(text);
+			mHolder.comment.setText(entry.getValue());
 		}
 		mHolder.comment.setOnClickListener(new OnClickListener() {
 			@Override
@@ -94,6 +90,11 @@ public class CommentsShowAdapter extends BaseAdapter {
 		//用户评价
 		TextView comment;
 
+	}
+	public void updateData(List<Map<Integer,String>> comments) {
+		this.comments=comments;
+		this.notifyDataSetChanged();
+		
 	}
 	
 	

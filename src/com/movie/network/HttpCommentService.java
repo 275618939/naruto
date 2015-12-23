@@ -72,6 +72,7 @@ public class HttpCommentService  extends  BaseService{
 						 commentDao.setContentValues(comment);
 						 commentDao.addData();
 				    }
+					value=null;
 					message.what = SUCCESS_STATE;
 				}else if(state==ErrorState.SessionInvalid.getState()){
 					if(requestCount<MAXREQUEST){

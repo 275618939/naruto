@@ -7,6 +7,7 @@ import java.util.Map;
 import android.os.Bundle;
 import android.support.v4.view.ViewPager;
 import android.support.v4.view.ViewPager.OnPageChangeListener;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.ImageView;
@@ -80,9 +81,11 @@ public class GuideActivity extends BaseActivity implements OnPageChangeListener 
 		httpHobbyService.execute(this);
 		httpFilmTypeService.execute(this);
 		//加载男性评价
+		Log.i("man", "----------------"+SexState.MAN.getState());
 		httpCommentService.addParams("type", SexState.MAN.getState());
 		httpCommentService.execute(this);
 		//加载女性评价
+		Log.i("WOMAN", "----------------"+SexState.WOMAN.getState());
 		httpCommentService.addParams("type", SexState.WOMAN.getState());
 		httpCommentService.execute(this);
 

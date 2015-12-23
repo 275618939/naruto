@@ -4,35 +4,24 @@ import java.util.List;
 import java.util.Map;
 
 import android.content.Context;
-import android.os.Bundle;
 import android.os.Handler;
-import android.os.Message;
 import android.view.LayoutInflater;
 import android.view.View;
-import android.view.View.OnClickListener;
 import android.view.ViewGroup;
 import android.widget.BaseAdapter;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.movie.R;
-import com.movie.client.bean.Miss;
-import com.movie.client.bean.User;
-import com.movie.client.service.CommentService;
 
 public class SignInAdapter extends BaseAdapter {
 	
 
 	List<Map<Integer,Integer>> signInList;
-	int sex;
-	User user;
-	boolean showCount;
 	Context context;
 	LayoutInflater inflater;
-	CommentService commentService;
 	Handler handler;
 
-	
 	public SignInAdapter(Context context,List<Map<Integer,Integer>> signInList) {
 		this.context = context;
 		this.signInList = signInList;
@@ -97,60 +86,12 @@ public class SignInAdapter extends BaseAdapter {
 		TextView signIn;
 		
 	}
-	protected class UserSelectAction implements OnClickListener {
-
-		int position;
-
-		public UserSelectAction(int position) {
-			this.position = position;
-		}
-
-		@Override
-		public void onClick(final View v) {
-
-			switch (v.getId()) {
-			case R.id.comment:
-				Message message = new Message();
-				message.what = Miss.EVLATOIN_USER;
-				Bundle bundle = new Bundle();
-				bundle.putSerializable("user", user);
-				message.setData(bundle);
-				handler.sendMessage(message);
-				break;
-			
-			default:
-				break;
-			}
-			
-		}
-
-	}
 	public void updateData(List<Map<Integer,Integer>> signInList) {
 		this.signInList=signInList;
 		this.notifyDataSetChanged();
 		
 	}
 	
-
-	public void setUser(User user) {
-		this.user = user;
-	}
-	
-
-	
-	
-
-	
-	
-
-	
-
-
-
-
-	
-
-
 
 	
 }

@@ -25,13 +25,12 @@ public class CommentPopupWindow extends BasePopupWindow {
 	ImageView btnPopClose;
 	Context context;
 	Handler mHandler;
-
-	public CommentPopupWindow(Context context,Handler handler,List<Map<Integer,String>> commentsList) {
+	public CommentPopupWindow(Context context,Handler handler) {
 		super(LayoutInflater.from(context).inflate(R.layout.comments_pop, null),LayoutParams.WRAP_CONTENT, LayoutParams.WRAP_CONTENT);
 		setAnimationStyle(R.style.Popup_Animation_PushDownUp);
 		this.context=context;
 		this.mHandler=handler;
-		commentsAdapter = new CommentsShowAdapter(this.context,this.mHandler,commentsList);
+		commentsAdapter = new CommentsShowAdapter(this.context,this.mHandler,null);
 		commentsGridView.setAdapter(commentsAdapter);
 	}
 	
@@ -58,8 +57,9 @@ public class CommentPopupWindow extends BasePopupWindow {
 		this.setFocusable(true);
 		this.setOutsideTouchable(true);
 	}
-	public void updateData(){
-		commentsAdapter.notifyDataSetChanged();
+	public void setCommentsList(List<Map<Integer, String>> comments) {
+		commentsAdapter.updateData(comments);
 	}
+
 
 }

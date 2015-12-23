@@ -82,7 +82,6 @@ public class MissNarutoDetailActivity extends BaseActivity implements OnClickLis
 	MissNarutoAdapter missNarutoAdapter;
 	CommentPopupWindow commentPopupWindow;
 	List<MissNaruto> missNarutos = new ArrayList<MissNaruto>();
-	List<Map<Integer, String>> comments = new ArrayList<Map<Integer,String>>();
     LoadView loadView;
     View rootView;
     Miss miss;
@@ -106,7 +105,7 @@ public class MissNarutoDetailActivity extends BaseActivity implements OnClickLis
 	@Override
 	protected void initViews() {
 		
-		commentPopupWindow =new CommentPopupWindow(this, mHandler,comments);
+		commentPopupWindow =new CommentPopupWindow(this, mHandler);
 		title = (TextView) findViewById(R.id.title);
 		userLove = (TextView) findViewById(R.id.userLove);
 		loveView = (TextView) findViewById(R.id.love);
@@ -240,6 +239,7 @@ public class MissNarutoDetailActivity extends BaseActivity implements OnClickLis
 					applyMiss();
 				}else if(result==MissTimeState.Completed.getState()||result==MissTimeState.Expired.getState()){
 					commentPopupWindow.showAtLocation(v, Gravity.CENTER, 0,0);
+					commentPopupWindow.setFocusable(true);
 				}
 				break;
 			case R.id.hope_user:
@@ -281,8 +281,8 @@ public class MissNarutoDetailActivity extends BaseActivity implements OnClickLis
 				if (values.containsKey("sex")) {
 					userSex.setText(SexState.getState(Integer.parseInt(values.get("sex").toString())).getMessage());
 					/*读取评价信息*/
-					comments=commentService.getCommentsMapBySex(Integer.parseInt(values.get("sex").toString()));
-					commentPopupWindow.updateData();
+					List<Map<Integer, String>> comments =commentService.getCommentsMapBySex(Integer.parseInt(values.get("sex").toString()));
+					commentPopupWindow.setCommentsList(comments);
 				}
 				if (values.containsKey("birthday")){
 					int [] ds=StringUtil.strConvertInts(values.get("birthday").toString());
