@@ -1,13 +1,12 @@
 package com.movie.adapter;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 
 import android.content.Context;
-import android.os.Bundle;
 import android.os.Handler;
-import android.os.Message;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.View.OnClickListener;
@@ -18,13 +17,13 @@ import android.widget.TextView;
 
 import com.movie.R;
 import com.movie.app.Constant;
-import com.movie.client.bean.Miss;
 import com.movie.state.BackGroundColor;
 
 public class CommentsShowAdapter extends BaseAdapter {
 	
 
 	List<Map<Integer,String>> comments;
+	ArrayList<Integer> selectComments=new ArrayList<Integer>();
 	Context context;
 	LayoutInflater inflater;
 	Handler handler;
@@ -53,7 +52,7 @@ public class CommentsShowAdapter extends BaseAdapter {
 
 	@Override
 	public View getView(int position, View convertView, ViewGroup parent) {
-		ViewHolder mHolder;
+		final ViewHolder mHolder;
 		View view = convertView;
 		if (view == null) {
 			view = inflater.inflate(R.layout.comment_item, null);
@@ -64,21 +63,27 @@ public class CommentsShowAdapter extends BaseAdapter {
 		} else {
 			mHolder = (ViewHolder) view.getTag();
 		}
-		int index=position%Constant.Page.COMMENTS_MAX_SHOW;
+		final int index=position%Constant.Page.COMMENTS_MAX_SHOW;
 		mHolder.comment.setBackgroundResource(BackGroundColor.getState(index).getSourceId());
 		Map<Integer,String> commentMap = getItem(position);
-		for(Entry<Integer, String> entry:commentMap.entrySet()){    
-			mHolder.comment.setTag(entry.getKey());
+		for(Entry<Integer, String> entry:commentMap.entrySet()){ 
+			mHolder.comment.setTag(R.id.tag_key,entry.getKey());
 			mHolder.comment.setText(entry.getValue());
 		}
 		mHolder.comment.setOnClickListener(new OnClickListener() {
 			@Override
 			public void onClick(View v) {
-				Message message = new Message();
-				message.what = Miss.EVLATOIN_USER;
-				Bundle bundle = new Bundle();
-				message.setData(bundle);
-				handler.sendMessage(message);
+				Object backObject = mHolder.comment.getTag(R.id.tag_select);
+				if(null!=backObject){
+					mHolder.comment.setBackgroundResource(Integer.parseInt(String.valueOf(backObject)));
+					mHolder.comment.setTag(R.id.tag_select, R.color.btn_add);
+					selectComments.remove(mHolder.comment.getTag(R.id.tag_key));
+				}else{
+					selectComments.add(Integer.valueOf(String.valueOf(mHolder.comment.getTag(R.id.tag_key))));
+					mHolder.comment.setBackgroundResource(R.color.btn_add);
+					mHolder.comment.setTag(R.id.tag_select, BackGroundColor.getState(index).getSourceId());
+				}
+				
 			}
 		});
 		return view;
@@ -96,6 +101,12 @@ public class CommentsShowAdapter extends BaseAdapter {
 		this.notifyDataSetChanged();
 		
 	}
+	public ArrayList<Integer> getSelectComments() {
+		return selectComments;
+	}
+	
+	
+	
 	
 	
 

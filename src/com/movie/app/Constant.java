@@ -130,6 +130,10 @@ public interface Constant {
 	public final static String Dynamic_Comment_Create_API_URL = SERVER_URL+ "/dynamic/comment";
 	// 查询动态评论
 	public final static String Dynamic_Comment_Query_API_URL = SERVER_URL+ "/dynamic/comment";
+	// 评价会员印象
+	public final static String Treat_Comment_API_URL = SERVER_URL+ "/treat/comment";
+	// 评价会员颜值
+	public final static String Treat_Face_API_URL = SERVER_URL+ "/treat/face";
 	
 	public static final int CIM_SERVER_PORT = 23456;
 	

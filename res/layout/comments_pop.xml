@@ -21,6 +21,34 @@
 
     <ImageView style="@style/input_item_line" />
 
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="40dp"
+        android:layout_marginLeft="@dimen/layout_left"
+        android:layout_marginRight="@dimen/layout_right"
+        android:layout_marginTop="@dimen/layout_item_top_1"
+        android:orientation="horizontal" >
+
+        <TextView
+            style="@style/common_content_hint"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/layout_item_top_03"
+            android:text="@string/charm" />
+
+        <RatingBar
+            android:id="@+id/charm_star"
+            style="@style/commentCharmBarRatingBar"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="@dimen/text_left"
+            android:layout_marginTop="5dp"
+            android:numStars="5" >
+        </RatingBar>
+    </LinearLayout>
+
+    <ImageView style="@style/input_item_line" />
+
     <ImageView
         android:id="@+id/btn_pop_close"
         android:layout_width="50.0dip"

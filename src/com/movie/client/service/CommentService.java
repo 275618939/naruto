@@ -22,12 +22,14 @@ public class CommentService {
 		commentDao = new CommentDaoImple();
 	}
 
-	public void saveCommnet(int id, String name) {
-		Dictionary comment = new Dictionary(id, name);
+	public void saveCommnet(int id,int type, String name) {
+		Dictionary comment = new Dictionary(id,type,name);
 		commentDao.setContentValues(comment);
 		commentDao.addData();
 	}
-	
+	public void deleteCommnetByType(String type){
+		commentDao.deleteData(SQLHelper.TYPE+"=?", new String []{type});
+	}
 	public List<Map<Integer, String>> getCommentsMapBySex(int sex) {
 
 		List<Map<String, String>> commnetList = commentDao.listData(null, null);

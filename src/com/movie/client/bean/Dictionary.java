@@ -54,6 +54,13 @@ public class Dictionary extends BaseBean implements Serializable {
 		this.name = name;
 
 	}
+	public Dictionary(int id, int type ,String name) {
+		super();
+		this.id = id;
+		this.type=type;
+		this.name = name;
+
+	}
 
 	public int getId() {
 		return id;

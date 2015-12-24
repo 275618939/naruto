@@ -40,6 +40,8 @@ import com.movie.client.service.CommentService;
 import com.movie.network.HttpMissApplyService;
 import com.movie.network.HttpMissDetailService;
 import com.movie.network.HttpMissQueryService;
+import com.movie.network.HttpTreatCommentService;
+import com.movie.network.HttpTreatFaceService;
 import com.movie.pop.CommentPopupWindow;
 import com.movie.state.MissState;
 import com.movie.state.MissStateBackColor;
@@ -76,6 +78,8 @@ public class MissNarutoDetailActivity extends BaseActivity implements OnClickLis
 	BaseService httpMissDetailService;
 	BaseService httpMissQueryService;
 	BaseService httpMissApplyService;
+	BaseService httpTreatCommentService;
+	BaseService httpTreatFaceService;
 	CommentService commentService;
 	PullToRefreshScrollView refreshableScollView;
 	PullToRefreshListView refreshableListView;
@@ -86,6 +90,7 @@ public class MissNarutoDetailActivity extends BaseActivity implements OnClickLis
     View rootView;
     Miss miss;
     int result;
+    int evlation;
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
@@ -97,6 +102,8 @@ public class MissNarutoDetailActivity extends BaseActivity implements OnClickLis
 		httpMissDetailService = new HttpMissDetailService(this);
 		httpMissQueryService = new HttpMissQueryService(this);
 		httpMissApplyService =new HttpMissApplyService(this);
+		httpTreatCommentService = new HttpTreatCommentService(this);
+		httpTreatFaceService = new HttpTreatFaceService(this);
 		commentService = new CommentService();
 		initViews();
 		initEvents();
@@ -147,6 +154,7 @@ public class MissNarutoDetailActivity extends BaseActivity implements OnClickLis
 	@Override
 	protected void initData() {
 		miss = (Miss) getIntent().getSerializableExtra("miss");
+		evlation = getIntent().getIntExtra("evlation", 0);
 		if(null==miss){
 			return;
 		}
@@ -182,9 +190,13 @@ public class MissNarutoDetailActivity extends BaseActivity implements OnClickLis
 				missBtn.setText(getResources().getString(R.string.miss_enter));
 				missBtn.setOnClickListener(this);
 			}else if(result==MissTimeState.Completed.getState()||result==MissTimeState.Expired.getState()){
-				missBottomBar.setVisibility(View.VISIBLE);
-				missBtn.setText(getResources().getString(R.string.miss_evlation));
-				missBtn.setOnClickListener(this);
+				//是否可以评价
+				//if(evlation>0){
+					//只有参与过约会的人可以评价
+					missBottomBar.setVisibility(View.VISIBLE);
+					missBtn.setText(getResources().getString(R.string.miss_evlation));
+					missBtn.setOnClickListener(this);
+				//}
 			}
 		}
 		
@@ -204,6 +216,16 @@ public class MissNarutoDetailActivity extends BaseActivity implements OnClickLis
 		httpMissApplyService.addParams("trystId", miss.getTrystId());
 		httpMissApplyService.execute(this);
 	}
+	private void treatComment(List<Integer> comments){
+		httpTreatCommentService.addParams("memberId", miss.getMemberId());
+		httpTreatCommentService.addParams("comments", comments);
+		httpTreatCommentService.execute(this);
+	}
+	private void treatFace(int charm){
+		httpTreatFaceService.addParams("memberId", miss.getMemberId());
+		httpTreatFaceService.addParams("value", charm);
+		httpTreatFaceService.execute(this);
+	}
 	Handler mHandler = new Handler() {
 		public void handleMessage(android.os.Message msg) {
 			switch (msg.what) {
@@ -214,7 +236,15 @@ public class MissNarutoDetailActivity extends BaseActivity implements OnClickLis
 				User user = (User) bundle.getSerializable("user");
 				break;
 			case Miss.EVLATOIN_USER:
-			
+				Bundle evBundle = msg.getData();
+				ArrayList<Integer> selectComments = evBundle.getIntegerArrayList("comments");
+				int charm = evBundle.getInt("charm", 0);
+				if(selectComments!=null){
+					treatComment(selectComments);
+				}
+				if(charm>0){
+					treatFace(charm);
+				}
 				break;
 		
 			default:
@@ -238,6 +268,7 @@ public class MissNarutoDetailActivity extends BaseActivity implements OnClickLis
 				if(result==MissTimeState.HaveInHand.getState()){
 					applyMiss();
 				}else if(result==MissTimeState.Completed.getState()||result==MissTimeState.Expired.getState()){
+					commentPopupWindow.clearSelectCommnets();
 					commentPopupWindow.showAtLocation(v, Gravity.CENTER, 0,0);
 					commentPopupWindow.setFocusable(true);
 				}
@@ -406,6 +437,8 @@ public class MissNarutoDetailActivity extends BaseActivity implements OnClickLis
 		httpMissQueryService=null;
 		httpMissApplyService=null;
 		missNarutoAdapter=null;
+		httpTreatCommentService = null;
+		httpTreatFaceService = null;
 		missNarutos.clear();
 	}
 	@Override

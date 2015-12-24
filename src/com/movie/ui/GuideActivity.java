@@ -85,6 +85,7 @@ public class GuideActivity extends BaseActivity implements OnPageChangeListener 
 		httpCommentService.addParams("type", SexState.MAN.getState());
 		httpCommentService.execute(this);
 		//加载女性评价
+		httpCommentService = new HttpCommentService(this);
 		Log.i("WOMAN", "----------------"+SexState.WOMAN.getState());
 		httpCommentService.addParams("type", SexState.WOMAN.getState());
 		httpCommentService.execute(this);

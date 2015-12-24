@@ -10,25 +10,23 @@ import android.os.Message;
 
 import com.movie.app.Constant;
 import com.movie.app.InvokeException;
-import com.movie.client.bean.Dictionary;
-import com.movie.client.dao.BaseDao;
-import com.movie.client.dao.CommentDaoImple;
 import com.movie.client.service.BaseService;
 import com.movie.client.service.CallBackService;
+import com.movie.client.service.CommentService;
 import com.movie.state.ErrorState;
 import com.movie.util.HttpUtils;
 
 public class HttpCommentService  extends  BaseService{
 
-	BaseDao commentDao;
+	CommentService commentService;
 	public HttpCommentService() {
 		TAG="HttpCommentService";
-		commentDao = new CommentDaoImple();
+		commentService = new CommentService();
 	}
 	public HttpCommentService(Context context) {
 		TAG="HttpCommentService";
 		this.context=context;
-		commentDao = new CommentDaoImple();
+		commentService = new CommentService();
 	}
 	
 	@Override
@@ -37,12 +35,10 @@ public class HttpCommentService  extends  BaseService{
 		Message message = handler.obtainMessage();
 		try {
 			requestCount++;
-			int count = commentDao.countData(null);
-			if(count>0){
-				throw new InvokeException(ErrorState.Success.getState(),ErrorState.Success.getMessage());
-			}
+			
 			String sid= getSid();
 			Object type=params.get("type");
+			commentService.deleteCommnetByType(String.valueOf(type));
 			headers.put(SESSION_KEY, sid);
 			StringBuilder builder=new StringBuilder(Constant.Dic_Comment_API_URL);
 			builder.append("/").append(type);
@@ -58,19 +54,13 @@ public class HttpCommentService  extends  BaseService{
 					List<HashMap<String, String>> value = (ArrayList<HashMap<String, String>>) map.get(Constant.ReturnCode.RETURN_VALUE);
 					Integer key=null;
 					String data= null;
-					Dictionary comment = null;
 					int size=value.size();
 					Map<String, String> commentMap=null;
 					for(int i=0;i<size;i++){
 						 commentMap=value.get(i);
 						 key=Integer.valueOf(String.valueOf(commentMap.get("id")));
 					     data=commentMap.get("name");
-						 comment = new Dictionary();
-						 comment.setId(key.intValue());
-						 comment.setType(Integer.valueOf(String.valueOf(type)));
-						 comment.setName(data);
-						 commentDao.setContentValues(comment);
-						 commentDao.addData();
+						 commentService.saveCommnet(key.intValue(),Integer.valueOf(String.valueOf(type)),data);
 				    }
 					value=null;
 					message.what = SUCCESS_STATE;
