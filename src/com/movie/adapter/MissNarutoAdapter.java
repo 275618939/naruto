@@ -114,7 +114,7 @@ public class MissNarutoAdapter extends BaseObjectListAdapter {
 								mHandler.sendMessage(message);
 							}
 						});
-				}else if(showKickedOut){
+				}else if(showKickedOut&&timeResult>0){
 					mHolder.missBtn.setText(mContext.getResources().getString(R.string.kicked_out));
 					mHolder.missBtn.setOnClickListener(new OnClickListener() {
 							@Override
