@@ -1,0 +1,62 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/content"
+    android:layout_width="fill_parent"
+    android:layout_height="wrap_content"
+    android:orientation="vertical" >
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="40dp"
+        android:layout_marginTop="@dimen/layout_item_top_1"
+        android:orientation="horizontal" >
+
+        <TextView
+            style="@style/common_content_hint"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/layout_item_top_03"
+            android:text="@string/movie_score_hint" />
+
+        <RatingBar
+            android:id="@+id/movie_star"
+            style="@style/commentRoomRatingBar"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="@dimen/text_left"
+            android:layout_marginTop="@dimen/layout_item_top_0"
+            android:numStars="5" >
+        </RatingBar>
+    </LinearLayout>
+
+    <ImageView style="@style/input_item_line" />
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="80dp"
+        android:layout_marginBottom="@dimen/layout_item_bottom"
+        android:layout_marginTop="@dimen/layout_item_top_1"
+        android:orientation="horizontal" >
+
+        <TextView
+            style="@style/common_content_hint"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/evlatuion_hint" />
+
+        <EditText
+            android:id="@+id/comment_input"
+            style="@style/common_content_hint"
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="@dimen/text_left"
+            android:background="@null"
+            android:gravity="top"
+            android:hint="@string/comment_hint"
+            android:inputType="textMultiLine"
+            android:maxLength="100"
+            android:maxLines="3"
+            android:textColorHint="#999999" />
+    </LinearLayout>
+
+</LinearLayout>

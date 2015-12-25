@@ -128,6 +128,7 @@ public class MissSelfDetailActivity extends BaseActivity implements OnClickListe
 		refreshableScollView=(PullToRefreshScrollView) findViewById(R.id.miss_detail_view);
 		//refreshableListView.setEmptyView(rootView.findViewById(R.id.empty));
 		missNarutoAdapter =new MissNarutoAdapter(this, mHandler, missNarutos);
+		missNarutoAdapter.setShowKickedOut(true);
 		refreshableListView.setAdapter(missNarutoAdapter);	
 		refreshableListView.setMode(Mode.PULL_FROM_END);
 		refreshableListView.setFocusable(false);
@@ -241,6 +242,7 @@ public class MissSelfDetailActivity extends BaseActivity implements OnClickListe
 				String memberid = bundle.getString("memberid");
 				int postion = bundle.getInt("position");
 				missNarutos.remove(postion);
+				missNarutoAdapter.notifyDataSetChanged();
 				//踢出用户
 				kickNaruto(memberid);
 				break;

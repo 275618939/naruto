@@ -41,6 +41,7 @@ import com.movie.client.bean.User;
 import com.movie.client.service.BaseService;
 import com.movie.client.service.CallBackService;
 import com.movie.client.service.FilmTypeService;
+import com.movie.dialog.MovieCommentDialog;
 import com.movie.network.HttpFilmLoveService;
 import com.movie.network.HttpFilmLoveUpdateService;
 import com.movie.network.HttpMovieCommentCreateService;
@@ -51,7 +52,6 @@ import com.movie.util.SharedPreferencesUtils;
 import com.movie.util.StringUtil;
 import com.movie.view.HorizontalListView;
 import com.movie.view.LoadView;
-import com.movie.view.MovieCommentsDialog;
 
 
 public class MovieDetailActivity extends BaseActivity implements OnClickListener, CallBackService , OnRefreshListener2<ListView>,OnRefreshListener<ScrollView>{
@@ -86,6 +86,7 @@ public class MovieDetailActivity extends BaseActivity implements OnClickListener
 	WantSeeMovieAdapter wantSeeMovieAdapter;
 	HorizontalListView horizontalListView;
 	PullToRefreshScrollView refreshableScollView;
+	MovieCommentDialog movieCommentDialog;
 	BaseService httpFileLoveService;
 	BaseService httpMovieDetailService;
 	BaseService httpFilmLoveUpdateService;
@@ -107,6 +108,7 @@ public class MovieDetailActivity extends BaseActivity implements OnClickListener
 		httpFilmLoveUpdateService = new HttpFilmLoveUpdateService(this);
 		httpCommentCreateService = new HttpMovieCommentCreateService(this);
 		httpCommentQueryService = new HttpMovieCommentQueryService(this);
+		movieCommentDialog = new MovieCommentDialog(this);
 		filmTypeService = new FilmTypeService();
 		initViews();
 		initEvents();
@@ -179,6 +181,7 @@ public class MovieDetailActivity extends BaseActivity implements OnClickListener
 	protected void initData() {
 		filemTypes=filmTypeService.getFilmTypeMap();
 		filmId = getIntent().getIntExtra("filmId",0);
+		movieCommentDialog.setTitle(getText(R.string.movie_comment));
 		loadMovieDetail();
 		loadMovieLove();
 		loadMovieComment();
@@ -230,27 +233,25 @@ public class MovieDetailActivity extends BaseActivity implements OnClickListener
 					goLogin();
 					return;
 				}
-				final MovieCommentsDialog.Builder builder = new MovieCommentsDialog.Builder(this);
-				builder.setTitle(R.string.comment);
-				builder.setPositiveButton("取消",
+				movieCommentDialog.setButton("取消",
 						new DialogInterface.OnClickListener() {
+							@Override
 							public void onClick(DialogInterface dialog, int which) {
-								dialog.dismiss();
+								movieCommentDialog.cancel();
 							}
-						});
-				builder.setNegativeButton("确定",
-						new android.content.DialogInterface.OnClickListener() {
+						}, "确认", new DialogInterface.OnClickListener() {
+
+							@Override
 							public void onClick(DialogInterface dialog, int which) {
-								dialog.dismiss();
-								String comments=builder.getComments();
+								movieCommentDialog.dismiss();
+								String comments=movieCommentDialog.getComments();
 								if(comments==null||comments.isEmpty())
 									return;
-								int score=builder.getRatingBarValue()*2;
+								int score=movieCommentDialog.getRatingBarValue();
 								createComment(comments,score);
 							}
 						});
-
-				builder.create().show();
+				movieCommentDialog.show();
 				break;
 			case R.id.love_film:
 				updateFilmLove();

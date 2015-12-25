@@ -18,6 +18,8 @@ import com.movie.app.BaseObjectListAdapter;
 import com.movie.app.NarutoApplication;
 import com.movie.client.bean.BaseBean;
 import com.movie.client.bean.Miss;
+import com.movie.state.MissState;
+import com.movie.state.MissStateBackColor;
 import com.movie.state.MissTimeBackColor;
 import com.movie.state.MissTimeState;
 import com.movie.ui.MissNarutoDetailActivity;
@@ -64,9 +66,18 @@ public class MissQueryAdapter extends BaseObjectListAdapter {
 				mContext.startActivity(intent);
 			}
 		});
+		//根据时间验证
 		int result=StringUtil.dateCompareByCurrent(miss.getRunTime());
 		mHolder.missItemView.setBackgroundResource(MissTimeBackColor.getState(result).getSourceId());
 		mHolder.missBtn.setText(MissTimeState.getState(result).getMessage());
+		if(result==MissTimeState.HaveInHand.getState()){
+			//时间和状态不符
+			if(miss.getStatus()>MissState.HaveInHand.getState()){
+				mHolder.missItemView.setBackgroundResource(MissStateBackColor.getState(miss.getStatus()).getSourceId());
+				mHolder.missBtn.setText(MissState.getState(miss.getStatus()).getMessage());
+			}
+		}
+		
 		
 		return view;
 	}

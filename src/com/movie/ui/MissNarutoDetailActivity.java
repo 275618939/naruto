@@ -33,19 +33,18 @@ import com.movie.app.Constant.ReturnCode;
 import com.movie.app.NarutoApplication;
 import com.movie.client.bean.Miss;
 import com.movie.client.bean.MissNaruto;
-import com.movie.client.bean.User;
 import com.movie.client.service.BaseService;
 import com.movie.client.service.CallBackService;
 import com.movie.client.service.CommentService;
 import com.movie.network.HttpMissApplyService;
 import com.movie.network.HttpMissDetailService;
 import com.movie.network.HttpMissQueryService;
+import com.movie.network.HttpMissUpdateService;
 import com.movie.network.HttpTreatCommentService;
 import com.movie.network.HttpTreatFaceService;
 import com.movie.pop.CommentPopupWindow;
 import com.movie.state.MissState;
-import com.movie.state.MissStateBackColor;
-import com.movie.state.MissTimeBtnBackColor;
+import com.movie.state.MissStateBtnBackColor;
 import com.movie.state.MissTimeState;
 import com.movie.state.SexState;
 import com.movie.util.Horoscope;
@@ -78,6 +77,7 @@ public class MissNarutoDetailActivity extends BaseActivity implements OnClickLis
 	BaseService httpMissDetailService;
 	BaseService httpMissQueryService;
 	BaseService httpMissApplyService;
+	BaseService httpMissUpdateService;
 	BaseService httpTreatCommentService;
 	BaseService httpTreatFaceService;
 	CommentService commentService;
@@ -102,6 +102,7 @@ public class MissNarutoDetailActivity extends BaseActivity implements OnClickLis
 		httpMissDetailService = new HttpMissDetailService(this);
 		httpMissQueryService = new HttpMissQueryService(this);
 		httpMissApplyService =new HttpMissApplyService(this);
+		httpMissUpdateService =new HttpMissUpdateService(this);
 		httpTreatCommentService = new HttpTreatCommentService(this);
 		httpTreatFaceService = new HttpTreatFaceService(this);
 		commentService = new CommentService();
@@ -134,6 +135,7 @@ public class MissNarutoDetailActivity extends BaseActivity implements OnClickLis
 		missBottomBar = (LinearLayout) findViewById(R.id.miss_bottom_bar);
 		refreshableListView  = (PullToRefreshListView) findViewById(R.id.attend_user_list);
 		missNarutoAdapter =new MissNarutoAdapter(this, mHandler, missNarutos);
+		missNarutoAdapter.setShowKickedOut(true);
 		refreshableListView.setAdapter(missNarutoAdapter);		
 		refreshableListView.setMode(Mode.PULL_FROM_END);
 		refreshableListView.setFocusable(false);
@@ -178,26 +180,31 @@ public class MissNarutoDetailActivity extends BaseActivity implements OnClickLis
 	private void initMissBtn(){
 		
 		result=StringUtil.dateCompareByCurrent(miss.getRunTime(),MissBtnStatus.MAX_MISS_CANCEL_HOUR);
-		missBtn.setBackgroundResource(MissTimeBtnBackColor.getState(result).getSourceId());
-		missBtn.setText(MissTimeState.getState(result).getMessage());
+		//missBtn.setBackgroundResource(MissTimeBtnBackColor.getState(result).getSourceId());
 		missNarutoAdapter.setLoginMemberId(userService.getUserItem().getMemberId());
 		missNarutoAdapter.setMemberId(miss.getMemberId());
 		if(!userService.getUserItem().getMemberId().equals(miss.getMemberId())){
-			
 			if(result==MissTimeState.HaveInHand.getState()){
-				//验证是否可进行约会报名操作
-				missBottomBar.setVisibility(View.VISIBLE);
-				missBtn.setText(getResources().getString(R.string.miss_enter));
-				missBtn.setOnClickListener(this);
+				//验证时间和状态是否符合
+				//时间和状态不符
+				if(miss.getStatus()>MissState.HaveInHand.getState()){
+					missBtn.setText(MissState.getState(miss.getStatus()).getMessage());
+					missBtn.setBackgroundResource(MissStateBtnBackColor.getState(miss.getStatus()).getSourceId());
+				}else{
+					//验证是否可进行约会报名操作
+					missBtn.setText(getResources().getString(R.string.miss_enter));
+					missBtn.setOnClickListener(this);
+				}
 			}else if(result==MissTimeState.Completed.getState()||result==MissTimeState.Expired.getState()){
 				//是否可以评价
-				//if(evlation>0){
-					//只有参与过约会的人可以评价
-					missBottomBar.setVisibility(View.VISIBLE);
-					missBtn.setText(getResources().getString(R.string.miss_evlation));
-					missBtn.setOnClickListener(this);
-				//}
+				//只有参与过约会的人可以评价,暂未实现
+				missBtn.setText(getResources().getString(R.string.miss_evlation));
+				missBtn.setOnClickListener(this);
+			}else{
+				missBottomBar.setVisibility(View.GONE);
 			}
+		}else{
+			missBottomBar.setVisibility(View.GONE);
 		}
 		
 		
@@ -226,14 +233,25 @@ public class MissNarutoDetailActivity extends BaseActivity implements OnClickLis
 		httpTreatFaceService.addParams("value", charm);
 		httpTreatFaceService.execute(this);
 	}
+	private void kickNaruto(String memberId){
+		httpMissUpdateService.addUrls(Constant.Miss_Kick_API_URL);
+		httpMissUpdateService.addParams("trystId", miss.getTrystId());
+		httpMissUpdateService.addParams("memberId", memberId);
+		httpMissUpdateService.execute(this);
+	}
 	Handler mHandler = new Handler() {
 		public void handleMessage(android.os.Message msg) {
 			switch (msg.what) {
 			
-			case Miss.LOSE_MISS:
+			case Miss.KICKED_OUT:
 				//踢出用户
 				Bundle bundle = msg.getData();
-				User user = (User) bundle.getSerializable("user");
+				String memberid = bundle.getString("memberid");
+				int postion = bundle.getInt("position");
+				missNarutos.remove(postion);
+				missNarutoAdapter.notifyDataSetChanged();
+				//踢出用户
+				kickNaruto(memberid);
 				break;
 			case Miss.EVLATOIN_USER:
 				Bundle evBundle = msg.getData();
@@ -339,14 +357,14 @@ public class MissNarutoDetailActivity extends BaseActivity implements OnClickLis
 					faceCnt=Integer.parseInt(values.get("faceCnt").toString());
 				}
 				if(values.containsKey("status")){
-					MissState missState = MissState.getState(Integer.parseInt(values.get("status").toString()));
+					/*MissState missState = MissState.getState(Integer.parseInt(values.get("status").toString()));
 					if(missState.getState()!=MissState.HaveInHand.getState()){
 						missBottomBar.setVisibility(View.VISIBLE);
 						missBtn.setText(missState.getMessage());
 						missBtn.setOnClickListener(null);
 						int sourceId = MissStateBackColor.getState(miss.getStatus()).getSourceId();
 						missBtn.setBackgroundResource(sourceId);
-					}
+					}*/
 				}
 				
 			}else if(tag.endsWith(httpMissQueryService.TAG)){

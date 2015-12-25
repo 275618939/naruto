@@ -34,6 +34,7 @@ public class MissNarutoAdapter extends BaseObjectListAdapter {
 	protected String memberId;
 	protected String loginMemberId;
 	protected int timeResult;
+	protected boolean showKickedOut;
 	
 	public MissNarutoAdapter(Context context, Handler mHandler,List<? extends BaseBean> datas) {
 		super(context, mHandler, datas);
@@ -83,7 +84,6 @@ public class MissNarutoAdapter extends BaseObjectListAdapter {
 		if(nearNaruto.getStage()>=0){
 			if(memberId.equals(loginMemberId)){
 				mHolder.missBtnLayout.setVisibility(View.VISIBLE);
-				mHolder.missBtn.setText(MissStage.getState(nearNaruto.getStage()).getMessage());
 				//是否可同意
 				if(nearNaruto.getStage()==MissStage.Apply.getState()){
 					mHolder.missBtn.setText(mContext.getResources().getString(R.string.miss_agree));
@@ -114,6 +114,22 @@ public class MissNarutoAdapter extends BaseObjectListAdapter {
 								mHandler.sendMessage(message);
 							}
 						});
+				}else if(showKickedOut){
+					mHolder.missBtn.setText(mContext.getResources().getString(R.string.kicked_out));
+					mHolder.missBtn.setOnClickListener(new OnClickListener() {
+							@Override
+							public void onClick(View v) {
+								Message message=new Message();
+								Bundle bundle=new Bundle();
+								bundle.putString("memberid",nearNaruto.getMemberId());
+								bundle.putInt("position", position);
+								message.setData(bundle);
+								message.what=Miss.KICKED_OUT;
+								mHandler.sendMessage(message);
+							}
+						});
+				}else{
+					mHolder.missBtn.setText(MissStage.getState(nearNaruto.getStage()).getMessage());
 				}
 			}
 		}
@@ -179,6 +195,10 @@ public class MissNarutoAdapter extends BaseObjectListAdapter {
 	public void setTimeResult(int timeResult) {
 		this.timeResult = timeResult;
 	}
+	public void setShowKickedOut(boolean showKickedOut) {
+		this.showKickedOut = showKickedOut;
+	}
+	
 	
 	
 	

@@ -401,7 +401,6 @@
             android:layout_height="match_parent"
             android:background="@color/btn_add"
             android:gravity="center"
-            android:text="@string/miss_enter"
             android:textColor="@color/dot_select_color"
             android:textStyle="bold" />
     </LinearLayout>
