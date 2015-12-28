@@ -1,6 +1,7 @@
 package com.movie.fragment;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -29,8 +30,9 @@ import com.movie.client.bean.User;
 import com.movie.client.service.BaseService;
 import com.movie.client.service.CallBackService;
 import com.movie.network.HttpDynamicNearQueryService;
+import com.movie.state.DynamicContentType;
 import com.movie.ui.LoginActivity;
-import com.movie.util.JsonResolveUtils;
+import com.movie.util.SiteConvert;
 
 public class HomeDynamicFragment extends BaseFragment implements CallBackService,
 		OnClickListener, OnRefreshListener2<ListView>  {
@@ -129,10 +131,36 @@ public class HomeDynamicFragment extends BaseFragment implements CallBackService
 		if (Constant.ReturnCode.STATE_1.equals(code)) {
 			String tag = map.get(Constant.ReturnCode.RETURN_TAG).toString();
 			if (tag.equals(httpDynamicService.TAG)) {
-				//初始化临时数据
-				refreshViewLayout.onRefreshComplete();
-				JsonResolveUtils.resolveNearbyStatus(getActivity(), feeds,"momo_p_001");
+
+				List<HashMap<String, Object>> datas = (ArrayList<HashMap<String, Object>>) map.get(Constant.ReturnCode.RETURN_VALUE);
+				HashMap<String, Object> maps = null;
+				int size = datas.size();
+				Feed feed=null;
+				int longitude,latitude=0;
+				for (int i = 0; i < size; i++) {
+					maps = datas.get(i);
+					feed = new Feed();
+					feed.setType(Integer.parseInt(maps.get("type").toString()));
+					feed.setDynamicId(maps.get("dynamicId").toString());
+					feed.setMemberId(maps.get("memberId").toString());
+					feed.setTime(maps.get("time").toString());
+					feed.setContent(maps.get("title").toString());
+					feed.setPortrait(Constant.SERVER_ADRESS+maps.get("portrait").toString());
+					feed.setName(maps.get("nickname").toString());
+					longitude=Integer.parseInt(maps.get("longitude").toString());
+					latitude=Integer.parseInt(maps.get("latitude").toString());
+					feed.setSite(SiteConvert.GetSite(longitude, latitude));
+					if(feed.getType()==DynamicContentType.Photo.getType()){
+						List<String> contents = (List<String>) maps.get("content");
+						feed.setContentImage(contents);
+					}
+					feeds.add(feed);
+				}
 				dynamicAdapter.notifyDataSetChanged();
+				//初始化临时数据
+//				refreshViewLayout.onRefreshComplete();
+//				JsonResolveUtils.resolveNearbyStatus(getActivity(), feeds,"momo_p_001");
+//				dynamicAdapter.notifyDataSetChanged();
 			}
 			
 		} else if (Constant.ReturnCode.STATE_3.equals(code)) {

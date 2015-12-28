@@ -193,6 +193,12 @@ public class FeedProfileActivity extends BaseActivity implements
 			imageLoader.displayImage(user.getPortrait(), mIvAvatar,NarutoApplication.imageOptions);
 			mEtvName.setText(user.getNickname());
 		}
+		if(mFeed.getPortrait()!=null&&!mFeed.getPortrait().isEmpty()){
+			imageLoader.displayImage(mFeed.getPortrait(), mIvAvatar,NarutoApplication.imageOptions);
+		}
+		if(mFeed.getPortrait()!=null&&!mFeed.getPortrait().isEmpty()){
+			mEtvName.setText(mFeed.getName());
+		}
 		mTvTime.setText(mFeed.getTime());
 		mLayoutGender.setBackgroundResource(people.getGenderBgId());
 		mIvGender.setImageResource(people.getGenderId());

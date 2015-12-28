@@ -79,6 +79,12 @@ public class DynamicAdapter extends BaseObjectListAdapter implements onSimpleLis
 		if(user!=null){
 			imageLoader.displayImage(user.getPortrait(), holder.avatar,NarutoApplication.imageOptions);
 			holder.name.setText(user.getNickname());
+		} 
+		if(feed.getPortrait()!=null&&!feed.getPortrait().isEmpty()){
+			imageLoader.displayImage(feed.getPortrait(), holder.avatar,NarutoApplication.imageOptions);
+		}
+		if(feed.getPortrait()!=null&&!feed.getPortrait().isEmpty()){
+			holder.name.setText(feed.getName());
 		}
 		holder.time.setText(feed.getTime());
 		holder.content.setText(feed.getContent());

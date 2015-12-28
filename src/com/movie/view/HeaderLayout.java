@@ -26,4 +26,8 @@ public class HeaderLayout extends LinearLayout {
 	public interface onSearchListener {
 		void onSearch(EditText et);
 	}
+	public enum HeaderStyle {
+		DEFAULT_TITLE, TITLE_RIGHT_TEXT, TITLE_RIGHT_IMAGEBUTTON, TITLE_NEARBY_PEOPLE, TITLE_NEARBY_GROUP, TITLE_CHAT;
+	}
+
 }

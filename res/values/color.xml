@@ -215,5 +215,8 @@
     <color name="background_dark">#ffd4ccc0</color>
     <color name="devideline_listview">#ffe5e2d4</color>
     <color name="devideline_undercard">#ffc7c2b0</color>
+    <color name="download_progressbar_bg">#4c000000</color>
+    <color name="timestampline">#ffe5e1de</color>
+    <color name="dropbar_text_color">#ff434343</color>
 
 </resources>
