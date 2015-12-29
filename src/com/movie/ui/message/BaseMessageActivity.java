@@ -7,7 +7,6 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.os.Bundle;
-import android.os.Message;
 import android.text.TextWatcher;
 import android.util.TypedValue;
 import android.view.Gravity;
@@ -25,12 +24,16 @@ import android.widget.ImageView;
 import android.widget.LinearLayout;
 
 import com.movie.R;
+import com.movie.adapter.ChatAdapter;
 import com.movie.app.BaseActivity;
 import com.movie.app.BaseDialog;
+import com.movie.client.bean.Message;
+import com.movie.client.bean.NearPeople;
 import com.movie.pop.ChatPopupWindow;
 import com.movie.pop.ChatPopupWindow.onChatPopupItemClickListener;
 import com.movie.pop.SimpleListDialog;
 import com.movie.pop.SimpleListDialog.onSimpleListItemClickListener;
+import com.movie.ui.UserDetailActivity;
 import com.movie.util.PhotoUtils;
 import com.movie.view.ChatListView;
 import com.movie.view.EmoteInputView;
@@ -72,8 +75,8 @@ public abstract class BaseMessageActivity extends BaseActivity implements
 	protected List<Message> mMessages = new ArrayList<Message>();
 	protected ChatAdapter mAdapter;
 
-	protected NearByPeople mPeople;
-	protected NearByPeopleProfile mProfile;
+	protected NearPeople mPeople;
+	protected NearPeople mProfile;
 
 	protected Bitmap mRoundsSelected;
 	protected Bitmap mRoundsNormal;
@@ -102,7 +105,7 @@ public abstract class BaseMessageActivity extends BaseActivity implements
 
 		@Override
 		public void onClick() {
-			Intent intent = new Intent(BaseMessageActivity.this,OtherProfileActivity.class);
+			Intent intent = new Intent(BaseMessageActivity.this,UserDetailActivity.class);
 			intent.putExtra("uid", mPeople.getUid());
 			intent.putExtra("name", mPeople.getName());
 			intent.putExtra("avatar", mPeople.getAvatar());

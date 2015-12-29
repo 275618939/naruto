@@ -3,20 +3,19 @@ package com.movie.adapter;
 import java.util.List;
 
 import android.content.Context;
-import android.os.Message;
 import android.view.View;
 import android.view.ViewGroup;
 
 import com.movie.app.BaseObjectListAdapter;
-import com.movie.app.NarutoApplication;
 import com.movie.client.bean.BaseBean;
+import com.movie.client.bean.Message;
 import com.movie.ui.message.MessageItem;
 
 public class ChatAdapter extends BaseObjectListAdapter {
 
-	public ChatAdapter(NarutoApplication application, Context context,
+	public ChatAdapter(Context context,
 			List<? extends BaseBean> datas) {
-		super(application, context, datas);
+		super(context, datas);
 	}
 
 	@Override

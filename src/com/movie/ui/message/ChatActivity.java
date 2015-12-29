@@ -28,7 +28,6 @@ import com.movie.view.ChatListView;
 import com.movie.view.EmoteInputView;
 import com.movie.view.EmoticonsEditText;
 import com.movie.view.HeaderLayout;
-import com.movie.view.HeaderLayout.HeaderStyle;
 import com.movie.view.ScrollLayout;
 
 public class ChatActivity extends BaseMessageActivity {
@@ -67,7 +66,7 @@ public class ChatActivity extends BaseMessageActivity {
 	@Override
 	protected void initViews() {
 		mHeaderLayout = (HeaderLayout) findViewById(R.id.chat_header);
-		mHeaderLayout.init(HeaderStyle.TITLE_CHAT);
+		//mHeaderLayout.init(HeaderStyle.TITLE_CHAT);
 		mClvList = (ChatListView) findViewById(R.id.chat_clv_list);
 		mLayoutScroll = (ScrollLayout) findViewById(R.id.chat_slayout_scroll);
 		mLayoutRounds = (LinearLayout) findViewById(R.id.chat_layout_rounds);
@@ -117,19 +116,19 @@ public class ChatActivity extends BaseMessageActivity {
 	private void init() {
 		mProfile = getIntent().getParcelableExtra("entity_profile");
 		mPeople = getIntent().getParcelableExtra("entity_people");
-		mHeaderLayout.setTitleChat(R.drawable.ic_chat_dis_1,
-				R.drawable.bg_chat_dis_active, "与" + mPeople.getName() + "对话",
-				mPeople.getDistance() + " " + mPeople.getTime(),
-				R.drawable.ic_topbar_profile,
-				new OnMiddleImageButtonClickListener(),
-				R.drawable.ic_topbar_more,
-				new OnRightImageButtonClickListener());
+//		mHeaderLayout.setTitleChat(R.drawable.ic_chat_dis_1,
+//				R.drawable.bg_chat_dis_active, "与" + mPeople.getName() + "对话",
+//				mPeople.getDistance() + " " + mPeople.getTime(),
+//				R.drawable.ic_topbar_profile,
+//				new OnMiddleImageButtonClickListener(),
+//				R.drawable.ic_topbar_more,
+//				new OnRightImageButtonClickListener());
 		mInputView.setEditText(mEetTextDitorEditer);
 		initRounds();
 		initPopupWindow();
 		initSynchronousDialog();
 
-		mAdapter = new ChatAdapter(mApplication, ChatActivity.this, mMessages);
+		mAdapter = new ChatAdapter(ChatActivity.this, mMessages);
 		mClvList.setAdapter(mAdapter);
 	}
 
@@ -279,7 +278,7 @@ public class ChatActivity extends BaseMessageActivity {
 		mDialog = new SimpleListDialog(this);
 		mDialog.setTitle("语音收听方式");
 		mDialog.setTitleLineVisibility(View.GONE);
-		mDialog.setAdapter(new CheckListDialogAdapter(mCheckId, this, modes));
+		//mDialog.setAdapter(new CheckListDialogAdapter(mCheckId, this, modes));
 		mDialog.setOnSimpleListItemClickListener(new OnVoiceModeDialogItemClickListener());
 		mDialog.show();
 	}
@@ -308,7 +307,7 @@ public class ChatActivity extends BaseMessageActivity {
 					return;
 				}
 				if (!FileUtils.isSdcardExist()) {
-					showCustomToast("SD卡不可用,请检查");
+					showToask("SD卡不可用,请检查");
 					return;
 				}
 				Uri uri = data.getData();
@@ -321,7 +320,7 @@ public class ChatActivity extends BaseMessageActivity {
 						String path = cursor.getString(column_index);
 						Bitmap bitmap = PhotoUtils.getBitmapFromFile(path);
 						if (PhotoUtils.bitmapIsLarge(bitmap)) {
-							PhotoUtils.cropPhoto(this, this, path);
+							//PhotoUtils.cropPhoto(this, this, path);
 						} else {
 							if (path != null) {
 								mMessages.add(new Message(
@@ -341,10 +340,10 @@ public class ChatActivity extends BaseMessageActivity {
 		case PhotoUtils.INTENT_REQUEST_CODE_CAMERA:
 			if (resultCode == RESULT_OK) {
 				if (mCameraImagePath != null) {
-					mCameraImagePath = PhotoUtils
-							.savePhotoToSDCard(PhotoUtils.CompressionPhoto(
-									mScreenWidth, mCameraImagePath, 2));
-					PhotoUtils.fliterPhoto(this, this, mCameraImagePath);
+//					mCameraImagePath = PhotoUtils
+//							.savePhotoToSDCard(PhotoUtils.CompressionPhoto(
+//									mScreenWidth, mCameraImagePath, 2));
+//					PhotoUtils.fliterPhoto(this, this, mCameraImagePath);
 				}
 			}
 			mCameraImagePath = null;
