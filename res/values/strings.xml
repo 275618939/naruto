@@ -11,7 +11,7 @@
     <string name="noText">暂没有数据</string>
     <string name="loadfail_hint">加载失败,请点击重试</string>
     <string name="linefail_hint">加载失败,请检查网络</string>
-     <string name="distance_company">km</string>
+    <string name="distance_company">km</string>
     <string name="receive_none">领取</string>
     <string name="receive_have">已领取</string>
     <string name="home_item_1">火影日排行榜</string>
@@ -206,5 +206,28 @@
     <string name="cancel">取消</string>
     <string name="set">设置</string>
     <string name="release">直接发布</string>
+    <string name="button_pushtotalk">按住说话</string>
+    <string name="button_send">发送</string>
+    <string name="attach_smile">表情</string>
+    <string name="attach_picture">图片</string>
+    <string name="attach_take_pic">拍照</string>
+    <string name="attach_location">位置</string>
+    <string name="attach_video">视频</string>
+    <string name="attach_file">文件</string>
+    <string name="attach_voice_call">语音电话</string>
+    <string name="attach_video_call">视频通话</string>
+    <string name="user_card">名片</string>
+    <string name="move_up_to_cancel">手指上滑，取消发送</string>
+    <string name="release_to_cancel">松开手指，取消发送</string>
+    <string name="send_fail">发送消息失败,</string>
+    <string name="delete_message">删除消息</string>
+    <string name="delete_conversation_messages">删除会话和消息</string>
+    <string name="delete_conversation">删除会话</string>
+    <string name="copy_message">复制消息</string>
+    <string name="delete_voice">删除语音</string>
+    <string name="delete_video">删除视频</string>
+    <string name="confirm_resend">确认重发该信息？</string>
+    <string name="Is_download_voice_click_later">正在下载语音，稍后点击</string>
+    <string name="Send_the_following_pictures">发送以下图片？</string>
 
 </resources>

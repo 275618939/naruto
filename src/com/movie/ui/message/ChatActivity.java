@@ -11,24 +11,21 @@ import android.text.TextUtils;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.WindowManager;
-import android.widget.Button;
-import android.widget.ImageButton;
-import android.widget.ImageView;
 import android.widget.LinearLayout;
+import android.widget.TextView;
 
 import com.movie.R;
 import com.movie.adapter.ChatAdapter;
 import com.movie.client.bean.Message;
 import com.movie.client.bean.Message.CONTENT_TYPE;
 import com.movie.client.bean.Message.MESSAGE_TYPE;
+import com.movie.client.bean.User;
 import com.movie.pop.SimpleListDialog;
 import com.movie.util.FileUtils;
 import com.movie.util.PhotoUtils;
 import com.movie.view.ChatListView;
 import com.movie.view.EmoteInputView;
 import com.movie.view.EmoticonsEditText;
-import com.movie.view.HeaderLayout;
-import com.movie.view.ScrollLayout;
 
 public class ChatActivity extends BaseMessageActivity {
 
@@ -37,22 +34,16 @@ public class ChatActivity extends BaseMessageActivity {
 		super.onCreate(savedInstanceState);
 		init();
 	}
-
 	@Override
 	public void onBackPressed() {
 		if (mLayoutMessagePlusBar.isShown()) {
 			hidePlusBar();
 		} else if (mInputView.isShown()) {
-			mIbTextDitorKeyBoard.setVisibility(View.GONE);
-			mIbTextDitorEmote.setVisibility(View.VISIBLE);
 			mInputView.setVisibility(View.GONE);
 		} else if (getWindow().getAttributes().softInputMode == WindowManager.LayoutParams.SOFT_INPUT_STATE_VISIBLE) {
-			mIbTextDitorKeyBoard.setVisibility(View.VISIBLE);
-			mIbTextDitorEmote.setVisibility(View.GONE);
+			
 			hideKeyBoard();
-		} else if (mLayoutScroll.getCurScreen() == 1) {
-			mLayoutScroll.snapToScreen(0);
-		} else {
+		}  else {
 			finish();
 		}
 	}
@@ -65,23 +56,13 @@ public class ChatActivity extends BaseMessageActivity {
 
 	@Override
 	protected void initViews() {
-		mHeaderLayout = (HeaderLayout) findViewById(R.id.chat_header);
-		//mHeaderLayout.init(HeaderStyle.TITLE_CHAT);
+		
+		titleView = (TextView) findViewById(R.id.title);
 		mClvList = (ChatListView) findViewById(R.id.chat_clv_list);
-		mLayoutScroll = (ScrollLayout) findViewById(R.id.chat_slayout_scroll);
-		mLayoutRounds = (LinearLayout) findViewById(R.id.chat_layout_rounds);
 		mInputView = (EmoteInputView) findViewById(R.id.chat_eiv_inputview);
+		mEetTextDitorEditer = (EmoticonsEditText) findViewById(R.id.et_sendmessage);
 
-		mIbTextDitorPlus = (ImageButton) findViewById(R.id.chat_textditor_ib_plus);
-		mIbTextDitorKeyBoard = (ImageButton) findViewById(R.id.chat_textditor_ib_keyboard);
-		mIbTextDitorEmote = (ImageButton) findViewById(R.id.chat_textditor_ib_emote);
-		mIvTextDitorAudio = (ImageView) findViewById(R.id.chat_textditor_iv_audio);
-		mBtnTextDitorSend = (Button) findViewById(R.id.chat_textditor_btn_send);
-		mEetTextDitorEditer = (EmoticonsEditText) findViewById(R.id.chat_textditor_eet_editer);
-
-		mIbAudioDitorPlus = (ImageButton) findViewById(R.id.chat_audioditor_ib_plus);
-		mIbAudioDitorKeyBoard = (ImageButton) findViewById(R.id.chat_audioditor_ib_keyboard);
-		mIvAudioDitorAudioBtn = (ImageView) findViewById(R.id.chat_audioditor_iv_audiobtn);
+	
 
 		mLayoutFullScreenMask = (LinearLayout) findViewById(R.id.fullscreen_mask);
 		mLayoutMessagePlusBar = (LinearLayout) findViewById(R.id.message_plus_layout_bar);
@@ -94,17 +75,8 @@ public class ChatActivity extends BaseMessageActivity {
 
 	@Override
 	protected void initEvents() {
-		mLayoutScroll.setOnScrollToScreen(this);
-		mIbTextDitorPlus.setOnClickListener(this);
-		mIbTextDitorEmote.setOnClickListener(this);
-		mIbTextDitorKeyBoard.setOnClickListener(this);
-		mBtnTextDitorSend.setOnClickListener(this);
-		mIvTextDitorAudio.setOnClickListener(this);
-		mEetTextDitorEditer.addTextChangedListener(this);
-		mEetTextDitorEditer.setOnTouchListener(this);
-		mIbAudioDitorPlus.setOnClickListener(this);
-		mIbAudioDitorKeyBoard.setOnClickListener(this);
-
+		
+		
 		mLayoutFullScreenMask.setOnTouchListener(this);
 		mLayoutMessagePlusPicture.setOnClickListener(this);
 		mLayoutMessagePlusCamera.setOnClickListener(this);
@@ -114,20 +86,11 @@ public class ChatActivity extends BaseMessageActivity {
 	}
 
 	private void init() {
-		mProfile = getIntent().getParcelableExtra("entity_profile");
-		mPeople = getIntent().getParcelableExtra("entity_people");
-//		mHeaderLayout.setTitleChat(R.drawable.ic_chat_dis_1,
-//				R.drawable.bg_chat_dis_active, "与" + mPeople.getName() + "对话",
-//				mPeople.getDistance() + " " + mPeople.getTime(),
-//				R.drawable.ic_topbar_profile,
-//				new OnMiddleImageButtonClickListener(),
-//				R.drawable.ic_topbar_more,
-//				new OnRightImageButtonClickListener());
+		mUser =(User) getIntent().getSerializableExtra("user");
+		titleView.setText("与" + mUser.getNickname()+ "对话");
 		mInputView.setEditText(mEetTextDitorEditer);
-		initRounds();
 		initPopupWindow();
 		initSynchronousDialog();
-
 		mAdapter = new ChatAdapter(ChatActivity.this, mMessages);
 		mClvList.setAdapter(mAdapter);
 	}
@@ -136,19 +99,11 @@ public class ChatActivity extends BaseMessageActivity {
 	public void doAction(int whichScreen) {
 		switch (whichScreen) {
 		case 0:
-			((ImageView) mLayoutRounds.getChildAt(0))
-					.setImageBitmap(mRoundsSelected);
-			((ImageView) mLayoutRounds.getChildAt(1))
-					.setImageBitmap(mRoundsNormal);
+			
 			break;
 
 		case 1:
-			((ImageView) mLayoutRounds.getChildAt(1))
-					.setImageBitmap(mRoundsSelected);
-			((ImageView) mLayoutRounds.getChildAt(0))
-					.setImageBitmap(mRoundsNormal);
-			mIbTextDitorKeyBoard.setVisibility(View.GONE);
-			mIbTextDitorEmote.setVisibility(View.VISIBLE);
+		
 			if (mInputView.isShown()) {
 				mInputView.setVisibility(View.GONE);
 			}
@@ -167,8 +122,6 @@ public class ChatActivity extends BaseMessageActivity {
 			break;
 
 		case R.id.chat_textditor_ib_emote:
-			mIbTextDitorKeyBoard.setVisibility(View.VISIBLE);
-			mIbTextDitorEmote.setVisibility(View.GONE);
 			mEetTextDitorEditer.requestFocus();
 			if (mInputView.isShown()) {
 				hideKeyBoard();
@@ -179,8 +132,7 @@ public class ChatActivity extends BaseMessageActivity {
 			break;
 
 		case R.id.chat_textditor_ib_keyboard:
-			mIbTextDitorKeyBoard.setVisibility(View.GONE);
-			mIbTextDitorEmote.setVisibility(View.VISIBLE);
+			
 			showKeyBoard();
 			break;
 
@@ -188,16 +140,14 @@ public class ChatActivity extends BaseMessageActivity {
 			String content = mEetTextDitorEditer.getText().toString().trim();
 			if (!TextUtils.isEmpty(content)) {
 				mEetTextDitorEditer.setText(null);
-				mMessages.add(new Message("nearby_people_other", System
-						.currentTimeMillis(), "0.12km", content,
-						CONTENT_TYPE.TEXT, MESSAGE_TYPE.SEND));
+				mMessages.add(new Message("nearby_people_other", System.currentTimeMillis(), "0.12km", content,CONTENT_TYPE.TEXT, MESSAGE_TYPE.SEND));
 				mAdapter.notifyDataSetChanged();
 				mClvList.setSelection(mMessages.size());
 			}
 			break;
 
 		case R.id.chat_textditor_iv_audio:
-			mLayoutScroll.snapToScreen(1);
+		
 			break;
 
 		case R.id.chat_audioditor_ib_plus:
@@ -207,7 +157,7 @@ public class ChatActivity extends BaseMessageActivity {
 			break;
 
 		case R.id.chat_audioditor_ib_keyboard:
-			mLayoutScroll.snapToScreen(0);
+		
 			break;
 
 		case R.id.message_plus_layout_picture:
@@ -238,8 +188,7 @@ public class ChatActivity extends BaseMessageActivity {
 	@Override
 	public boolean onTouch(View v, MotionEvent event) {
 		if (v.getId() == R.id.chat_textditor_eet_editer) {
-			mIbTextDitorKeyBoard.setVisibility(View.GONE);
-			mIbTextDitorEmote.setVisibility(View.VISIBLE);
+			
 			showKeyBoard();
 		}
 		if (v.getId() == R.id.fullscreen_mask) {
@@ -264,11 +213,9 @@ public class ChatActivity extends BaseMessageActivity {
 	@Override
 	public void onTextChanged(CharSequence s, int start, int before, int count) {
 		if (TextUtils.isEmpty(s)) {
-			mIvTextDitorAudio.setVisibility(View.VISIBLE);
-			mBtnTextDitorSend.setVisibility(View.GONE);
+		
 		} else {
-			mIvTextDitorAudio.setVisibility(View.GONE);
-			mBtnTextDitorSend.setVisibility(View.VISIBLE);
+			
 		}
 	}
 

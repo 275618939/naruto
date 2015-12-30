@@ -6,7 +6,7 @@
 
     <include
         android:id="@+id/chat_header"
-        layout="@layout/include_header" />
+        layout="@layout/common_head" />
 
     <LinearLayout
         android:layout_width="fill_parent"
@@ -17,7 +17,7 @@
             android:layout_width="fill_parent"
             android:layout_height="fill_parent" >
 
-            <com.immomo.momo.android.view.ChatListView
+            <com.movie.view.ChatListView
                 android:id="@+id/chat_clv_list"
                 android:layout_width="fill_parent"
                 android:layout_height="fill_parent"
@@ -40,26 +40,9 @@
                 android:background="@drawable/bg_chatbar_textmode"
                 android:orientation="vertical" >
 
-                <com.movie.view.ScrollLayout
-                    android:id="@+id/chat_slayout_scroll"
-                    android:layout_width="fill_parent"
-                    android:layout_height="52dip" >
+                <include layout="@layout/include_message_editor" />
 
-                    <include layout="@layout/include_message_textditor" />
-
-                    <include layout="@layout/include_message_audioditor" />
-                </com.movie.view.ScrollLayout>
-
-                <LinearLayout
-                    android:id="@+id/chat_layout_rounds"
-                    android:layout_width="fill_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_gravity="bottom"
-                    android:layout_marginBottom="2dip"
-                    android:layout_marginTop="2dip"
-                    android:focusable="false"
-                    android:orientation="horizontal"
-                    android:gravity="center" />
+               
             </LinearLayout>
 
             <FrameLayout
@@ -69,7 +52,7 @@
                 android:layout_alignParentBottom="true"
                 android:background="@color/msg_editor_backgroud" >
 
-                <com.immomo.momo.android.view.EmoteInputView
+                <com.movie.view.EmoteInputView
                     android:id="@+id/chat_eiv_inputview"
                     android:layout_width="fill_parent"
                     android:layout_height="wrap_content"
@@ -77,7 +60,6 @@
             </FrameLayout>
 
             <include layout="@layout/include_fullscreen_mask" />
-
             <include
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"

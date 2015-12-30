@@ -218,5 +218,8 @@
     <color name="download_progressbar_bg">#4c000000</color>
     <color name="timestampline">#ffe5e1de</color>
     <color name="dropbar_text_color">#ff434343</color>
+    <color name="bg_headerbar_spinner_normal">@color/transparent</color>
+    <color name="bg_headerbar_spinner_selected">#5f000000</color>
+    <color name="bg_headerbar_spinner_press">#7f000000</color>
 
 </resources>

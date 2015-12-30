@@ -3,7 +3,7 @@ package com.movie.view;
 import android.content.Context;
 import android.util.AttributeSet;
 
-public class ChatListView extends MoMoRefreshListView {
+public class ChatListView extends NarutoRefreshListView {
 
 	public ChatListView(Context context) {
 		super(context);

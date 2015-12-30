@@ -57,6 +57,7 @@
         <meta-data
             android:name="com.baidu.lbsapi.API_KEY"
             android:value="KciV0QdFdGb3sYWD4CGByET0" />
+
         <service
             android:name="com.movie.system.service.NarutoService"
             android:process=":narutolocation" />
@@ -102,7 +103,7 @@
             android:alwaysRetainTaskState="true"
             android:launchMode="singleTop"
             android:screenOrientation="portrait" />
-         <activity
+        <activity
             android:name=".ui.DynamicQueryActivity"
             android:alwaysRetainTaskState="true"
             android:launchMode="singleTop"
@@ -152,6 +153,12 @@
             android:alwaysRetainTaskState="true"
             android:launchMode="singleTop"
             android:screenOrientation="portrait" />
+        <activity
+            android:name=".ui.message.ChatActivity"
+            android:alwaysRetainTaskState="true"
+            android:launchMode="singleTop"
+            android:screenOrientation="portrait"
+            android:theme="@style/horizontal_slide" />
         <activity
             android:name=".ui.NickActivity"
             android:alwaysRetainTaskState="true"

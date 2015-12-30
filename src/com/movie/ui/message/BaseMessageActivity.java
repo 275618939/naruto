@@ -5,12 +5,10 @@ import java.util.List;
 
 import android.content.DialogInterface;
 import android.content.Intent;
-import android.graphics.Bitmap;
 import android.os.Bundle;
 import android.text.TextWatcher;
 import android.util.TypedValue;
 import android.view.Gravity;
-import android.view.LayoutInflater;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.view.View.OnTouchListener;
@@ -18,52 +16,41 @@ import android.view.ViewGroup.LayoutParams;
 import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
 import android.view.inputmethod.InputMethodManager;
-import android.widget.Button;
-import android.widget.ImageButton;
-import android.widget.ImageView;
 import android.widget.LinearLayout;
+import android.widget.RelativeLayout;
+import android.widget.TextView;
 
 import com.movie.R;
 import com.movie.adapter.ChatAdapter;
 import com.movie.app.BaseActivity;
 import com.movie.app.BaseDialog;
 import com.movie.client.bean.Message;
-import com.movie.client.bean.NearPeople;
+import com.movie.client.bean.User;
 import com.movie.pop.ChatPopupWindow;
 import com.movie.pop.ChatPopupWindow.onChatPopupItemClickListener;
 import com.movie.pop.SimpleListDialog;
 import com.movie.pop.SimpleListDialog.onSimpleListItemClickListener;
 import com.movie.ui.UserDetailActivity;
-import com.movie.util.PhotoUtils;
 import com.movie.view.ChatListView;
 import com.movie.view.EmoteInputView;
 import com.movie.view.EmoticonsEditText;
-import com.movie.view.HeaderLayout;
 import com.movie.view.HeaderLayout.onMiddleImageButtonClickListener;
 import com.movie.view.HeaderLayout.onRightImageButtonClickListener;
-import com.movie.view.ScrollLayout;
 import com.movie.view.ScrollLayout.OnScrollToScreenListener;
 
 public abstract class BaseMessageActivity extends BaseActivity implements
 		OnScrollToScreenListener, OnClickListener, OnTouchListener,
 		TextWatcher, onChatPopupItemClickListener {
 
-	protected HeaderLayout mHeaderLayout;
+	public static final String COPY_IMAGE = "EASEMOBIMG";
+	public static final int REQUEST_CODE_COPY_AND_PASTE = 11;
+	
+	protected TextView titleView;
+	protected RelativeLayout mHeaderLayout;
 	protected ChatListView mClvList;
-	protected ScrollLayout mLayoutScroll;
-	protected LinearLayout mLayoutRounds;
 	protected EmoteInputView mInputView;
-
-	protected ImageButton mIbTextDitorPlus;
-	protected ImageButton mIbTextDitorKeyBoard;
-	protected ImageButton mIbTextDitorEmote;
 	protected EmoticonsEditText mEetTextDitorEditer;
-	protected Button mBtnTextDitorSend;
-	protected ImageView mIvTextDitorAudio;
 
-	protected ImageButton mIbAudioDitorPlus;
-	protected ImageButton mIbAudioDitorKeyBoard;
-	protected ImageView mIvAudioDitorAudioBtn;
 
 	protected LinearLayout mLayoutFullScreenMask;
 	protected LinearLayout mLayoutMessagePlusBar;
@@ -75,11 +62,9 @@ public abstract class BaseMessageActivity extends BaseActivity implements
 	protected List<Message> mMessages = new ArrayList<Message>();
 	protected ChatAdapter mAdapter;
 
-	protected NearPeople mPeople;
-	protected NearPeople mProfile;
+	protected User mUser;
 
-	protected Bitmap mRoundsSelected;
-	protected Bitmap mRoundsNormal;
+
 
 	private ChatPopupWindow mChatPopupWindow;
 	private int mWidth;
@@ -106,10 +91,9 @@ public abstract class BaseMessageActivity extends BaseActivity implements
 		@Override
 		public void onClick() {
 			Intent intent = new Intent(BaseMessageActivity.this,UserDetailActivity.class);
-			intent.putExtra("uid", mPeople.getUid());
-			intent.putExtra("name", mPeople.getName());
-			intent.putExtra("avatar", mPeople.getAvatar());
-			intent.putExtra("entity_people", mPeople);
+			intent.putExtra("uid", mUser.getMemberId());
+			intent.putExtra("name",mUser.getNickname());
+			intent.putExtra("avatar",mUser.getPortrait());
 			startActivity(intent);
 			finish();
 		}
@@ -129,9 +113,7 @@ public abstract class BaseMessageActivity extends BaseActivity implements
 		if (mInputView.isShown()) {
 			mInputView.setVisibility(View.GONE);
 		}
-		mEetTextDitorEditer.requestFocus();
-		((InputMethodManager) getSystemService(INPUT_METHOD_SERVICE))
-				.showSoftInput(mEetTextDitorEditer, 0);
+	
 	}
 
 	protected void hideKeyBoard() {
@@ -171,21 +153,7 @@ public abstract class BaseMessageActivity extends BaseActivity implements
 		mLayoutMessagePlusBar.setVisibility(View.GONE);
 	}
 
-	protected void initRounds() {
-		mRoundsSelected = PhotoUtils.getRoundBitmap(BaseMessageActivity.this,
-				getResources().getColor(R.color.msg_short_line_selected));
-		mRoundsNormal = PhotoUtils.getRoundBitmap(BaseMessageActivity.this,
-				getResources().getColor(R.color.msg_short_line_normal));
-		for (int i = 0; i < mLayoutScroll.getChildCount(); i++) {
-			ImageView imageView = (ImageView) LayoutInflater.from(
-					BaseMessageActivity.this).inflate(
-					R.layout.include_message_shortline, null);
-			imageView.setImageBitmap(mRoundsNormal);
-			mLayoutRounds.addView(imageView);
-		}
-		((ImageView) mLayoutRounds.getChildAt(0))
-				.setImageBitmap(mRoundsSelected);
-	}
+	
 
 	protected void initPopupWindow() {
 		mWidth = (int) TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP,
@@ -200,7 +168,7 @@ public abstract class BaseMessageActivity extends BaseActivity implements
 
 	protected void initSynchronousDialog() {
 		mSynchronousDialog = BaseDialog.getDialog(BaseMessageActivity.this,
-				"提示", "成为陌陌会员即可同步好友聊天记录", "查看详情",
+				"提示", "成为伙影会员即可同步好友聊天记录", "查看详情",
 				new DialogInterface.OnClickListener() {
 
 					@Override

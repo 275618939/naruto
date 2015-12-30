@@ -49,6 +49,7 @@ import com.movie.network.HttpUserLoveService;
 import com.movie.network.HttpUserService;
 import com.movie.state.BackGroundColor;
 import com.movie.state.SexState;
+import com.movie.ui.message.ChatActivity;
 import com.movie.util.Bimp;
 import com.movie.util.Horoscope;
 import com.movie.util.ImageItem;
@@ -91,6 +92,7 @@ public class UserDetailActivity extends BaseActivity implements
 	TextView userConstell;
 	TextView hobbyArrowMore;
 	TextView userInviteView;
+	TextView userChatView;
 	RatingBar userCharmBar;
 	LinearLayout hobbiesLayout;
 	LinearLayout commentsLayout;
@@ -138,6 +140,7 @@ public class UserDetailActivity extends BaseActivity implements
 		signView = (TextView) findViewById(R.id.sign);
 		userMoviesWant = (TextView) findViewById(R.id.user_movies_want);
 		userMiss = (TextView) findViewById(R.id.user_miss);
+		userChatView  = (TextView) findViewById(R.id.user_chat);
 		userMoviesPre = (TextView) findViewById(R.id.user_movies_pre);
 		userConstell = (TextView) findViewById(R.id.user_constell);
 		hobbiesLayout = (LinearLayout) findViewById(R.id.hobbies);
@@ -170,6 +173,7 @@ public class UserDetailActivity extends BaseActivity implements
 		userLove.setOnClickListener(this);
 		userInviteView.setOnClickListener(this);
 		layoutDynamic.setOnClickListener(this);
+		userChatView.setOnClickListener(this);
 	}
 
 	@Override
@@ -231,6 +235,11 @@ public class UserDetailActivity extends BaseActivity implements
 	@Override
 	public void onClick(View v) {
 		switch (v.getId()) {
+		case R.id.user_chat:
+			Intent chartIntent = new Intent(this, ChatActivity.class);
+			chartIntent.putExtra("user", user);
+			startActivity(chartIntent);
+			break;
 		case R.id.hobby_arrow:
 			Intent intent = new Intent(this, UserShowHobbyActivity.class);
 			intent.putExtra("user", user);
