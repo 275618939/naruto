@@ -154,7 +154,7 @@
             android:launchMode="singleTop"
             android:screenOrientation="portrait" />
         <activity
-            android:name=".ui.message.ChatActivity"
+            android:name=".ui.message.ChatMessageActivity"
             android:alwaysRetainTaskState="true"
             android:launchMode="singleTop"
             android:screenOrientation="portrait"

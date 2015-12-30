@@ -8,16 +8,10 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.text.TextWatcher;
 import android.util.TypedValue;
-import android.view.Gravity;
-import android.view.View;
 import android.view.View.OnClickListener;
 import android.view.View.OnTouchListener;
 import android.view.ViewGroup.LayoutParams;
-import android.view.animation.Animation;
-import android.view.animation.AnimationUtils;
 import android.view.inputmethod.InputMethodManager;
-import android.widget.LinearLayout;
-import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.movie.R;
@@ -31,8 +25,6 @@ import com.movie.pop.ChatPopupWindow.onChatPopupItemClickListener;
 import com.movie.pop.SimpleListDialog;
 import com.movie.pop.SimpleListDialog.onSimpleListItemClickListener;
 import com.movie.ui.UserDetailActivity;
-import com.movie.view.ChatListView;
-import com.movie.view.EmoteInputView;
 import com.movie.view.EmoticonsEditText;
 import com.movie.view.HeaderLayout.onMiddleImageButtonClickListener;
 import com.movie.view.HeaderLayout.onRightImageButtonClickListener;
@@ -46,26 +38,10 @@ public abstract class BaseMessageActivity extends BaseActivity implements
 	public static final int REQUEST_CODE_COPY_AND_PASTE = 11;
 	
 	protected TextView titleView;
-	protected RelativeLayout mHeaderLayout;
-	protected ChatListView mClvList;
-	protected EmoteInputView mInputView;
 	protected EmoticonsEditText mEetTextDitorEditer;
-
-
-	protected LinearLayout mLayoutFullScreenMask;
-	protected LinearLayout mLayoutMessagePlusBar;
-	protected LinearLayout mLayoutMessagePlusPicture;
-	protected LinearLayout mLayoutMessagePlusCamera;
-	protected LinearLayout mLayoutMessagePlusLocation;
-	protected LinearLayout mLayoutMessagePlusGift;
-
 	protected List<Message> mMessages = new ArrayList<Message>();
 	protected ChatAdapter mAdapter;
-
 	protected User mUser;
-
-
-
 	private ChatPopupWindow mChatPopupWindow;
 	private int mWidth;
 	private int mHeaderHeight;
@@ -80,7 +56,7 @@ public abstract class BaseMessageActivity extends BaseActivity implements
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
-		setContentView(R.layout.activity_chat);
+		setContentView(R.layout.activity_chat_message);
 		initViews();
 		initEvents();
 	}
@@ -104,16 +80,12 @@ public abstract class BaseMessageActivity extends BaseActivity implements
 
 		@Override
 		public void onClick() {
-			mChatPopupWindow.showAtLocation(mHeaderLayout, Gravity.RIGHT
-					| Gravity.TOP, -10, mHeaderHeight + 10);
+			
 		}
 	}
 
 	protected void showKeyBoard() {
-		if (mInputView.isShown()) {
-			mInputView.setVisibility(View.GONE);
-		}
-	
+		
 	}
 
 	protected void hideKeyBoard() {
@@ -124,33 +96,11 @@ public abstract class BaseMessageActivity extends BaseActivity implements
 	}
 
 	protected void showPlusBar() {
-		mLayoutFullScreenMask.setEnabled(true);
-		mLayoutMessagePlusBar.setEnabled(true);
-		mLayoutMessagePlusPicture.setEnabled(true);
-		mLayoutMessagePlusCamera.setEnabled(true);
-		mLayoutMessagePlusLocation.setEnabled(true);
-		mLayoutMessagePlusGift.setEnabled(true);
-		Animation animation = AnimationUtils.loadAnimation(BaseMessageActivity.this, R.anim.controller_enter);
-		mLayoutMessagePlusBar.setAnimation(animation);
-		mLayoutMessagePlusBar.setVisibility(View.VISIBLE);
-		mLayoutFullScreenMask.setVisibility(View.VISIBLE);
+		
 	}
 
 	protected void hidePlusBar() {
-		mLayoutFullScreenMask.setEnabled(false);
-		mLayoutMessagePlusBar.setEnabled(false);
-		mLayoutMessagePlusPicture.setEnabled(false);
-		mLayoutMessagePlusCamera.setEnabled(false);
-		mLayoutMessagePlusLocation.setEnabled(false);
-		mLayoutMessagePlusGift.setEnabled(false);
-		mLayoutFullScreenMask.setVisibility(View.GONE);
-		Animation animation = AnimationUtils.loadAnimation(
-				BaseMessageActivity.this, R.anim.controller_exit);
-		animation.setInterpolator(AnimationUtils.loadInterpolator(
-				BaseMessageActivity.this,
-				android.R.anim.anticipate_interpolator));
-		mLayoutMessagePlusBar.setAnimation(animation);
-		mLayoutMessagePlusBar.setVisibility(View.GONE);
+		
 	}
 
 	

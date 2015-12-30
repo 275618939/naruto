@@ -221,5 +221,8 @@
     <color name="bg_headerbar_spinner_normal">@color/transparent</color>
     <color name="bg_headerbar_spinner_selected">#5f000000</color>
     <color name="bg_headerbar_spinner_press">#7f000000</color>
+    <color name="error_item_color">#F6EBE6</color>
+    <color name="grid_state_pressed">#1Affffff</color>
+    <color name="grid_state_focused">#80000000</color>
 
 </resources>
