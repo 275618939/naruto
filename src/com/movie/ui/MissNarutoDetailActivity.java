@@ -33,6 +33,7 @@ import com.movie.app.Constant.ReturnCode;
 import com.movie.app.NarutoApplication;
 import com.movie.client.bean.Miss;
 import com.movie.client.bean.MissNaruto;
+import com.movie.client.bean.User;
 import com.movie.client.service.BaseService;
 import com.movie.client.service.CallBackService;
 import com.movie.client.service.CommentService;
@@ -181,6 +182,13 @@ public class MissNarutoDetailActivity extends BaseActivity implements OnClickLis
 		
 		result=StringUtil.dateCompareByCurrent(miss.getRunTime(),MissBtnStatus.MAX_MISS_CANCEL_HOUR);
 		//missBtn.setBackgroundResource(MissTimeBtnBackColor.getState(result).getSourceId());
+		User loginUser = userService.getUserItem();
+		if(null==loginUser||null==loginUser.getMemberId()||loginUser.getMemberId().isEmpty()){
+			missBtn.setText(getText(R.string.miss_login));
+			result=MissTimeState.UnLogin.getState();
+			missBtn.setOnClickListener(this);
+			return;
+		}
 		missNarutoAdapter.setLoginMemberId(userService.getUserItem().getMemberId());
 		missNarutoAdapter.setMemberId(miss.getMemberId());
 		if(!userService.getUserItem().getMemberId().equals(miss.getMemberId())){
@@ -289,6 +297,10 @@ public class MissNarutoDetailActivity extends BaseActivity implements OnClickLis
 					commentPopupWindow.clearSelectCommnets();
 					commentPopupWindow.showAtLocation(v, Gravity.CENTER, 0,0);
 					commentPopupWindow.setFocusable(true);
+				}else if(result==MissTimeState.UnLogin.getState()){
+					Intent loginIntent = new Intent(this, LoginActivity.class);
+					startActivity(loginIntent);
+					finish();
 				}
 				break;
 			case R.id.hope_user:

@@ -39,7 +39,7 @@ public abstract class BaseService  {
 	protected Map<String, String> headers = new HashMap<String, String>();
 	protected Map<String, String> urls = new HashMap<String, String>();
 	protected Map<String, Object> params = new HashMap<String, Object>();
-	protected static final int MAXREQUEST=2;
+	protected static final int MAXREQUEST=3;
 	protected static final int REQUESTDEFUALCOUNT=1;
 	protected int requestCount;
 	protected BaseDao sesssionDao;

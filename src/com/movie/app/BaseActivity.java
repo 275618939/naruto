@@ -13,7 +13,9 @@ import android.os.Bundle;
 import android.support.v4.app.FragmentActivity;
 import android.util.Log;
 import android.view.View;
+import android.view.WindowManager;
 import android.view.ViewGroup.LayoutParams;
+import android.view.inputmethod.InputMethodManager;
 import android.widget.Toast;
 
 import com.handmark.pulltorefresh.library.PullToRefreshListView;
@@ -32,6 +34,7 @@ public abstract class BaseActivity extends FragmentActivity {
 	protected NetWorkUtils mNetWorkUtils;
 	protected LoginService loginService;
 	protected UserService userService;
+	protected InputMethodManager manager;
 	protected ImageLoader imageLoader=ImageLoader.getInstance();
 	protected List<AsyncTask<Void, Void, Boolean>> mAsyncTasks = new ArrayList<AsyncTask<Void, Void, Boolean>>();
 	@Override
@@ -205,6 +208,15 @@ public abstract class BaseActivity extends FragmentActivity {
 	    layoutParams.height = listViewHeight;  
 	    listView.setLayoutParams(layoutParams);  
 	}  
+	/**
+	 * 隐藏软键盘
+	 */
+	protected void hideKeyboard() {
+		if (getWindow().getAttributes().softInputMode != WindowManager.LayoutParams.SOFT_INPUT_STATE_HIDDEN) {
+			if (getCurrentFocus() != null)
+				manager.hideSoftInputFromWindow(getCurrentFocus().getWindowToken(), InputMethodManager.HIDE_NOT_ALWAYS);
+		}
+	}
 	
 	/** 默认退出 **/
 	protected void defaultFinish() {

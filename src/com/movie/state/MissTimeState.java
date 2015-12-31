@@ -2,7 +2,7 @@ package com.movie.state;
 
 public enum MissTimeState {
 
-	HaveInHand(1, "正在进行"), Expired(0, "已到期"), Completed(-1, "已结束"), Un(-2, "未知");
+	HaveInHand(1, "正在进行"), Expired(0, "已到期"), Completed(-1, "已结束"), Un(-2, "未知"),UnLogin(2, "未登陆");
 
 	private int state;
 	private String message;

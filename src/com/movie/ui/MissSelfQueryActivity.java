@@ -234,6 +234,10 @@ public class MissSelfQueryActivity extends BaseActivity implements OnClickListen
 			}else if(tag.endsWith(missInviteService.TAG)){
 				showToask("邀请成功,等待对方同意!");
 			}
+		}else if(Constant.ReturnCode.STATE_3.equals(code)){
+			Intent loginIntent = new Intent(this, LoginActivity.class);
+			startActivity(loginIntent);
+			finish();
 		} else {
 			String message = map.get(Constant.ReturnCode.RETURN_MESSAGE).toString();
 			showToask(message);
