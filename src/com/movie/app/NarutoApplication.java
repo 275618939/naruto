@@ -13,6 +13,8 @@ import android.util.DisplayMetrics;
 import android.util.Log;
 import android.view.WindowManager;
 
+import com.easemob.EMCallBack;
+import com.easemob.applib.controller.DemoHXSDKHelper;
 import com.movie.R;
 import com.movie.client.db.SQLHelper;
 import com.nostra13.universalimageloader.cache.disc.impl.UnlimitedDiskCache;
@@ -38,6 +40,12 @@ public class NarutoApplication extends Application {
 	public static Map<String, Integer> mEmoticonsId = new HashMap<String, Integer>();
 	public static List<String> mEmoticons_Zem = new ArrayList<String>();
 	public static List<String> mEmoticons_Zemoji = new ArrayList<String>();
+	
+	/**
+	 * 当前用户nickname,为了苹果推送不是userid而是昵称
+	 */
+	public static String currentUserNick = "";
+	public static DemoHXSDKHelper hxSDKHelper = new DemoHXSDKHelper();
 	/**
 	 * 屏幕的宽度、高度、密度
 	 */
@@ -51,7 +59,7 @@ public class NarutoApplication extends Application {
 		mAppApplication = this;
 		showMetrices();
 		initZEM();
-		
+		initHXSDK();
 	}
 
 	/** 获取Application */
@@ -85,6 +93,28 @@ public class NarutoApplication extends Application {
 			sqlHelper.close();
 		super.onTerminate();
 		// 整体摧毁的时候调用这个方法
+	}
+	/**初始化环信*/
+	public void initHXSDK(){
+		 /**
+         * this function will initialize the HuanXin SDK
+         * 
+         * @return boolean true if caller can continue to call HuanXin related APIs after calling onInit, otherwise false.
+         * 
+         * 环信初始化SDK帮助函数
+         * 返回true如果正确初始化，否则false，如果返回为false，请在后续的调用中不要调用任何和环信相关的代码
+         * 
+         * for example:
+         * 例子：
+         * 
+         * public class DemoHXSDKHelper extends HXSDKHelper
+         * 
+         * HXHelper = new DemoHXSDKHelper();
+         * if(HXHelper.onInit(context)){
+         *     // do HuanXin related work
+         * }
+         */
+        hxSDKHelper.onInit(this);
 	}
     /**初始化表情包*/
 	public void initZEM(){
@@ -131,7 +161,50 @@ public class NarutoApplication extends Application {
 		.build(); // 构建完成
 	}
 
-	
+	/**
+	 * 获取当前登陆用户名
+	 *
+	 * @return
+	 */
+	public String getUserName() {
+	    return hxSDKHelper.getHXId();
+	}
+
+	/**
+	 * 获取密码
+	 *
+	 * @return
+	 */
+	public String getPassword() {
+		return hxSDKHelper.getPassword();
+	}
+
+	/**
+	 * 设置用户名
+	 *
+	 * @param user
+	 */
+	public void setUserName(String username) {
+	    hxSDKHelper.setHXId(username);
+	}
+
+	/**
+	 * 设置密码 下面的实例代码 只是demo，实际的应用中需要加password 加密后存入 preference 环信sdk
+	 * 内部的自动登录需要的密码，已经加密存储了
+	 *
+	 * @param pwd
+	 */
+	public void setPassword(String pwd) {
+	    hxSDKHelper.setPassword(pwd);
+	}
+
+	/**
+	 * 退出登录,清空数据
+	 */
+	public void logout(final boolean isGCM,final EMCallBack emCallBack) {
+		// 先调用sdk logout，在清理app中自己的数据
+	    hxSDKHelper.logout(isGCM,emCallBack);
+	}
 	
 
 }

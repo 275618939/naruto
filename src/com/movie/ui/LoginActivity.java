@@ -15,10 +15,15 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.TextView;
+import android.widget.Toast;
 
+import com.easemob.applib.controller.DemoHXSDKHelper;
+import com.easemob.chat.EMChatManager;
+import com.easemob.chat.EMGroupManager;
 import com.movie.R;
 import com.movie.app.BaseActivity;
 import com.movie.app.Constant;
+import com.movie.app.NarutoApplication;
 import com.movie.client.bean.Login;
 import com.movie.client.bean.User;
 import com.movie.client.service.BaseService;
@@ -178,6 +183,20 @@ public class LoginActivity extends BaseActivity implements OnClickListener, Call
 				/*记录登入信息，下次自动登陆*/
 				String account=accountEdit.getText().toString();
 				String password=passwordEdit.getText().toString().trim();
+				// 登陆成功，保存用户名密码
+				NarutoApplication.getApp().setUserName(account);
+				NarutoApplication.getApp().setPassword(password);
+				try {
+					// ** 第一次登录或者之前logout后再登录，加载所有本地群和回话
+					// ** manually load all local groups and
+				    EMGroupManager.getInstance().loadAllGroups();
+					EMChatManager.getInstance().loadAllConversations();
+					
+				} catch (Exception e) {
+					e.printStackTrace();
+					
+				}
+				
 				String pwd=null;
 				try {
 					pwd = BytesUtils.toHexString(MessageDigest.getInstance("MD5").digest((account +":"+ password).getBytes()), false);
