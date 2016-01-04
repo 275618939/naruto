@@ -26,6 +26,7 @@ import com.easemob.EMCallBack;
 import com.easemob.EMConnectionListener;
 import com.easemob.EMError;
 import com.easemob.EMValueCallBack;
+import com.easemob.applib.model.DefaultHXSDKModel;
 import com.easemob.applib.model.HXNotifier;
 import com.easemob.applib.model.HXNotifier.HXNotificationInfoProvider;
 import com.easemob.applib.model.HXSDKModel;

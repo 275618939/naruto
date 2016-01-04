@@ -25,6 +25,9 @@ import android.content.Context;
 import android.content.SharedPreferences;
 import android.preference.PreferenceManager;
 
+import com.hxsdk.db.UserDao;
+import com.movie.util.HXPreferenceUtils;
+
 /**
  * HuanXin default SDK Model implementation
  * @author easemob
