@@ -155,7 +155,7 @@ public abstract class MessageItem {
 	}
 
 	protected void refreshAdapter() {
-		((ChatActivity) mContext).refreshAdapter();
+		//((ChatActivity) mContext).refreshAdapter();
 	}
 
 	public View getRootView() {

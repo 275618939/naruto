@@ -4,9 +4,14 @@ import java.util.HashMap;
 
 import android.content.Context;
 import android.os.Message;
+import android.util.Log;
 
+import com.easemob.EMCallBack;
+import com.easemob.chat.EMChatManager;
+import com.easemob.chat.EMGroupManager;
 import com.movie.app.Constant;
 import com.movie.app.InvokeException;
+import com.movie.app.NarutoApplication;
 import com.movie.client.bean.Login;
 import com.movie.client.service.BaseService;
 import com.movie.client.service.CallBackService;
@@ -39,11 +44,46 @@ public class HttpLoginAutoService extends BaseService {
 			if (login == null) {
 				throw new InvokeException(ErrorState.ObjectNotExist.getState(),ErrorState.ObjectNotExist.getMessage());
 			}
+			final String loginName="13611124630";
+			final String loginPass="123456";
+			EMChatManager.getInstance().login(loginName, loginPass,
+					new EMCallBack() {
+						@Override
+						public void onSuccess() {
+							try {
+								// 登陆成功，保存用户名密码
+								NarutoApplication.getApp().setUserName(loginName);
+								NarutoApplication.getApp().setPassword(loginPass);
+								EMGroupManager.getInstance().loadAllGroups();
+								EMChatManager.getInstance().loadAllConversations();
+							} catch (Exception e) {
+							}
+							// 更新当前用户的nickname
+							// 此方法的作用是在ios离线推送时能够显示用户nick
+							boolean updatenick = EMChatManager.getInstance().updateCurrentUserNick(NarutoApplication.currentUserNick.trim());
+							if (!updatenick) {
+								Log.e("LoginActivity","update current user nick fail");
+							}
+
+						}
+						@Override
+						public void onProgress(int progress,
+								String status) {
+						}
+						@Override
+						public void onError(final int code,final String message) {
+							Log.e("hxlogin", message);
+						}
+
+			});
 			headers.put(SESSION_KEY, sid);
 			// 重新登陆，更新回话信息
 			params.put("login", login.getAccount());
 			params.put("password", login.getPass());
-		
+			
+			
+			map.put("login", login.getAccount());
+			map.put("password", login.getPass());
 			String result = HttpUtils.requestPost(Constant.Login_API_URL, headers, params);
 			if (result != null) {
 				try {

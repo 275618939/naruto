@@ -228,5 +228,6 @@
     <color name="top_bar_normal_bg">#00acff</color>
     <color name="voip_interface_text_color">#bababa</color>
     <color name="common_bg">#fcfcfc</color>
+    <color name="gray_normal">#666667</color>
 
 </resources>

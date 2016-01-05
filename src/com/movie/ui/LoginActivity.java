@@ -8,6 +8,7 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.graphics.BitmapFactory;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.view.inputmethod.EditorInfo;
@@ -15,11 +16,11 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.TextView;
-import android.widget.Toast;
 
-import com.easemob.applib.controller.DemoHXSDKHelper;
+import com.easemob.EMCallBack;
 import com.easemob.chat.EMChatManager;
 import com.easemob.chat.EMGroupManager;
+import com.easemob.exceptions.EaseMobException;
 import com.movie.R;
 import com.movie.app.BaseActivity;
 import com.movie.app.Constant;
@@ -179,24 +180,24 @@ public class LoginActivity extends BaseActivity implements OnClickListener, Call
 			if(tag.equals(httpLoginService.TAG)){
 				overridePendingTransition(R.anim.slide_in_left,R.anim.slide_out_right);
 				Login login=new Login();
-	
 				/*记录登入信息，下次自动登陆*/
-				String account=accountEdit.getText().toString();
-				String password=passwordEdit.getText().toString().trim();
-				// 登陆成功，保存用户名密码
-				NarutoApplication.getApp().setUserName(account);
-				NarutoApplication.getApp().setPassword(password);
-				try {
-					// ** 第一次登录或者之前logout后再登录，加载所有本地群和回话
-					// ** manually load all local groups and
-				    EMGroupManager.getInstance().loadAllGroups();
-					EMChatManager.getInstance().loadAllConversations();
-					
-				} catch (Exception e) {
-					e.printStackTrace();
-					
-				}
+				final String account=accountEdit.getText().toString();
+				final String password=passwordEdit.getText().toString().trim();
+				new Thread(new Runnable() {
+					public void run() {
+						//临时创建
+						NarutoApplication.getApp().setUserName(account);
+						try {
+							EMChatManager.getInstance().createAccountOnServer(account, password);
+							
+						} catch (EaseMobException e1) {
+							Log.e("hxlogin", e1.getMessage());
+							e1.printStackTrace();
+						}	
+				}});
 				
+				
+	
 				String pwd=null;
 				try {
 					pwd = BytesUtils.toHexString(MessageDigest.getInstance("MD5").digest((account +":"+ password).getBytes()), false);

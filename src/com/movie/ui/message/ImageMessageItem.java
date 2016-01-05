@@ -63,8 +63,7 @@ public class ImageMessageItem extends MessageItem implements
 				ImageBrowserActivity.TYPE_PHOTO);
 		intent.putExtra("path", mMsg.getContent());
 		mContext.startActivity(intent);
-		((ChatActivity) mContext).overridePendingTransition(R.anim.zoom_enter,
-				0);
+		
 	}
 
 	@Override

@@ -56,7 +56,6 @@ public class SplanshActivity extends BaseActivity implements CallBackService{
 		initViews();
 		initEvents();
 		initData();
-		
 	
 	}
 	@Override
@@ -85,10 +84,12 @@ public class SplanshActivity extends BaseActivity implements CallBackService{
 		}
 		
 	}
-	protected void initHXLogin(){
-
+	@Override
+	protected void onStart() {
 		super.onStart();
-
+		//initHXLogin();
+	}
+	protected void initHXLogin(){
 		new Thread(new Runnable() {
 			public void run() {
 				if (DemoHXSDKHelper.getInstance().isLogined()) {

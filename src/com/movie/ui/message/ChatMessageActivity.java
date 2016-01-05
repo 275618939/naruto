@@ -125,7 +125,7 @@ public class ChatMessageActivity extends BaseActivity implements OnClickListener
 	private View buttonSend;
 	private View buttonPressToSpeak;
 	private LinearLayout btnContainer;
-	private ImageView locationImgview;
+
 	private View more;
 	private int position;
 	private ClipboardManager clipboard;
@@ -145,13 +145,17 @@ public class ChatMessageActivity extends BaseActivity implements OnClickListener
 	private ImageView iv_emoticons_normal;
 	private ImageView iv_emoticons_checked;
 	private RelativeLayout edittext_layout;
-	private ImageView voiceCallBtn;
-    private ImageView videoCallBtn;
 	private ProgressBar loadmorePB;
 	private boolean isloading;
 	private final int pagesize = 20;
-	private boolean haveMoreData = true;
 	private Button btnMore;
+	private ImageView btnTakePicture;
+	private ImageView btnPicture;
+	private ImageView btnLocation;
+	private ImageView btnVideo;
+	private ImageView btnFile;
+	private ImageView voiceCallBtn;
+    private ImageView videoCallBtn;
 	public String playMsgId;
 	private SwipeRefreshLayout swipeRefreshLayout;
 	public boolean isRobot;
@@ -181,7 +185,6 @@ public class ChatMessageActivity extends BaseActivity implements OnClickListener
 		buttonSend = findViewById(R.id.btn_send);
 		buttonPressToSpeak = findViewById(R.id.btn_press_to_speak);
 		btnContainer = (LinearLayout) findViewById(R.id.ll_btn_container);
-		locationImgview = (ImageView) findViewById(R.id.btn_location);
 		iv_emoticons_normal = (ImageView) findViewById(R.id.iv_emoticons_normal);
 		iv_emoticons_checked = (ImageView) findViewById(R.id.iv_emoticons_checked);
 		loadmorePB = (ProgressBar) findViewById(R.id.pb_load_more);
@@ -192,6 +195,11 @@ public class ChatMessageActivity extends BaseActivity implements OnClickListener
 		edittext_layout.setBackgroundResource(R.drawable.input_bar_bg_normal);
 		voiceCallBtn = (ImageView) findViewById(R.id.btn_voice_call);
 		videoCallBtn = (ImageView) findViewById(R.id.btn_video_call);
+		btnTakePicture = (ImageView) findViewById(R.id.btn_take_picture);
+		btnPicture = (ImageView) findViewById(R.id.btn_picture);
+		btnLocation = (ImageView) findViewById(R.id.btn_location);
+		btnVideo = (ImageView) findViewById(R.id.btn_video);
+		btnFile = (ImageView) findViewById(R.id.btn_file);
 
 	}
 
@@ -203,6 +211,15 @@ public class ChatMessageActivity extends BaseActivity implements OnClickListener
 		btnMore.setOnClickListener(this);
 		buttonSend.setOnClickListener(this);
 		buttonPressToSpeak.setOnTouchListener(this);
+		
+		voiceCallBtn.setOnClickListener(this);;
+		videoCallBtn.setOnClickListener(this);;
+		btnTakePicture.setOnClickListener(this);;
+		btnPicture.setOnClickListener(this);;
+		btnLocation.setOnClickListener(this);;
+		btnVideo.setOnClickListener(this);
+		btnFile.setOnClickListener(this);
+		
 		mEditTextContent.setOnFocusChangeListener(new OnFocusChangeListener() {
 			@Override
 			public void onFocusChange(View v, boolean hasFocus) {
@@ -240,7 +257,7 @@ public class ChatMessageActivity extends BaseActivity implements OnClickListener
 		getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_ALWAYS_HIDDEN);
 		wakeLock = ((PowerManager) getSystemService(Context.POWER_SERVICE)).newWakeLock(PowerManager.SCREEN_DIM_WAKE_LOCK, "demo");
 		 // 单聊
-		toChatUsername = mUser.getNickname();
+		toChatUsername = "15011409560";
 		Map<String,RobotUser> robotMap=((DemoHXSDKHelper)HXSDKHelper.getInstance()).getRobotList();
 		if(robotMap!=null&&robotMap.containsKey(toChatUsername)){
 			isRobot = true;

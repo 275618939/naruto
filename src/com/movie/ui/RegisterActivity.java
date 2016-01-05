@@ -15,9 +15,12 @@ import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import com.easemob.chat.EMChatManager;
+import com.easemob.exceptions.EaseMobException;
 import com.movie.R;
 import com.movie.app.BaseActivity;
 import com.movie.app.Constant;
+import com.movie.app.NarutoApplication;
 import com.movie.client.bean.Login;
 import com.movie.client.bean.User;
 import com.movie.client.service.BaseService;
@@ -174,8 +177,19 @@ public class RegisterActivity extends BaseActivity implements OnClickListener, C
 		if (Constant.ReturnCode.STATE_1.equals(code)) {
 			String tag=map.get(Constant.ReturnCode.RETURN_TAG).toString();
 			if(tag.equals(httpRegisterService.TAG)){
-				String account=login.getText().toString();
-				String pass=password.getText().toString().trim();
+				final String account=login.getText().toString();
+				final String pass=password.getText().toString().trim();
+				new Thread(new Runnable() {
+					public void run() {
+						// 调用sdk注册方法
+						NarutoApplication.getApp().setUserName(account);
+						try {
+							EMChatManager.getInstance().createAccountOnServer(account, pass);
+						} catch (EaseMobException e1) {
+							// TODO Auto-generated catch block
+							e1.printStackTrace();
+						}
+				}});
 				String pwd=null;
 				try {
 					pwd = BytesUtils.toHexString(MessageDigest.getInstance("MD5").digest((account +":"+ pass).getBytes()), false);

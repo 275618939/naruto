@@ -293,5 +293,7 @@
     <string name="The_file_is_not_greater_than_10_m">文件不能大于10M</string>
     <string name="cant_find_pictures">找不到图片</string>
     <string name="unable_to_get_loaction">无法获取到您的位置信息!</string>
+    <string name="Whether_to_empty_all_chats">是否清空所有聊天记录</string>
+    <string name="no_more_messages">没有更多的消息了</string>
 
 </resources>
