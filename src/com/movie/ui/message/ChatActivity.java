@@ -41,7 +41,7 @@ import android.provider.MediaStore;
 import android.support.v4.view.ViewPager;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v4.widget.SwipeRefreshLayout.OnRefreshListener;
-import android.text.ClipboardManager;
+import android.content.ClipboardManager;
 import android.text.Editable;
 import android.text.TextUtils;
 import android.text.TextWatcher;
@@ -380,8 +380,8 @@ public class ChatActivity extends BaseActivity implements OnClickListener, EMEve
 		chatType = getIntent().getIntExtra("chatType", CHATTYPE_SINGLE);
 
 		if (chatType == CHATTYPE_SINGLE) { // 单聊
-			toChatUsername = getIntent().getStringExtra("userId");
-			Map<String,RobotUser> robotMap=((DemoHXSDKHelper)HXSDKHelper.getInstance()).getRobotList();
+			toChatUsername = "15011409560";
+			/*Map<String,RobotUser> robotMap=((DemoHXSDKHelper)HXSDKHelper.getInstance()).getRobotList();
 			if(robotMap!=null&&robotMap.containsKey(toChatUsername)){
 				isRobot = true;
 				String nick = robotMap.get(toChatUsername).getNick();
@@ -392,7 +392,7 @@ public class ChatActivity extends BaseActivity implements OnClickListener, EMEve
 				}
 			}else{
 				UserUtils.setUserNick(toChatUsername, (TextView) findViewById(R.id.name));
-			}
+			}*/
 		} else {
 			// 群聊
 			findViewById(R.id.container_to_group).setVisibility(View.VISIBLE);
@@ -407,7 +407,6 @@ public class ChatActivity extends BaseActivity implements OnClickListener, EMEve
 			    onChatRoomViewCreation();
 			}
 		}
-        
 		// for chatroom type, we only init conversation and create view adapter on success
 		if(chatType != CHATTYPE_CHATROOM){
 		    onConversationInit();

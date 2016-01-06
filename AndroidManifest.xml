@@ -205,12 +205,6 @@
             android:launchMode="singleTop"
             android:screenOrientation="portrait" />
         <activity
-            android:name=".ui.message.ChatMessageActivity"
-            android:alwaysRetainTaskState="true"
-            android:launchMode="singleTop"
-            android:screenOrientation="portrait"
-            android:theme="@style/horizontal_slide" />
-        <activity
             android:name=".ui.NickActivity"
             android:alwaysRetainTaskState="true"
             android:launchMode="singleTop"
@@ -363,6 +357,11 @@
             android:alwaysRetainTaskState="true"
             android:launchMode="singleTop"
             android:screenOrientation="portrait" />
+        <activity
+            android:name=".ui.message.ChatActivity"
+            android:alwaysRetainTaskState="true"
+            android:launchMode="singleTop"
+            android:screenOrientation="portrait"/>
     </application>
 
 </manifest>

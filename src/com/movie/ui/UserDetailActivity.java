@@ -49,7 +49,7 @@ import com.movie.network.HttpUserLoveService;
 import com.movie.network.HttpUserService;
 import com.movie.state.BackGroundColor;
 import com.movie.state.SexState;
-import com.movie.ui.message.ChatMessageActivity;
+import com.movie.ui.message.ChatActivity;
 import com.movie.util.Bimp;
 import com.movie.util.Horoscope;
 import com.movie.util.ImageItem;
@@ -236,7 +236,7 @@ public class UserDetailActivity extends BaseActivity implements
 	public void onClick(View v) {
 		switch (v.getId()) {
 		case R.id.user_chat:
-			Intent chartIntent = new Intent(this, ChatMessageActivity.class);
+			Intent chartIntent = new Intent(this, ChatActivity.class);
 			chartIntent.putExtra("user", user);
 			startActivity(chartIntent);
 			break;

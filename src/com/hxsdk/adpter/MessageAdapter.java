@@ -86,7 +86,7 @@ import com.movie.app.Constant;
 import com.movie.ui.BaiduMapActivity;
 import com.movie.ui.UserDetailActivity;
 import com.movie.ui.message.ChatActivity;
-import com.movie.ui.message.ChatMessageActivity;
+import com.movie.ui.message.ChatActivity;
 import com.movie.ui.message.ShowBigImage;
 import com.movie.ui.message.ShowNormalFileActivity;
 import com.movie.ui.message.ShowVideoActivity;
@@ -164,7 +164,7 @@ public class MessageAdapter extends BaseAdapter{
 				break;
 			case HANDLER_MESSAGE_SELECT_LAST:
 				if (activity instanceof ChatActivity) {
-					ListView listView = ((ChatMessageActivity)activity).getListView();
+					ListView listView = ((ChatActivity)activity).getListView();
 					if (messages.length > 0) {
 						listView.setSelection(messages.length - 1);
 					}
@@ -173,7 +173,7 @@ public class MessageAdapter extends BaseAdapter{
 			case HANDLER_MESSAGE_SEEK_TO:
 				int position = message.arg1;
 				if (activity instanceof ChatActivity) {
-					ListView listView = ((ChatMessageActivity)activity).getListView();
+					ListView listView = ((ChatActivity)activity).getListView();
 					listView.setSelection(position);
 				}
 				break;
@@ -511,24 +511,24 @@ public class MessageAdapter extends BaseAdapter{
 					intent.putExtra("cancel", true);
 					intent.putExtra("position", position);
 					if (message.getType() == EMMessage.Type.TXT)
-						activity.startActivityForResult(intent, ChatMessageActivity.REQUEST_CODE_TEXT);
+						activity.startActivityForResult(intent, ChatActivity.REQUEST_CODE_TEXT);
 					else if (message.getType() == EMMessage.Type.VOICE)
-						activity.startActivityForResult(intent, ChatMessageActivity.REQUEST_CODE_VOICE);
+						activity.startActivityForResult(intent, ChatActivity.REQUEST_CODE_VOICE);
 					else if (message.getType() == EMMessage.Type.IMAGE)
-						activity.startActivityForResult(intent, ChatMessageActivity.REQUEST_CODE_PICTURE);
+						activity.startActivityForResult(intent, ChatActivity.REQUEST_CODE_PICTURE);
 					else if (message.getType() == EMMessage.Type.LOCATION)
-						activity.startActivityForResult(intent, ChatMessageActivity.REQUEST_CODE_LOCATION);
+						activity.startActivityForResult(intent, ChatActivity.REQUEST_CODE_LOCATION);
 					else if (message.getType() == EMMessage.Type.FILE)
-						activity.startActivityForResult(intent, ChatMessageActivity.REQUEST_CODE_FILE);
+						activity.startActivityForResult(intent, ChatActivity.REQUEST_CODE_FILE);
 					else if (message.getType() == EMMessage.Type.VIDEO)
-						activity.startActivityForResult(intent, ChatMessageActivity.REQUEST_CODE_VIDEO);
+						activity.startActivityForResult(intent, ChatActivity.REQUEST_CODE_VIDEO);
 
 				}
 			});
 
 		} else {
 			final String st = context.getResources().getString(R.string.Into_the_blacklist);
-			if(!((ChatMessageActivity)activity).isRobot && chatType != ChatType.ChatRoom){
+			if(!((ChatActivity)activity).isRobot && chatType != ChatType.ChatRoom){
 				// 长按头像，移入黑名单
 				holder.iv_avatar.setOnLongClickListener(new OnLongClickListener() {
 
@@ -538,7 +538,7 @@ public class MessageAdapter extends BaseAdapter{
 						intent.putExtra("msg", st);
 						intent.putExtra("cancel", true);
 						intent.putExtra("position", position);
-						activity.startActivityForResult(intent, ChatMessageActivity.REQUEST_CODE_ADD_TO_BLACKLIST);
+						activity.startActivityForResult(intent, ChatActivity.REQUEST_CODE_ADD_TO_BLACKLIST);
 						return true;
 					}
 				});
@@ -606,7 +606,7 @@ public class MessageAdapter extends BaseAdapter{
 			public boolean onLongClick(View v) {
 				activity.startActivityForResult(
 						(new Intent(activity, ContextMenu.class)).putExtra("position", position).putExtra("type",
-								EMMessage.Type.TXT.ordinal()), ChatMessageActivity.REQUEST_CODE_CONTEXT_MENU);
+								EMMessage.Type.TXT.ordinal()), ChatActivity.REQUEST_CODE_CONTEXT_MENU);
 				return true;
 			}
 		});
@@ -650,7 +650,7 @@ public class MessageAdapter extends BaseAdapter{
 					
 					@Override
 					public void onClick(View v) {
-						((ChatMessageActivity)context).sendText(itemStr);
+						((ChatActivity)context).sendText(itemStr);
 					}
 				});
 				LinearLayout.LayoutParams llLp = new LinearLayout.LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT,ViewGroup.LayoutParams.WRAP_CONTENT);
@@ -725,7 +725,7 @@ public class MessageAdapter extends BaseAdapter{
 			public boolean onLongClick(View v) {
 				activity.startActivityForResult(
 						(new Intent(activity, ContextMenu.class)).putExtra("position", position).putExtra("type",
-								EMMessage.Type.IMAGE.ordinal()), ChatMessageActivity.REQUEST_CODE_CONTEXT_MENU);
+								EMMessage.Type.IMAGE.ordinal()), ChatActivity.REQUEST_CODE_CONTEXT_MENU);
 				return true;
 			}
 		});
@@ -848,7 +848,7 @@ public class MessageAdapter extends BaseAdapter{
 			public boolean onLongClick(View v) {
 				activity.startActivityForResult(
 						new Intent(activity, ContextMenu.class).putExtra("position", position).putExtra("type",
-								EMMessage.Type.VIDEO.ordinal()), ChatMessageActivity.REQUEST_CODE_CONTEXT_MENU);
+								EMMessage.Type.VIDEO.ordinal()), ChatActivity.REQUEST_CODE_CONTEXT_MENU);
 				return true;
 			}
 		});
@@ -979,12 +979,12 @@ public class MessageAdapter extends BaseAdapter{
 			public boolean onLongClick(View v) {
 				activity.startActivityForResult(
 						(new Intent(activity, ContextMenu.class)).putExtra("position", position).putExtra("type",
-								EMMessage.Type.VOICE.ordinal()), ChatMessageActivity.REQUEST_CODE_CONTEXT_MENU);
+								EMMessage.Type.VOICE.ordinal()), ChatActivity.REQUEST_CODE_CONTEXT_MENU);
 				return true;
 			}
 		});
-		if (((ChatMessageActivity)activity).playMsgId != null
-				&& ((ChatMessageActivity)activity).playMsgId.equals(message
+		if (((ChatActivity)activity).playMsgId != null
+				&& ((ChatActivity)activity).playMsgId.equals(message
 						.getMsgId())&&VoicePlayClickListener.isPlaying) {
 			AnimationDrawable voiceAnimation;
 			if (message.direct == EMMessage.Direct.RECEIVE) {
@@ -1196,7 +1196,7 @@ public class MessageAdapter extends BaseAdapter{
 			public boolean onLongClick(View v) {
 				activity.startActivityForResult(
 						(new Intent(activity, ContextMenu.class)).putExtra("position", position).putExtra("type",
-								EMMessage.Type.LOCATION.ordinal()), ChatMessageActivity.REQUEST_CODE_CONTEXT_MENU);
+								EMMessage.Type.LOCATION.ordinal()), ChatActivity.REQUEST_CODE_CONTEXT_MENU);
 				return false;
 			}
 		});

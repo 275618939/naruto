@@ -33,12 +33,13 @@ import android.widget.Toast;
 import com.easemob.util.DateUtils;
 import com.easemob.util.EMLog;
 import com.easemob.util.TextFormater;
-import com.handmark.pulltorefresh.library.internal.Utils;
 import com.hxsdk.bean.VideoEntity;
 import com.hxsdk.utils.ImageResizer;
+import com.hxsdk.utils.Utils;
 import com.movie.BuildConfig;
 import com.movie.R;
 import com.movie.util.ImageCache;
+import com.movie.view.RecyclingImageView;
 
 public class ImageGridFragment extends Fragment implements OnItemClickListener {
 

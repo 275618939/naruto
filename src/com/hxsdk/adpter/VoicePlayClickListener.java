@@ -33,7 +33,7 @@ import com.easemob.chat.EMMessage.ChatType;
 import com.easemob.chat.VoiceMessageBody;
 import com.easemob.util.EMLog;
 import com.movie.R;
-import com.movie.ui.message.ChatMessageActivity;
+import com.movie.ui.message.ChatActivity;
 
 public class VoicePlayClickListener implements View.OnClickListener {
 	private static final String TAG = "VoicePlayClickListener";
@@ -85,7 +85,7 @@ public class VoicePlayClickListener implements View.OnClickListener {
 			mediaPlayer.release();
 		}
 		isPlaying = false;
-		((ChatMessageActivity) activity).playMsgId = null;
+		((ChatActivity) activity).playMsgId = null;
 		adapter.notifyDataSetChanged();
 	}
 
@@ -93,7 +93,7 @@ public class VoicePlayClickListener implements View.OnClickListener {
 		if (!(new File(filePath).exists())) {
 			return;
 		}
-		((ChatMessageActivity) activity).playMsgId = message.getMsgId();
+		((ChatActivity) activity).playMsgId = message.getMsgId();
 		AudioManager audioManager = (AudioManager) activity.getSystemService(Context.AUDIO_SERVICE);
 
 		mediaPlayer = new MediaPlayer();
@@ -166,7 +166,7 @@ public class VoicePlayClickListener implements View.OnClickListener {
 	public void onClick(View v) {
 		String st = activity.getResources().getString(R.string.Is_download_voice_click_later);
 		if (isPlaying) {
-			if (((ChatMessageActivity) activity).playMsgId != null && ((ChatMessageActivity) activity).playMsgId.equals(message.getMsgId())) {
+			if (((ChatActivity) activity).playMsgId != null && ((ChatActivity) activity).playMsgId.equals(message.getMsgId())) {
 				currentPlayListener.stopPlayVoice();
 				return;
 			}

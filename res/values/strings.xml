@@ -295,5 +295,11 @@
     <string name="unable_to_get_loaction">无法获取到您的位置信息!</string>
     <string name="Whether_to_empty_all_chats">是否清空所有聊天记录</string>
     <string name="no_more_messages">没有更多的消息了</string>
+    <string name="temporary_does_not">暂不支持大于10M的视频！</string>
+    <string name="The_video_to_start">录像开始</string>
+    <string name="Whether_to_send">是否发送？</string>
+    <string name="Video_footage">拍摄录像</string>
+    <string name="prompt">提示</string>
+    <string name="Open_the_equipment_failure">打开设备失败!</string>
 
 </resources>
