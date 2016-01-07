@@ -12,7 +12,7 @@ import android.support.v4.view.PagerAdapter;
 import android.support.v4.view.ViewPager;
 import android.view.View;
 import android.view.View.OnClickListener;
-import android.widget.ImageView;
+import android.widget.LinearLayout;
 
 import com.movie.R;
 import com.movie.ui.MainActivity;
@@ -60,8 +60,8 @@ public class ViewPagerAdapter extends PagerAdapter {
 	public Object instantiateItem(View arg0, int arg1) {
 		((ViewPager) arg0).addView(views.get(arg1), 0);
 		if (arg1 == views.size() - 1) {
-			ImageView mStartWeiboImageButton = (ImageView) arg0.findViewById(R.id.iv_start_weibo);
-			mStartWeiboImageButton.setOnClickListener(new OnClickListener() {
+			LinearLayout startLayout = (LinearLayout) arg0.findViewById(R.id.iv_start_naruto);
+			startLayout.setOnClickListener(new OnClickListener() {
 				@Override
 				public void onClick(View v) {
 					// 设置已经引导

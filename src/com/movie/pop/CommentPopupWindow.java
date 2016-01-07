@@ -14,6 +14,7 @@ import android.view.View.OnClickListener;
 import android.view.ViewGroup.LayoutParams;
 import android.widget.ImageView;
 import android.widget.RatingBar;
+import android.widget.TextView;
 
 import com.movie.R;
 import com.movie.adapter.CommentsShowAdapter;
@@ -26,7 +27,9 @@ public class CommentPopupWindow extends BasePopupWindow {
 
 	CommentsGridView commentsGridView;
 	CommentsShowAdapter commentsAdapter;
-	ImageView btnPopClose;
+	//ImageView btnPopClose;
+	TextView btnPopOkView;
+	TextView btnPopCancelView;
 	RatingBar ratingBar;
 	Context context;
 	Handler mHandler;
@@ -42,14 +45,16 @@ public class CommentPopupWindow extends BasePopupWindow {
 	@Override
 	public void initViews() {
 		commentsGridView = (CommentsGridView)findViewById(R.id.comments);
-		btnPopClose = (ImageView)findViewById(R.id.btn_pop_close);
+		btnPopOkView = (TextView)findViewById(R.id.btn_pop_ok);
+		btnPopCancelView = (TextView)findViewById(R.id.btn_pop_close);
+		//btnPopClose = (ImageView)findViewById(R.id.btn_pop_close);
 		ratingBar=(RatingBar) findViewById(R.id.charm_star);
 	}
     
 	@Override
 	public void initEvents() {
 	
-		btnPopClose.setOnClickListener(new OnClickListener() {
+		btnPopOkView.setOnClickListener(new OnClickListener() {
 			@Override
 			public void onClick(View v) {
 				dismiss();
@@ -60,6 +65,13 @@ public class CommentPopupWindow extends BasePopupWindow {
 				bundle.putInt("charm", getRatingBarValue());
 				message.setData(bundle);
 				mHandler.sendMessage(message);
+			}
+		});
+		btnPopCancelView.setOnClickListener(new OnClickListener() {
+			@Override
+			public void onClick(View v) {
+				dismiss();
+				
 			}
 		});
 	}

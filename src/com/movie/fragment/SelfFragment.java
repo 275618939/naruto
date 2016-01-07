@@ -222,7 +222,7 @@ public class SelfFragment extends BaseFragment implements OnClickListener , Call
 		switch (resultCode) { 
 		   case RELOAGIN:
 			    loadUser();
-			    loadUserImage();
+			   
 			    break;	
 			default:
 				break;
@@ -382,6 +382,7 @@ public class SelfFragment extends BaseFragment implements OnClickListener , Call
 				loginLayout.setVisibility(View.GONE);
 				logoutLayout.setVisibility(View.VISIBLE);
 				loginAfterLayout.setVisibility(View.VISIBLE);
+				loadUserImage();
 			}else if(tag.equals(httpLogotService.TAG)){
 				 user=null;
 			}else if (tag.equals(httpUserQueryImageService.TAG)) {

@@ -44,8 +44,12 @@ public class HttpLoginAutoService extends BaseService {
 			if (login == null) {
 				throw new InvokeException(ErrorState.ObjectNotExist.getState(),ErrorState.ObjectNotExist.getMessage());
 			}
-			final String loginName="13611124630";
-			final String loginPass="123456";
+			headers.put(SESSION_KEY, sid);
+			// 重新登陆，更新回话信息
+			params.put("login", login.getAccount());
+			params.put("password", login.getPass());
+			final String loginName=login.getAccount();
+			final String loginPass=login.getPass();
 			EMChatManager.getInstance().login(loginName, loginPass,
 					new EMCallBack() {
 						@Override
@@ -64,7 +68,6 @@ public class HttpLoginAutoService extends BaseService {
 							if (!updatenick) {
 								Log.e("LoginActivity","update current user nick fail");
 							}
-
 						}
 						@Override
 						public void onProgress(int progress,
@@ -76,14 +79,6 @@ public class HttpLoginAutoService extends BaseService {
 						}
 
 			});
-			headers.put(SESSION_KEY, sid);
-			// 重新登陆，更新回话信息
-			params.put("login", login.getAccount());
-			params.put("password", login.getPass());
-			
-			
-			map.put("login", login.getAccount());
-			map.put("password", login.getPass());
 			String result = HttpUtils.requestPost(Constant.Login_API_URL, headers, params);
 			if (result != null) {
 				try {

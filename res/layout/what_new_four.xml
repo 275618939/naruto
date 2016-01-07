@@ -8,18 +8,27 @@
         android:layout_height="match_parent"
         android:layout_centerInParent="true"
         android:adjustViewBounds="false"
-        android:background="@drawable/guide_350_04"
+        android:background="@drawable/index_4"
         android:focusable="true"
         android:scaleType="centerCrop" />
 
-    <ImageView
-        android:id="@+id/iv_start_weibo"
-        android:layout_width="wrap_content"
+    <LinearLayout
+        android:id="@+id/iv_start_naruto"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_alignParentBottom="true"
-        android:layout_centerHorizontal="true"
-        android:layout_marginBottom="108dp"
-        android:background="@drawable/whats_new_start_btn"
-        android:focusable="true" />
+        android:layout_marginRight="@dimen/layout_right"
+        android:gravity="right" >
+
+        <TextView
+            android:id="@+id/miss_btn"
+            style="@style/common_content_white_hint"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="@dimen/layout_item_bottom"
+            android:layout_marginRight="@dimen/layout_right"
+            android:background="@drawable/miss_btn_ment"
+            android:text="@string/start_naruto" />
+    </LinearLayout>
 
 </RelativeLayout>

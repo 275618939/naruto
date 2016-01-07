@@ -20,7 +20,6 @@ import android.widget.TextView;
 import com.easemob.EMCallBack;
 import com.easemob.chat.EMChatManager;
 import com.easemob.chat.EMGroupManager;
-import com.easemob.exceptions.EaseMobException;
 import com.movie.R;
 import com.movie.app.BaseActivity;
 import com.movie.app.Constant;
@@ -183,19 +182,35 @@ public class LoginActivity extends BaseActivity implements OnClickListener, Call
 				/*记录登入信息，下次自动登陆*/
 				final String account=accountEdit.getText().toString();
 				final String password=passwordEdit.getText().toString().trim();
-				new Thread(new Runnable() {
-					public void run() {
-						//临时创建
-						NarutoApplication.getApp().setUserName(account);
-						try {
-							EMChatManager.getInstance().createAccountOnServer(account, password);
-							
-						} catch (EaseMobException e1) {
-							Log.e("hxlogin", e1.getMessage());
-							e1.printStackTrace();
-						}	
-				}});
-				
+				EMChatManager.getInstance().login(account, password,
+						new EMCallBack() {
+							@Override
+							public void onSuccess() {
+								try {
+									// 登陆成功，保存用户名密码
+									NarutoApplication.getApp().setUserName(account);
+									NarutoApplication.getApp().setPassword(password);
+									EMGroupManager.getInstance().loadAllGroups();
+									EMChatManager.getInstance().loadAllConversations();
+								} catch (Exception e) {
+								}
+								// 更新当前用户的nickname
+								// 此方法的作用是在ios离线推送时能够显示用户nick
+								boolean updatenick = EMChatManager.getInstance().updateCurrentUserNick(NarutoApplication.currentUserNick.trim());
+								if (!updatenick) {
+									Log.e("LoginActivity","update current user nick fail");
+								}
+							}
+							@Override
+							public void onProgress(int progress,
+									String status) {
+							}
+							@Override
+							public void onError(final int code,final String message) {
+								Log.e("hxlogin", message);
+							}
+
+				});
 				
 	
 				String pwd=null;

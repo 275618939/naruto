@@ -175,14 +175,6 @@ public class MainActivity extends BaseActivity implements OnClickListener,
 		if (Constant.ReturnCode.STATE_1.equals(code)) {
 			String tag = map.get(Constant.ReturnCode.RETURN_TAG).toString();
 			if (tag.equals(httpAutoLoginSercService.TAG)) {
-//				final String login = String.valueOf(map.get("login"));
-//				final String pass ="123456";
-//				new Thread(new Runnable() {
-//					public void run() {
-//						// 调用sdk登陆方法登陆聊天服务器
-//					
-//					}
-//				});
 			}
 		}
 	}

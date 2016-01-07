@@ -19,10 +19,10 @@ import java.io.IOException;
 import java.lang.reflect.Field;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Map;
 
 import android.app.AlertDialog;
 import android.app.ProgressDialog;
+import android.content.ClipboardManager;
 import android.content.Context;
 import android.content.Intent;
 import android.database.Cursor;
@@ -41,7 +41,6 @@ import android.provider.MediaStore;
 import android.support.v4.view.ViewPager;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v4.widget.SwipeRefreshLayout.OnRefreshListener;
-import android.content.ClipboardManager;
 import android.text.Editable;
 import android.text.TextUtils;
 import android.text.TextWatcher;
@@ -94,15 +93,14 @@ import com.hxsdk.adpter.ExpressionAdapter;
 import com.hxsdk.adpter.ExpressionPagerAdapter;
 import com.hxsdk.adpter.MessageAdapter;
 import com.hxsdk.adpter.VoicePlayClickListener;
-import com.hxsdk.bean.RobotUser;
 import com.hxsdk.utils.CommonUtils;
 import com.hxsdk.utils.ImageUtils;
 import com.hxsdk.utils.SmileUtils;
 import com.movie.R;
 import com.movie.app.BaseActivity;
 import com.movie.app.NarutoApplication;
+import com.movie.client.bean.User;
 import com.movie.ui.BaiduMapActivity;
-import com.movie.util.UserUtils;
 import com.movie.view.ExpandGridView;
 import com.movie.view.PasteEditText;
 
@@ -162,6 +160,7 @@ public class ChatActivity extends BaseActivity implements OnClickListener, EMEve
 	private LinearLayout emojiIconContainer;
 	private LinearLayout btnContainer;
 	private ImageView locationImgview;
+	private TextView nameView;
 	private View more;
 	private int position;
 	private ClipboardManager clipboard;
@@ -178,7 +177,7 @@ public class ChatActivity extends BaseActivity implements OnClickListener, EMEve
 	private MessageAdapter adapter;
 	private File cameraFile;
 	static int resendPos;
-
+	private User mUser;
 
 
 	private ImageView iv_emoticons_normal;
@@ -209,14 +208,24 @@ public class ChatActivity extends BaseActivity implements OnClickListener, EMEve
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_chat_hx);
 		activityInstance = this;
-		initView();
+		initViews();
 		setUpView();
+		initData();
 	}
-
+	@Override
+	protected void initEvents() {
+	
+	}
+	@Override
+	protected void initData() {
+		mUser = (User) getIntent().getSerializableExtra("user");
+		nameView.setText("与" + mUser.getNickname() + "对话");
+	}
 	/**
 	 * initView
 	 */
-	protected void initView() {
+	@Override
+	protected void initViews() {
 		recordingContainer = findViewById(R.id.recording_container);
 		micImage = (ImageView) findViewById(R.id.mic_image);
 		recordingHint = (TextView) findViewById(R.id.recording_hint);
@@ -241,7 +250,7 @@ public class ChatActivity extends BaseActivity implements OnClickListener, EMEve
 		edittext_layout.setBackgroundResource(R.drawable.input_bar_bg_normal);
 		voiceCallBtn = (ImageView) findViewById(R.id.btn_voice_call);
 		videoCallBtn = (ImageView) findViewById(R.id.btn_video_call);
-
+		nameView = (TextView)findViewById(R.id.name);
 		// 动画资源文件,用于录制语音时
 		micImages = new Drawable[] { getResources().getDrawable(R.drawable.record_animate_01),
 				getResources().getDrawable(R.drawable.record_animate_02),
@@ -1658,22 +1667,7 @@ public class ChatActivity extends BaseActivity implements OnClickListener, EMEve
 		return listView;
 	}
 
-	@Override
-	protected void initViews() {
-		// TODO Auto-generated method stub
-		
-	}
+	
 
-	@Override
-	protected void initEvents() {
-		// TODO Auto-generated method stub
-		
-	}
-
-	@Override
-	protected void initData() {
-		// TODO Auto-generated method stub
-		
-	}
-
+	
 }
