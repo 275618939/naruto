@@ -9,8 +9,8 @@
     <RelativeLayout
         android:id="@+id/top_bar"
         android:layout_width="match_parent"
-        android:layout_height="@dimen/height_top_bar"
-        android:background="@color/top_bar_normal_bg"
+        android:layout_height="@dimen/title_bar_height"
+        android:background="@color/main"
         android:gravity="center_vertical" >
 
         <include layout="@layout/commom_back_btn" />
@@ -69,10 +69,10 @@
         android:paddingBottom="2dip"
         android:paddingTop="2dip" >
 
-        <View
+       <!--  <View
             android:layout_width="match_parent"
             android:layout_height="0.5dp"
-            android:background="@color/gray_normal" />
+            android:background="@color/gray_normal" /> -->
 
         <LinearLayout
             android:id="@+id/rl_bottom"
