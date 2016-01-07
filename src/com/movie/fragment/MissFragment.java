@@ -48,7 +48,8 @@ public class MissFragment extends BaseFragment {
 
 		pager = (ViewPager)rootView.findViewById(R.id.pager);
 		tabs = (PagerSlidingTabStrip) rootView.findViewById(R.id.tabs);
-		titles = new String[]{ getResources().getString(R.string.miss_lately), getResources().getString(R.string.miss_best)};
+		//titles = new String[]{ getResources().getString(R.string.miss_lately), getResources().getString(R.string.miss_best)};
+		titles = new String[]{ getResources().getString(R.string.miss_lately)};
 		tabAdapter = new TabAdapter(getChildFragmentManager(),titles);		
 		pager.setAdapter(tabAdapter);
 		tabs.setViewPager(pager);

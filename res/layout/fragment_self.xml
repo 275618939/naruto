@@ -212,6 +212,7 @@
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
                     android:gravity="center"
+                    android:visibility="gone"
                     android:orientation="vertical" >
 
                     <ImageView
@@ -312,6 +313,7 @@
 
             <LinearLayout
                 android:id="@+id/my_friends_layout"
+                android:visibility="gone"
                 style="@style/setting_item_center" >
 
                 <TextView
