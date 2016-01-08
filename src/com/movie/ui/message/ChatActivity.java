@@ -19,6 +19,7 @@ import java.io.IOException;
 import java.lang.reflect.Field;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 
 import android.app.AlertDialog;
 import android.app.ProgressDialog;
@@ -93,6 +94,7 @@ import com.hxsdk.adpter.ExpressionAdapter;
 import com.hxsdk.adpter.ExpressionPagerAdapter;
 import com.hxsdk.adpter.MessageAdapter;
 import com.hxsdk.adpter.VoicePlayClickListener;
+import com.hxsdk.bean.RobotUser;
 import com.hxsdk.utils.CommonUtils;
 import com.hxsdk.utils.ImageUtils;
 import com.hxsdk.utils.SmileUtils;
@@ -209,8 +211,9 @@ public class ChatActivity extends BaseActivity implements OnClickListener, EMEve
 		setContentView(R.layout.activity_chat_hx);
 		activityInstance = this;
 		initViews();
-		setUpView();
 		initData();
+		setUpView();
+		
 	}
 	@Override
 	protected void initEvents() {
@@ -220,6 +223,7 @@ public class ChatActivity extends BaseActivity implements OnClickListener, EMEve
 	protected void initData() {
 		mUser = (User) getIntent().getSerializableExtra("user");
 		nameView.setText("与" + mUser.getNickname() + "对话");
+		toChatUsername = mUser.getMobile();
 	}
 	/**
 	 * initView
@@ -383,25 +387,23 @@ public class ChatActivity extends BaseActivity implements OnClickListener, EMEve
 		clipboard = (ClipboardManager) getSystemService(Context.CLIPBOARD_SERVICE);
 		manager = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
 		getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_ALWAYS_HIDDEN);
-		wakeLock = ((PowerManager) getSystemService(Context.POWER_SERVICE)).newWakeLock(
-				PowerManager.SCREEN_DIM_WAKE_LOCK, "demo");
+		wakeLock = ((PowerManager) getSystemService(Context.POWER_SERVICE)).newWakeLock(PowerManager.SCREEN_DIM_WAKE_LOCK, "demo");
 		// 判断单聊还是群聊
 		chatType = getIntent().getIntExtra("chatType", CHATTYPE_SINGLE);
 
 		if (chatType == CHATTYPE_SINGLE) { // 单聊
-			toChatUsername = "15011409560";
-			/*Map<String,RobotUser> robotMap=((DemoHXSDKHelper)HXSDKHelper.getInstance()).getRobotList();
+			Map<String,RobotUser> robotMap=((DemoHXSDKHelper)HXSDKHelper.getInstance()).getRobotList();
 			if(robotMap!=null&&robotMap.containsKey(toChatUsername)){
 				isRobot = true;
-				String nick = robotMap.get(toChatUsername).getNick();
+				/*String nick = robotMap.get(toChatUsername).getNick();
 				if(!TextUtils.isEmpty(nick)){
 					((TextView) findViewById(R.id.name)).setText(nick);
 				}else{
 					((TextView) findViewById(R.id.name)).setText(toChatUsername);
-				}
+				}*/
 			}else{
-				UserUtils.setUserNick(toChatUsername, (TextView) findViewById(R.id.name));
-			}*/
+				//UserUtils.setUserNick(toChatUsername, (TextView) findViewById(R.id.name));
+			}
 		} else {
 			// 群聊
 			findViewById(R.id.container_to_group).setVisibility(View.VISIBLE);

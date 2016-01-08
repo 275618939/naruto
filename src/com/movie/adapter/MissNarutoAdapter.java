@@ -81,7 +81,7 @@ public class MissNarutoAdapter extends BaseObjectListAdapter {
 			mHolder.userCharm.setText(score);
 		}
 		mHolder.missBtnLayout.setVisibility(View.GONE);
-		if(nearNaruto.getStage()>=0){
+		if(nearNaruto.getStage()>=0&&null!=loginMemberId){
 			if(memberId.equals(loginMemberId)){
 				mHolder.missBtnLayout.setVisibility(View.VISIBLE);
 				//是否可同意

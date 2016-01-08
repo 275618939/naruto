@@ -286,14 +286,14 @@ public class DemoHXSDKHelper extends HXSDKHelper{
             
             @Override
             public String getTitle(EMMessage message) {
-              //修改标题,这里使用默认
+                //修改标题,这里使用默认
                 return null;
             }
             
             @Override
             public int getSmallIcon(EMMessage message) {
-              //设置小图标，这里为默认
-                return 0;
+               //设置小图标，这里为默认
+                return R.drawable.naruto_logo;
             }
             
             @Override

@@ -330,6 +330,9 @@ public class UserDetailActivity extends BaseActivity implements
 					user.setNickname(values.get("nickname").toString());
 					title.setText(values.get("nickname").toString());
 				}
+				if (values.containsKey("mobile")) {
+					user.setMobile(values.get("mobile").toString());
+				}
 				if (values.containsKey("signature")) {
 					user.setSignature(values.get("signature").toString());
 					signView.setText(values.get("signature").toString());

@@ -20,7 +20,7 @@ import com.movie.app.Constant;
 import com.movie.client.service.BaseService;
 import com.movie.client.service.CallBackService;
 import com.movie.fragment.HomeFragment;
-import com.movie.fragment.MissFragment;
+import com.movie.fragment.MissLatelyFragment;
 import com.movie.fragment.MoiveFragment;
 import com.movie.fragment.SelfFragment;
 import com.movie.network.HttpLoginAutoService;
@@ -35,7 +35,7 @@ public class MainActivity extends BaseActivity implements OnClickListener,
 	/** 首页底部导航栏文本 */
 	String tabTextviewArray[] = { "发现", "约会", "影片", "我的" };
 	/** 首页底部导航栏内容 */
-	Class fragmentArray[] = { HomeFragment.class, MissFragment.class,MoiveFragment.class, SelfFragment.class };
+	Class fragmentArray[] = { HomeFragment.class, MissLatelyFragment.class,MoiveFragment.class, SelfFragment.class };
 	ArrayList<Fragment> fragments = new ArrayList<Fragment>();
 	FragmentTabHost mTabHost;
 	LayoutInflater layoutInflater;
