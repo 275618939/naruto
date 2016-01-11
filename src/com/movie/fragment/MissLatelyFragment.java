@@ -83,6 +83,10 @@ public class MissLatelyFragment extends BaseFragment implements OnClickListener,
 
 	@Override
 	protected void lazyLoad() {
+		View titleView = getActivity().findViewById(R.id.main_head);
+		if (null != titleView) {
+			titleView.setVisibility(View.VISIBLE);
+		}
 		if (!isVisible||!isPrepared) {
 			return;
 		}		
