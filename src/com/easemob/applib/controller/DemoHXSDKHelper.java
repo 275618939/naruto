@@ -287,7 +287,7 @@ public class DemoHXSDKHelper extends HXSDKHelper{
             @Override
             public String getTitle(EMMessage message) {
                 //修改标题,这里使用默认
-                return "新消息";
+                return null;
             }
             
             @Override

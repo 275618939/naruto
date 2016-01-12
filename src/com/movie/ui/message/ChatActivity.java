@@ -407,6 +407,10 @@ public class ChatActivity extends BaseActivity implements OnClickListener, EMEve
 		chatType = getIntent().getIntExtra("chatType", CHATTYPE_SINGLE);
 
 		if (chatType == CHATTYPE_SINGLE) { // 单聊
+			toChatUsername = getIntent().getStringExtra("userId");
+			if(null!=toChatUsername){
+				nameView.setText("与" + toChatUsername + "对话");
+			}
 			Map<String,RobotUser> robotMap=((DemoHXSDKHelper)HXSDKHelper.getInstance()).getRobotList();
 			if(robotMap!=null&&robotMap.containsKey(toChatUsername)){
 				isRobot = true;
@@ -531,11 +535,13 @@ public class ChatActivity extends BaseActivity implements OnClickListener, EMEve
                 return false;
             }
         });
-        adapter.setUserAvatar(mUser.getPortrait());
-		User loginUser = userService.getUserItem();
-		if(null!=loginUser){
-			loadUser(loginUser.getMemberId());
-		}
+        if(null!=mUser){
+        	adapter.setUserAvatar(mUser.getPortrait());
+			User loginUser = userService.getUserItem();
+			if(null!=loginUser){
+				loadUser(loginUser.getMemberId());
+			}
+        }
 	}
 	
 	protected void onGroupViewCreation(){

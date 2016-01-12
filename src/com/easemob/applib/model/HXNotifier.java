@@ -34,6 +34,7 @@ import com.easemob.chat.EMChatManager;
 import com.easemob.chat.EMMessage;
 import com.easemob.util.EMLog;
 import com.easemob.util.EasyUtils;
+import com.movie.R;
 
 /**
  * 新消息提醒class
@@ -225,7 +226,7 @@ public class HXNotifier {
 
             // create and send notificaiton
             NotificationCompat.Builder mBuilder = new NotificationCompat.Builder(appContext)
-                                                                        .setSmallIcon(appContext.getApplicationInfo().icon)
+                                                                        .setSmallIcon(R.drawable.naruto_logo)
                                                                         .setWhen(System.currentTimeMillis())
                                                                         .setAutoCancel(true);
 
