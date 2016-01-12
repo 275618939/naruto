@@ -100,8 +100,13 @@ import com.hxsdk.utils.ImageUtils;
 import com.hxsdk.utils.SmileUtils;
 import com.movie.R;
 import com.movie.app.BaseActivity;
+import com.movie.app.Constant;
 import com.movie.app.NarutoApplication;
+import com.movie.app.Constant.ReturnCode;
 import com.movie.client.bean.User;
+import com.movie.client.service.BaseService;
+import com.movie.client.service.CallBackService;
+import com.movie.network.HttpUserService;
 import com.movie.ui.BaiduMapActivity;
 import com.movie.view.ExpandGridView;
 import com.movie.view.PasteEditText;
@@ -110,7 +115,7 @@ import com.movie.view.PasteEditText;
  * 聊天页面
  * 
  */
-public class ChatActivity extends BaseActivity implements OnClickListener, EMEventListener{
+public class ChatActivity extends BaseActivity implements OnClickListener, EMEventListener,CallBackService{
 	private static final String TAG = "ChatActivity";
 	private static final int REQUEST_CODE_EMPTY_HISTORY = 2;
 	public static final int REQUEST_CODE_CONTEXT_MENU = 3;
@@ -191,6 +196,8 @@ public class ChatActivity extends BaseActivity implements OnClickListener, EMEve
 	private boolean haveMoreData = true;
 	private Button btnMore;
 	public String playMsgId;
+	
+	BaseService httpUsersService;
 
 	private SwipeRefreshLayout swipeRefreshLayout;
 
@@ -209,6 +216,7 @@ public class ChatActivity extends BaseActivity implements OnClickListener, EMEve
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_chat_hx);
+		httpUsersService = new HttpUserService(this);
 		activityInstance = this;
 		initViews();
 		initData();
@@ -222,8 +230,15 @@ public class ChatActivity extends BaseActivity implements OnClickListener, EMEve
 	@Override
 	protected void initData() {
 		mUser = (User) getIntent().getSerializableExtra("user");
-		nameView.setText("与" + mUser.getNickname() + "对话");
-		toChatUsername = mUser.getMobile();
+		if(null!=mUser){
+			nameView.setText("与" + mUser.getNickname() + "对话");
+			toChatUsername = mUser.getMobile();
+		}
+	}
+	private void loadUser(String memberId) {
+		httpUsersService.addParams("userId", memberId);
+		httpUsersService.addParams(httpUsersService.URL_KEY,Constant.User_Query_API_URL);
+		httpUsersService.execute(this);
 	}
 	/**
 	 * initView
@@ -516,6 +531,11 @@ public class ChatActivity extends BaseActivity implements OnClickListener, EMEve
                 return false;
             }
         });
+        adapter.setUserAvatar(mUser.getPortrait());
+		User loginUser = userService.getUserItem();
+		if(null!=loginUser){
+			loadUser(loginUser.getMemberId());
+		}
 	}
 	
 	protected void onGroupViewCreation(){
@@ -1667,6 +1687,31 @@ public class ChatActivity extends BaseActivity implements OnClickListener, EMEve
 
 	public ListView getListView() {
 		return listView;
+	}
+	@Override
+	public void SuccessCallBack(Map<String, Object> map) {
+		String code = map.get(Constant.ReturnCode.RETURN_STATE).toString();
+		if (Constant.ReturnCode.STATE_1.equals(code)) {
+			String tag = map.get(Constant.ReturnCode.RETURN_TAG).toString();
+			if (tag.endsWith(httpUsersService.TAG)) {
+				Map<String, Object> values = (Map<String, Object>) map.get(ReturnCode.RETURN_VALUE);
+				if (values.containsKey("portrait")) {
+					adapter.setLoginAvatar(values.get("portrait").toString());
+				}
+			}
+		}
+	
+		
+	}
+	@Override
+	public void ErrorCallBack(Map<String, Object> map) {
+		// TODO Auto-generated method stub
+		
+	}
+	@Override
+	public void OnRequest() {
+		// TODO Auto-generated method stub
+		
 	}
 
 	

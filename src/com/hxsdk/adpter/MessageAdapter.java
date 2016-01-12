@@ -86,12 +86,12 @@ import com.movie.app.Constant;
 import com.movie.ui.BaiduMapActivity;
 import com.movie.ui.UserDetailActivity;
 import com.movie.ui.message.ChatActivity;
-import com.movie.ui.message.ChatActivity;
 import com.movie.ui.message.ShowBigImage;
 import com.movie.ui.message.ShowNormalFileActivity;
 import com.movie.ui.message.ShowVideoActivity;
 import com.movie.util.DateUtils;
 import com.movie.util.UserUtils;
+import com.squareup.picasso.Picasso;
 
 public class MessageAdapter extends BaseAdapter{
 
@@ -127,6 +127,8 @@ public class MessageAdapter extends BaseAdapter{
 	private static final int HANDLER_MESSAGE_REFRESH_LIST = 0;
 	private static final int HANDLER_MESSAGE_SELECT_LAST = 1;
 	private static final int HANDLER_MESSAGE_SEEK_TO = 2;
+	private String loginAvatar;
+	private String userAvatar;
 
 	// reference to conversation object in chatsdk
 	private EMConversation conversation;
@@ -572,18 +574,27 @@ public class MessageAdapter extends BaseAdapter{
 	private void setUserAvatar(final EMMessage message, ImageView imageView){
 	    if(message.direct == Direct.SEND){
 	        //显示自己头像
-	        UserUtils.setCurrentUserAvatar(context, imageView);
+	    	if(loginAvatar!=null&&!loginAvatar.isEmpty()){
+	    		Picasso.with(context).load(loginAvatar).placeholder(R.drawable.default_portrait).into(imageView);
+	    	}else{
+	    		UserUtils.setCurrentUserAvatar(context, imageView);
+	    	}
 	    }else{
+	    	if(userAvatar!=null&&!userAvatar.isEmpty()){
+	    		Picasso.with(context).load(loginAvatar).placeholder(R.drawable.default_portrait).into(imageView);
+	    	}else{
+	    		 UserUtils.setUserAvatar(context, message.getFrom(), imageView);
+	    	}
 	        UserUtils.setUserAvatar(context, message.getFrom(), imageView);
 	    }
 	    imageView.setOnClickListener(new View.OnClickListener() {
 			
 			@Override
 			public void onClick(View v) {
-				Intent intent = new Intent();
+				/*Intent intent = new Intent();
 				intent.setClass(context, UserDetailActivity.class);
 				intent.putExtra("username", message.getFrom());
-				context.startActivity(intent);
+				context.startActivity(intent);*/
 			}
 		});
 	}
@@ -1579,5 +1590,14 @@ public class MessageAdapter extends BaseAdapter{
 		}
 
 	}
+
+	public void setLoginAvatar(String loginAvatar) {
+		this.loginAvatar = loginAvatar;
+	}
+
+	public void setUserAvatar(String userAvatar) {
+		this.userAvatar = userAvatar;
+	}
+	
 
 }

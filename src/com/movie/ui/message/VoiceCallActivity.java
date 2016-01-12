@@ -37,8 +37,6 @@ import android.widget.Toast;
 
 import com.easemob.applib.controller.HXSDKHelper;
 import com.easemob.chat.EMCallStateChangeListener;
-import com.easemob.chat.EMCallStateChangeListener.CallError;
-import com.easemob.chat.EMCallStateChangeListener.CallState;
 import com.easemob.chat.EMChatManager;
 import com.easemob.exceptions.EMServiceNotReadyException;
 import com.movie.R;
@@ -150,7 +148,7 @@ public class VoiceCallActivity extends CallActivity implements OnClickListener {
 	 * 设置电话监听
 	 */
 	void addCallStateListener() {
-	     callStateListener = new EMCallStateChangeListener() {
+	    callStateListener = new EMCallStateChangeListener() {
             
             @Override
             public void onCallStateChanged(CallState callState, CallError error) {
