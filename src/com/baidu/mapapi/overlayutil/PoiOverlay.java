@@ -1,8 +1,5 @@
 package com.baidu.mapapi.overlayutil;
 
-import java.util.ArrayList;
-import java.util.List;
-
 import android.os.Bundle;
 
 import com.baidu.mapapi.map.BaiduMap;
@@ -12,6 +9,9 @@ import com.baidu.mapapi.map.MarkerOptions;
 import com.baidu.mapapi.map.OverlayOptions;
 import com.baidu.mapapi.map.Polyline;
 import com.baidu.mapapi.search.poi.PoiResult;
+
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * 用于显示poi的overly

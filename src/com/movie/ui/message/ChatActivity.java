@@ -357,7 +357,7 @@ public class ChatActivity extends BaseActivity implements OnClickListener, EMEve
 	                                                 swipeRefreshLayout.setRefreshing(false);
 	                                                 return;
 		                                         }
-		                                         
+		                                       
 		                                         if (messages.size() > 0) {
 	                                                 adapter.notifyDataSetChanged();
 	                                                 adapter.refreshSeekTo(messages.size() - 1);
