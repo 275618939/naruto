@@ -178,6 +178,11 @@ public class MissNarutoDetailActivity extends BaseActivity implements OnClickLis
 		loadAttendUser();
 	
 	}
+	@Override
+	public void onResume(){
+		super.onResume();
+		initMissBtn();
+	}
 	private void initMissBtn(){
 		
 		result=StringUtil.dateCompareByCurrent(miss.getRunTime(),MissBtnStatus.MAX_MISS_CANCEL_HOUR);

@@ -2,6 +2,7 @@ package com.movie.ui;
 
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
+import java.util.List;
 import java.util.Map;
 
 import android.content.DialogInterface;
@@ -24,6 +25,7 @@ import com.movie.R;
 import com.movie.app.BaseActivity;
 import com.movie.app.Constant;
 import com.movie.app.NarutoApplication;
+import com.movie.app.Constant.ReturnCode;
 import com.movie.client.bean.Login;
 import com.movie.client.bean.User;
 import com.movie.client.service.BaseService;
@@ -52,6 +54,7 @@ public class LoginActivity extends BaseActivity implements OnClickListener, Call
 	UserService userService;
 	BaseService httpLoginService;
 	BaseService httpCaptchaService;
+	BaseService httpUsersService;
 	CaptchaDialog captchaDialog;
 	String requestTag;
 	@Override
@@ -132,6 +135,11 @@ public class LoginActivity extends BaseActivity implements OnClickListener, Call
 			httpCaptchaService.execute(this);
 		}
 		
+	}
+	private void loadUser(String memberId) {
+		httpUsersService.addParams("userId", memberId);
+		httpUsersService.addParams(httpUsersService.URL_KEY,Constant.User_Query_API_URL);
+		httpUsersService.execute(this);
 	}
 	@Override
 	public void onClick(View v) {
@@ -227,7 +235,7 @@ public class LoginActivity extends BaseActivity implements OnClickListener, Call
 				User user=new User();
 				user.setMemberId(memberId);
 				userService.addUser(user);
-				
+				loadUser(memberId);
 				onBackPressed();
 			}else if(tag.equals(httpCaptchaService.TAG)){
 				Object object= map.get(Constant.ReturnCode.RETURN_VALUE);
@@ -251,6 +259,52 @@ public class LoginActivity extends BaseActivity implements OnClickListener, Call
 					captchaDialog.show();
 					content=null;
 				}
+			}else if(tag.equals(httpUsersService.TAG)){
+				User user=new User();
+				Map<String, Object> values = (Map<String, Object>) map.get(ReturnCode.RETURN_VALUE);
+				if (values.containsKey("memberId")) {
+					user.setMemberId(values.get("memberId").toString());
+				}
+				if (values.containsKey("portrait")) {
+					user.setPortrait(Constant.SERVER_ADRESS+values.get("portrait").toString());
+				}
+				if (values.containsKey("sex")) {
+					user.setSex(Integer.parseInt(values.get("sex").toString()));
+				}
+				if (values.containsKey("birthday")) {
+					user.setBirthday(values.get("birthday").toString());
+				}
+				if (values.containsKey("nickname")) {
+					user.setNickname(values.get("nickname").toString());
+				}
+				if (values.containsKey("mobile")) {
+					user.setMobile(values.get("mobile").toString());
+				}
+				if (values.containsKey("signature")) {
+					user.setSignature(values.get("signature").toString());
+				}
+				if (values.containsKey("loveCnt")) {
+					user.setLove(Integer.parseInt(values.get("loveCnt").toString()));
+				}
+				if(values.containsKey("faceTtl")){
+					user.setFace(Integer.parseInt(values.get("faceTtl").toString()));
+				}
+				if(values.containsKey("faceCnt")){
+					user.setFaceCnt(Integer.parseInt(values.get("faceCnt").toString()));
+				}	
+				if (values.containsKey("hobbies")) {
+					List<Integer> hobbies = (List<Integer>) values.get("hobbies");
+					user.setHobbies(hobbies);
+				}
+				if(values.containsKey("trystCnt")){
+					int tryst=Integer.parseInt(values.get("trystCnt").toString());
+					user.setTryst(tryst);
+				}
+				if(values.containsKey("filmCnt")){
+					int filmCnt=Integer.parseInt(values.get("filmCnt").toString());
+					user.setFilmCnt(filmCnt);
+				}
+				NarutoApplication.getApp().cuurentUser=user;
 			}
 			
 		}else if(Constant.ReturnCode.STATE_2.equals(code)){	

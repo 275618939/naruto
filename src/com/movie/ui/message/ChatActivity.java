@@ -100,14 +100,10 @@ import com.hxsdk.utils.ImageUtils;
 import com.hxsdk.utils.SmileUtils;
 import com.movie.R;
 import com.movie.app.BaseActivity;
-import com.movie.app.Constant;
 import com.movie.app.NarutoApplication;
-import com.movie.app.Constant.ReturnCode;
 import com.movie.client.bean.User;
-import com.movie.client.service.BaseService;
-import com.movie.client.service.CallBackService;
-import com.movie.network.HttpUserService;
 import com.movie.ui.BaiduMapActivity;
+import com.movie.ui.LoginActivity;
 import com.movie.view.ExpandGridView;
 import com.movie.view.PasteEditText;
 
@@ -115,7 +111,7 @@ import com.movie.view.PasteEditText;
  * 聊天页面
  * 
  */
-public class ChatActivity extends BaseActivity implements OnClickListener, EMEventListener,CallBackService{
+public class ChatActivity extends BaseActivity implements OnClickListener, EMEventListener{
 	private static final String TAG = "ChatActivity";
 	private static final int REQUEST_CODE_EMPTY_HISTORY = 2;
 	public static final int REQUEST_CODE_CONTEXT_MENU = 3;
@@ -185,8 +181,6 @@ public class ChatActivity extends BaseActivity implements OnClickListener, EMEve
 	private File cameraFile;
 	static int resendPos;
 	private User mUser;
-
-
 	private ImageView iv_emoticons_normal;
 	private ImageView iv_emoticons_checked;
 	private RelativeLayout edittext_layout;
@@ -196,9 +190,6 @@ public class ChatActivity extends BaseActivity implements OnClickListener, EMEve
 	private boolean haveMoreData = true;
 	private Button btnMore;
 	public String playMsgId;
-	
-	BaseService httpUsersService;
-
 	private SwipeRefreshLayout swipeRefreshLayout;
 
 	private Handler micImageHandler = new Handler() {
@@ -216,7 +207,7 @@ public class ChatActivity extends BaseActivity implements OnClickListener, EMEve
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_chat_hx);
-		httpUsersService = new HttpUserService(this);
+		
 		activityInstance = this;
 		initViews();
 		initData();
@@ -233,13 +224,10 @@ public class ChatActivity extends BaseActivity implements OnClickListener, EMEve
 		if(null!=mUser){
 			nameView.setText("与" + mUser.getNickname() + "对话");
 			toChatUsername = mUser.getMobile();
+			
 		}
 	}
-	private void loadUser(String memberId) {
-		httpUsersService.addParams("userId", memberId);
-		httpUsersService.addParams(httpUsersService.URL_KEY,Constant.User_Query_API_URL);
-		httpUsersService.execute(this);
-	}
+	
 	/**
 	 * initView
 	 */
@@ -407,10 +395,12 @@ public class ChatActivity extends BaseActivity implements OnClickListener, EMEve
 		chatType = getIntent().getIntExtra("chatType", CHATTYPE_SINGLE);
 
 		if (chatType == CHATTYPE_SINGLE) { // 单聊
-			toChatUsername = getIntent().getStringExtra("userId");
-			if(null!=toChatUsername){
-				nameView.setText("与" + toChatUsername + "对话");
+			
+			String userId = getIntent().getStringExtra("userId");
+			if(null!=userId&&!userId.isEmpty()){
+				toChatUsername=userId;
 			}
+			nameView.setText("与" + toChatUsername + "对话");			
 			Map<String,RobotUser> robotMap=((DemoHXSDKHelper)HXSDKHelper.getInstance()).getRobotList();
 			if(robotMap!=null&&robotMap.containsKey(toChatUsername)){
 				isRobot = true;
@@ -453,13 +443,22 @@ public class ChatActivity extends BaseActivity implements OnClickListener, EMEve
 	}
 
 	protected void onConversationInit(){
-	    if(chatType == CHATTYPE_SINGLE){
-	        conversation = EMChatManager.getInstance().getConversationByType(toChatUsername,EMConversationType.Chat);
-	    }else if(chatType == CHATTYPE_GROUP){
-	        conversation = EMChatManager.getInstance().getConversationByType(toChatUsername,EMConversationType.GroupChat);
-	    }else if(chatType == CHATTYPE_CHATROOM){
-	        conversation = EMChatManager.getInstance().getConversationByType(toChatUsername,EMConversationType.ChatRoom);
-	    }
+		
+		try {
+			
+			if(chatType == CHATTYPE_SINGLE){
+			    conversation = EMChatManager.getInstance().getConversationByType(toChatUsername,EMConversationType.Chat);
+			}else if(chatType == CHATTYPE_GROUP){
+			    conversation = EMChatManager.getInstance().getConversationByType(toChatUsername,EMConversationType.GroupChat);
+			}else if(chatType == CHATTYPE_CHATROOM){
+			    conversation = EMChatManager.getInstance().getConversationByType(toChatUsername,EMConversationType.ChatRoom);
+			}
+			
+		} catch (Exception e) {
+			Intent chartIntent = new Intent(this, LoginActivity.class);
+			startActivity(chartIntent);
+		}
+	   
 	     
         // 把此会话的未读数置为0
         conversation.markAllMessagesAsRead();
@@ -535,12 +534,8 @@ public class ChatActivity extends BaseActivity implements OnClickListener, EMEve
                 return false;
             }
         });
-        if(null!=mUser){
+        if(mUser!=null){
         	adapter.setUserAvatar(mUser.getPortrait());
-			User loginUser = userService.getUserItem();
-			if(null!=loginUser){
-				loadUser(loginUser.getMemberId());
-			}
         }
 	}
 	
@@ -1684,42 +1679,14 @@ public class ChatActivity extends BaseActivity implements OnClickListener, EMEve
 			EMChatManager.getInstance().leaveChatRoom(forward_msg.getTo());
 		}
 	}
-	
-
-
 	public String getToChatUsername() {
 		return toChatUsername;
 	}
-
 	public ListView getListView() {
 		return listView;
 	}
-	@Override
-	public void SuccessCallBack(Map<String, Object> map) {
-		String code = map.get(Constant.ReturnCode.RETURN_STATE).toString();
-		if (Constant.ReturnCode.STATE_1.equals(code)) {
-			String tag = map.get(Constant.ReturnCode.RETURN_TAG).toString();
-			if (tag.endsWith(httpUsersService.TAG)) {
-				Map<String, Object> values = (Map<String, Object>) map.get(ReturnCode.RETURN_VALUE);
-				if (values.containsKey("portrait")) {
-					adapter.setLoginAvatar(values.get("portrait").toString());
-				}
-			}
-		}
-	
-		
-	}
-	@Override
-	public void ErrorCallBack(Map<String, Object> map) {
-		// TODO Auto-generated method stub
-		
-	}
-	@Override
-	public void OnRequest() {
-		// TODO Auto-generated method stub
-		
-	}
 
+	
 	
 
 	

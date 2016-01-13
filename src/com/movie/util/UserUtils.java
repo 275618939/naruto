@@ -9,6 +9,7 @@ import com.easemob.applib.controller.DemoHXSDKHelper;
 import com.easemob.applib.controller.HXSDKHelper;
 import com.hxsdk.bean.User;
 import com.movie.R;
+import com.movie.app.NarutoApplication;
 import com.squareup.picasso.Picasso;
 
 public class UserUtils {
@@ -48,9 +49,10 @@ public class UserUtils {
      * 设置当前用户头像
      */
 	public static void setCurrentUserAvatar(Context context, ImageView imageView) {
-		User user = ((DemoHXSDKHelper)HXSDKHelper.getInstance()).getUserProfileManager().getCurrentUserInfo();
-		if (user != null && user.getAvatar() != null) {
-			Picasso.with(context).load(user.getAvatar()).placeholder(R.drawable.default_portrait).into(imageView);
+		//User user = ((DemoHXSDKHelper)HXSDKHelper.getInstance()).getUserProfileManager().getCurrentUserInfo();
+		com.movie.client.bean.User user=NarutoApplication.getApp().cuurentUser;
+		if (user != null ) {
+			Picasso.with(context).load(user.getPortrait()).placeholder(R.drawable.default_portrait).into(imageView);
 		} else {
 			Picasso.with(context).load(R.drawable.default_portrait).into(imageView);
 		}

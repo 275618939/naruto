@@ -16,6 +16,7 @@ import android.view.WindowManager;
 import com.easemob.EMCallBack;
 import com.easemob.applib.controller.DemoHXSDKHelper;
 import com.movie.R;
+import com.movie.client.bean.User;
 import com.movie.client.db.SQLHelper;
 import com.nostra13.universalimageloader.cache.disc.impl.UnlimitedDiskCache;
 import com.nostra13.universalimageloader.cache.memory.impl.WeakMemoryCache;
@@ -40,6 +41,7 @@ public class NarutoApplication extends Application {
 	public static Map<String, Integer> mEmoticonsId = new HashMap<String, Integer>();
 	public static List<String> mEmoticons_Zem = new ArrayList<String>();
 	public static List<String> mEmoticons_Zemoji = new ArrayList<String>();
+	public User cuurentUser;
 	
 	/**
 	 * 当前用户nickname,为了苹果推送不是userid而是昵称

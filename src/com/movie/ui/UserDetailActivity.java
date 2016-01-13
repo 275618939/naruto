@@ -23,6 +23,7 @@ import android.widget.RelativeLayout;
 import android.widget.ScrollView;
 import android.widget.TextView;
 
+import com.easemob.applib.controller.DemoHXSDKHelper;
 import com.handmark.pulltorefresh.library.PullToRefreshBase;
 import com.handmark.pulltorefresh.library.PullToRefreshBase.Mode;
 import com.handmark.pulltorefresh.library.PullToRefreshBase.OnRefreshListener;
@@ -193,7 +194,7 @@ public class UserDetailActivity extends BaseActivity implements
 		httpUserQueryImageService.execute(this);
 	}
 
-	@Override
+	/*@Override
 	public void onStart(){
 		super.onStart();
 		if(null!=loginUser){
@@ -201,7 +202,22 @@ public class UserDetailActivity extends BaseActivity implements
 				userDetailTool.setVisibility(View.GONE);
 			}
 		}
+	}*/
+	
+	@Override
+	public void onResume(){
+		super.onResume();
+		if(null==loginUser){
+			loginUser = userService.getUserItem();
+		}
+		if(loginUser!=null){
+			if(memberId.equals(loginUser.getMemberId())){
+				userDetailTool.setVisibility(View.GONE);
+			}
+		}
+		
 	}
+	
 
 	/* 获取传递过来的数据 */
 	private void loadUser() {
@@ -236,9 +252,14 @@ public class UserDetailActivity extends BaseActivity implements
 	public void onClick(View v) {
 		switch (v.getId()) {
 		case R.id.user_chat:
-			Intent chartIntent = new Intent(this, ChatActivity.class);
-			chartIntent.putExtra("user", user);
-			startActivity(chartIntent);
+			if (DemoHXSDKHelper.getInstance().isLogined()) {
+				Intent chartIntent = new Intent(this, ChatActivity.class);
+				chartIntent.putExtra("user", user);
+				startActivity(chartIntent);
+			}else{
+				startActivity(new Intent(this, LoginActivity.class));
+				
+			}
 			break;
 		case R.id.hobby_arrow:
 			Intent intent = new Intent(this, UserShowHobbyActivity.class);

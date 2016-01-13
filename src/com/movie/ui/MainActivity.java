@@ -1,6 +1,7 @@
 package com.movie.ui;
 
 import java.util.ArrayList;
+import java.util.List;
 import java.util.Map;
 
 import android.content.Intent;
@@ -17,6 +18,9 @@ import android.widget.TextView;
 import com.movie.R;
 import com.movie.app.BaseActivity;
 import com.movie.app.Constant;
+import com.movie.app.Constant.ReturnCode;
+import com.movie.app.NarutoApplication;
+import com.movie.client.bean.User;
 import com.movie.client.service.BaseService;
 import com.movie.client.service.CallBackService;
 import com.movie.fragment.HomeFragment;
@@ -24,6 +28,7 @@ import com.movie.fragment.MissLatelyFragment;
 import com.movie.fragment.MoiveFragment;
 import com.movie.fragment.SelfFragment;
 import com.movie.network.HttpLoginAutoService;
+import com.movie.network.HttpUserService;
 import com.movie.system.service.DoubleClickExitHelper;
 import com.movie.system.service.LocationService;
 import com.movie.util.ImageItem;
@@ -41,6 +46,7 @@ public class MainActivity extends BaseActivity implements OnClickListener,
 	LayoutInflater layoutInflater;
 	LocationService locationService;
 	BaseService httpAutoLoginSercService;
+	BaseService httpUsersService;
 	DoubleClickExitHelper doubleClick;
 	ImageView addDynamic;
 	ImageItem imageItem;
@@ -51,6 +57,7 @@ public class MainActivity extends BaseActivity implements OnClickListener,
 		setContentView(R.layout.activity_main);
 		locationService = new LocationService(this);
 		httpAutoLoginSercService = new HttpLoginAutoService(this);
+		httpUsersService = new HttpUserService(this);
 		doubleClick = new DoubleClickExitHelper(this);
 		initViews();
 		initEvents();
@@ -91,7 +98,11 @@ public class MainActivity extends BaseActivity implements OnClickListener,
 			autoLogin();
 		}
 	}
-
+	private void loadUser(String memberId) {
+		httpUsersService.addParams("userId", memberId);
+		httpUsersService.addParams(httpUsersService.URL_KEY,Constant.User_Query_API_URL);
+		httpUsersService.execute(this);
+	}
 	private void autoLogin() {
 		httpAutoLoginSercService.execute(this);
 	}
@@ -175,6 +186,54 @@ public class MainActivity extends BaseActivity implements OnClickListener,
 		if (Constant.ReturnCode.STATE_1.equals(code)) {
 			String tag = map.get(Constant.ReturnCode.RETURN_TAG).toString();
 			if (tag.equals(httpAutoLoginSercService.TAG)) {
+				String memberId=map.get("value").toString();
+				loadUser(memberId);
+			}else if(tag.equals(httpUsersService.TAG)){
+				User user=new User();
+				Map<String, Object> values = (Map<String, Object>) map.get(ReturnCode.RETURN_VALUE);
+				if (values.containsKey("memberId")) {
+					user.setMemberId(values.get("memberId").toString());
+				}
+				if (values.containsKey("portrait")) {
+					user.setPortrait(Constant.SERVER_ADRESS+values.get("portrait").toString());
+				}
+				if (values.containsKey("sex")) {
+					user.setSex(Integer.parseInt(values.get("sex").toString()));
+				}
+				if (values.containsKey("birthday")) {
+					user.setBirthday(values.get("birthday").toString());
+				}
+				if (values.containsKey("nickname")) {
+					user.setNickname(values.get("nickname").toString());
+				}
+				if (values.containsKey("mobile")) {
+					user.setMobile(values.get("mobile").toString());
+				}
+				if (values.containsKey("signature")) {
+					user.setSignature(values.get("signature").toString());
+				}
+				if (values.containsKey("loveCnt")) {
+					user.setLove(Integer.parseInt(values.get("loveCnt").toString()));
+				}
+				if(values.containsKey("faceTtl")){
+					user.setFace(Integer.parseInt(values.get("faceTtl").toString()));
+				}
+				if(values.containsKey("faceCnt")){
+					user.setFaceCnt(Integer.parseInt(values.get("faceCnt").toString()));
+				}	
+				if (values.containsKey("hobbies")) {
+					List<Integer> hobbies = (List<Integer>) values.get("hobbies");
+					user.setHobbies(hobbies);
+				}
+				if(values.containsKey("trystCnt")){
+					int tryst=Integer.parseInt(values.get("trystCnt").toString());
+					user.setTryst(tryst);
+				}
+				if(values.containsKey("filmCnt")){
+					int filmCnt=Integer.parseInt(values.get("filmCnt").toString());
+					user.setFilmCnt(filmCnt);
+				}
+				NarutoApplication.getApp().cuurentUser=user;
 			}
 		}
 	}
